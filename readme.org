@@ -1,0 +1,24 @@
+#+TITLE: nmartin84's DOOM Emacs Private Configuration
+
+
+* List of TODO Items for me
+
+** Prettify Emacs
+- [ ] Build out pretty symbols
+- [ ] Build proper faces with color palette
+- [ ] Configure Super Agenda Faces
+** Better Key Mappings
+- [X] Check out hercules.el
+- [X] Figure out how to unmap =prefix=
+- [ ] Map common items to new mappings
+** My Modules
+*** Multi Tasking
+- [-] Build a module for org-clock-switch
+  - [X] Switch task should focus on the task /implemented with =org-clock-goto=/
+  - [ ] Offer secondary command that will narrow to subtree
+** Agenda
+*** Custom Agenda Commands
+- [-] Build custom commands for "Today's Schedule" "Weekly Review" "Projects"
+- [X] Find function default start of day to current calendar day for custom commands
+*** Super Agenda Groups
+- [ ] Build out super agenda groups for Categories and Tags
