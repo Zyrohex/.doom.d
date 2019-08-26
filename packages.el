@@ -15,7 +15,6 @@
 (package! ob-ipython)
 (package! bog)
 (package! pretty-symbols)
-(package! hercules)
 (package! helm-chrome)
 (package! helm-addressbook)
 (package! helm-rg)
@@ -32,4 +31,3 @@
 (package! org-brain)
 (package! elfeed)
 (package! elfeed-org)
-(package! org-journal)
