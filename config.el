@@ -59,10 +59,6 @@
 (require 'orgclockswitch)
 
 
-;; Deadgrep
-
-(map! :n "SPC / s" #'deadgrep)
-
 ;; Brain
 
 (map! :n "SPC o v" #'org-brain-visualize)
@@ -157,46 +153,7 @@
 ;; Agenda + Super Agenda
 
 (setq org-super-agenda-groups
-        '((:name "Important"
-                 :priority "A"
-                 :order 1)
-          (:name "Due Today"
-                 :deadline today
-                 :order 2)
-          (:name "Due Soon"
-                 :deadline future
-                 :order 4)
-          (:name "Overdue"
-                 :deadline past
-                 :order 3)
-          (:name "Next to do"
-                 :todo "NEXT"
-                 :order 5)
-          (:name "Events"
-                 :tag "dates"
-                 :order 6)
-          (:name "Personal"
-                 :tag "personal"
-                 :order 7)
-          (:name "Tasks"
-                 :tag "tasks"
-                 :order 10)
-          (:name "Projects"
-                 :tag "projects"
-                 :order 11)
-          (:name "Hobbies"
-                 :tag "hobbies"
-                 :order 12)
-          (:name "Learning"
-                 :tag "learning"
-                 :order 13)
-          (:name "Emacs"
-                 :tag "emacs"
-                 :order 14)
-          (:name "Habits"
-                 :tag "habits"
-                 :order 8)
-          (:discard (:anything t))))
+        '((:auto-category t)))
 
 (setq org-agenda-files (list "~/Google Drive/org/gtd/agenda/")
       org-agenda-skip-scheduled-if-done t
@@ -205,7 +162,7 @@
 
 ;; Popup Rules
 
-(set-popup-rule! "^\\*Org Agenda" :side 'right :size 60 :select t :ttl nil)
+(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl nil)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.70 :select t :ttl nil)
 (set-popup-rule! "^\\*org-brain" :side 'bottom :size 0.30 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)

@@ -192,15 +192,7 @@
    (quote
     ("https://github.com/skeeto/elfeed/commits/master.atom")))
  '(markdown-command "pandoc" t)
- '(org-agenda-files
-   (quote
-    ("~/Google Drive/org/gtd/agenda/tasks.org" "c:/Users/nmart/Google Drive/org/gtd/agenda/inbox.org" "c:/Users/nmart/Google Drive/org/gtd/agenda/someday.org")))
  '(org-export-backends (quote (ascii html latex man md odt org confluence)))
- '(org-journal-date-format "%A %d %B %Y")
- '(org-journal-dir "~/Google Drive/org/gtd/journal/")
- '(org-journal-file-format "%Y.org")
- '(org-journal-file-type (quote yearly))
- '(org-journal-time-format "%H:%M - ")
  '(org-super-agenda-mode t)
  '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
