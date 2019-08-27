@@ -7,7 +7,7 @@
   Done". Even if you do not use Emacs, I would highly suggest reading his book.
 - File menu is enabled for those shy of remembering keyboard shortcuts
 - All of your work can be seen from Org Agenda
-  -
+  - Super Agenda Groups configured to unclutter the agenda view *still work in progress*
 
 *** Things on my TODO list
 - Simplified Keyboad Mappings
