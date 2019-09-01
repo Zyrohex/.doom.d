@@ -204,3 +204,7 @@ The :face and :transformer keywords can be used to apply faces to items in group
 #+BEGIN_SRC emacs-lisp
 (spacemacs/set-leader-keys "mc" (lambda () (interactive) (find-file "~/capture.org")))
 #+END_SRC
+** Hide Empty Agenda Days
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-show-all-dates nil)
+#+END_SRC

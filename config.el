@@ -6,8 +6,12 @@
 (load! "config/+extra")
 (load! "config/+capture")
 (load! "config/+todo")
+(load! "config/+ui")
 (load! "keys/+general")
 
+(add-to-list 'load-path  "~/.doom.d/local/plain-org-wiki/")
+(require 'plain-org-wiki)
+(setq plain-org-wiki-directory "~/Google Drive/org/gtd/wiki")
 
 ;; General Settings
 
@@ -19,6 +23,11 @@
 
 ;; Agenda Custom Command
 
+(setq org-agenda-prefix-format '((agenda  . "  %-5t %6e ")
+                           (timeline  . "%s ")
+                           (todo  . " ")
+                           (tags  . " ")
+                           (search . "%l")))
 
 (setq org-agenda-custom-commands
       '(("u" "Start of day review"
@@ -122,7 +131,7 @@
 
 ;; Refile
 
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
 
@@ -155,7 +164,7 @@
 (setq org-super-agenda-groups
         '((:auto-category t)))
 
-(setq org-agenda-files (list "~/Google Drive/org/gtd/agenda/")
+(setq org-agenda-files (list "~/Google Drive/org/gtd/tasks.org" "~/Google Drive/org/gtd/inbox.org")
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
 
@@ -164,7 +173,7 @@
 
 (set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl nil)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.70 :select t :ttl nil)
-(set-popup-rule! "^\\*org-brain" :side 'bottom :size 0.30 :select t :ttl nil)
+(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
