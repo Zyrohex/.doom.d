@@ -22,7 +22,7 @@
 (setq plain-org-wiki-directory "~/Google Drive/org/wiki")
 
 ;; Load Clock Switch
-(require 'org-clock-switch)
+(require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
 
 ;; Capture Templates
 (after! org (setq org-capture-templates
