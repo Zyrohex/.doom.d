@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inbuffersetup
+# key: inbuffersetup
+# --
+#+SETUPFILE: ~/.doom.d/in-buffer-templates/setupfile1.org

@@ -1,176 +1,105 @@
-;; This is the default config file that loads some generic settings. Additional modules will get loaded under ./config or ./modules
-;; Extra Configs
-;; You can comment out whichever line you do not wish to use
+;;; .doom.d/config.el -*- lexical-binding: t; -*-
 
-;(load! "config/+bindings2")
-(load! "config/+extra")
-(load! "config/+capture")
-(load! "config/+todo")
-(load! "config/+ui")
-(load! "keys/+general")
+;; Place your private configuration here
+(load! "+ui") ; Load custom theme for DOOM
+(load! "+keys") ; Load custom keymaps
 
-(add-to-list 'load-path  "~/.doom.d/local/plain-org-wiki/")
-(require 'plain-org-wiki)
-(setq plain-org-wiki-directory "~/Google Drive/org/gtd/wiki")
 
-;; General Settings
-
-;(menu-bar-mode 1)
-(setq doom-font (font-spec :family "Source Code Pro" :size 20))
+;; Default Settings
+(setq doom-font (font-spec :family "Source Code Pro" :size 22)) ; Configure Default font
+(setq org-bullets-bullet-list '("#"))
+(setq +org-export-directory "~/Google Drive/org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
-(add-to-list 'org-modules 'org-habit t)
+(add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
 
-;; Agenda Custom Command
 
-(setq org-agenda-prefix-format '((agenda  . "  %-5t %6e ")
-                           (timeline  . "%s ")
-                           (todo  . " ")
-                           (tags  . " ")
-                           (search . "%l")))
+;; Load custom modules
+(add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
 
-(setq org-agenda-custom-commands
+;; Load Wiki Module
+(require 'plain-org-wiki)
+(setq plain-org-wiki-directory "~/Google Drive/org/wiki")
+
+;; Load Clock Switch
+(require 'org-clock-switch)
+
+;; Capture Templates
+(after! org (setq org-capture-templates
+                  '(("h" "Habit" entry (file+olp"~/Google Drive/org/gtd/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
+                     "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
+                    ("g" "Get Shit Done" entry (file+olp"~/Google Drive/org/gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+                     "* TODO %? %^g %^{CATEGORY}p")
+                    ("r" "Resources" entry (file+olp"~/Google Drive/org/gtd/Resources.org" "Resources")
+                     "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
+                    ("e" "Elfeed" entry (file+olp"~/.doom.d/setup/elfeed.org" "Dump")
+                     "* [[%x]]")
+                    ("J" "Journal" entry (file+olp+datetree "~/Google Drive/org/gtd/journal.org")
+                     "** [%<%H:%M>] %? %^g %^{ACCOUNT}p %^{TOPIC}p %^{WHO}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t))))
+
+;; TODO Keywords
+(after! org (setq org-todo-keywords
+                  '((sequence "TODO(t)" "WORKING(W!)" "NEXT(n!)" "DELEGATED(e!)" "LATER(l!)" "|" "INVALID(I!)" "DONE(d!)"))))
+;        org-todo-keyword-faces
+;        '(("TODO" :foreground "#f5ff36" :weight bold)
+;          ("WAITING" :foreground "#ffff29" :weight normal :underline t)
+;          ("WORKING" :foreground "#a8d7ff" :weight normal :underline t)
+;          ("NEXT" :foreground "#ff3d47" :weight bold)
+;          ("LATER" :foreground "#29edff" :weight normal)
+;          ("DONE" :foreground "#50a14f" :weight normal)))
+
+;; Super Agenda
+(after! org-agenda (setq org-super-agenda-mode t))
+(after! org-agenda (setq org-agenda-custom-commands
       '(("u" "Start of day review"
          ((agenda ""
                   ((org-agenda-start-day (org-today)))
                   ((org-super-agenda-groups
                     '((:name "Today"
                              :time-grid t)
-                      (:name "Overdue"
+                      (:name "Soon/Missed"
                              :scheduled past
-                             :deadline past)
-                      (:name "Future"
                              :scheduled future
+                             :deadline past
                              :deadline future)
+                      (:name "Tasks"
+                             :category "Tasks")
+                      (:name "Collaboration"
+                             :category "Collaborate")
                       (:discard (:anything t))))))))
         ("r" "Review"
          ((todo ""
                 ((org-agenda-overriding-header "Inbox Review")
                  (org-super-agenda-groups
-                  '((:name none
+                  '((:name "Refile"
                            :category "Refile")
                     (:name "Someday"
                            :category "Someday")
-                    (:discard (:anything t))))))))))
+                    (:discard (:anything t)))))))))))
 
-
-;; Defaults
-
+;; Default Folders
 (setq org-directory (expand-file-name "~/Google Drive/org/")
       org-archive-location "~/Google Drive/org/gtd/archive.org::datetree/"
       org-default-notes-file "~/Google Drive/org/gtd/agenda/inbox.org"
       projectile-project-search-path '("~/Google Drive/org/"))
 
-
-;; Task Switcher
-
-(add-to-list 'load-path  "~/.doom.d/local/org-switch")
-(require 'orgclockswitch)
-
-
-;; Brain
-
-(map! :n "SPC o v" #'org-brain-visualize)
-
-(use-package org-brain
-  :init
-  (setq org-brain-path "~/Google Drive/org/gtd/brain")
-  ;; For Evil users
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
-  :config
-  (setq org-id-track-globally t)
-  (setq org-id-locations-file "~/.emacs.d/.org-id-locations")
-  (setq org-brain-visualize-default-choices 'all)
-  (setq org-brain-title-max-length 12))
-
-;; Capture Templates
-
-(map! :n "SPC n x" #'helm-org-capture-templates)
-
-
 ;; Elfeed
-
-(map! :n "SPC o e" #'elfeed
-      :n "SPC o u" #'elfeed-update)
-
 (require 'elfeed)
 (require 'elfeed-org)
 (elfeed-org)
-(setq rmh-elfeed-org-files (list "~/Google Drive/org/gtd/elfeed.org"))
-(setq elfeed-db-directory "~/Google Drive/org/elfeed/")
-
-
-;; Link Abbreviations
-
-(setq org-link-abbrev-alist
-      '(("gg" . "http://www.google.com/search?q=")
-        ("gmap" . "http://maps.google.com/maps?q=%s")
-        ("wikibooks" . "https://en.wikibooks.org/w/index.php?sort=relevance&search=%s")
-        ("github" . "https://github.com/search?q=%s")
-        ("youtube" . "https://www.youtube.com/results?search_query=%s")))
-
-
-;; Pretty symbols
-
-
+(after! org (setq rmh-elfeed-org-files (list "~/Google Drive/org/elfeed.org")
+                  elfeed-db-directory "~/Google Drive/elfeed/"))
 
 ;; Deft
-
-(map! :n "SPC o n" #'deft
-      :n "SPC o N" #'deft-new-file-named)
-
+(require 'deft)
 (setq deft-extension
-      '("org" "md" "txt")
-      deft-recursive t
-      deft-text-mode 'org-mode
-      deft-directory "~/Google Drive/org/gtd/notes/"
-      deft-use-filename-as-title t
-      deft-auto-save-interval 0)
-
-
-;; Refile
-
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
-      org-outline-path-complete-in-steps nil
-      org-refile-allow-creating-parent-nodes 'confirm)
-
-
-;; Tags
-
-(setq org-tags-column -80
-      org-tag-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l)))
-
-
-;; Org-Ref
-
-(setq org-ref-default-bibliography '("~/Google Drive/org/ref/master.bib")
-      org-ref-bibliography-notes "~/Google Drive/org/ref/notes.org"
-      org-ref-pdf-directory "~/Google Drive/org/ref/pdfs/")
-
-
-;; Logging
-
-(setq org-log-state-notes-insert-after-drawers nil
-      org-log-done 'time
-      org-log-repeat 'time
-      org-log-refile 'time
-      org-log-redeadline 'time
-      org-log-reschedule 'time)
-
-
-;; Agenda + Super Agenda
-
-(setq org-super-agenda-groups
-        '((:auto-category t)))
-
-(setq org-agenda-files (list "~/Google Drive/org/gtd/tasks.org" "~/Google Drive/org/gtd/inbox.org")
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t)
-
+      '("org" "md" "txt") ; Extensions for deft files
+      deft-recursive t ; Nil = Recursive in directories
+      deft-directory "~/Google Drive/org/notes/" ; Directory where your DEFT notes are saved
+      deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
+      deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
-
 (set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl nil)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.70 :select t :ttl nil)
 (set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
@@ -181,10 +110,23 @@
 (set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
 (set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
 
+;; Logging
+(setq org-log-state-notes-insert-after-drawers nil
+      org-log-done 'note ; Requires notes when task is set to DONE
+      org-log-repeat 'time ; Time is logged when repeat tasks are set to DONE
+      org-log-redeadline 'time ; Time is logged when task is redeadlined
+      org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
-;; Exporters
+;; Agenda
+(setq org-agenda-files (list "~/Google Drive/org/gtd/tasks.org" "~/Google Drive/org/gtd/inbox.org")
+      org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
+      org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
 
-(add-to-list 'org-export-backends 'latex)
-(add-to-list 'org-export-backends 'odt)
-(custom-set-variables
- '(markdown-command "pandoc"))
+;; Tags
+(setq org-tags-column -80 ; Sets tags so many characters away from headings
+      org-tag-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ))
+
+;; Refile
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
+      org-outline-path-complete-in-steps nil ; Nil = Show path outline in one step
+      org-refile-allow-creating-parent-nodes 'confirm) ; Create now headings with "\NAME"

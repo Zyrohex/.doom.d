@@ -1,0 +1,219 @@
+#+TITLE: garbage-collector
+
+This is my garbage collection that I find interesting, but not of any real use yet.
+
+** Completely hide the PROPERTIES field up to END
+#+BEGIN_SRC emacs-lisp
+(require 'org)
+
+(defun org-cycle-hide-drawers (state)
+  "Re-hide all drawers after a visibility state change."
+  (when (and (derived-mode-p 'org-mode)
+             (not (memq state '(overview folded contents))))
+    (save-excursion
+      (let* ((globalp (memq state '(contents all)))
+             (beg (if globalp
+                    (point-min)
+                    (point)))
+             (end (if globalp
+                    (point-max)
+                    (if (eq state 'children)
+                      (save-excursion
+                        (outline-next-heading)
+                        (point))
+                      (org-end-of-subtree t)))))
+        (goto-char beg)
+        (while (re-search-forward org-drawer-regexp end t)
+          (save-excursion
+            (beginning-of-line 1)
+            (when (looking-at org-drawer-regexp)
+              (let* ((start (1- (match-beginning 0)))
+                     (limit
+                       (save-excursion
+                         (outline-next-heading)
+                           (point)))
+                     (msg (format
+                            (concat
+                              "org-cycle-hide-drawers:  "
+                              "`:END:`"
+                              " line missing at position %s")
+                            (1+ start))))
+                (if (re-search-forward "^[ \t]*:END:" limit t)
+                  (outline-flag-region start (point-at-eol) t)
+                  (user-error msg))))))))))
+#+END_SRC
+** Clocktable by Tags
+#+BEGIN_SRC emacs-lisp
+(require 'org-table)
+(require 'org-clock)
+
+(defun clocktable-by-tag/shift-cell (n)
+  (let ((str ""))
+    (dotimes (i n)
+      (setq str (concat str "| ")))
+    str))
+
+(defun clocktable-by-tag/insert-tag (params)
+  (let ((tag (plist-get params :tags)) (total 0))
+    (insert "|--\n")
+    (insert (format "| %s | *Tag time* |\n" tag))
+    (mapcar
+     (lambda (file)
+       (let ((clock-data (with-current-buffer (find-file-noselect file)
+                           (org-clock-get-table-data (buffer-name) params))))
+         (when (> (nth 1 clock-data) 0)
+           (setq total (+ total (nth 1 clock-data)))
+           (insert (format "| | File *%s* | %.2f |\n"
+                           (file-name-nondirectory file)
+                           (/ (nth 1 clock-data) 60.0)))
+             (dolist (entry (nth 2 clock-data))
+               (insert (format "| | . %s%s | %s %.2f |\n"
+                               (org-clocktable-indent-string (nth 0 entry))
+                               (nth 1 entry)
+                               (clocktable-by-tag/shift-cell (nth 0 entry))
+                               (/ (nth 3 entry) 60.0)))))))
+       (org-agenda-files))
+
+      (save-excursion
+        (re-search-backward "*Tag time*")
+        (if (= total 0)
+            (progn
+              (org-table-move-row-up)
+              (org-table-kill-row)
+              (org-table-kill-row)
+              )
+          (progn
+            (org-table-next-field)
+            (org-table-blank-field)
+            (insert (format "*%.2f*" (/ total 60.0)))
+          )
+        ))
+      (org-table-align) total))
+
+(defun clocktable-by-tag/insert-only-tag (params)
+  (let ((tag (plist-get params :tags)) (total 0))
+    (mapcar
+     (lambda (file)
+       (let ((clock-data (with-current-buffer (find-file-noselect file)
+                           (org-clock-get-table-data (buffer-name) params))))
+         (when (> (nth 1 clock-data) 0)
+           (setq total (+ total (nth 1 clock-data))))))
+
+       (org-agenda-files))
+        (unless(= total 0)
+            (insert (format "| %s |%.2f|\n" tag (/ total 60.0))))
+        (org-table-align) total))
+
+(defun clocktable-by-tag/insert-percentage (total-sum time-column)
+  (org-table-goto-line 0)
+  (let*
+      (
+       (fields (org-split-string
+               (buffer-substring (point-at-bol) (point-at-eol))
+               "[ \t]*|[ \t]*"))
+       (nfields (length fields))
+       (percentage-column (+ nfields 1))
+       )
+    (org-table-goto-column percentage-column)
+    (org-table-insert-column)
+    (insert "%")
+    (while (org-table-goto-line (+ (org-table-current-line) 1))
+      (let* ((time-string (replace-regexp-in-string (regexp-quote "*") " " (org-table-get-field time-column)  nil 'literal))
+             (current-time (string-to-number time-string)))
+        (if (not (= current-time 0))
+            (let ((percent-fmt (if (string-equal (string-trim (org-table-get-field 2)) "*Tag time*") "*%.2f*" "%.2f")))
+              (org-table-goto-column percentage-column)
+              (insert (format percent-fmt  (* (/ current-time total-sum) 6000))))
+          )
+        )
+
+      )
+  (org-table-align)))
+
+(defun org-dblock-write:clocktable-by-tag (params)
+  (insert "| Tag | Headline | Time (h) |\n")
+  (insert "|     |          | <r>  |\n")
+  (let ((tags (plist-get params :tags))(total-sum 0))
+    (mapcar (lambda (tag)
+              (setq params (plist-put params :tags tag))
+              (setq total-sum (+ total-sum (clocktable-by-tag/insert-tag params))))
+            tags)
+    (clocktable-by-tag/insert-percentage total-sum 3)
+    ))
+
+(defun org-dblock-write:clocktable-by-tag-percentage (params)
+  (insert "| Tag | Time (h) |\n")
+  (insert "|--\n")
+  (let ((tags (plist-get params :tags))(total-sum 0))
+    (mapcar (lambda (tag)
+              (setq params (plist-put params :tags tag))
+              (setq total-sum (+ total-sum (clocktable-by-tag/insert-only-tag params))))
+            tags)
+    (clocktable-by-tag/insert-percentage total-sum 2)
+    ))
+
+(defun org-all-tags ()
+  (setq comp_tag_list (sort (mapcar
+                             (lambda (tag)
+                               (substring-no-properties (car tag)))
+                               (org-global-tags-completion-table))
+                            'string<)
+        ))
+
+(provide 'clocktable-by-tag)
+#+END_SRC
+** Save when loosing focus
+#+BEGIN_SRC emacs-lisp
+(add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+#+END_SRC
+** Category Icons
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-category-icon-alist
+      '(("[Ee]macs" (concat spacemacs-banner-directory "img/spacemacs.png") nil nil :ascent center)
+        ("Gnus" (concat my-icon-dir "gnus.png") nil nil :ascent center)
+        ("Org" (concat my-icon-dir "org.png") nil nil :ascent center)
+        ("Medical" (concat my-icon-dir "medical.png") nil nil :ascent center)
+        ("Music" (concat my-icon-dir "music.png") nil nil :ascent center)
+        ("Trip" (concat my-icon-dir "trip.png") nil nil :ascent center)
+        ("Train" (concat my-icon-dir "train.png") nil nil :ascent center)
+        ("Reading" (concat my-icon-dir "book.png") nil nil :ascent center)
+        ("\\(Holidays\\|Vacation\\)" (concat my-icon-dir "holidays.png") nil nil :ascent center)
+        (".*" '(space . (:width (16))))))
+#+END_SRC
+** Super Agenda Faces
+The :face and :transformer keywords can be used to apply faces to items in groups, or transform their strings before display. For example:
+
+#+BEGIN_SRC emacs-lisp
+(let ((org-agenda-span 'day)
+      (org-super-agenda-groups
+       '((:name "Time grid items in all-uppercase with RosyBrown1 foreground"
+                :time-grid t
+                :transformer (--> it
+                                  (upcase it)
+                                  (propertize it 'face '(:foreground "RosyBrown1"))))
+         (:name "Priority >= C items underlined, on black background"
+                :face (:background "black" :underline t)
+                :not (:priority>= "C")
+                :order 100))))
+  (org-agenda nil "a"))
+#+END_SRC
+** Agenda start day current day
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-start-day (org-today))
+#+END_SRC
+** Key Binds
+*** Opening specific file
+#+BEGIN_SRC emacs-lisp
+(spacemacs/set-leader-keys "mc" (lambda () (interactive) (find-file "~/capture.org")))
+#+END_SRC
+** Hide Empty Agenda Days
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-show-all-dates nil)
+#+END_SRC
+** Org-Ref
+#+BEGIN_SRC emacs-lisp
+;; Org Ref
+(setq org-ref-default-bibliography '("~/Google Drive/org/ref/master.bib")
+      org-ref-bibliography-notes "~/Google Drive/org/ref/notes.org"
+      org-ref-pdf-directory "~/Google Drive/org/ref/pdfs/")
+#+END_SRC
