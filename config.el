@@ -109,6 +109,7 @@
 (set-popup-rule! "^\\*Helm*" :side 'bottom :size 0.30 :select t :ttl nil)
 (set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
 (set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
+(set-popup-rule! "^\\*Eww*" :side 'right :size 1.00 :select t :ttl nil)
 
 ;; Logging
 (setq org-log-state-notes-insert-after-drawers nil
@@ -130,3 +131,7 @@
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
       org-outline-path-complete-in-steps nil ; Nil = Show path outline in one step
       org-refile-allow-creating-parent-nodes 'confirm) ; Create now headings with "\NAME"
+
+;; Org-Board
+(setq org-attach-directory "~/.attach"
+      +org-export-directory "~/.export")

@@ -10,3 +10,8 @@
 (package! elfeed)
 (package! elfeed-org)
 (package! helm-org-rifle)
+
+;; Test Packages
+(package! org-caldav)
+(package! org-bookmark-heading)
+(package! org-board)
