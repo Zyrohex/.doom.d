@@ -15,3 +15,4 @@
 (package! org-caldav)
 (package! org-bookmark-heading)
 (package! org-board)
+(package! org-fancy-priorities)

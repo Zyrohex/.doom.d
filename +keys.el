@@ -9,4 +9,8 @@
         :n "b" #'org-brain-visualize)
       (:prefix "f"
         :n "n" #'deft-new-file-named
-        :n "w" #'plain-org-wiki))
+        :n "w" #'plain-org-wiki)
+      (:prefix "b"
+        :n "c" #'org-board-new
+        :n "e" #'org-board-open))
+
