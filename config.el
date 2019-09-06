@@ -133,7 +133,7 @@
 
 ;; Popup Rules
 (set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
-;(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.70 :select t :ttl nil)
+(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
