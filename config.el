@@ -157,7 +157,7 @@
 
 ;; Tags
 (setq org-tags-column -80 ; Sets tags so many characters away from headings
-      org-tag-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ))
+      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ))
 
 ;; Refile
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
