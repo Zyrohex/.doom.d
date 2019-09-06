@@ -162,6 +162,7 @@
 ;; Refile
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
       org-refile-use-cache t
+      org-refile-history 3
       org-outline-path-complete-in-steps nil ; Nil = Show path outline in one step
       org-refile-allow-creating-parent-nodes 'confirm) ; Create now headings with "\NAME"
 
