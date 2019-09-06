@@ -1,0 +1,5 @@
+2019-09-06    <nmart@ATL-TOOLS>
+
+	* packages.el: added org-mind-map
+
+	* config.el: configured mind-map mode

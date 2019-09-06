@@ -217,3 +217,7 @@ The :face and :transformer keywords can be used to apply faces to items in group
       org-ref-bibliography-notes "~/Google Drive/org/ref/notes.org"
       org-ref-pdf-directory "~/Google Drive/org/ref/pdfs/")
 #+END_SRC
+** Exclude Tags from inhertence
+#+BEGIN_SRC emacs-lisp
+(setq org-tags-exclude-from-inheritance '("project"))
+#+END_SRC

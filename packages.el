@@ -11,3 +11,4 @@
 (package! elfeed-org)
 (package! helm-org-rifle)
 (package! org-board)
+(package! org-mind-map)

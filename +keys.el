@@ -1,6 +1,7 @@
 ;;; c:/Users/nmart/.doom.d/+keys.el -*- lexical-binding: t; -*-
 
 (map! :leader
+      :n "@" #'swiper-all
       (:prefix "o"
         :n "e" #'elfeed
         :n "u" #'elfeed-update

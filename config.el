@@ -1,7 +1,7 @@
 ;;; .doom.d/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here
-(load! "+ui") ; Load custom theme for DOOM
+;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
 
 
@@ -39,16 +39,16 @@
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
-                  '((sequence "TODO(t)" "WORKING(W!)" "NEXT(n!)" "DELEGATED(e!)" "LATER(l!)" "|" "INVALID(I!)" "DONE(d!)"))))
-;        org-todo-keyword-faces
-;        '(("TODO" :foreground "#f5ff36" :weight bold)
-;          ("WAITING" :foreground "#ffff29" :weight normal :underline t)
-;          ("WORKING" :foreground "#a8d7ff" :weight normal :underline t)
-;          ("NEXT" :foreground "#ff3d47" :weight bold)
-;          ("LATER" :foreground "#29edff" :weight normal)
-;          ("DONE" :foreground "#50a14f" :weight normal)))
+                  '((sequence "TODO(t)" "WORKING(W!)" "NEXT(n!)" "DELEGATED(e!)" "LATER(l!)" "|" "INVALID(I!)" "DONE(d!)")))
+        org-todo-keyword-faces
+        '(("TODO" :foreground "#f5ff36" :weight bold)
+          ("WAITING" :foreground "#ffff29" :weight normal :underline t)
+          ("WORKING" :foreground "#a8d7ff" :weight normal :underline t)
+          ("NEXT" :foreground "#ff3d47" :weight bold)
+          ("LATER" :foreground "#29edff" :weight normal)
+          ("DONE" :foreground "#50a14f" :weight normal)))
 
-;; Super Agenda
+;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
       '(("u" "Start of day review"
@@ -67,6 +67,18 @@
                       (:name "Collaboration"
                              :category "Collaborate")
                       (:discard (:anything t))))))))
+        ("p" "by Top Headline"
+         ((todo ""
+                ((org-super-agenda-groups
+                  '((:auto-parent t)))))))
+        ("?" "by Timestamp"
+         ((todo ""
+                ((org-super-agenda-groups
+                  '((:auto-ts t)))))))
+        ("C" "by Category"
+         ((todo ""
+                ((org-super-agenda-groups
+                  '((:auto-category t)))))))
         ("r" "Review"
          ((todo ""
                 ((org-agenda-overriding-header "Inbox Review")
@@ -76,6 +88,26 @@
                     (:name "Someday"
                            :category "Someday")
                     (:discard (:anything t)))))))))))
+
+;; Super Agenda
+(setq org-super-agenda-groups
+      '((:name "Due Today"
+               :deadline today
+               :scheduled today
+               :order 2)
+        (:name "Overdue or Future"
+               :deadline future
+               :deadline past
+               :scheduled future
+               :scheduled past
+               :order 3)
+        (:name "Tasks"
+               :category "Tasks"
+               :order 10)
+        (:name "Collaborate"
+               :category "Collaborate"
+               :order 11)
+        (:discard (:anything t))))
 
 ;; Default Folders
 (setq org-directory (expand-file-name "~/Google Drive/org/")
@@ -100,16 +132,16 @@
       deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
-(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl nil)
-(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.70 :select t :ttl nil)
-(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Helm*" :side 'bottom :size 0.30 :select t :ttl nil)
-(set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
-(set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
-(set-popup-rule! "^\\*Eww*" :side 'right :size 1.00 :select t :ttl nil)
+(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
+;(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.70 :select t :ttl nil)
+;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Helm*" :side 'bottom :size 0.30 :select t :ttl nil)
+;(set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
+;(set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
+;(set-popup-rule! "^\\*Eww*" :side 'right :size 1.00 :select t :ttl nil)
 
 ;; Logging
 (setq org-log-state-notes-insert-after-drawers nil
@@ -129,9 +161,24 @@
 
 ;; Refile
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
+      org-refile-use-cache t
       org-outline-path-complete-in-steps nil ; Nil = Show path outline in one step
       org-refile-allow-creating-parent-nodes 'confirm) ; Create now headings with "\NAME"
 
 ;; Org-Board
 (setq org-attach-directory "~/.attach"
       +org-export-directory "~/.export")
+
+;; Mind Map
+(def-package! org-mind-map
+  :init
+  (require 'ox-org)
+  :config
+  (setq org-mind-map-engine "dot")       ; Default. Directed Graph
+  ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
+  ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
+  ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
+  ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
+  ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
+  ;; (setq org-mind-map-engine "circo")  ; Circular Layout
+  )

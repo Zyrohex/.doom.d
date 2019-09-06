@@ -181,29 +181,6 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/Google Drive/org/gtd/inbox.org" "c:/Users/nmart/Google Drive/org/gtd/tasks.org"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ein:cell-input-area ((t (:background nil))))
- '(ein:cell-input-prompt ((t (:background nil :foreground nil :bold t))))
- '(flycheck-warning ((t (:underline nil))))
- '(flymake-warning ((t (:underline nil))))
- '(flyspell-duplicate ((t (:underline nil))))
- '(flyspell-incorrect ((t (:underline nil))))
- '(ivy-posframe-border ((t (:background nil))))
- '(magit-diff-file-heading ((t (:background nil))))
- '(magit-diff-file-heading-highlight ((t (:background nil))))
- '(markdown-header-face-1 ((t (:inherit (quote org-level-1)))))
- '(markdown-header-face-2 ((t (:inherit (quote org-level-2)))))
- '(markdown-header-face-3 ((t (:inherit (quote org-level-3)))))
- '(show-paren-match ((t (:background nil :foreground nil))))
- '(tide-hl-identifier-face ((t (:inherit (quote lsp-face-highlight-read)))))
- '(variable-pitch ((t (:family nil))))
- '(web-mode-jsx-depth-1-face ((t (:background nil))))
- '(web-mode-jsx-depth-2-face ((t (:background nil))))
- '(web-mode-jsx-depth-3-face ((t (:background nil))))
- '(web-mode-jsx-depth-4-face ((t (:background nil))))
- '(web-mode-jsx-depth-5-face ((t (:background nil)))))
+    ("c:/Users/nmart/Google Drive/org/gtd/tasks.org" "c:/Users/nmart/Google Drive/org/gtd/inbox.org")))
+ '(org-super-agenda-mode t)
+ '(shackle-mode t))
