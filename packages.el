@@ -12,3 +12,5 @@
 (package! helm-org-rifle)
 (package! org-board)
 (package! org-mind-map)
+(package! helm-fuzzy)
+(package! org-analyzer)

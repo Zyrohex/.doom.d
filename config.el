@@ -34,12 +34,12 @@
                      "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
                     ("e" "Elfeed" entry (file+olp"~/.doom.d/setup/elfeed.org" "Dump")
                      "* [[%x]]")
-                    ("J" "Journal" entry (file+olp+datetree "~/Google Drive/org/gtd/journal.org")
+                    ("j" "Journal" entry (file+olp+datetree "~/Google Drive/org/gtd/journal.org")
                      "** [%<%H:%M>] %? %^g %^{ACCOUNT}p %^{TOPIC}p %^{WHO}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t))))
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
-                  '((sequence "TODO(t)" "WORKING(W!)" "NEXT(n!)" "DELEGATED(e!)" "LATER(l!)" "|" "INVALID(I!)" "DONE(d!)")))
+                  '((sequence "TODO(t)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "TO-READ/WATCH(w!)" "|" "INVALID(I!)" "DONE(d!)")))
         org-todo-keyword-faces
         '(("TODO" :foreground "#f5ff36" :weight bold)
           ("WAITING" :foreground "#ffff29" :weight normal :underline t)
@@ -151,13 +151,13 @@
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
 ;; Agenda
-(setq org-agenda-files (list "~/Google Drive/org/gtd/tasks.org" "~/Google Drive/org/gtd/inbox.org")
+(setq org-agenda-files (list "~/Google Drive/org/gtd/")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
 
 ;; Tags
 (setq org-tags-column -80 ; Sets tags so many characters away from headings
-      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ))
+      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@config" . ?c) ("@elfeed" . ?f)))
 
 ;; Refile
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))

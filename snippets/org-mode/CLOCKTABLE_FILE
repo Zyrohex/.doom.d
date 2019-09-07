@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: CLOCKTABLE_FILE
+# key: CLOCKTABLEFILE
+# --
+#+BEGIN: clocktable :maxlevel 4 :scope ("$1") :block thisweek
