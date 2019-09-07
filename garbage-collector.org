@@ -221,3 +221,7 @@ The :face and :transformer keywords can be used to apply faces to items in group
 #+BEGIN_SRC emacs-lisp
 (setq org-tags-exclude-from-inheritance '("project"))
 #+END_SRC
+** Org-Capture Templates from Files
+#+BEGIN_SRC emacs-lisp
+("j" "Journal entry"entry(file+datetree"~/org/journal.org")(file"~/.emacs.d/org-templates/journal.orgcaptmpl"))
+#+END_SRC
