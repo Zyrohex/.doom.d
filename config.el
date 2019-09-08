@@ -124,6 +124,7 @@
 
 ;; Logging
 (setq org-log-state-notes-insert-after-drawers nil
+      org-log-into-drawer t
       org-log-done 'note ; Requires notes when task is set to DONE
       org-log-repeat 'time ; Time is logged when repeat tasks are set to DONE
       org-log-redeadline 'time ; Time is logged when task is redeadlined
@@ -136,10 +137,10 @@
 
 ;; Tags
 (setq org-tags-column -80 ; Sets tags so many characters away from headings
-      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@config" . ?c) ("@elfeed" . ?f)))
+      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@config" . ?c) ("@elfeed" . ?f) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W)))
 
 ;; Refile
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
       org-refile-use-cache t
       org-refile-history 3
       org-outline-path-complete-in-steps nil ; Nil = Show path outline in one step
