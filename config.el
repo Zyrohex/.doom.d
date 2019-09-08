@@ -4,7 +4,6 @@
 ;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
 
-
 ;; Default Settings
 (setq doom-font (font-spec :family "Source Code Pro" :size 22)) ; Configure Default font
 (setq org-bullets-bullet-list '("#"))
@@ -12,7 +11,6 @@
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
 (add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
-
 
 ;; Load custom modules
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
@@ -29,7 +27,7 @@
                   '(("h" "Habit" entry (file+olp"~/Google Drive/org/gtd/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
                     ("g" "Get Shit Done" entry (file+olp"~/Google Drive/org/gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
-                     "* TODO %? %^g %^{CATEGORY}p")
+                     "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
                     ("r" "Resources" entry (file+olp"~/Google Drive/org/gtd/Resources.org" "Resources")
                      "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
                     ("e" "Elfeed" entry (file+olp"~/.doom.d/setup/elfeed.org" "Dump")
