@@ -49,63 +49,44 @@
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
-      '(("u" "Start of day review"
-         ((agenda ""
-                  ((org-agenda-start-day (org-today)))
-                  ((org-super-agenda-groups
-                    '((:name "Today"
-                             :time-grid t)
-                      (:name "Soon/Missed"
-                             :scheduled past
-                             :scheduled future
-                             :deadline past
-                             :deadline future)
-                      (:name "Tasks"
-                             :category "Tasks")
-                      (:name "Collaboration"
-                             :category "Collaborate")
-                      (:discard (:anything t))))))))
-        ("p" "by Top Headline"
-         ((todo ""
-                ((org-super-agenda-groups
-                  '((:auto-parent t)))))))
-        ("?" "by Timestamp"
-         ((todo ""
-                ((org-super-agenda-groups
-                  '((:auto-ts t)))))))
-        ("C" "by Category"
-         ((todo ""
-                ((org-super-agenda-groups
-                  '((:auto-category t)))))))
-        ("r" "Review"
-         ((todo ""
-                ((org-agenda-overriding-header "Inbox Review")
+      '(("n" "Next Actions"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-start-day (org-today))
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                                :time-grid t
+                                :order 1)
+                         (:name "Upcoming/Past"
+                                :deadline future
+                                :deadline past
+                                :scheduled future
+                                :scheduled past
+                                :order 2)
+                         (:discard (:anything t))))))
+          (todo "TODO|NEXT|"
+                ((org-agenda-overriding-header "Tasks on my list")
                  (org-super-agenda-groups
-                  '((:name "Refile"
-                           :category "Refile")
-                    (:name "Someday"
-                           :category "Someday")
+                  '((:auto-parent t)))))))
+        ("r" "Inbox Review"
+         ((todo ""
+                ((org-agenda-files '("~/Google Drive/org/gtd/inbox.org"))
+                 (org-agenda-overriding-header "What's in my inbox by date created")
+                 (org-super-agenda-groups
+                  '((:name none
+                           :auto-ts t)))))))
+        ("x" "Get to someday"
+         ((todo "SOMEDAY"
+                ((org-agenda-overriding-header "Things I need to get to someday")
+                 (org-super-agenda-groups
+                  '((:name none
+                           :auto-parent t)
                     (:discard (:anything t)))))))))))
 
 ;; Super Agenda
-(setq org-super-agenda-groups
-      '((:name "Due Today"
-               :deadline today
-               :scheduled today
-               :order 2)
-        (:name "Overdue or Future"
-               :deadline future
-               :deadline past
-               :scheduled future
-               :scheduled past
-               :order 3)
-        (:name "Tasks"
-               :category "Tasks"
-               :order 10)
-        (:name "Collaborate"
-               :category "Collaborate"
-               :order 11)
-        (:discard (:anything t))))
+;(setq org-super-agenda-groups
+;      '((:name "by top heading"
+;               :auto-parent t)
+;        (:discard (:anything t))))
 
 ;; Default Folders
 (setq org-directory (expand-file-name "~/Google Drive/org/")
