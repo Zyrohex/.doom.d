@@ -181,7 +181,7 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/Google Drive/org/gtd/thelist.org" "c:/Users/nmart/Google Drive/org/wiki/Emacs.org" "c:/Users/nmart/Google Drive/org/gtd/tasks.org" "c:/Users/nmart/Google Drive/org/gtd/inbox.org")))
+    ("c:/Users/nmart/Google Drive/org/gtd/thelist.org" "c:/Users/nmart/Google Drive/org/wiki/Emacs.org" "c:/Users/nmart/Google Drive/org/gtd/inbox.org")))
  '(org-super-agenda-mode t)
  '(shackle-mode t))
 (custom-set-faces

@@ -116,7 +116,7 @@
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
-;(set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
+(set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Helm*" :side 'bottom :size 0.30 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
