@@ -65,6 +65,7 @@
                          (:discard (:anything t))))))
           (todo "TODO|NEXT|"
                 ((org-agenda-overriding-header "Tasks on my list")
+                 (org-agenda-files '("~/.org/gtd/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("r" "Inbox Review"
