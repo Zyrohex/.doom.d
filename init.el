@@ -179,9 +179,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   (quote
-    ("c:/Users/nmart/Google Drive/org/gtd/thelist.org" "c:/Users/nmart/Google Drive/org/wiki/Emacs.org" "c:/Users/nmart/Google Drive/org/gtd/inbox.org")))
  '(org-super-agenda-mode t)
  '(shackle-mode t))
 (custom-set-faces

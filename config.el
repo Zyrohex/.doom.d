@@ -7,7 +7,7 @@
 ;; Default Settings
 (setq doom-font (font-spec :family "Source Code Pro" :size 22)) ; Configure Default font
 (setq org-bullets-bullet-list '("#"))
-(setq +org-export-directory "~/Google Drive/org/.export/")
+(setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
 (add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
@@ -17,22 +17,22 @@
 
 ;; Load Wiki Module
 (require 'plain-org-wiki)
-(setq plain-org-wiki-directory "~/Google Drive/org/wiki")
+(setq plain-org-wiki-directory "~/.org/wiki")
 
 ;; Load Clock Switch
 (require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
 
 ;; Capture Templates
 (after! org (setq org-capture-templates
-                  '(("h" "Habit" entry (file+olp"~/Google Drive/org/gtd/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
+                  '(("h" "Habit" entry (file+olp"~/.org/gtd/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-                    ("g" "Get Shit Done" entry (file+olp"~/Google Drive/org/gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+                    ("g" "Get Shit Done" entry (file+olp"~/.org/gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
                      "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-                    ("r" "Resources" entry (file+olp"~/Google Drive/org/gtd/Resources.org" "Resources")
+                    ("r" "Resources" entry (file+olp"~/.org/gtd/Resources.org" "Resources")
                      "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
-                    ("e" "Elfeed" entry (file+olp"~/.doom.d/setup/elfeed.org" "Dump")
+                    ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
                      "* [[%x]]")
-                    ("j" "Journal" entry (file+olp+datetree "~/Google Drive/org/gtd/journal.org")
+                    ("j" "Journal" entry (file+olp+datetree "~/.org/gtd/journal.org")
                      "** [%<%H:%M>] %? %^g %^{ACCOUNT}p %^{TOPIC}p %^{WHO}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t))))
 
 ;; TODO Keywords
@@ -69,7 +69,7 @@
                   '((:auto-parent t)))))))
         ("r" "Inbox Review"
          ((todo ""
-                ((org-agenda-files '("~/Google Drive/org/gtd/inbox.org"))
+                ((org-agenda-files '("~/.org/gtd/inbox.org"))
                  (org-agenda-overriding-header "What's in my inbox by date created")
                  (org-super-agenda-groups
                   '((:name none
@@ -83,30 +83,30 @@
                     (:discard (:anything t)))))))))))
 
 ;; Super Agenda
-;(setq org-super-agenda-groups
-;      '((:name "by top heading"
-;               :auto-parent t)
-;        (:discard (:anything t))))
+(setq org-super-agenda-groups
+      '((:name "by top heading"
+               :auto-parent t)
+        (:discard (:anything t))))
 
 ;; Default Folders
-(setq org-directory (expand-file-name "~/Google Drive/org/")
-      org-archive-location "~/Google Drive/org/gtd/archive.org::datetree/"
-      org-default-notes-file "~/Google Drive/org/gtd/agenda/inbox.org"
-      projectile-project-search-path '("~/Google Drive/org/"))
+(setq org-directory (expand-file-name "~/.org/")
+      org-archive-location "~/.org/gtd/archive.org::datetree/"
+      org-default-notes-file "~/.org/gtd/agenda/inbox.org"
+      projectile-project-search-path '("~/.org/"))
 
 ;; Elfeed
 (require 'elfeed)
 (require 'elfeed-org)
 (elfeed-org)
-(after! org (setq rmh-elfeed-org-files (list "~/Google Drive/org/elfeed.org")
-                  elfeed-db-directory "~/Google Drive/elfeed/"))
+(after! org (setq rmh-elfeed-org-files (list "~/.org/elfeed.org")
+                  elfeed-db-directory "~/.elfeed/"))
 
 ;; Deft
 (require 'deft)
 (setq deft-extension
       '("org" "md" "txt") ; Extensions for deft files
       deft-recursive t ; Nil = Recursive in directories
-      deft-directory "~/Google Drive/org/notes/" ; Directory where your DEFT notes are saved
+      deft-directory "~/.org/notes/" ; Directory where your DEFT notes are saved
       deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
       deft-auto-save-interval 0) ; Auto save file after x minutes
 
@@ -131,7 +131,7 @@
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
 ;; Agenda
-(setq org-agenda-files (list "~/Google Drive/org/gtd/")
+(setq org-agenda-files (list "~/.org/gtd/")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
 
