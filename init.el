@@ -179,6 +179,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   (quote
+    ("c:/Users/nmart/.org/gtd/piwigo.org" "c:/users/nmart/.org/gtd/archive.org" "c:/users/nmart/.org/gtd/inbox.org" "c:/users/nmart/.org/gtd/journal.org" "c:/users/nmart/.org/gtd/resources.org" "c:/users/nmart/.org/gtd/saved-articles.org" "c:/users/nmart/.org/gtd/thelist.org" "c:/users/nmart/.org/gtd/tickler.org")))
  '(org-super-agenda-mode t)
  '(shackle-mode t))
 (custom-set-faces
