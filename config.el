@@ -25,15 +25,15 @@
 
 ;; Capture Templates
 (setq org-capture-templates
-                  '(("h" "Habit" entry (file+olp"~/.org/gtd/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
+                  '(("h" "Habit" entry (file+olp"~/.org/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-                    ("g" "Get Shit Done" entry (file+olp"~/.org/gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+                    ("g" "Get Shit Done" entry (file+olp"~/.org/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
                      "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-                    ("r" "Resources" entry (file+olp"~/.org/gtd/Resources.org" "Resources")
+                    ("r" "Resources" entry (file+olp"~/.org/Resources.org" "Resources")
                      "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
                     ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
                      "* [[%x]]")
-                    ("j" "Journal" entry (file+olp+datetree "~/.org/gtd/journal.org")
+                    ("j" "Journal" entry (file+olp+datetree "~/.org/journal.org")
                      "** [%<%H:%M>] %? %^g %^{TOPIC}p %^{CATEGORY}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 ;; TODO Keywords
@@ -64,18 +64,18 @@
                          (:discard (:anything t))))))
           (todo "TODO|NEXT|"
                 ((org-agenda-overriding-header "Tasks on my list")
-                 (org-agenda-files '("~/.org/gtd/thelist.org"))
+                 (org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("p" "PIWIGO"
          ((todo ""
                 ((org-agenda-overriding-header "Tasks for PIWIGO")
-                 (org-agenda-files '("~/.org/gtd/piwigo.org"))
+                 (org-agenda-files '("~/.org/piwigo.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("r" "Inbox Review"
          ((todo ""
-                ((org-agenda-files '("~/.org/gtd/inbox.org"))
+                ((org-agenda-files '("~/.org/inbox.org"))
                  (org-agenda-overriding-header "What's in my inbox by date created")
                  (org-super-agenda-groups
                   '((:name none
@@ -96,8 +96,8 @@
 
 ;; Default Folders
 (setq org-directory (expand-file-name "~/.org/")
-      org-archive-location "~/.org/gtd/archive.org::datetree/"
-      org-default-notes-file "~/.org/gtd/agenda/inbox.org"
+      org-archive-location "~/.org/archive.org::datetree/"
+      org-default-notes-file "~/.org/inbox.org"
       projectile-project-search-path '("~/.org/"))
 
 ;; Elfeed
@@ -137,7 +137,7 @@
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
 ;; Agenda
-(setq org-agenda-files (list "~/.org/gtd/")
+(setq org-agenda-files (list "~/.org/")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
 
