@@ -67,10 +67,10 @@
                  (org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
-        ("p" "PIWIGO"
+        ("p" "Projects"
          ((todo ""
-                ((org-agenda-overriding-header "Tasks for PIWIGO")
-                 (org-agenda-files '("~/.org/piwigo.org"))
+                ((org-agenda-overriding-header "Tasks for Projects")
+                 (org-agenda-files '("~/.org/tasks.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("r" "Inbox Review"
