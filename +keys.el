@@ -1,6 +1,7 @@
 ;;; c:/Users/nmart/.doom.d/+keys.el -*- lexical-binding: t; -*-
 
 (map! :leader
+      :n "e" #'ace-window
       :n "@" #'swiper-all
       (:prefix "o"
         :n "e" #'elfeed
@@ -14,4 +15,3 @@
       (:prefix "b"
         :n "c" #'org-board-new
         :n "e" #'org-board-open))
-

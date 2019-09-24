@@ -6,7 +6,7 @@
 
 ;; Default Settings
 (setq tool-bar-mode 1)
-(setq doom-font (font-spec :family "Source Code Pro" :size 22)) ; Configure Default font
+(setq doom-font (font-spec :family "Source Code Pro" :size 18)) ; Configure Default font
 (setq org-bullets-bullet-list '("#"))
 (setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
@@ -20,12 +20,15 @@
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/.org/wiki")
 
+; Live Color
+(require 'my-live-face-color-changer)
+
 ;; Load Clock Switch
 (require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
 
 ;; Capture Templates
 (setq org-capture-templates
-                  '(("h" "Habit" entry (file+olp"~/.org/tickler.org" "Habit Tracker") ; Habit tracking in org agenda
+                  '(("h" "Habit" entry (file+olp"~/.org/tickler.org" "Habits") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
                     ("g" "Get Shit Done" entry (file+olp"~/.org/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
                      "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
@@ -38,7 +41,7 @@
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
-                  '((sequence "TODO(t)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "TO-READ/WATCH(w!)" "|" "INVALID(I!)" "DONE(d!)")))
+                  '((sequence "TODO(t)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
         org-todo-keyword-faces
         '(("TODO" :foreground "#f5ff36" :weight bold)
           ("NEXT" :foreground "#ff3d47" :weight bold)
@@ -55,21 +58,31 @@
                        '((:name "Today"
                                 :time-grid t
                                 :order 1)
-                         (:name "Upcoming/Past"
-                                :deadline future
-                                :deadline past
-                                :scheduled future
-                                :scheduled past
+                         (:name "Habits"
+                                :habit t
                                 :order 2)
+                         (:name "Scheduled"
+;                                :deadline future
+;                                :deadline past
+;                                :scheduled future
+;                                :scheduled past
+                                :date t
+                                :order 3)
                          (:discard (:anything t))))))
           (todo "TODO|NEXT|"
-                ((org-agenda-overriding-header "Tasks on my list")
+                ((org-agenda-overriding-header "Next Actions")
                  (org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
-        ("p" "Projects"
+        ("p" "Projects by TODO"
          ((todo ""
                 ((org-agenda-overriding-header "Tasks for Projects")
+                 (org-agenda-files '("~/.org/tasks.org"))
+                 (org-super-agenda-groups
+                  '((:auto-todo t)))))))
+        ("P" "Projects by Parent"
+         ((todo ""
+                ((org-agenda-overriding-header "Projects by Parent Header")
                  (org-agenda-files '("~/.org/tasks.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
@@ -120,8 +133,8 @@
 (set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
-;(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
-;(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
+(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
+(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Helm*" :side 'bottom :size 0.30 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)

@@ -179,11 +179,58 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("0203f853fec5a0b2aff023d72c9c7e0308730471b8aba914d8793b0e2b30a748" "a16b00cc63327201d70de7c5cef69bfaab5dc0c133827f19d08acf6f14911ca9" "f962570270e2c6ac35bb27ff869e9eb24d5d1e968df3d4388a453626df17f5e4" "00729fed480277569a6429d112ea8f99b779ba138a2ded76371997aeb71e5c3d" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "a77ced882e25028e994d168a612c763a4feb8c4ab67c5ff48688654d0264370c" "a0edee78a74d9647c0a32caf79b471e7950b15abe45d0f4eb01fbad8b162d7ee" default)))
+ '(fci-rule-color "#5B6268")
+ '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
+ '(objed-cursor-color "#ff6c6b")
+ '(org-agenda-time-grid
+   (quote
+    (nil
+     (800 1000 1200 1400 1600 1800 2000)
+     "......" "----------------")))
+ '(org-agenda-use-time-grid nil)
  '(org-super-agenda-mode t)
- '(shackle-mode t))
+ '(shackle-mode t)
+ '(vc-annotate-background "#282c34")
+ '(vc-annotate-color-map
+   (list
+    (cons 20 "#98be65")
+    (cons 40 "#b4be6c")
+    (cons 60 "#d0be73")
+    (cons 80 "#ECBE7B")
+    (cons 100 "#e6ab6a")
+    (cons 120 "#e09859")
+    (cons 140 "#da8548")
+    (cons 160 "#d38079")
+    (cons 180 "#cc7cab")
+    (cons 200 "#c678dd")
+    (cons 220 "#d974b7")
+    (cons 240 "#ec7091")
+    (cons 260 "#ff6c6b")
+    (cons 280 "#cf6162")
+    (cons 300 "#9f585a")
+    (cons 320 "#6f4e52")
+    (cons 340 "#5B6268")
+    (cons 360 "#5B6268")))
+ '(vc-annotate-very-old-color nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(ein:cell-input-area ((t (:background nil))))
+ '(ein:cell-input-prompt ((t (:background nil :foreground nil :bold t))))
+ '(flycheck-warning ((t (:underline nil))))
+ '(flymake-warning ((t (:underline nil))))
+ '(ivy-posframe-border ((t (:background nil))))
+ '(tide-hl-identifier-face ((t (:inherit (quote lsp-face-highlight-read)))))
+ '(variable-pitch ((t (:family nil))))
+ '(web-mode-jsx-depth-1-face ((t (:background nil))))
+ '(web-mode-jsx-depth-2-face ((t (:background nil))))
+ '(web-mode-jsx-depth-3-face ((t (:background nil))))
+ '(web-mode-jsx-depth-4-face ((t (:background nil))))
+ '(web-mode-jsx-depth-5-face ((t (:background nil)))))
