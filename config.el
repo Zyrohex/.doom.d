@@ -74,13 +74,7 @@
                  (org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
-        ("p" "Projects by TODO"
-         ((todo ""
-                ((org-agenda-overriding-header "Tasks for Projects")
-                 (org-agenda-files '("~/.org/tasks.org"))
-                 (org-super-agenda-groups
-                  '((:auto-todo t)))))))
-        ("P" "Projects by Parent"
+        ("p" "All Tasks by Parents"
          ((todo ""
                 ((org-agenda-overriding-header "Projects by Parent Header")
                  (org-agenda-files '("~/.org/tasks.org"))
