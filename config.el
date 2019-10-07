@@ -73,13 +73,16 @@
                 ((org-agenda-overriding-header "Next Actions")
                  (org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
-                  '((:auto-parent t)))))))
-        ("p" "All Tasks by Parents"
-         ((todo ""
-                ((org-agenda-overriding-header "Projects by Parent Header")
-                 (org-agenda-files '("~/.org/tasks.org"))
+                  '((:auto-parent t)))))
+          (todo "SOMEDAY"
+                ((org-agenda-overriding-header "[Get to Someday]")
                  (org-super-agenda-groups
-                  '((:auto-parent t)))))))
+                  '((:auto-category t)))))))
+        ("p" "All Tasks by Parents"
+         ((todo "TODO"
+                ((org-agenda-overriding-header "Projects by Parent Header")
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))))
         ("r" "Inbox Review"
          ((todo ""
                 ((org-agenda-files '("~/.org/inbox.org"))
