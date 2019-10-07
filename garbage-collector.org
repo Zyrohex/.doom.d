@@ -225,3 +225,14 @@ The :face and :transformer keywords can be used to apply faces to items in group
 #+BEGIN_SRC emacs-lisp
 ("j" "Journal entry"entry(file+datetree"~/org/journal.org")(file"~/.emacs.d/org-templates/journal.orgcaptmpl"))
 #+END_SRC
+** Auto update checkboxes on subtasks
+#+BEGIN_SRC emacs-lisp
+(defun org-update-cookies-after-save()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (org-update-statistics-cookies "ALL")))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
+#+END_SRC

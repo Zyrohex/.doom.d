@@ -73,11 +73,7 @@
                 ((org-agenda-overriding-header "Next Actions")
                  (org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
-                  '((:auto-parent t)))))
-          (todo "SOMEDAY"
-                ((org-agenda-overriding-header "[Get to Someday]")
-                 (org-super-agenda-groups
-                  '((:auto-category t)))))))
+                  '((:auto-parent t)))))))
         ("p" "All Tasks by Parents"
          ((todo "TODO"
                 ((org-agenda-overriding-header "Projects by Parent Header")
@@ -177,3 +173,12 @@
   ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
   ;; (setq org-mind-map-engine "circo")  ; Circular Layout
   )
+  
+(defun org-update-cookies-after-save()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (org-update-statistics-cookies "ALL")))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
