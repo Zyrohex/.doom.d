@@ -57,6 +57,13 @@
                  ;(org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
+        ("c" "Action Items"
+         ((todo "TODO|NEXT"
+                ((org-agenda-overriding-header "Action Items")
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-super-agenda-groups
+                  '((:auto-property "NEXT_ACTION")))))))
         ("p" "Organized List"
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day (org-today))
