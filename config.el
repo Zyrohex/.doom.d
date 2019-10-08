@@ -57,9 +57,9 @@
                  ;(org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
-        ("c" "Action Items"
+        ("c" "Auto Groups"
          ((todo "TODO|NEXT"
-                ((org-agenda-overriding-header "Action Items")
+                ((org-agenda-overriding-header "by Action Items")
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
@@ -187,7 +187,7 @@
       deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
-(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
+;(set-popup-rule! "^\\*Org Agenda" :side 'bottom :size 0.50 :select t :ttl 3)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
@@ -205,6 +205,10 @@
       org-log-repeat 'time ; Time is logged when repeat tasks are set to DONE
       org-log-redeadline 'time ; Time is logged when task is redeadlined
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
+
+;; Agenda Properties
+(setq org-agenda-property-list "Category"
+      org-agenda-property-position 'next-line)
 
 ;; Agenda
 (setq org-agenda-files (list "~/.org/")

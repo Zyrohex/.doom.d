@@ -11,4 +11,4 @@
 (package! elfeed-org)
 (package! org-board)
 (package! org-mind-map)
-(package! org-ql)
+(package! org-agenda-property)
