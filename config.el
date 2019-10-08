@@ -50,24 +50,7 @@
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
       '(("n" "Next Actions"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day (org-today))
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                                :time-grid t
-                                :order 1)
-                         (:name "Habits"
-                                :habit t
-                                :order 2)
-                         (:name "Scheduled"
-;                                :deadline future
-;                                :deadline past
-;                                :scheduled future
-;                                :scheduled past
-                                :date t
-                                :order 3)
-                         (:discard (:anything t))))))
-          (todo "TODO|NEXT"
+          ((todo "TODO|NEXT"
                 ((org-agenda-overriding-header "Next Actions")
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
@@ -75,12 +58,81 @@
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("p" "Organized List"
-         ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-          (org-tags-match-list-sublevels 'indented)
-          (org-super-agenda-groups
-           '((:name "[High Priority]"
-                    :priority "C"
-                    :order 1)))))
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-start-day (org-today))
+                      (org-agenda-overriding-header "Items on Calendar")
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                                :time-grid t
+                                :order 1)
+                         (:name "Scheduled"
+                                :scheduled t
+                                :order 2)))))
+          (todo "TODO|NEXT"
+                ((org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-agenda-overriding-header "Next Items on list")
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-super-agenda-groups
+                  '((:name "Important Items"
+                           :priority>= "B"
+                           :order 1)
+                    (:name "To read"
+                           :tag "@read"
+                           :order 5)
+                    (:name "To watch"
+                           :tag "@watch"
+                           :order 6)
+                    (:name "Call or Message"
+                           :tag "@phone"
+                           :order 7)
+                    (:name "Stuff to work on"
+                           :tag "@computer"
+                           :order 8)
+                    (:name "Personal Items"
+                           :tag "@personal"
+                           :order 9)
+                    (:name "Play"
+                           :tag "@play"
+                           :order 10)
+                    (:name "Things to purchase"
+                           :tag "@purchase"
+                           :order 20)
+                    (:name "Emacs Stuff"
+                           :tag "@emacs"
+                           :order 100)
+                    (:discard (:scheduled t))))))
+         (todo "SOMEDAY"
+                ((org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-agenda-overriding-header "Someday Items")
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-super-agenda-groups
+                  '((:name "Important Items"
+                           :priority>= "B"
+                           :order 1)
+                    (:name "To read"
+                           :tag "@read"
+                           :order 5)
+                    (:name "To watch"
+                           :tag "@watch"
+                           :order 6)
+                    (:name "Call or Message"
+                           :tag "@phone"
+                           :order 7)
+                    (:name "Stuff to work on"
+                           :tag "@computer"
+                           :order 8)
+                    (:name "Personal Items"
+                           :tag "@personal"
+                           :order 9)
+                    (:name "Play"
+                           :tag "@play"
+                           :order 10)
+                    (:name "Things to purchase"
+                           :tag "@purchase"
+                           :order 20)
+                    (:name "Emacs Stuff"
+                           :tag "@emacs"
+                           :order 100)))))))
         ("r" "Inbox Review"
          ((todo ""
                 ((org-agenda-files '("~/.org/inbox.org"))
@@ -151,7 +203,7 @@
 
 ;; Tags
 (setq org-tags-column -80 ; Sets tags so many characters away from headings
-      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@config" . ?c) ("@elfeed" . ?f) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W)))
+      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W) ("@tools" . ?t) ("@purchase" . ?P)))
 
 ;; Refile
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
