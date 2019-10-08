@@ -73,7 +73,7 @@
                  (org-tags-match-list-sublevels 'indented)
                  ;(org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
-                  '((:auto-category t)))))))
+                  '((:auto-parent t)))))))
         ("p" "Organized List"
          ((org-agenda-prefix-format " %(my-agenda-prefix) ")
           (org-tags-match-list-sublevels 'indented)
