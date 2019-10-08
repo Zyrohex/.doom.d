@@ -85,15 +85,18 @@
                     (:name "Call or Message"
                            :tag "@phone"
                            :order 7)
+                    (:name "Email"
+                           :tag "@email"
+                           :order 8)
                     (:name "Stuff to work on"
                            :tag "@computer"
-                           :order 8)
+                           :order 9)
                     (:name "Personal Items"
                            :tag "@personal"
-                           :order 9)
+                           :order 10)
                     (:name "Play"
                            :tag "@play"
-                           :order 10)
+                           :order 11)
                     (:name "Things to purchase"
                            :tag "@purchase"
                            :order 20)
