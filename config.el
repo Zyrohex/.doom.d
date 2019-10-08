@@ -49,9 +49,9 @@
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
-      '(("n" "Next Actions"
+      '(("n" "Project Hierarchy"
           ((todo "TODO|NEXT"
-                ((org-agenda-overriding-header "Next Actions")
+                ((org-agenda-overriding-header "by Parent Tasks")
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  ;(org-agenda-files '("~/.org/thelist.org"))
