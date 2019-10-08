@@ -13,10 +13,8 @@
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
 (add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
 
-;; Load custom modules
+;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
-
-;; Load Wiki Module
 (require 'plain-org-wiki)
 (setq plain-org-wiki-directory "~/.org/wiki")
 
@@ -69,16 +67,20 @@
                                 :date t
                                 :order 3)
                          (:discard (:anything t))))))
-          (todo "TODO|NEXT|"
+          (todo "TODO|NEXT"
                 ((org-agenda-overriding-header "Next Actions")
-                 (org-agenda-files '("~/.org/thelist.org"))
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))))
-        ("p" "All Tasks by Parents"
-         ((todo "TODO"
-                ((org-agenda-overriding-header "Projects by Parent Header")
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-tags-match-list-sublevels 'indented)
+                 ;(org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-category t)))))))
+        ("p" "Organized List"
+         ((org-agenda-prefix-format " %(my-agenda-prefix) ")
+          (org-tags-match-list-sublevels 'indented)
+          (org-super-agenda-groups
+           '((:name "[High Priority]"
+                    :priority "C"
+                    :order 1)))))
         ("r" "Inbox Review"
          ((todo ""
                 ((org-agenda-files '("~/.org/inbox.org"))
@@ -182,3 +184,15 @@
 (add-hook 'org-mode-hook
           (lambda ()
             (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
+
+(defun my-agenda-prefix ()
+  (format "%s" (my-agenda-indent-string (org-current-level))))
+
+(defun my-agenda-indent-string (level)
+  (if (= level 1)
+      ""
+    (let ((str ""))
+      (while (> level 2)
+        (setq level (1- level)
+              str (concat str "──")))
+      (concat str "►"))))
