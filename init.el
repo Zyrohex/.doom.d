@@ -187,6 +187,9 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
  '(objed-cursor-color "#ff6c6b")
+ '(org-agenda-files
+   (quote
+    ("c:/Users/nmart/.gtd/archive.org" "c:/Users/nmart/.gtd/inbox.org" "c:/Users/nmart/.gtd/reference.org" "c:/Users/nmart/.gtd/tasks.org" "c:/Users/nmart/.gtd/thelist.org" "c:/Users/nmart/.gtd/tickler.org")))
  '(org-agenda-time-grid
    (quote
     (nil

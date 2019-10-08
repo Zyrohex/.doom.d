@@ -3,6 +3,7 @@
 ;; Place your private configuration here
 ;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
+(load! "+properties") ; Load hide properties
 
 ;; Default Settings
 (setq tool-bar-mode 1)
@@ -55,7 +56,15 @@
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
       '(("h" "Project Hierarchy"
-          ((todo "TODO|NEXT"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-start-day (org-today))
+                      (org-agenda-overriding-header "Items on your Calendar")
+                      (org-super-agenda-groups
+                       '((:name "Appointments"
+                                :time-grid t)
+                         (:name "Scheduled"
+                                :scheduled t)))))
+          (todo "TODO|NEXT"
                 ((org-agenda-overriding-header "by Parent Tasks")
                  (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
