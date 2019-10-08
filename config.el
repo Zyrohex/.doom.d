@@ -16,7 +16,12 @@
 ;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
 (require 'plain-org-wiki)
-(setq plain-org-wiki-directory "~/.org/wiki")
+(setq plain-org-wiki-directory "~/.notes/")
+
+;; Load Org GTD
+(add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-gtd .el module
+(require 'plain-org-gtd)
+(setq plain-org-gtd-directory "~/.gtd/")
 
 ; Live Color
 (require 'my-live-face-color-changer)
@@ -26,15 +31,15 @@
 
 ;; Capture Templates
 (setq org-capture-templates
-                  '(("h" "Habit" entry (file+olp"~/.org/tickler.org" "Habits") ; Habit tracking in org agenda
+                  '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-                    ("g" "Get Shit Done" entry (file+olp"~/.org/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+                    ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
                      "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-                    ("r" "Resources" entry (file+olp"~/.org/Resources.org" "Resources")
+                    ("r" "Resources" entry (file+olp"~/.gtd/Resources.org" "Resources")
                      "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
                     ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
                      "* [[%x]]")
-                    ("j" "Journal" entry (file+olp+datetree "~/.org/journal.org")
+                    ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
                      "** [%<%H:%M>] %? %^g %^{TOPIC}p %^{CATEGORY}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 ;; TODO Keywords
@@ -64,7 +69,7 @@
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
                   '((:auto-property "NEXT_ACTION")))))))
-        ("p" "Organized List"
+        ("l" "Organized List"
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day (org-today))
                       (org-agenda-overriding-header "Scheduled Items")
@@ -114,9 +119,9 @@
                            :tag "@emacs"
                            :order 100)
                     (:discard (:scheduled t))))))))
-        ("r" "Inbox Review"
+        ("i" "Inbox Review"
          ((todo ""
-                ((org-agenda-files '("~/.org/inbox.org"))
+                ((org-agenda-files '("~/.gtd/inbox.org"))
                  (org-agenda-overriding-header "What's in my inbox by date created")
                  (org-super-agenda-groups
                   '((:name none
@@ -169,15 +174,15 @@
 
 ;; Default Folders
 (setq org-directory (expand-file-name "~/.org/")
-      org-archive-location "~/.org/archive.org::datetree/"
-      org-default-notes-file "~/.org/inbox.org"
-      projectile-project-search-path '("~/.org/"))
+      org-archive-location "~/.gtd/archive.org::datetree/"
+      org-default-notes-file "~/.gtd/inbox.org"
+      projectile-project-search-path '("~/"))
 
 ;; Elfeed
 (require 'elfeed)
 (require 'elfeed-org)
 (elfeed-org)
-(after! org (setq rmh-elfeed-org-files (list "~/.org/elfeed.org")
+(after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
                   elfeed-db-directory "~/.elfeed/"))
 
 ;; Deft
@@ -185,7 +190,7 @@
 (setq deft-extension
       '("org" "md" "txt") ; Extensions for deft files
       deft-recursive t ; Nil = Recursive in directories
-      deft-directory "~/.org/notes/" ; Directory where your DEFT notes are saved
+      deft-directory "~/.notes/" ; Directory where your DEFT notes are saved
       deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
       deft-auto-save-interval 0) ; Auto save file after x minutes
 

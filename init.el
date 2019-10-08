@@ -189,7 +189,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.org/wiki/Astronomy.org" "c:/Users/nmart/.org/archive.org" "c:/Users/nmart/.org/elfeed.org" "c:/Users/nmart/.org/inbox.org" "c:/Users/nmart/.org/reference.org" "c:/Users/nmart/.org/tasks.org" "c:/Users/nmart/.org/thelist.org" "c:/Users/nmart/.org/tickler.org")))
+    ("c:/Users/nmart/.gtd/tickler.org" "c:/Users/nmart/.gtd/thelist.org" "c:/Users/nmart/.gtd/tasks.org" "c:/Users/nmart/.gtd/reference.org" "c:/Users/nmart/.gtd/inbox.org" "c:/Users/nmart/.gtd/archive.org" "c:/Users/nmart/.org/elfeed.org")))
  '(org-agenda-time-grid
    (quote
     (nil
