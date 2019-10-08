@@ -219,7 +219,7 @@
       org-agenda-property-position 'next-line)
 
 ;; Agenda
-(setq org-agenda-files (list "~/.org/")
+(setq org-agenda-files (list "~/.gtd/")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
 
