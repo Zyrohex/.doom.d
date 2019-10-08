@@ -67,7 +67,7 @@
         ("p" "Organized List"
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day (org-today))
-                      (org-agenda-overriding-header "Items on Calendar")
+                      (org-agenda-overriding-header "Scheduled Items")
                       (org-super-agenda-groups
                        '((:name "Today"
                                 :time-grid t
@@ -77,7 +77,7 @@
                                 :order 2)))))
           (todo "TODO|NEXT"
                 ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-agenda-overriding-header "Next Items on list")
+                 (org-agenda-overriding-header "Priotized List")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
                   '((:name "Important Items"
@@ -104,14 +104,31 @@
                     (:name "Play"
                            :tag "@play"
                            :order 11)
+                    (:name "Bills"
+                           :tag "@bills"
+                           :order 12)
                     (:name "Things to purchase"
                            :tag "@purchase"
                            :order 20)
                     (:name "Emacs Stuff"
                            :tag "@emacs"
                            :order 100)
-                    (:discard (:scheduled t))))))
-         (todo "SOMEDAY"
+                    (:discard (:scheduled t))))))))
+        ("r" "Inbox Review"
+         ((todo ""
+                ((org-agenda-files '("~/.org/inbox.org"))
+                 (org-agenda-overriding-header "What's in my inbox by date created")
+                 (org-super-agenda-groups
+                  '((:name none
+                           :auto-ts t)))))))
+        ("x" "Get to someday"
+         ((todo "SOMEDAY"
+                ((org-agenda-overriding-header "Things I need to get to someday")
+                 (org-super-agenda-groups
+                  '((:name none
+                           :auto-parent t)
+                    (:discard (:anything t))))))
+          (todo "SOMEDAY"
                 ((org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "Someday Items")
                  (org-tags-match-list-sublevels 'indented)
@@ -142,21 +159,7 @@
                            :order 20)
                     (:name "Emacs Stuff"
                            :tag "@emacs"
-                           :order 100)))))))
-        ("r" "Inbox Review"
-         ((todo ""
-                ((org-agenda-files '("~/.org/inbox.org"))
-                 (org-agenda-overriding-header "What's in my inbox by date created")
-                 (org-super-agenda-groups
-                  '((:name none
-                           :auto-ts t)))))))
-        ("x" "Get to someday"
-         ((todo "SOMEDAY"
-                ((org-agenda-overriding-header "Things I need to get to someday")
-                 (org-super-agenda-groups
-                  '((:name none
-                           :auto-parent t)
-                    (:discard (:anything t)))))))))))
+                           :order 100))))))))))
 
 ;; Super Agenda
 (setq org-super-agenda-groups
@@ -187,7 +190,7 @@
       deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
-;(set-popup-rule! "^\\*Org Agenda" :side 'bottom :size 0.50 :select t :ttl 3)
+(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
