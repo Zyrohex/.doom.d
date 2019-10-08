@@ -49,7 +49,7 @@
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
-      '(("n" "Project Hierarchy"
+      '(("h" "Project Hierarchy"
           ((todo "TODO|NEXT"
                 ((org-agenda-overriding-header "by Parent Tasks")
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
