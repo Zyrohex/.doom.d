@@ -57,6 +57,7 @@
       '(("h" "Project Hierarchy"
           ((todo "TODO|NEXT"
                 ((org-agenda-overriding-header "by Parent Tasks")
+                 (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  ;(org-agenda-files '("~/.org/thelist.org"))
