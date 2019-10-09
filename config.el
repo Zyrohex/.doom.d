@@ -39,7 +39,7 @@
                   '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
                     ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
-                     "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
+                     "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
                     ("r" "Reference" entry (file+olp"~/.gtd/reference.org" "INBOX")
                      "** %?")
                     ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
