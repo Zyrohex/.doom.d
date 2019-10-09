@@ -61,7 +61,7 @@
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
 (after! org-agenda (setq org-agenda-custom-commands
-      '(("h" "Project Hierarchy"
+      '(("h" "by Hierarchy"
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day (org-today))
                       (org-agenda-overriding-header "Items on your Calendar")
@@ -70,21 +70,21 @@
                                 :time-grid t)
                          (:name "Scheduled"
                                 :scheduled t)))))
-          (todo "TODO|NEXT|DELEGATED"
+          (todo "TODO|NEXT"
                 ((org-agenda-overriding-header "by Parent Tasks")
                  (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
-                  '((:auto-parent t)))))))
-        ("c" "Auto Groups"
-         ((todo "TODO|NEXT"
-                ((org-agenda-overriding-header "by Action Items")
+                  '((:auto-parent t)))))
+          (todo "DELEGATED"
+                ((org-agenda-overriding-header "Delegated Tasks")
+                 (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
-                  '((:auto-property "NEXT_ACTION")))))))
-        ("l" "Organized List"
+                  '((:auto-parent t)))))))
+        ("l" "by Organized List"
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day (org-today))
                       (org-agenda-overriding-header "Scheduled Items")
@@ -97,6 +97,7 @@
                                 :order 2)))))
           (todo "TODO|NEXT"
                 ((org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-overriding-header "Priotized List")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
@@ -134,7 +135,7 @@
                            :tag "@emacs"
                            :order 100)
                     (:discard (:scheduled t))))))))
-        ("i" "Inbox Review"
+        ("i" "Inbox"
          ((todo ""
                 ((org-agenda-files '("~/.gtd/inbox.org"))
                  (org-agenda-overriding-header "What's in my inbox by date created")
