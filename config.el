@@ -70,7 +70,7 @@
                                 :time-grid t)
                          (:name "Scheduled"
                                 :scheduled t)))))
-          (todo "TODO|NEXT"
+          (todo "TODO|NEXT|DELEGATED"
                 ((org-agenda-overriding-header "by Parent Tasks")
                  (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
