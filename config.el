@@ -25,14 +25,14 @@
 (setq plain-org-gtd-directory "~/.gtd/")
 
 ;; Journal
-;(setq org-journal-dir "~/.gtd/journal"
-;      org-journal-enable-agenda-integration t
-;      org-journal-find-file 'find-file
-;      org-journal-file-format "%b-%Y.org"
-;      org-journal-file-type 'monthly)
+(setq org-journal-dir "~/.gtd/journal"
+      org-journal-enable-agenda-integration t
+      org-journal-find-file 'find-file
+      org-journal-file-format "%b-%Y.org"
+      org-journal-file-type 'monthly)
 
 ;; Load Clock Switch
-;(require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
+(require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
 
 ;; Capture Templates
 (setq org-capture-templates
