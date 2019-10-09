@@ -3,16 +3,16 @@
 ;; Place your private configuration here
 ;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
-(load! "+properties") ; Load hide properties
+;(load! "+ui")
 
 ;; Default Settings
-(setq tool-bar-mode 1)
-(setq doom-font (font-spec :family "Source Code Pro" :size 18)) ; Configure Default font
+(setq doom-font (font-spec :family "Source Code Pro" :size 20)) ; Configure Default font
+(setq doom-big-font (font-spec :family "Source Code Pro" :size 26))
 (setq org-bullets-bullet-list '("#"))
 (setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
-(add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
+;(add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
 
 ;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
@@ -24,11 +24,15 @@
 (require 'plain-org-gtd)
 (setq plain-org-gtd-directory "~/.gtd/")
 
-; Live Color
-(require 'my-live-face-color-changer)
+;; Journal
+;(setq org-journal-dir "~/.gtd/journal"
+;      org-journal-enable-agenda-integration t
+;      org-journal-find-file 'find-file
+;      org-journal-file-format "%b-%Y.org"
+;      org-journal-file-type 'monthly)
 
 ;; Load Clock Switch
-(require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
+;(require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
 
 ;; Capture Templates
 (setq org-capture-templates
@@ -36,10 +40,12 @@
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
                     ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
                      "* SOMEDAY %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-                    ("r" "Resources" entry (file+olp"~/.gtd/Resources.org" "Resources")
-                     "* [[%^{URL}][%^{DESCRIPTION}]] %^{CATEGORY}p %^{SUBJECT}p")
+                    ("r" "Reference" entry (file+olp"~/.gtd/reference.org" "INBOX")
+                     "** %?")
                     ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
                      "* [[%x]]")
+                    ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
+                     "** [%<%H:%M>] %?" :tree-type week)
                     ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
                      "** [%<%H:%M>] %? %^g %^{TOPIC}p %^{CATEGORY}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
@@ -69,7 +75,6 @@
                  (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
-                 ;(org-agenda-files '("~/.org/thelist.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("c" "Auto Groups"
@@ -205,7 +210,7 @@
       deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
-(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
+;(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
 (set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
@@ -224,12 +229,9 @@
       org-log-redeadline 'time ; Time is logged when task is redeadlined
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
-;; Agenda Properties
-(setq org-agenda-property-list "Category"
-      org-agenda-property-position 'next-line)
-
 ;; Agenda
-(setq org-agenda-files (list "~/.gtd/")
+(setq org-agenda-files '("~/.gtd")
+      org-agenda-diary-file '("~/.org/diary.org")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
 
