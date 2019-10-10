@@ -47,7 +47,7 @@
                     ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
                      "** [%<%H:%M>] %?" :tree-type week)
                     ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
-                     "** [%<%H:%M>] %? %^g %^{SOURCE}p %^{AUDIENCE}p %^{TASK}p %^{TOPIC}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
+                     "** [%<%H:%M>] %? %^{ACCOUNT}p %^{SOURCE}p %^{AUDIENCE}p %^{TASK}p %^{TOPIC}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
