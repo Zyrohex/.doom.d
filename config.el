@@ -47,7 +47,8 @@
                     ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
                      "** [%<%H:%M>] %?" :tree-type week)
                     ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
-                     "** [%<%H:%M>] %? %^{ACCOUNT}p %^{SOURCE}p %^{AUDIENCE}p %^{TASK}p %^{TOPIC}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
+                     "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
+(add-hook 'org-capture-mode-hook 'delete-other-windows)
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
@@ -212,7 +213,7 @@
 
 ;; Popup Rules
 ;(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
-(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
+(set-popup-rule! "^CAPTURE.*\\.org$" :side 'right :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
