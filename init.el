@@ -196,6 +196,9 @@
      (800 1000 1200 1400 1600 1800 2000)
      "......" "----------------")))
  '(org-agenda-use-time-grid nil)
+ '(org-modules
+   (quote
+    (ol-bbdb ol-bibtex ol-docview ol-eww ol-gnus org-habit org-id ol-info ol-irc ol-mhe ol-rmail ol-w3m org-collector org-notify org-panel org-velocity)))
  '(org-super-agenda-mode t)
  '(shackle-mode t)
  '(vc-annotate-background "#282c34")
