@@ -3,12 +3,12 @@
 ;; Place your private configuration here
 ;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
-;(load! "+ui")
+(load! "+ui2")
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Source Code Pro" :size 20)) ; Configure Default font
-(setq doom-big-font (font-spec :family "Source Code Pro" :size 26))
-(setq org-bullets-bullet-list '("#"))
+(setq doom-font (font-spec :family "Fira Code" :size 20)) ; Configure Default font
+(setq doom-big-font (font-spec :family "Fira Code" :size 26))
+;(setq org-bullets-bullet-list '("#"))
 (setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
@@ -144,44 +144,13 @@
                   '((:name none
                            :auto-ts t)))))))
         ("x" "Get to someday"
-         ((todo "SOMEDAY"
+         ((todo ""
                 ((org-agenda-overriding-header "Things I need to get to someday")
+                 (org-agenda-files '("~/.gtd/someday.org"))
                  (org-super-agenda-groups
                   '((:name none
                            :auto-parent t)
-                    (:discard (:anything t))))))
-          (todo "SOMEDAY"
-                ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-agenda-overriding-header "Someday Items")
-                 (org-tags-match-list-sublevels 'indented)
-                 (org-super-agenda-groups
-                  '((:name "Important Items"
-                           :priority>= "B"
-                           :order 1)
-                    (:name "To read"
-                           :tag "@read"
-                           :order 5)
-                    (:name "To watch"
-                           :tag "@watch"
-                           :order 6)
-                    (:name "Call or Message"
-                           :tag "@phone"
-                           :order 7)
-                    (:name "Stuff to work on"
-                           :tag "@computer"
-                           :order 8)
-                    (:name "Personal Items"
-                           :tag "@personal"
-                           :order 9)
-                    (:name "Play"
-                           :tag "@play"
-                           :order 10)
-                    (:name "Things to purchase"
-                           :tag "@purchase"
-                           :order 20)
-                    (:name "Emacs Stuff"
-                           :tag "@emacs"
-                           :order 100))))))))))
+                    (:discard (:anything t)))))))))))
 
 ;; Super Agenda
 (setq org-super-agenda-groups
