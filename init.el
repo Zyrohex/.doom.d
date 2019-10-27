@@ -181,7 +181,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("0203f853fec5a0b2aff023d72c9c7e0308730471b8aba914d8793b0e2b30a748" "a16b00cc63327201d70de7c5cef69bfaab5dc0c133827f19d08acf6f14911ca9" "f962570270e2c6ac35bb27ff869e9eb24d5d1e968df3d4388a453626df17f5e4" "00729fed480277569a6429d112ea8f99b779ba138a2ded76371997aeb71e5c3d" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "a77ced882e25028e994d168a612c763a4feb8c4ab67c5ff48688654d0264370c" "a0edee78a74d9647c0a32caf79b471e7950b15abe45d0f4eb01fbad8b162d7ee" default)))
+    ("b49eb35aaaa02b75a6efc7179e931b62bdb7283b52bc6a193f265052cec71822" "0203f853fec5a0b2aff023d72c9c7e0308730471b8aba914d8793b0e2b30a748" "a16b00cc63327201d70de7c5cef69bfaab5dc0c133827f19d08acf6f14911ca9" "f962570270e2c6ac35bb27ff869e9eb24d5d1e968df3d4388a453626df17f5e4" "00729fed480277569a6429d112ea8f99b779ba138a2ded76371997aeb71e5c3d" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "a77ced882e25028e994d168a612c763a4feb8c4ab67c5ff48688654d0264370c" "a0edee78a74d9647c0a32caf79b471e7950b15abe45d0f4eb01fbad8b162d7ee" default)))
  '(fci-rule-color "#5B6268")
  '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
@@ -189,7 +189,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.gtd/tickler.org" "c:/Users/nmart/.gtd/someday.org" "c:/Users/nmart/.notes/Software.org" "c:/Users/nmart/.notes/Emacs.org" "c:/Users/nmart/.gtd/archive.org" "c:/Users/nmart/.gtd/inbox.org" "c:/Users/nmart/.gtd/thelist.org")))
+    ("c:/Users/nmart/.notes/Software.org" "c:/Users/nmart/.gtd/reference.org" "c:/Users/nmart/.gtd/thoughts.org" "c:/Users/nmart/.gtd/someday.org" "c:/Users/nmart/.gtd/archive.org" "c:/Users/nmart/.gtd/diary.org" "c:/Users/nmart/.gtd/inbox.org" "c:/Users/nmart/.gtd/thelist.org" "c:/Users/nmart/.gtd/tickler.org")))
  '(org-agenda-time-grid
    (quote
     (nil
@@ -232,7 +232,15 @@
  '(ein:cell-input-prompt ((t (:background nil :foreground nil :bold t))))
  '(flycheck-warning ((t (:underline nil))))
  '(flymake-warning ((t (:underline nil))))
+ '(flyspell-duplicate ((t (:underline "#da8548"))))
+ '(flyspell-incorrect ((t (:underline "#e45649"))))
  '(ivy-posframe-border ((t (:background nil))))
+ '(magit-diff-file-heading ((t (:background "#9fbbf8"))))
+ '(magit-diff-file-heading-highlight ((t (:background "#6693f4"))))
+ '(markdown-header-face-1 ((t (:inherit (quote org-level-1)))))
+ '(markdown-header-face-2 ((t (:inherit (quote org-level-2)))))
+ '(markdown-header-face-3 ((t (:inherit (quote org-level-3)))))
+ '(show-paren-match ((t (:background "#94d2d7" :foreground "#e7e7e7"))))
  '(tide-hl-identifier-face ((t (:inherit (quote lsp-face-highlight-read)))))
  '(variable-pitch ((t (:family nil))))
  '(web-mode-jsx-depth-1-face ((t (:background nil))))

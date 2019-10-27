@@ -13,3 +13,4 @@
 (package! org-mind-map)
 (package! org-journal)
 (package! ledger-mode)
+(package! ox-pandoc)

@@ -1,7 +1,7 @@
 ;;; c:/Users/nmart/.doom.d/ui.el -*- lexical-binding: t; -*-
 ;;; private/my/+ui.el -*- lexical-binding: t; -*-
 
-(load-theme 'doom-one-light t)
+(load-theme 'doom-one t)
 
 (when (display-graphic-p)
   (cond (IS-MAC

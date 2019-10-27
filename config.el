@@ -5,6 +5,22 @@
 (load! "+keys") ; Load custom keymaps
 (load! "+ui2")
 
+;(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;(setq initial-buffer-choice "~/.gtd/thelist.org")
+(defun my-init-hook ()
+  (let ((org-agenda-window-setup))
+    (org-agenda nil "h")))
+(add-hook 'window-setup-hook #'my-init-hook)
+
+(defun maximize-frame ()
+  "Maximizes the active frame in Windows"
+  (interactive)
+  ;; Send a `WM_SYSCOMMAND' message to the active frame with the
+  ;; `SC_MAXIMIZE' parameter.
+  (when (eq system-type 'windows-nt)
+    (w32-send-sys-command 61488)))
+(add-hook 'window-setup-hook 'maximize-frame t)
+
 ;; Default Settings
 (setq doom-font (font-spec :family "Fira Code" :size 20)) ; Configure Default font
 (setq doom-big-font (font-spec :family "Fira Code" :size 26))

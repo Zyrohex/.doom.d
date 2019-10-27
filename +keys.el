@@ -18,5 +18,8 @@
       (:prefix "b"
         :n "c" #'org-board-new
         :n "e" #'org-board-open)
+      (:prefix "t"
+        :n "s" #'org-narrow-to-subtree
+        :n "w" #'widen)
       (:prefix "/"
         :n "j" #'org-journal-search))

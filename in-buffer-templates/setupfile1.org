@@ -3,7 +3,7 @@
 #+EMAIL: nmartin84@gmail.com
 #+STARTUP: logdrawer
 #+STARTUP: content
-##+OPTIONS: prop:t
+#+OPTIONS: prop:t
 
 # Turn off default internal styles
 #+OPTIONS: html-style:nil html5-fancy:t
