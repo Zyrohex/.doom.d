@@ -3,7 +3,7 @@
 ;; Place your private configuration here
 ;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
-(load! "+ui2")
+;(load! "+ui2")
 
 ;(add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;(setq initial-buffer-choice "~/.gtd/thelist.org")
@@ -22,8 +22,8 @@
 (add-hook 'window-setup-hook 'maximize-frame t)
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Fira Code" :size 20)) ; Configure Default font
-(setq doom-big-font (font-spec :family "Fira Code" :size 26))
+(setq doom-font (font-spec :family "Source Code Pro" :size 20)) ; Configure Default font
+(setq doom-big-font (font-spec :family "Source Code Pro" :size 26))
 ;(setq org-bullets-bullet-list '("#"))
 (setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
@@ -33,7 +33,7 @@
 ;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
 (require 'plain-org-wiki)
-(setq plain-org-wiki-directory "~/.notes/")
+(setq plain-org-wiki-directory "~/.gtd/notes")
 
 ;; Load Org GTD
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-gtd .el module
