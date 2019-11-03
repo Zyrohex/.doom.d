@@ -10,8 +10,8 @@
                doom-modeline-height 32))
         (IS-LINUX
          (setq resolution-factor (eval (/ (x-display-pixel-height) 1080.0)))
-         (setq doom-font (font-spec :family "Operator Mono" :size (eval (round (* 14 resolution-factor))) :weight 'light)
-               doom-big-font (font-spec :family "Operator Mono" :size (eval (round (* 20 resolution-factor))))
+         (setq doom-font (font-spec :family "Source Code Pro" :size (eval (round (* 14 resolution-factor))) :weight 'light)
+               doom-big-font (font-spec :family "Source Code Pro" :size (eval (round (* 20 resolution-factor))))
                doom-modeline-height (eval (round (* 32 resolution-factor))))))
 
   ;; set initl screen size

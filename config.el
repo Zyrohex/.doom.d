@@ -4,27 +4,12 @@
 ;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
 ;(load! "+ui2")
-
-;(add-to-list 'default-frame-alist '(fullscreen . maximized))
-;(setq initial-buffer-choice "~/.gtd/thelist.org")
-(defun my-init-hook ()
-  (let ((org-agenda-window-setup))
-    (org-agenda nil "h")))
-(add-hook 'window-setup-hook #'my-init-hook)
-
-(defun maximize-frame ()
-  "Maximizes the active frame in Windows"
-  (interactive)
-  ;; Send a `WM_SYSCOMMAND' message to the active frame with the
-  ;; `SC_MAXIMIZE' parameter.
-  (when (eq system-type 'windows-nt)
-    (w32-send-sys-command 61488)))
-(add-hook 'window-setup-hook 'maximize-frame t)
+(load! "+agenda")
 
 ;; Default Settings
 (setq doom-font (font-spec :family "Source Code Pro" :size 20)) ; Configure Default font
 (setq doom-big-font (font-spec :family "Source Code Pro" :size 26))
-;(setq org-bullets-bullet-list '("#"))
+(setq org-bullets-bullet-list '("#"))
 (setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
@@ -55,7 +40,7 @@
                   '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
                     ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
-                     "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
+                     "* TODO %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:")
                     ("r" "Reference" entry (file+olp"~/.gtd/reference.org" "INBOX")
                      "** %?")
                     ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
@@ -68,105 +53,17 @@
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
-                  '((sequence "TODO(t)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
+                  '((sequence "TODO(t)" "DOING(x!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
         org-todo-keyword-faces
-        '(("TODO" :foreground "#f5ff36" :weight bold)
-          ("NEXT" :foreground "#ff3d47" :weight bold)
+        '(("TODO" :foreground "#ff1fb0" :weight bold)
+          ("DOING" :foreground "#e4ff6e" :weight bold)
+          ("NEXT" :foreground "#80f0ff" :weight bold)
+          ("DELEGATED" :foreground "#755335" :weight bold)
           ("SOMEDAY" :foreground "#29edff" :weight bold)
           ("DONE" :foreground "#50a14f" :weight normal)))
 
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
-(after! org-agenda (setq org-agenda-custom-commands
-      '(("h" "by Hierarchy"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day (org-today))
-                      (org-agenda-overriding-header "Items on your Calendar")
-                      (org-super-agenda-groups
-                       '((:name "Appointments"
-                                :time-grid t)
-                         (:name "Scheduled"
-                                :scheduled t)))))
-          (todo "TODO|NEXT"
-                ((org-agenda-overriding-header "by Parent Tasks")
-                 (org-agenda-files '("~/.gtd/thelist.org"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-tags-match-list-sublevels 'indented)
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))
-          (todo "DELEGATED"
-                ((org-agenda-overriding-header "Delegated Tasks")
-                 (org-agenda-files '("~/.gtd/thelist.org"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-tags-match-list-sublevels 'indented)
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))))
-        ("l" "by Organized List"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day (org-today))
-                      (org-agenda-overriding-header "Scheduled Items")
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                                :time-grid t
-                                :order 1)
-                         (:name "Scheduled"
-                                :scheduled t
-                                :order 2)))))
-          (todo "TODO|NEXT"
-                ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-agenda-files '("~/.gtd/thelist.org"))
-                 (org-agenda-overriding-header "Priotized List")
-                 (org-tags-match-list-sublevels 'indented)
-                 (org-super-agenda-groups
-                  '((:name "Important Items"
-                           :priority>= "B"
-                           :order 1)
-                    (:name "To read"
-                           :tag "@read"
-                           :order 5)
-                    (:name "To watch"
-                           :tag "@watch"
-                           :order 6)
-                    (:name "Call or Message"
-                           :tag "@phone"
-                           :order 7)
-                    (:name "Email"
-                           :tag "@email"
-                           :order 8)
-                    (:name "Stuff to work on"
-                           :tag "@computer"
-                           :order 9)
-                    (:name "Personal Items"
-                           :tag "@personal"
-                           :order 10)
-                    (:name "Play"
-                           :tag "@play"
-                           :order 11)
-                    (:name "Bills"
-                           :tag "@bills"
-                           :order 12)
-                    (:name "Things to purchase"
-                           :tag "@purchase"
-                           :order 20)
-                    (:name "Emacs Stuff"
-                           :tag "@emacs"
-                           :order 100)
-                    (:discard (:scheduled t))))))))
-        ("i" "Inbox"
-         ((todo ""
-                ((org-agenda-files '("~/.gtd/inbox.org"))
-                 (org-agenda-overriding-header "What's in my inbox by date created")
-                 (org-super-agenda-groups
-                  '((:name none
-                           :auto-ts t)))))))
-        ("x" "Get to someday"
-         ((todo ""
-                ((org-agenda-overriding-header "Things I need to get to someday")
-                 (org-agenda-files '("~/.gtd/someday.org"))
-                 (org-super-agenda-groups
-                  '((:name none
-                           :auto-parent t)
-                    (:discard (:anything t)))))))))))
 
 ;; Super Agenda
 (setq org-super-agenda-groups

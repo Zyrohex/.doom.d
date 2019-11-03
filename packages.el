@@ -14,3 +14,4 @@
 (package! org-journal)
 (package! ledger-mode)
 (package! ox-pandoc)
+(package! org-ql)
