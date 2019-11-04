@@ -15,3 +15,4 @@
 (package! ledger-mode)
 (package! ox-pandoc)
 (package! org-ql)
+(package! ein)

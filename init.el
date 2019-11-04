@@ -189,7 +189,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("~/.gtd/projects.org" "~/.gtd/tickler.org" "~/.gtd/reference.org" "~/.gtd/thelist.org")))
+    ("~/.gtd/notes/Books.org" "~/.gtd/tickler.org" "~/.gtd/reference.org" "~/.gtd/thelist.org")))
  '(org-agenda-time-grid
    (quote
     (nil

@@ -40,8 +40,8 @@
                   '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
                      "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
                     ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
-                     "* TODO %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:")
-                    ("r" "Reference" entry (file+olp"~/.gtd/reference.org" "INBOX")
+                     "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
+                    ("r" "Reference" entry (file"~/.gtd/reference.org")
                      "** %?")
                     ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
                      "* [[%x]]")
@@ -89,14 +89,15 @@
 (setq deft-extension
       '("org" "md" "txt") ; Extensions for deft files
       deft-recursive t ; Nil = Recursive in directories
-      deft-directory "~/.notes/" ; Directory where your DEFT notes are saved
+      deft-directory "~/.gtd/notes/" ; Directory where your DEFT notes are saved
       deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
       deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
 ;(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
-(set-popup-rule! "^CAPTURE.*\\.org$" :side 'right :size 0.50 :select t :ttl nil)
+;(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
+(set-popup-rule! "^\\*Org-QL" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
 (set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
@@ -114,7 +115,7 @@
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
 ;; Agenda
-(setq org-agenda-files '("~/.gtd")
+(setq org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org" "~/.gtd/inbox.org" "~/.gtd/someday.org")
       org-agenda-diary-file '("~/.org/diary.org")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done

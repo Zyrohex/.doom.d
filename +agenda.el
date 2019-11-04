@@ -2,21 +2,21 @@
 
 (after! org-agenda (setq org-agenda-custom-commands
       '(("h" "by Hierarchy"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day (org-today))
-                      (org-agenda-overriding-header "Your Scheduled Tasks")
-                      (org-super-agenda-groups
-                       '((:name "Appointments"
-                                :time-grid t)
-                         (:name "Must be completed"
-                                :deadline t)
-                         (:name "Scheduled"
-                                :scheduled t)
-                         (:name "Habits"
-                                :habit t)))))
-          (todo "TODO|NEXT"
-                ((org-agenda-overriding-header "by Parent Tasks")
-                 (org-agenda-files '("~/.gtd/thelist.org"))
+;         ((agenda "" ((org-agenda-span 'day)
+;                      (org-agenda-start-day (org-today))
+;                      (org-agenda-overriding-header "Your Scheduled Tasks")
+;                      (org-super-agenda-groups
+;                       '((:name "Appointments"
+;                                :time-grid t)
+;                         (:name "Must be completed"
+;                                :deadline t)
+;                         (:name "Scheduled"
+;                                :scheduled t)
+;                         (:name "Habits"
+;                                :habit t)))))
+          ((todo "TODO|NEXT|DOING"
+                ((org-agenda-overriding-header "Next up or TODO Tasks")
+                 (org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
