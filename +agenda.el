@@ -14,32 +14,25 @@
 ;                                :scheduled t)
 ;                         (:name "Habits"
 ;                                :habit t)))))
-          ((todo "TODO|NEXT|DOING"
+          ((todo ""
                 ((org-agenda-overriding-header "Next up or TODO Tasks")
                  (org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-tags-match-list-sublevels 'indented)
                  (org-super-agenda-groups
-                  '((:auto-parent t)))))
-          (todo "DELEGATED"
-                ((org-agenda-overriding-header "Delegated Tasks")
-                 (org-agenda-files '("~/.gtd/thelist.org"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-tags-match-list-sublevels 'indented)
-                 (org-super-agenda-groups
                   '((:auto-parent t)))))))
         ("l" "by Organized List"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day (org-today))
-                      (org-agenda-overriding-header "Scheduled Items")
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                                :time-grid t
-                                :order 1)
-                         (:name "Scheduled"
-                                :scheduled t
-                                :order 2)))))
-          (todo "TODO|NEXT"
+;         ((agenda "" ((org-agenda-span 'day)
+;                      (org-agenda-start-day (org-today))
+;                      (org-agenda-overriding-header "Scheduled Items")
+;                      (org-super-agenda-groups
+;                       '((:name "Today"
+;                                :time-grid t
+;                                :order 1)
+;                         (:name "Scheduled"
+;                                :scheduled t
+;                                :order 2)))))
+         ((todo ""
                 ((org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-agenda-files '("~/.gtd/thelist.org"))
                  (org-agenda-overriding-header "Priotized List")
