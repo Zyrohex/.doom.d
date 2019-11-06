@@ -1,39 +1,38 @@
-;;; .doom.d/config.el -*- lexical-binding: t; -*-
-
 ;; Place your private configuration here
-;(load! "+ui") ; Load custom theme for DOOM
 (load! "+keys") ; Load custom keymaps
-;(load! "+ui2")
 (load! "+agenda")
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Source Code Pro" :size 24)) ; Configure Default font
-(setq doom-big-font (font-spec :family "Source Code Pro" :size 30))
-(setq org-bullets-bullet-list '("✖" "✱"))
-(setq +org-export-directory "~/.org/.export/")
+(setq doom-font (font-spec :family "Source Code Pro" :size 24)
+      doom-big-font (font-spec :family "Source Code Pro" :size 30)
+      org-bullets-bullet-list '("✖" "✱")
+      +org-export-directory "~/.export/"
+
+      plain-org-wiki-directory "~/.gtd/work"
+      plain-org-gtd-directory "~/.gtd"
+
+      org-journal-dir "~/.gtd/journal"
+      org-journal-enable-agenda-integration t
+      org-journal-find-file 'find-file
+      org-journal-file-format "%b-%Y.org"
+      org-journal-file-type 'monthly
+
+      deft-extensions
+      '("org" "md" "txt") ; Extensions for deft files
+      deft-recursive t ; Nil = Recursive in directories
+      deft-directory "~/.notes" ; Directory where your DEFT notes are saved
+      deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
+      deft-auto-save-interval 0) ; Auto save file after x minutes)
+
+
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
-;(add-to-list 'org-modules 'org-habit t) ; Enable Emacs to track habits
 
 ;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
 (require 'plain-org-wiki)
-(setq plain-org-wiki-directory "~/.gtd/notes")
-
-;; Load Org GTD
-(add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-gtd .el module
 (require 'plain-org-gtd)
-(setq plain-org-gtd-directory "~/.gtd/")
-
-;; Journal
-(setq org-journal-dir "~/.gtd/journal"
-      org-journal-enable-agenda-integration t
-      org-journal-find-file 'find-file
-      org-journal-file-format "%b-%Y.org"
-      org-journal-file-type 'monthly)
-
-;; Load Clock Switch
-(require 'org-clock-switch) ; Allows hot swapping to previous tasks that are stored in the clock history
+(require 'org-clock-switch)
 
 ;; Capture Templates
 (setq org-capture-templates
@@ -49,8 +48,6 @@
                      "** [%<%H:%M>] %?" :tree-type week)
                     ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
                      "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
-
-(add-hook 'org-capture-mode-hook 'delete-other-windows)
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
@@ -84,15 +81,6 @@
 (elfeed-org)
 (after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
                   elfeed-db-directory "~/.elfeed/"))
-
-;; Deft
-(require 'deft)
-(setq deft-extension
-      '("org" "md" "txt") ; Extensions for deft files
-      deft-recursive t ; Nil = Recursive in directories
-      deft-directory "~/.gtd/notes/" ; Directory where your DEFT notes are saved
-      deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
-      deft-auto-save-interval 0) ; Auto save file after x minutes
 
 ;; Popup Rules
 ;(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
