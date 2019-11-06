@@ -7,9 +7,9 @@
 (load! "+agenda")
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Source Code Pro" :size 20)) ; Configure Default font
-(setq doom-big-font (font-spec :family "Source Code Pro" :size 26))
-(setq org-bullets-bullet-list '("#"))
+(setq doom-font (font-spec :family "Source Code Pro" :size 24)) ; Configure Default font
+(setq doom-big-font (font-spec :family "Source Code Pro" :size 30))
+(setq org-bullets-bullet-list '("✖" "✱"))
 (setq +org-export-directory "~/.org/.export/")
 (display-time-mode 1) ;; Display time and System Load on modeline
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
@@ -49,6 +49,7 @@
                      "** [%<%H:%M>] %?" :tree-type week)
                     ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
                      "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
+
 (add-hook 'org-capture-mode-hook 'delete-other-windows)
 
 ;; TODO Keywords

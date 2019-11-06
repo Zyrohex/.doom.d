@@ -4,6 +4,7 @@
       :n "e" #'ace-window
       :n "!" #'swiper
       :n "@" #'swiper-all
+      :n "X" #'helm-org-capture-templates
       (:prefix "o"
         :n "e" #'elfeed
         :n "u" #'elfeed-update
