@@ -8,10 +8,9 @@
       (:prefix "o"
         :n "e" #'elfeed
         :n "u" #'elfeed-update
-        (:prefix "n"
-          :n "w" #'deft
-          :n "n" #'plain-org-wiki
-          :n "g" #'plain-org-gtd))
+        :n "w" #'deft
+        :n "n" #'plain-org-wiki
+        :n "g" #'plain-org-gtd)
       (:prefix "f"
         :n "w" #'deft
         :n "g" #'plain-org-gtd
