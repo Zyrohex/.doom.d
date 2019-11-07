@@ -9,6 +9,7 @@
       +org-export-directory "~/.export/"
 
       plain-org-gtd-directory "~/.gtd"
+      plain-org-wiki-directory "~/.notes"
 
       org-journal-dir "~/.gtd/journal"
       org-journal-enable-agenda-integration t
@@ -30,6 +31,7 @@
 ;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
 (require 'plain-org-gtd)
+(require 'plain-org-wiki)
 (require 'org-clock-switch)
 
 ;; Capture Templates

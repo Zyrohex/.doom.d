@@ -18,11 +18,11 @@
                                                    :deadline t)
                                             (:name "Scheduled"
                                                    :scheduled t)))))))
-                           ("l" "by Organized List"
+                           ("r" "References Tasks"
                             ((todo ""
                                    ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files '("~/.gtd/thelist.org"))
-                                    (org-agenda-overriding-header "Priotized List")
+                                    (org-agenda-files '("~/.gtd/reference.org"))
+                                    (org-agenda-overriding-header "TODO Items for References")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:name "High Priority"

@@ -14,4 +14,6 @@
 (package! org-journal)
 (package! ledger-mode)
 (package! ox-pandoc)
-(package! ein)
+(package! dockerfile-mode)
+(package! docker)
+(package! docker-compose-mode)
