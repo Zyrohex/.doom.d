@@ -29,7 +29,7 @@
                            ("q" "Notes Tasks"
                             ((todo ""
                                    ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files (list "~/.notes"))
+                                    (org-agenda-files (list "~/.notes" "~/.notes/personal"))
                                     (org-agenda-overriding-header "TODO Items in Notes")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
