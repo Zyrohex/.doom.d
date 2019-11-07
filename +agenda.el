@@ -33,7 +33,7 @@
                                     (org-agenda-overriding-header "TODO Items in Notes")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
-                                     '((:auto-dir-name t)))))))
+                                     '((:auto-category t)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.gtd/inbox.org"))
