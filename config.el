@@ -8,7 +8,6 @@
       org-bullets-bullet-list '("✖" "✱")
       +org-export-directory "~/.export/"
 
-      plain-org-wiki-directory "~/.gtd/work"
       plain-org-gtd-directory "~/.gtd"
 
       org-journal-dir "~/.gtd/journal"
@@ -30,7 +29,6 @@
 
 ;; Load Org Wiki
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
-(require 'plain-org-wiki)
 (require 'plain-org-gtd)
 (require 'org-clock-switch)
 
