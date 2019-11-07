@@ -25,49 +25,7 @@
                                     (org-agenda-overriding-header "TODO Items for References")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
-                                     '((:name "High Priority"
-                                              :priority "A"
-                                              :order 1)
-                                       (:name "Medium Priority"
-                                              :priority "B"
-                                              :order 2)
-                                       (:name "Deadline Due"
-                                              :deadline t
-                                              :order 3)
-                                       (:name "Scheduled"
-                                              :scheduled t
-                                              :order 4)
-                                       (:name "To read"
-                                              :tag "@read"
-                                              :order 5)
-                                       (:name "To watch"
-                                              :tag "@watch"
-                                              :order 6)
-                                       (:name "Call or Message"
-                                              :tag "@phone"
-                                              :order 7)
-                                       (:name "Email"
-                                              :tag "@email"
-                                              :order 8)
-                                       (:name "Stuff to work on"
-                                              :tag "@computer"
-                                              :order 9)
-                                       (:name "Personal Items"
-                                              :tag "@personal"
-                                              :order 10)
-                                       (:name "Play"
-                                              :tag "@play"
-                                              :order 11)
-                                       (:name "Bills"
-                                              :tag "@bills"
-                                              :order 12)
-                                       (:name "Things to purchase"
-                                              :tag "@purchase"
-                                              :order 20)
-                                       (:name "Emacs Stuff"
-                                              :tag "@emacs"
-                                              :order 100)
-                                       (:discard (:scheduled t))))))))
+                                     '((:auto-parent t)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.gtd/inbox.org"))
