@@ -26,6 +26,14 @@
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))
+                           ("q" "Notes Tasks"
+                            ((todo ""
+                                   ((org-agenda-prefix-format " %(my-agenda-prefix) ")
+                                    (org-agenda-files (list "~/.notes"))
+                                    (org-agenda-overriding-header "TODO Items in Notes")
+                                    (org-tags-match-list-sublevels 'indented)
+                                    (org-super-agenda-groups
+                                     '((:auto-parent t)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.gtd/inbox.org"))
