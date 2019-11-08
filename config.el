@@ -3,26 +3,20 @@
 (load! "+agenda")
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Source Code Pro" :size 24)
-      doom-big-font (font-spec :family "Source Code Pro" :size 30)
-      org-bullets-bullet-list '("✖" "✱")
-      +org-export-directory "~/.export/"
+(after! org (setq doom-font (font-spec :family "Source Code Pro" :size 24)
+                  doom-big-font (font-spec :family "Source Code Pro" :size 30)
+                  org-bullets-bullet-list '("✖" "✱")
+                  +org-export-directory "~/.export/"
 
-      plain-org-gtd-directory "~/.gtd"
-      plain-org-wiki-directory "~/.notes"
+                  plain-org-gtd-directory "~/.gtd"
+                  plain-org-wiki-directory "~/.notes"
 
-      org-journal-dir "~/.gtd/journal"
-      org-journal-enable-agenda-integration t
-      org-journal-find-file 'find-file
-      org-journal-file-format "%b-%Y.org"
-      org-journal-file-type 'monthly
-
-      deft-extensions
-      '("org" "md" "txt") ; Extensions for deft files
-      deft-recursive t ; Nil = Recursive in directories
-      deft-directory "~/.notes" ; Directory where your DEFT notes are saved
-      deft-use-filename-as-title t ; Configure DEFT to use file name as your in-buffer title
-      deft-auto-save-interval 0) ; Auto save file after x minutes)
+                  deft-extensions
+                  '("org" "md" "txt")
+                  deft-recursive t
+                  deft-directory "~/.notes"
+                  deft-use-filename-as-title t
+                  deft-auto-save-interval 0))
 
 
 (display-time-mode 1) ;; Display time and System Load on modeline
@@ -36,29 +30,29 @@
 
 ;; Capture Templates
 (setq org-capture-templates
-                  '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
-                     "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-                    ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
-                     "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-                    ("r" "Reference" entry (file"~/.gtd/reference.org")
-                     "** %?")
-                    ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
-                     "* [[%x]]")
-                    ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
-                     "** [%<%H:%M>] %?" :tree-type week)
-                    ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
-                     "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
+      '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
+         "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
+        ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+         "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
+        ("r" "Reference" entry (file"~/.gtd/reference.org")
+         "** %?")
+        ("e" "Elfeed" entry (file+olp"~/.org/elfeed.org" "Dump")
+         "* [[%x]]")
+        ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
+         "** [%<%H:%M>] %?" :tree-type week)
+        ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
+         "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 ;; TODO Keywords
 (after! org (setq org-todo-keywords
                   '((sequence "TODO(t)" "DOING(x!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
-        org-todo-keyword-faces
-        '(("TODO" :foreground "#ff1fb0" :weight bold)
-          ("DOING" :foreground "#e4ff6e" :weight bold)
-          ("NEXT" :foreground "#80f0ff" :weight bold)
-          ("DELEGATED" :foreground "#755335" :weight bold)
-          ("SOMEDAY" :foreground "#29edff" :weight bold)
-          ("DONE" :foreground "#50a14f" :weight normal)))
+  org-todo-keyword-faces
+  '(("TODO" :foreground "#ff1fb0" :weight bold)
+    ("DOING" :foreground "#e4ff6e" :weight bold)
+    ("NEXT" :foreground "#80f0ff" :weight bold)
+    ("DELEGATED" :foreground "#755335" :weight bold)
+    ("SOMEDAY" :foreground "#29edff" :weight bold)
+    ("DONE" :foreground "#50a14f" :weight normal)))
 
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
@@ -86,10 +80,10 @@
 ;(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
 ;(set-popup-rule! "^CAPTURE.*\\.org$" :side 'bottom :size 0.50 :select t :ttl nil)
 ;(set-popup-rule! "^\\*org-brain" :side 'bottom :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Org-QL" :side 'right :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
-(set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Org-QL" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Deft*" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Deadgrep*" :side 'right :size 1.00 :select t :ttl nil)
+;(set-popup-rule! "^\\*Info*" :side 'right :size 1.00 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Helm*" :side 'bottom :size 0.30 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
@@ -104,7 +98,7 @@
       org-log-reschedule 'time) ; Time is logged when task is rescheduled
 
 ;; Agenda
-(setq org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org" "~/.gtd/inbox.org" "~/.gtd/someday.org")
+(setq org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/someday.org")
       org-agenda-diary-file '("~/.org/diary.org")
       org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
       org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
@@ -122,20 +116,6 @@
 (setq org-attach-directory "~/.attach"
       +org-export-directory "~/.export")
 
-;; Mind Map
-(def-package! org-mind-map
-  :init
-  (require 'ox-org)
-  :config
-  (setq org-mind-map-engine "dot")       ; Default. Directed Graph
-  ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
-  ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
-  ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
-  ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
-  ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
-  ;; (setq org-mind-map-engine "circo")  ; Circular Layout
-  )
-  
 (defun org-update-cookies-after-save()
   (interactive)
   (let ((current-prefix-arg '(4)))

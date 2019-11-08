@@ -5,6 +5,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/plain-org-wiki
 ;; Version: 0.1.0
+;; Package-Requires: ((emacs "24.3") (ivy "0.12.0"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs
@@ -61,6 +62,7 @@ Each cons cell is a name and file path."
              (cons plain-org-wiki-directory plain-org-wiki-extra-dirs)))
 
 (defvar ffip-project-root)
+(declare-function ffip-project-search "ext:find-file-in-project")
 
 (defun plain-org-wiki-files-recursive ()
   "Return .org files in `plain-org-wiki-directory' and subdirectories."
@@ -85,12 +87,12 @@ Each cons cell is a name and file path."
          (expand-file-name
           (format "%s.org" x) plain-org-wiki-directory))))))
 
+(declare-function helm "ext:helm.el" t)
+
 ;;;###autoload
 (defun plain-org-wiki-helm ()
   "Select an org-file to jump to."
   (interactive)
-  (require 'helm)
-  (require 'helm-multi-match)
   (helm :sources
         '(((name . "Projects")
            (candidates . plain-org-wiki-files)

@@ -1,7 +1,7 @@
 ;;; ~/.doom.d/agenda.el -*- lexical-binding: t; -*-
 
 (after! org-agenda (setq org-agenda-custom-commands
-                         '(("h" "by Hierarchy"
+                         '(("h" "Primary Tasks"
                             ((todo "TODO|NEXT|DOING"
                                    ((org-agenda-overriding-header "Next up or TODO Tasks")
                                     (org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org"))
@@ -9,16 +9,29 @@
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))
-                             (agenda "" ((org-agenda-span 'day)
-                                         (org-agenda-start-day (org-today))
-                                         (org-super-agenda-groups
-                                          '((:name "Habits"
-                                                   :habit t)
-                                            (:name "Deadline"
-                                                   :deadline t)
-                                            (:name "Scheduled"
-                                                   :scheduled t)))))))
-                           ("r" "References Tasks"
+                             (todo ""
+                                   ((org-agenda-overriding-header "Priority Items")
+                                    (org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org"))
+                                    (org-super-agenda-groups
+                                     '((:name "High Priority"
+                                              :priority "A"
+                                              :order 1)
+                                       (:name "Tasks with Deadlines"
+                                              :deadline t
+                                              :order 2)))))))
+                           ("X" "Test"
+                            ((todo ""
+                                   ((org-super-agenda-groups
+                                     '((:name "Mediawiki"
+                                              :regexp "Mediawiki"
+                                              :order 1)
+                                       (:name "Projects"
+                                              :regexp "Projects"
+                                              :order 2)
+                                       (:name "Habits"
+                                              :regexp "Habits"
+                                              :order 3)))))))
+                           ("r" "References"
                             ((todo ""
                                    ((org-agenda-prefix-format " %(my-agenda-prefix) ")
                                     (org-agenda-files '("~/.gtd/reference.org"))
@@ -26,7 +39,7 @@
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))
-                           ("q" "Notes Tasks"
+                           ("n" "Notes"
                             ((todo ""
                                    ((org-agenda-prefix-format " %(my-agenda-prefix) ")
                                     (org-agenda-files (list "~/.notes" "~/.notes/personal"))
