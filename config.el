@@ -3,33 +3,55 @@
 (load! "+agenda")
 
 ;; Default Settings
-(after! org (setq doom-font (font-spec :family "Source Code Pro" :size 24)
-                  doom-big-font (font-spec :family "Source Code Pro" :size 30)
-                  org-bullets-bullet-list '("✖" "✱")
-                  +org-export-directory "~/.export/"
+(setq doom-font (font-spec :family "Source Code Pro" :size 24)
+      doom-big-font (font-spec :family "Source Code Pro" :size 30)
+      org-bullets-bullet-list '("✖" "✱")
+      +org-export-directory "~/.export/"
 
-                  plain-org-gtd-directory "~/.gtd"
-                  plain-org-wiki-directory "~/.notes"
+      org-super-agenda-groups
+      '((:name "by top heading"
+               :auto-parent t)
+        (:discard (:anything t)))
 
-                  deft-extensions
-                  '("org" "md" "txt")
-                  deft-recursive t
-                  deft-directory "~/.notes"
-                  deft-use-filename-as-title t
-                  deft-auto-save-interval 0))
+      org-archive-location "~/.gtd/archive.org::datetree/"
+      org-default-notes-file "~/.gtd/inbox.org"
+      projectile-project-search-path '("~/")
 
+      org-directory (expand-file-name "~/.org/")
+      org-archive-location "~/.gtd/archive.org::datetree/"
+      org-default-notes-file "~/.gtd/inbox.org"
+      projectile-project-search-path '("~/")
 
-(display-time-mode 1) ;; Display time and System Load on modeline
-(global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
+      org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/someday.org")
+      org-agenda-diary-file '("~/.org/diary.org")
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
 
-;; Load Org Wiki
-(add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
-(require 'plain-org-gtd)
-(require 'plain-org-wiki)
-(require 'org-clock-switch)
+      org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+      org-outline-path-complete-in-steps nil
+      org-refile-allow-creating-parent-nodes 'confirm
 
-;; Capture Templates
-(setq org-capture-templates
+      org-log-state-notes-insert-after-drawers nil
+      org-log-into-drawer t
+      org-log-done 'note
+      org-log-repeat 'time
+      org-log-redeadline 'time
+      org-log-reschedule 'time
+
+      org-tags-column -80
+      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W) ("@computer" . ?c) ("@purchase" . ?P))
+
+      org-todo-keywords
+      '((sequence "TODO(t)" "DOING(x!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
+      org-todo-keyword-faces
+      '(("TODO" :foreground "#9730db" :weight bold)
+        ("DOING" :foreground "#e4ff6e" :weight bold)
+        ("NEXT" :foreground "#db3044" :weight bold)
+        ("DELEGATED" :foreground "#755335" :weight bold)
+        ("SOMEDAY" :foreground "#29edff" :weight bold)
+        ("DONE" :foreground "#50a14f" :weight bold))
+
+      org-capture-templates
       '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
          "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
         ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
@@ -41,40 +63,30 @@
         ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
          "** [%<%H:%M>] %?" :tree-type week)
         ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
-         "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
+         "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t))
 
-;; TODO Keywords
-(after! org (setq org-todo-keywords
-                  '((sequence "TODO(t)" "DOING(x!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
-  org-todo-keyword-faces
-  '(("TODO" :foreground "#ff1fb0" :weight bold)
-    ("DOING" :foreground "#e4ff6e" :weight bold)
-    ("NEXT" :foreground "#80f0ff" :weight bold)
-    ("DELEGATED" :foreground "#755335" :weight bold)
-    ("SOMEDAY" :foreground "#29edff" :weight bold)
-    ("DONE" :foreground "#50a14f" :weight normal)))
+
+      deft-extensions
+      '("org" "md" "txt")
+      deft-recursive t
+      deft-directory "~/.notes"
+      deft-use-filename-as-title t
+      deft-auto-save-interval 0)
+
+(display-time-mode 1) ;; Display time and System Load on modeline
+(global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
+(add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
+(require 'org-clock-switch)
 
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
 
-;; Super Agenda
-(setq org-super-agenda-groups
-      '((:name "by top heading"
-               :auto-parent t)
-        (:discard (:anything t))))
-
-;; Default Folders
-(setq org-directory (expand-file-name "~/.org/")
-      org-archive-location "~/.gtd/archive.org::datetree/"
-      org-default-notes-file "~/.gtd/inbox.org"
-      projectile-project-search-path '("~/"))
-
 ;; Elfeed
-(require 'elfeed)
-(require 'elfeed-org)
-(elfeed-org)
-(after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
-                  elfeed-db-directory "~/.elfeed/"))
+;(require 'elfeed)
+;(require 'elfeed-org)
+;(elfeed-org)
+;(after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
+;                  elfeed-db-directory "~/.elfeed/"))
 
 ;; Popup Rules
 ;(set-popup-rule! "^\\*Org Agenda" :side 'right :size 80 :select t :ttl 3)
@@ -88,33 +100,6 @@
 ;(set-popup-rule! "^\\*Docker*" :side 'bottom :size 0.30 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Calc*" :side 'bottom :size 0.20 :select t :ttl nil)
 ;(set-popup-rule! "^\\*Eww*" :side 'right :size 1.00 :select t :ttl nil)
-
-;; Logging
-(setq org-log-state-notes-insert-after-drawers nil
-      org-log-into-drawer t
-      org-log-done 'note ; Requires notes when task is set to DONE
-      org-log-repeat 'time ; Time is logged when repeat tasks are set to DONE
-      org-log-redeadline 'time ; Time is logged when task is redeadlined
-      org-log-reschedule 'time) ; Time is logged when task is rescheduled
-
-;; Agenda
-(setq org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/someday.org")
-      org-agenda-diary-file '("~/.org/diary.org")
-      org-agenda-skip-scheduled-if-done t ; Nil = Show scheduled items in agenda when they are done
-      org-agenda-skip-deadline-if-done t) ; Nil = Show deadlines when the corresponding item is done
-
-;; Tags
-(setq org-tags-column -80 ; Sets tags so many characters away from headings
-      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W) ("@computer" . ?c) ("@purchase" . ?P)))
-
-;; Refile
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-      org-outline-path-complete-in-steps nil ; Nil = Show path outline in one step
-      org-refile-allow-creating-parent-nodes 'confirm) ; Create now headings with "\NAME"
-
-;; Org-Board
-(setq org-attach-directory "~/.attach"
-      +org-export-directory "~/.export")
 
 (defun org-update-cookies-after-save()
   (interactive)
