@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.notes/Astronomy.org" "~/.notes/Resources.org" "~/.gtd/notes/Mysql.org" "~/.gtd/notes/Mediawiki.org" "~/.gtd/notes/Linux.org" "~/.gtd/notes/Emacs.org" "~/.gtd/notes/Docker.org" "~/.gtd/someday.org" "~/.gtd/notes/Books.org" "~/.gtd/reference.org" "~/.gtd/thelist.org")))
+    ("c:/Users/nmart/.gtd/.references/reference.org" "~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.notes/Astronomy.org" "~/.gtd/someday.org" "~/.gtd/thelist.org")))
  '(org-agenda-time-grid
    (quote
     (nil
