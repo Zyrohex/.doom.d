@@ -1,10 +1,12 @@
 ;; Place your private configuration here
 (load! "+keys") ; Load custom keymaps
 (load! "+agenda")
+(load! "+publish")
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Source Code Pro" :size 24)
+(setq doom-font (font-spec :family "Source Code Pro" :size 22)
       doom-big-font (font-spec :family "Source Code Pro" :size 30)
+      org-use-speed-commands t
       org-bullets-bullet-list '("✖" "✱")
       +org-export-directory "~/.export/"
 
@@ -44,12 +46,12 @@
       org-todo-keywords
       '((sequence "TODO(t)" "DOING(x!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
       org-todo-keyword-faces
-      '(("TODO" :foreground "#9730db" :weight bold)
-        ("DOING" :foreground "#e4ff6e" :weight bold)
-        ("NEXT" :foreground "#db3044" :weight bold)
-        ("DELEGATED" :foreground "#755335" :weight bold)
-        ("SOMEDAY" :foreground "#29edff" :weight bold)
-        ("DONE" :foreground "#50a14f" :weight bold))
+      '(("TODO" :foreground "tomato" :weight bold)
+        ("DOING" :foreground "tomato" :weight bold)
+        ("NEXT" :foreground "tomato" :weight bold)
+        ("DELEGATED" :foreground "tomato" :weight bold)
+        ("SOMEDAY" :foreground "tomato" :weight bold)
+        ("DONE" :foreground "slategrey" :weight bold))
 
       org-capture-templates
       '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda

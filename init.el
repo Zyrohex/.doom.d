@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.gtd/.references/reference.org" "~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.notes/Astronomy.org" "~/.gtd/someday.org" "~/.gtd/thelist.org")))
+    ("~/.references/software.org" "~/.references/interests.org" "~/.references/programming.org" "~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.notes/Astronomy.org" "~/.gtd/someday.org" "~/.gtd/thelist.org")))
  '(org-agenda-time-grid
    (quote
     (nil
