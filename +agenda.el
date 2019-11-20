@@ -3,38 +3,16 @@
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("h" "Primary Tasks"
                             ((todo "TODO|NEXT|DOING"
-                                   ((org-agenda-overriding-header "Next up or TODO Tasks")
-                                    (org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org"))
+                                   ((org-agenda-overriding-header "Tasks")
+                                    (org-agenda-files '("~/.gtd/tasks"))
                                     (org-agenda-prefix-format " %(my-agenda-prefix) ")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
-                                     '((:auto-parent t)))))
-                             (todo ""
-                                   ((org-agenda-overriding-header "Priority Items")
-                                    (org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/projects.org"))
-                                    (org-super-agenda-groups
-                                     '((:name "High Priority"
-                                              :priority "A"
-                                              :order 1)
-                                       (:name "Tasks with Deadlines"
-                                              :deadline t
-                                              :order 2)))))))
-                           ("X" "Test"
-                            ((todo ""
-                                   ((org-super-agenda-groups
-                                     '((:name "Mediawiki"
-                                              :regexp "Mediawiki"
-                                              :order 1)
-                                       (:name "Projects"
-                                              :regexp "Projects"
-                                              :order 2)
-                                       (:name "Habits"
-                                              :regexp "Habits"
-                                              :order 3)))))))
+                                     '((:auto-parent t)))))))
                            ("r" "References"
                             ((todo ""
                                    ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files '("~/.gtd/reference.org"))
+                                    (org-agenda-files '("~/.references"))
                                     (org-agenda-overriding-header "TODO Items for References")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups

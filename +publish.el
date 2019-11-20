@@ -3,7 +3,7 @@
 (setq org-publish-project-alist
       '(("references-web"
          :base-directory "~/.references/"
-         :publishing-directory "~/publish_html"
+         :publishing-directory "~/publish_html/references"
          :base-extension "org"
          :publishing-function org-html-publish-to-html
          :section-numbers nil
@@ -11,7 +11,7 @@
          :auto-preamble t
          :with-toc t)
         ("references-attachments"
-         :base-directory "~/.references/images/"
+         :base-directory "~/.references/references/images/"
          :base-extension "jpg\\|jpeg\\|png\\|pdf"
          :publishing-directory "~/publish_html/images"
          :publishing-function org-publish-attachment)

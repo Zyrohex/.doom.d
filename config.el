@@ -7,6 +7,7 @@
 (setq doom-font (font-spec :family "Source Code Pro" :size 22)
       doom-big-font (font-spec :family "Source Code Pro" :size 30)
       org-use-speed-commands t
+      org-image-actual-width nil
       org-bullets-bullet-list '("✖" "✱")
       +org-export-directory "~/.export/"
 

@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("~/.references/software.org" "~/.references/interests.org" "~/.references/programming.org" "~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.notes/Astronomy.org" "~/.gtd/someday.org" "~/.gtd/thelist.org")))
+    ("~/.gtd/tasks/projects.org" "~/.gtd/tasks/learning.org" "~/.references/applications.org" "~/.references/software.org" "~/.references/interests.org" "~/.references/programming.org" "~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.gtd/someday.org")))
  '(org-agenda-time-grid
    (quote
     (nil
