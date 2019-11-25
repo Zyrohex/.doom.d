@@ -1,10 +1,9 @@
 ;;; ~/.doom.d/agenda.el -*- lexical-binding: t; -*-
 
 (after! org-agenda (setq org-agenda-custom-commands
-                         '(("h" "Primary Tasks"
+                         '(("p" "Tasks by Parent"
                             ((todo "TODO|NEXT|DOING"
                                    ((org-agenda-overriding-header "Tasks")
-                                    (org-agenda-files '("~/.gtd/tasks"))
                                     (org-agenda-prefix-format " %(my-agenda-prefix) ")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
@@ -12,31 +11,21 @@
                            ("r" "References"
                             ((todo ""
                                    ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files '("~/.references"))
+                                    (org-agenda-files '("~/.references/"))
                                     (org-agenda-overriding-header "TODO Items for References")
                                     (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))
-                           ("n" "Notes"
-                            ((todo ""
-                                   ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files (list "~/.notes" "~/.notes/personal"))
-                                    (org-agenda-overriding-header "TODO Items in Notes")
-                                    (org-tags-match-list-sublevels 'indented)
-                                    (org-super-agenda-groups
-                                     '((:auto-category t)))))))
                            ("i" "Inbox"
-                            ((todo ""
-                                   ((org-agenda-files '("~/.gtd/inbox.org"))
+                            ((todo "REFILE"
+                                   ((org-agenda-files '("~/.gtd/tasks/"))
                                     (org-agenda-overriding-header "What's in my inbox by date created")
                                     (org-super-agenda-groups
                                      '((:name none
                                               :auto-ts t)))))))
                            ("x" "Get to someday"
-                            ((todo ""
+                            ((todo "SOMEDAY"
                                    ((org-agenda-overriding-header "Things I need to get to someday")
-                                    (org-agenda-files '("~/.gtd/someday.org"))
+                                    (org-agenda-files '("~/.gtd/tasks/"))
                                     (org-super-agenda-groups
-                                     '((:name none
-                                              :auto-parent t)
-                                       (:discard (:anything t)))))))))))
+                                     '((:auto-parent t))))))))))

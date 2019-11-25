@@ -8,6 +8,7 @@
       (:prefix "o"
         :n "e" #'elfeed
         :n "u" #'elfeed-update
+        :n "v" #'org-brain-visualize
         :n "w" #'deft
         :n "n" #'plain-org-wiki
         :n "g" #'plain-org-gtd)

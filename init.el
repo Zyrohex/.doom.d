@@ -109,7 +109,7 @@
        emacs-lisp        ; drown in parentheses
        ;;ess               ; emacs speaks statistics
        ;;fsharp           ; ML stands for Microsoft's Language
-       ;;go                ; the hipster dialect
+       go                ; the hipster dialect
        ;;(haskell +intero) ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
@@ -117,7 +117,7 @@
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
-       ;;latex             ; writing papers in Emacs has never been so fun
+       latex             ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("~/.gtd/tasks/projects.org" "~/.gtd/tasks/learning.org" "~/.references/applications.org" "~/.references/software.org" "~/.references/interests.org" "~/.references/programming.org" "~/.gtd/tickler.org" "~/.gtd/inbox.org" "~/.gtd/someday.org")))
+    ("~/.gtd/tasks/inbox.org" "~/.gtd/events.org" "~/.gtd/tasks/thelist.org" "~/.references/programming/bash.org" "~/.references/personal/books.org" "~/.references/programming/python.org" "~/.references/programming/lisp.org" "~/.references/applications/mediawiki.org" "~/.gtd/tasks/projects.org" "~/.gtd/tasks/learning.org" "~/.gtd/tickler.org")))
  '(org-agenda-time-grid
    (quote
     (nil
