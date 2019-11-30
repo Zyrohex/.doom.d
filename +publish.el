@@ -4,7 +4,7 @@
       '(("references-attachments"
          :base-directory "~/.references/images/"
          :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-         :publishing-directory "~/publish_html/images"
+         :publishing-directory "~/publish_html/references/images"
          :publishing-function org-publish-attachment)
         ("references"
          :base-directory "~/.references/"
