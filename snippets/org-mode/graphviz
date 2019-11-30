@@ -1,0 +1,30 @@
+# -*- mode: snippet -*-
+# name: graphviz
+# key: graphviz
+# --
+#+name: lista
+#+begin_src elisp
+  (org-element-map (org-element-parse-buffer 'headline )
+      'headline
+    (lambda(hl)
+      (let ((parent (org-element-property :parent hl )))
+        (and (eq (org-element-type parent) 'headline)
+             (list (org-element-property :title parent) (org-element-property :title hl))))))
+
+#+end_src
+
+#+name: make-dot
+#+BEGIN_SRC emacs-lisp :var table=lista :results output :exports none
+  (mapcar #'(lambda (x)
+                (princ (format "\"%s\" -> \"%s\";\n" (first x) (second x))))
+          table)
+#+END_SRC
+
+#+BEGIN_SRC dot :file dependencias.pdf :cmdline -Tpdf :var input=make-dot :exports results
+digraph Q {
+   rankdir=TB;
+   splines=true;
+   node [shape=box];
+   $input
+  }
+#+END_SRC

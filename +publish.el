@@ -11,16 +11,14 @@
          :publishing-directory "~/publish_html/references"
          :base-extension "org"
          :recursive t
-         :html-link-up "../sitemap.html"
-         :html-link-home "../index.html"
+         :html-link-home "../sitemap.html"
          :auto-sitemap t
          :publishing-function org-html-publish-to-html
          :section-numbers nil
          :html-head "<link rel=\"stylesheet\"
-href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
+href=\"https://codepen.io/nmartin84/pen/RwwmXdJ.css\"
 type=\"text/css\"/>"
          :with-email t
-         :with-drawer t
          :html-link-up "."
          :auto-preamble t
          :with-toc t)

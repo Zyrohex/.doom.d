@@ -236,3 +236,48 @@ The :face and :transformer keywords can be used to apply faces to items in group
           (lambda ()
             (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
 #+END_SRC
+** Graphviz building diagram out of org headlines
+#+name: lista
+#+begin_src elisp
+  (org-element-map (org-element-parse-buffer 'headline )
+      'headline
+    (lambda(hl)
+      (let ((parent (org-element-property :parent hl )))
+        (and (eq (org-element-type parent) 'headline)
+             (list (org-element-property :title parent) (org-element-property :title hl))))))
+
+#+end_src
+
+#+RESULTS: lista
+| la1 | la2                  |
+| la2 | la3                  |
+| la2 | la4                  |
+| la1 | la5                  |
+| la1 | Org element API test |
+
+#+name: make-dot
+#+BEGIN_SRC emacs-lisp :var table=lista :results output :exports none
+  (mapcar #'(lambda (x)
+                (princ (format "\"%s\" -> \"%s\";\n" (first x) (second x))))
+          table)
+#+END_SRC
+
+#+RESULTS: make-dot
+: "la1" -> "la2";
+: "la2" -> "la3";
+: "la2" -> "la4";
+: "la1" -> "la5";
+: "la1" -> "Org element API test";
+
+#+BEGIN_SRC dot :file dependencias.pdf :cmdline -Tpdf :var input=make-dot :exports results
+digraph {
+   rankdir=TB;
+   splines=true;
+   node [shape=box];
+   $input
+  }
+#+END_SRC
+
+#+CAPTION: Dependency diagram
+#+RESULTS:
+[[file:dependencias.pdf]]

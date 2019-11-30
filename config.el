@@ -2,8 +2,11 @@
 (load! "+keys") ; Load custom keymaps
 (load! "+agenda")
 (load! "+publish")
-(require 'tiny-menu)
+(load! "+graphviz")
 
+(add-to-list 'org-babel-load-languages '(dot . t))
+(add-to-list 'org-babel-load-languages '(plantuml . t))
+(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
 ;; Default Settings
 (setq doom-font (font-spec :family "Source Code Pro" :size 22)
@@ -12,6 +15,8 @@
       org-image-actual-width nil
       org-bullets-bullet-list '("✖" "✱")
       +org-export-directory "~/.export/")
+
+(setq org-plantuml-jar-path "~/.emacs.d/bin/plantuml.jar")
 
 (setq org-super-agenda-groups
       '((:name "by top heading"
@@ -73,7 +78,7 @@
          "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
         ("g" "Get Shit Done" entry (file+olp"~/.gtd/tasks/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
          "* REFILE %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("r" "Reference" entry (file"~/.gtd/reference.org")
+        ("r" "Reference" entry (file"~/.references/inbox.org")
          "** %?")
         ("e" "Events" entry (file+olp+datetree"~/.gtd/events.org")
          "* %?" :tree-type month)
@@ -102,13 +107,12 @@
 
 ;; Agenda Custom Commands
 (after! org-agenda (setq org-super-agenda-mode t))
-
-;; Elfeed
-;(require 'elfeed)
-;(require 'elfeed-org)
-;(elfeed-org)
-;(after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
-;                  elfeed-db-directory "~/.elfeed/"))
+; Elfeed
+(require 'elfeed)
+(require 'elfeed-org)
+(elfeed-org)
+(after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
+                  elfeed-db-directory "~/.elfeed/"))
 
 (defun org-update-cookies-after-save()
   (interactive)
