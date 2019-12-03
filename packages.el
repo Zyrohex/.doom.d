@@ -19,3 +19,4 @@
 (package! docker-compose-mode)
 (package! org-brain)
 (package! deft)
+(package! easy-hugo)

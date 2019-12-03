@@ -11,7 +11,7 @@
          :publishing-directory "~/publish_html/references"
          :base-extension "org"
          :recursive t
-         :html-link-home "../sitemap.html"
+         :html-link-home "./sitemap.html"
          :auto-sitemap t
          :publishing-function org-html-publish-to-html
          :section-numbers nil

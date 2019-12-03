@@ -41,10 +41,8 @@
                                      '((:auto-category t)))))))
                            ("r" "References"
                             ((todo ""
-                                   ((org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files '("~/.references/"))
+                                   ((org-agenda-files '("~/.references/"))
                                     (org-agenda-overriding-header "TODO Items for References")
-                                    (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))
                            ("i" "Inbox"
