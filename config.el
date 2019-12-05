@@ -86,7 +86,7 @@
         ("g" "Get Shit Done" entry (file+olp"~/.gtd/tasks/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
          "* REFILE %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("r" "Reference" entry (file"~/.references/inbox.org")
-         "** %?")
+         "** NOTE %?")
         ("e" "Events" entry (file+olp+datetree"~/.gtd/events.org")
          "* %?" :tree-type month)
         ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
