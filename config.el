@@ -71,7 +71,7 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "DOING(x!)" "NEXT(n!)" "REFILE(r!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
+      '((sequence "TODO(t)" "DOING(x!)" "NOTE(N!)" "- [ ](f!)" "- [-](F!)" "NEXT(n!)" "REFILE(r!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
       org-todo-keyword-faces
       '(("TODO" :foreground "Dark Orange" :weight bold)
         ("DOING" :foreground "tomato" :weight bold)
