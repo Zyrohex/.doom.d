@@ -4,12 +4,12 @@
                          '(("t" "Tasks"
                             ((agenda ""
                                      ((org-agenda-overriding-header "My Agenda")
-                                      (org-agenda-files '("~/.gtd/tasks/"))
+                                      (org-agenda-files '("~/.gtd/tasks/" "~/.gtd/projects/"))
                                       (org-super-agenda-groups
                                        '((:name "Habits"
                                                 :habit t
                                                 :order 5)
-                                         (:name ""
+                                         (:name "On Calendar"
                                                 :time-grid t
                                                 :order 1)
                                          (:name "Deadline Approaching"
@@ -20,9 +20,9 @@
                                                 :order 3)))))
                              (todo ""
                                    ((org-agenda-overriding-header "Tasks on my action list")
-                                    (org-agenda-prefix-format " %(my-agenda-prefix) ")
+;                                    (org-agenda-prefix-format " %(my-agenda-prefix) ")
                                     (org-agenda-files '("~/.gtd/tasks/"))
-                                    (org-tags-match-list-sublevels 'indented)
+;                                    (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:name "Critical"
                                               :priority "A"
@@ -32,16 +32,34 @@
                                               :order 2)
                                        (:name "Low priority"
                                               :priority "C"
-                                              :order 10)
-                                       (:name "Tasks with deadlines"
-                                              :deadline t
-                                              :order 11)
-                                       (:name "Scheduled Tasks"
-                                              :scheduled t
-                                              :order 12)
-                                       (:name "Books to read"
-                                              :category "Reading"
-                                              :order 52)))))
+                                              :order 3)
+                                       (:name "Personal Items"
+                                              :tag "@personal"
+                                              :order 21)
+                                       (:name "Email"
+                                              :tag "@email"
+                                              :order 22)
+                                       (:name "Call"
+                                              :tag "@phone"
+                                              :order 23)
+                                       (:name "Work Related"
+                                              :tag "@work"
+                                              :order 24)
+                                       (:name "Read"
+                                              :tag "@read"
+                                              :order 25)
+                                       (:name "Watch"
+                                              :tag "@watch"
+                                              :order 26)
+                                       (:name "Computer"
+                                              :tag "@computer"
+                                              :order 27)
+                                       (:name "Purchase"
+                                              :tag "@purchase"
+                                              :order 28)
+                                       (:name "Emacs"
+                                              :tag "@emacs"
+                                              :order 29)))))
                             (todo ""
                                   ((org-agenda-overriding-header "Projects")
                                    (org-agenda-files '("~/.gtd/projects/"))

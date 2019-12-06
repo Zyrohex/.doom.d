@@ -50,7 +50,7 @@
       org-default-notes-file "~/.gtd/inbox.org"
       projectile-project-search-path '("~/"))
 
-(setq org-agenda-files '("~/.gtd/thelist.org" "~/.gtd/someday.org")
+(setq org-agenda-files '("~/.gtd/tasks/thelist.org" "~/.gtd/inbox/someday.org")
       org-agenda-diary-file '("~/.org/diary.org")
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
