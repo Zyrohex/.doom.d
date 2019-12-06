@@ -9,18 +9,29 @@
 (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Source Code Pro" :size 22)
-      doom-big-font (font-spec :family "Source Code Pro" :size 32)
+(setq doom-font (font-spec :family "Fira Code" :size 22)
+      doom-big-font (font-spec :family "Fira Code" :size 32)
       org-use-speed-commands t
       org-image-actual-width nil
-      org-bullets-bullet-list '("✖" "✱")
+      org-bullets-bullet-list '("✖" "✚")
       +org-export-directory "~/.export/")
 
-(setq easy-hugo-helm-ag t)
-(setq easy-hugo-basedir "~/blog-static-files/")
-(setq easy-hugo-url "https://nmartin84.github.io/blog/")
-(setq easy-hugo-root "~/test")
-(setq easy-hugo-previewtime "300")
+(setq org-html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/oNNRJPG.css\" type=\"text/css\"/>"
+      org-export-with-toc t
+      org-export-with-author t
+      org-export-with-drawers t
+      org-export-with-email t
+      org-export-with-footnotes t
+      org-export-with-latex t
+      org-export-with-section-numbers nil
+      org-export-with-properties t
+      org-export-with-smart-quotes t)
+
+(setq easy-hugo-helm-ag t
+      easy-hugo-basedir "~/blog-static-files/"
+      easy-hugo-url "https://nmartin84.github.io/blog/"
+      easy-hugo-root "~/test"
+      easy-hugo-previewtime "300")
 (define-key global-map (kbd "C-c C-e") 'easy-hugo)
 
 (setq org-plantuml-jar-path "~/.emacs.d/bin/plantuml.jar")
@@ -71,9 +82,9 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "DOING(x!)" "NOTE(N!)" "- [ ](f!)" "- [-](F!)" "NEXT(n!)" "REFILE(r!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
+      '((sequence "TODO(t)" "NOTE(N!)" "NEXT(n!)" "REFILE(r!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
       org-todo-keyword-faces
-      '(("TODO" :foreground "Dark Orange" :weight bold)
+      '(("TODO" :foreground "tomato" :weight bold)
         ("DOING" :foreground "tomato" :weight bold)
         ("NEXT" :foreground "tomato" :weight bold)
         ("DELEGATED" :foreground "tomato" :weight bold)
@@ -87,7 +98,7 @@
          "* REFILE %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("r" "Reference" entry (file"~/.references/inbox.org")
          "** NOTE %?")
-        ("e" "Events" entry (file+olp+datetree"~/.gtd/events.org")
+        ("e" "Events" entry (file+olp+datetree"~/.gtd/notes/events.org")
          "* %?" :tree-type month)
         ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
          "** [%<%H:%M>] %?" :tree-type week)

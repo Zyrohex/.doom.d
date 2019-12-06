@@ -16,10 +16,26 @@
          :publishing-function org-html-publish-to-html
          :section-numbers nil
          :html-head "<link rel=\"stylesheet\"
-href=\"https://codepen.io/nmartin84/pen/RwwmXdJ.css\"
+href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
 type=\"text/css\"/>"
          :with-email t
          :html-link-up "."
          :auto-preamble t
          :with-toc t)
-        ("myprojectweb" :components("references-attachments" "references"))))
+        ("tasks"
+         :base-directory "~/.gtd/"
+         :publishing-directory "~/publish_html/gtd"
+         :base-extension "org"
+         :recursive t
+         :html-link-home "./sitemap.html"
+         :auto-sitemap t
+         :publishing-function org-html-publish-to-html
+         :section-numbers nil
+         :html-head "<link rel=\"stylesheet\"
+href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
+type=\"text/css\"/>"
+         :with-email t
+         :html-link-up "."
+         :auto-preamble t
+         :with-toc t)
+        ("myprojectweb" :components("references-attachments" "references" "tasks"))))
