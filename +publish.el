@@ -16,7 +16,7 @@
          :publishing-function org-html-publish-to-html
          :section-numbers nil
          :html-head "<link rel=\"stylesheet\"
-href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
+href=\"https://codepen.io/nmartin84/pen/JjoYrzP.css\"
 type=\"text/css\"/>"
          :with-email t
          :html-link-up "."

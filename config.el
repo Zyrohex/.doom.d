@@ -16,9 +16,10 @@
       org-bullets-bullet-list '("✖" "✚")
       +org-export-directory "~/.export/")
 
-(setq org-html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/oNNRJPG.css\" type=\"text/css\"/>"
+(setq org-html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/JjoYrzP.css\" type=\"text/css\"/>"
       org-export-with-toc t
       org-export-with-author t
+      org-export-headline-levels 5
       org-export-with-drawers t
       org-export-with-email t
       org-export-with-footnotes t
@@ -92,17 +93,17 @@
         ("DONE" :foreground "slategrey" :weight bold)))
 
 (setq org-capture-templates
-      '(("h" "Habit" entry (file+olp"~/.gtd/tickler.org" "Habits") ; Habit tracking in org agenda
+      '(("h" "Habit" entry (file+olp"~/.gtd/habits/habit.org" "Habits") ; Habit tracking in org agenda
          "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-        ("g" "Get Shit Done" entry (file+olp"~/.gtd/tasks/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
-         "* REFILE %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
+        ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+         "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("r" "Reference" entry (file"~/.references/inbox.org")
          "** NOTE %?")
         ("e" "Events" entry (file+olp+datetree"~/.gtd/notes/events.org")
          "* %?" :tree-type month)
-        ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
+        ("d" "Diary" entry (file+olp+datetree "~/.gtd/notes/diary.org")
          "** [%<%H:%M>] %?" :tree-type week)
-        ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
+        ("j" "Journal" entry (file+olp+datetree "~/.gtd/notes/journal.org")
          "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 (use-package deft

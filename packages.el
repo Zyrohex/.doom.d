@@ -20,3 +20,4 @@
 (package! org-brain)
 (package! deft)
 (package! easy-hugo)
+(package! ox-twbs)
