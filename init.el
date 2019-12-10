@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.references/emacs.org" "c:/Users/nmart/.gtd/notes/events.org" "~/.gtd/habits/habit.org" "~/.gtd/projects/mediawiki.org" "~/.gtd/projects/phabricator.org" "~/.references/inbox.org" "~/.references/hardware.org" "~/.gtd/tasks/thelist.org")))
+    ("c:/Users/nmart/.references/emacs.org" "c:/Users/nmart/.gtd/notes/events.org" "~/.gtd/habits/habit.org" "~/.gtd/projects/mediawiki.org" "~/.gtd/projects/phabricator.org" "~/.references/inbox.org" "~/.gtd/tasks/thelist.org")))
  '(org-agenda-time-grid
    (quote
     (nil

@@ -6,6 +6,7 @@
 
 (add-to-list 'org-babel-load-languages '(dot . t))
 (add-to-list 'org-babel-load-languages '(plantuml . t))
+(add-to-list 'org-babel-load-languages '(sql .t))
 (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
 ;; Default Settings
