@@ -38,4 +38,8 @@ type=\"text/css\"/>"
          :html-link-up "."
          :auto-preamble t
          :with-toc t)
-        ("myprojectweb" :components("references-attachments" "references" "tasks"))))
+        ("test"
+         :base-directory "~/.references/"
+         :publishing-function org-html-publish-to-html
+         :publishing-directory "/ssh:nick@Docker-Box:~/html/publish/")
+        ("myprojectweb" :components("references-attachments" "test" "references" "tasks"))))
