@@ -10,7 +10,7 @@
 (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Fira Code" :size 22)
+(setq doom-font (font-spec :family "Fira Code" :size 26)
       doom-big-font (font-spec :family "Fira Code" :size 32)
       org-use-speed-commands t
       org-image-actual-width nil
@@ -98,6 +98,8 @@
          "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
         ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
          "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
+        ("b" "Remember" entry (file+olp"~/.gtd/tasks/remember.org" "Inbox") ; Mark important items to remember
+         "* REVIEW %?")
         ("r" "Reference" entry (file"~/.references/inbox.org")
          "** NOTE %?")
         ("e" "Events" entry (file+olp+datetree"~/.gtd/notes/events.org")

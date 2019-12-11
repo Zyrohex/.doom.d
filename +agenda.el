@@ -4,6 +4,9 @@
                          '(("t" "Tasks"
                             ((agenda ""
                                      ((org-agenda-overriding-header "My Agenda")
+                                      (org-agenda-span 'day)
+                                      (org-agenda-start-day (org-today))
+                                      (org-agenda-current-span 'day)
                                       (org-agenda-files '("~/.gtd/tasks/" "~/.gtd/projects/"))
                                       (org-super-agenda-groups
                                        '((:name "Habits"
@@ -24,15 +27,18 @@
                                     (org-agenda-files '("~/.gtd/tasks/"))
 ;                                    (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
-                                     '((:name "Critical"
-                                              :priority "A"
+                                     '((:name "Keep an eye"
+                                              :todo "REVIEW"
                                               :order 1)
+                                       (:name "Critical"
+                                              :priority "A"
+                                              :order 2)
                                        (:name "Medium Priority"
                                               :priority "B"
-                                              :order 2)
+                                              :order 3)
                                        (:name "Low priority"
                                               :priority "C"
-                                              :order 3)
+                                              :order 4)
                                        (:name "Personal Items"
                                               :tag "@personal"
                                               :order 21)
@@ -64,7 +70,12 @@
                                   ((org-agenda-overriding-header "Projects")
                                    (org-agenda-files '("~/.gtd/projects/"))
                                    (org-super-agenda-groups
-                                    '((:auto-category t)))))))
+                                    '((:auto-category t)))))
+                            (todo ""
+                                  ((org-agenda-overriding-header "Things to remember")
+                                   (org-agenda-files '("~/.gtd/remember.org"))
+                                   (org-super-agenda-groups
+                                    '((:auto-parent t)))))))
                            ("h" "Habit Tracker"
                             ((agenda ""
                                      ((org-agenda-overriding-header "My Habits tracker")
