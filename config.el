@@ -84,10 +84,10 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "FIXME(f!)" "REVIEW(R!)" "NOTE(N!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
+      '((sequence "TODO(t)" "REVIEW(R!)" "NOTE(N!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
       org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
-        ("DOING" :foreground "tomato" :weight bold)
+        ("NOTE" :foreground "SteelBlue2" :weight bold)
         ("NEXT" :foreground "tomato" :weight bold)
         ("DELEGATED" :foreground "tomato" :weight bold)
         ("SOMEDAY" :foreground "yellow" :weight bold)
@@ -99,7 +99,7 @@
         ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
          "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("b" "Remember" entry (file+olp"~/.gtd/tasks/remember.org" "Inbox") ; Mark important items to remember
-         "* REVIEW %?")
+         "* NOTE %?")
         ("r" "Reference" entry (file"~/.references/inbox.org")
          "** NOTE %?")
         ("e" "Events" entry (file+olp+datetree"~/.gtd/notes/events.org")

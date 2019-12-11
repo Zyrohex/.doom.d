@@ -28,7 +28,7 @@
 ;                                    (org-tags-match-list-sublevels 'indented)
                                     (org-super-agenda-groups
                                      '((:name "Keep an eye"
-                                              :todo "REVIEW"
+                                              :todo "NOTE"
                                               :order 1)
                                        (:name "Critical"
                                               :priority "A"
