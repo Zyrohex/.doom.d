@@ -3,11 +3,6 @@
 #+LATEX: \listofcontents
 #+LATEX: \listoffigures
 #+LATEX: \listoftables
-#+LaTeX_HEADER: \usepackage{paralist}
 #+LaTeX_HEADER: \let\itemize\compactitem
 #+LaTeX_HEADER: \let\description\compactdesc
 #+LaTeX_HEADER: \let\enumerate\compactenum
-#+LaTeX_HEADER: \usepackage[T1]{fontenc}
-#+LaTeX_HEADER: \usepackage[bitstream-charter]{mathdesign}
-#+LaTeX_HEADER: \usepackage[scaled=.9]{helvet}
-#+LaTeX_HEADER: \usepackage{courier} % tt

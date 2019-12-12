@@ -42,4 +42,15 @@ type=\"text/css\"/>"
          :base-directory "~/.references/"
          :publishing-function org-html-publish-to-html
          :publishing-directory "/ssh:nick@Docker-Box:~/html/publish/")
-        ("myprojectweb" :components("references-attachments" "test" "references" "tasks"))))
+        ("pdf"
+         :base-directory "~/.gtd/references/"
+         :base-extension "org"
+         :publishing-directory "~/publish"
+         :preparation-function somepreparationfunction
+         :completion-function  somecompletionfunction
+         :publishing-function org-latex-publish-to-pdf
+         :recursive t
+         :latex-class "koma-article"
+         :headline-levels 5
+         :with-toc t)
+         ("myprojectweb" :components("references-attachments" "pdf" "test" "references" "tasks"))))
