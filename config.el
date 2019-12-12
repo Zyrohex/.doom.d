@@ -11,31 +11,46 @@
 
 (add-to-list 'org-latex-classes
           '("koma-article"
-             "\\documentclass{scrartcl}"
+            "\\documentclass{scrartcl}
+            \\usepackage{geometry}
+\\geometry{a4paper, textwidth=6.5in, textheight=10in,
+            marginparsep=7pt, marginparwidth=.6in}"
              ("\\section{%s}" . "\\section*{%s}")
              ("\\subsection{%s}" . "\\subsection*{%s}")
              ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
              ("\\paragraph{%s}" . "\\paragraph*{%s}")
              ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-(setq org-export-latex-classes
-      (quote
-       (("article" "\\documentclass[11pt]{scrartcl}
-    \\usepackage[utf8]{inputenc}
-    \\usepackage[T1]{fontenc}
-    \\usepackage{graphicx}
-    \\usepackage{longtable}
-    \\usepackage{listings}
-    \\usepackage[ngerman]{babel}
-    \\usepackage{float}
-    \\usepackage{soul}
-    \\usepackage{amssymb}
-    \\usepackage{hyperref}"
-         ("\\section{%s}" . "\\section{%s}")
-         ("\\subsection{%s}" . "\\subsection{%s}")
-         ("\\subsubsection{%s}" . "\\subsubsection{%s}")
-         ("\\paragraph{%s}" . "\\paragraph{%s}")
-         ("\\subparagraph{%s}" . "\\subparagraph{%s}")))))
+
+
+(add-to-list 'org-latex-classes
+             '("djcb-org-article"
+               "\\documentclass[11pt,a4paper]{article}
+\\usepackage[T1]{fontenc}
+\\usepackage{fontspec}
+\\usepackage{graphicx}
+\\defaultfontfeatures{Mapping=tex-text}
+\\setromanfont{Gentium}
+\\setromanfont [BoldFont={Gentium Basic Bold},
+                ItalicFont={Gentium Basic Italic}]{Gentium Basic}
+\\setsansfont{Charis SIL}
+\\setmonofont[Scale=0.8]{DejaVu Sans Mono}
+\\usepackage{geometry}
+\\geometry{a4paper, textwidth=6.5in, textheight=10in,
+            marginparsep=7pt, marginparwidth=.6in}
+\\pagestyle{empty}
+\\title{}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(setq org-latex-to-pdf-process
+  '("xelatex -interaction nonstopmode %f"
+     "xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
 ;; Default Settings
 (setq doom-font (font-spec :family "Fira Code" :size 26)

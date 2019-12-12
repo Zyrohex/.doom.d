@@ -1,6 +1,8 @@
 #+LaTeX_CLASS: koma-article
-#+LATEX: \listoftables
+#+ATTR_LATEX: :center nil
+#+LATEX: \listofcontents
 #+LATEX: \listoffigures
+#+LATEX: \listoftables
 #+LaTeX_HEADER: \usepackage{paralist}
 #+LaTeX_HEADER: \let\itemize\compactitem
 #+LaTeX_HEADER: \let\description\compactdesc
