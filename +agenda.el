@@ -21,14 +21,16 @@
                                          (:name "Upcoming"
                                                 :scheduled t
                                                 :order 3)))))
-                             (todo "TODO|NEXT|REVIEW|PROJ|NOTE|DELEGATED"
-                                   ((org-agenda-overriding-header "Tasks on my action list")
+                             (todo "NOTE"
+                                   ((org-agenda-files '("~/.gtd/tasks/"))
+                                    (org-agenda-overriding-header "Keep tabs on")
+                                    (org-super-agenda-groups
+                                     '((:auto-parent t)))))
+                             (todo "TODO|NEXT|REVIEW|PROJ|DELEGATED"
+                                   ((org-agenda-overriding-header "Task list")
                                     (org-agenda-files '("~/.gtd/tasks/"))
                                     (org-super-agenda-groups
-                                     '((:name "Keep an eye on"
-                                              :todo "NOTE"
-                                              :order 1)
-                                       (:name "Critical"
+                                     '((:name "Critical"
                                               :priority "A"
                                               :order 2)
                                        (:name "Medium Priority"
@@ -37,30 +39,18 @@
                                        (:name "Low priority"
                                               :priority "C"
                                               :order 4)
-                                       (:name "Personal Items"
-                                              :tag "@personal"
-                                              :order 21)
-                                       (:name "Email"
-                                              :tag "@email"
-                                              :order 22)
-                                       (:name "Call"
-                                              :tag "@phone"
-                                              :order 23)
-                                       (:name "Work Related"
-                                              :tag "@work"
-                                              :order 24)
-                                       (:name "Read"
-                                              :tag "@read"
-                                              :order 25)
-                                       (:name "Watch"
-                                              :tag "@watch"
-                                              :order 26)
-                                       (:name "Computer"
-                                              :tag "@computer"
-                                              :order 27)
-                                       (:name "Purchase"
-                                              :tag "@purchase"
-                                              :order 28)
+                                       (:name "Automation"
+                                              :regexp "Automation"
+                                              :order 5)
+                                       (:name "Programming"
+                                              :regexp ("Programming" "Python" "Lisp")
+                                              :order 6)
+                                       (:name "Health Related"
+                                              :regexp ("Health" "Running" "run" "Biking" "vitamins")
+                                              :order 7)
+                                       (:name "Orgmode or Emacs"
+                                              :regexp ("emacs" "orgmode" "org-mode" "org mode")
+                                              :order 8)
                                        (:name "Emacs"
                                               :tag "@emacs"
                                               :order 29)))))

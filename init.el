@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.gtd/tasks/projects.org" "~/.gtd/tasks/thelist.org" "~/.gtd/inbox/someday.org")))
+    ("c:/Users/nmart/.gtd/references/forex.org" "~/.gtd/tasks/thelist.org" "~/.gtd/inbox/someday.org")))
  '(org-agenda-time-grid
    (quote
     (nil

@@ -9,6 +9,34 @@
 (add-to-list 'org-babel-load-languages '(sql .t))
 (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
+(add-to-list 'org-latex-classes
+          '("koma-article"
+             "\\documentclass{scrartcl}"
+             ("\\section{%s}" . "\\section*{%s}")
+             ("\\subsection{%s}" . "\\subsection*{%s}")
+             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+             ("\\paragraph{%s}" . "\\paragraph*{%s}")
+             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(setq org-export-latex-classes
+      (quote
+       (("article" "\\documentclass[11pt]{scrartcl}
+    \\usepackage[utf8]{inputenc}
+    \\usepackage[T1]{fontenc}
+    \\usepackage{graphicx}
+    \\usepackage{longtable}
+    \\usepackage{listings}
+    \\usepackage[ngerman]{babel}
+    \\usepackage{float}
+    \\usepackage{soul}
+    \\usepackage{amssymb}
+    \\usepackage{hyperref}"
+         ("\\section{%s}" . "\\section{%s}")
+         ("\\subsection{%s}" . "\\subsection{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection{%s}")
+         ("\\paragraph{%s}" . "\\paragraph{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph{%s}")))))
+
 ;; Default Settings
 (setq doom-font (font-spec :family "Fira Code" :size 26)
       doom-big-font (font-spec :family "Fira Code" :size 32)
@@ -37,11 +65,6 @@
 (define-key global-map (kbd "C-c C-e") 'easy-hugo)
 
 (setq org-plantuml-jar-path "~/.emacs.d/bin/plantuml.jar")
-
-(setq org-super-agenda-groups
-      '((:name "by top heading"
-               :auto-parent t)
-        (:discard (:anything t))))
 
 (setq org-archive-location "~/.gtd/archive.org::datetree/"
       org-default-notes-file "~/.gtd/inbox.org"
