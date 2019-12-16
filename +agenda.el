@@ -42,6 +42,9 @@
                                        (:name "Automation"
                                               :regexp "Automation"
                                               :order 5)
+                                       (:name "Forex Trading"
+                                              :regexp ("Forex" "Trading" "Currency" "Pairs")
+                                              :order 1)
                                        (:name "Programming"
                                               :regexp ("Programming" "Python" "Lisp")
                                               :order 6)
@@ -57,6 +60,11 @@
                             (todo "TODO|NEXT|REVIEW|PROJ|NOTE|DELEGATED"
                                   ((org-agenda-overriding-header "Projects")
                                    (org-agenda-files '("~/.gtd/projects/"))
+                                   (org-super-agenda-groups
+                                    '((:auto-parent t)))))
+                            (todo ""
+                                  ((org-agenda-overriding-header "Emacs Items")
+                                   (org-agenda-files '("~/.doom.d/readme.org"))
                                    (org-super-agenda-groups
                                     '((:auto-parent t)))))))
                             ("h" "Habit Tracker"
