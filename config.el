@@ -86,6 +86,8 @@
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
 
+(set-popup-rule! "^\\*Org Agenda" :side 'right :size 60 :select t :ttl 3)
+
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
@@ -113,30 +115,28 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "REVIEW(R!)" "PROJ(p!)" "NOTE(N!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
+      '((sequence "TODO(t)" "REVIEW(R!)" "NOTE(N!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
       org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
         ("PROJ" :foreground "dark orange" :weight bold)
-        ("NOTE" :foreground "SteelBlue2" :weight bold)
+        ("NOTE" :foreground "GreenYellow" :weight bold)
         ("NEXT" :foreground "tomato" :weight bold)
         ("DELEGATED" :foreground "tomato" :weight bold)
         ("SOMEDAY" :foreground "yellow" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold)))
 
 (setq org-capture-templates
-      '(("h" "Habit" entry (file+olp"~/.gtd/habits/habit.org" "Habits") ; Habit tracking in org agenda
+      '(("h" "Habit" entry (file"~/.gtd/habit.org") ; Habit tracking in org agenda
          "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-        ("g" "Get Shit Done" entry (file+olp"~/.gtd/inbox/inbox.org" "Inbox") ; Sets all "Get Shit Done" captures to INBOX.ORG
+        ("g" "Get Shit Done" entry (file"~/.gtd/inbox.org") ; Sets all "Get Shit Done" captures to INBOX.ORG
          "* TODO %? %^g %^{CATEGORY}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("b" "Remember" entry (file+olp"~/.gtd/tasks/remember.org" "Inbox") ; Mark important items to remember
+        ("b" "Remember" entry (file"~/.gtd/inbox.org") ; Mark important items to remember
          "* NOTE %?")
-        ("r" "Reference" entry (file"~/.references/inbox.org")
-         "** NOTE %?")
-        ("e" "Events" entry (file+olp+datetree"~/.gtd/notes/events.org")
-         "* %?" :tree-type month)
-        ("d" "Diary" entry (file+olp+datetree "~/.gtd/notes/diary.org")
+        ("c" "Conversations" entry (file+olp+datetree "~/.gtd/conversations.org")
+         "** %?%^{PERSON}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:END:\n:LOGBOOK:\n:END:" :tree-type week)
+        ("d" "Diary" entry (file+olp+datetree "~/.gtd/diary.org")
          "** [%<%H:%M>] %?" :tree-type week)
-        ("j" "Journal" entry (file+olp+datetree "~/.gtd/notes/journal.org")
+        ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
          "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 (use-package deft

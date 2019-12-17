@@ -26,12 +26,15 @@
                                     (org-agenda-overriding-header "Remember")
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))
-                             (todo "TODO|NEXT|REVIEW|PROJ|DELEGATED"
+                             (todo "REVIEW"
+                                   ((org-agenda-overriding-header "Items to review")
+                                    (org-agenda-files '("~/.gtd/tasks/"))))
+                             (todo "TODO|NEXT|DELEGATED"
                                    ((org-agenda-overriding-header "Task list")
                                     (org-agenda-files '("~/.gtd/tasks/"))
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))
-                            (todo "TODO|NEXT|REVIEW|PROJ|NOTE|DELEGATED"
+                            (todo "TODO|NEXT|NOTE|DELEGATED"
                                   ((org-agenda-overriding-header "Projects")
                                    (org-agenda-files '("~/.gtd/projects/"))
                                    (org-super-agenda-groups

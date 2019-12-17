@@ -2,7 +2,13 @@ What I would like to implement eventually...
 
 * Agenda
 ** TODO Better suited for GTD
-** TODO Project oriented agenda
+** DONE Project oriented agenda
+CLOSED: [2019-12-16 Mon 20:13]
+:LOGBOOK:
+- Note taken on [2019-12-16 Mon 20:13] \\
+  For now this is done, by using :auto-parent t
+- State "DONE"       from "TODO"       [2019-12-16 Mon 20:13]
+:END:
 * Charts & Diagrams
 ** TODO Gnuplot
 * Emails
