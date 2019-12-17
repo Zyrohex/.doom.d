@@ -32,12 +32,6 @@
   '("xelatex -interaction nonstopmode %f"
      "xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
-(def-package! org-contacts
-  :after org
-  :custom (org-contact-files '("~/gtd/contacts.org")))
-
-(setq org-contacts-files '("~/.gtd/contacts.org"))
-
 (setq org-latex-tables-centered t
       org-latex-default-class "koma-article")
 
@@ -85,6 +79,9 @@
       org-agenda-diary-file '("~/.org/diary.org")
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
+
+(set-popup-rule! "^\\*Org Agenda" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
+(set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
 
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
       org-outline-path-complete-in-steps nil
