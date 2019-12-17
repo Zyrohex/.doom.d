@@ -3,6 +3,7 @@
 (load! "+agenda")
 (load! "+publish")
 (load! "+graphviz")
+(load! "custom-id")
 
 (add-to-list 'org-babel-load-languages '(dot . t))
 (add-to-list 'org-babel-load-languages '(plantuml . t))
