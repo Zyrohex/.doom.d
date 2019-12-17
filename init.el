@@ -193,7 +193,7 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.gtd/habit.org" "c:/Users/nmart/.gtd/tasks/trading.org" "c:/Users/nmart/.doom.d/readme.org" "c:/Users/nmart/.gtd/notes.org" "c:/Users/nmart/.gtd/diary.org" "~/.gtd/tasks/thelist.org")))
+    ("c:/Users/nmart/.gtd/habits.org" "c:/Users/nmart/.gtd/tasks/trading.org" "c:/Users/nmart/.doom.d/readme.org" "c:/Users/nmart/.gtd/notes.org" "c:/Users/nmart/.gtd/diary.org" "~/.gtd/tasks/thelist.org")))
  '(org-agenda-time-grid
    (quote
     (nil

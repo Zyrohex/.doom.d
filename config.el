@@ -86,8 +86,6 @@
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
 
-(set-popup-rule! "^\\*Org Agenda" :side 'right :size 60 :select t :ttl 3)
-
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
