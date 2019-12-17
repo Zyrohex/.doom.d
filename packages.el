@@ -19,3 +19,4 @@
 (package! deft)
 (package! ox-twbs)
 (package! define-word)
+(package! helm-mu)

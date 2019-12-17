@@ -2,11 +2,16 @@ What I would like to implement eventually...
 
 * Agenda
 ** TODO Better suited for GTD
+** TODO Project oriented agenda
+* Charts & Diagrams
+** TODO Gnuplot
 * Emails
 ** TODO Setup mu4e for gmail
 ** TODO Can I implement into exchange account?
 * Exports
 ** TODO Better Latex PDF Exports
+* Passwords
+** TODO Keep records of passwords in emacs
 * Interesting modules or snippets
 ** Agenda start day current day
 #+BEGIN_SRC emacs-lisp

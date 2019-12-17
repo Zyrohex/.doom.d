@@ -32,8 +32,16 @@
   '("xelatex -interaction nonstopmode %f"
      "xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
+(def-package! org-contacts
+  :after org
+  :custom (org-contact-files '("~/gtd/contacts.org")))
+
+(setq org-contacts-files '("~/.gtd/contacts.org"))
+
 (setq org-latex-tables-centered t
       org-latex-default-class "koma-article")
+
+(setq org-habit-show-habits t)
 
 ;; Default Settings
 (setq doom-font (font-spec :family "Fira Code" :size 26)
@@ -90,7 +98,7 @@
       org-log-reschedule 'time)
 
 (setq org-tags-column -80
-      org-tag-persistent-alist '(("@email" . ?e) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W) ("@computer" . ?c) ("@purchase" . ?P)))
+      org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W) ("@computer" . ?c) ("@purchase" . ?P)))
 
 (setq org-link-abbrev-alist
       '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")

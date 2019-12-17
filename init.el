@@ -71,7 +71,7 @@
        ;;ansible
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        ;;direnv
-       ;;docker
+       docker
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
        eval              ; run code, run (also, repls)
@@ -193,13 +193,14 @@
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.doom.d/readme.org" "c:/Users/nmart/.gtd/tasks/trading.org" "c:/Users/nmart/.gtd/notes.org" "c:/Users/nmart/.gtd/diary.org" "~/.gtd/tasks/thelist.org")))
+    ("c:/Users/nmart/.gtd/habit.org" "c:/Users/nmart/.gtd/tasks/trading.org" "c:/Users/nmart/.doom.d/readme.org" "c:/Users/nmart/.gtd/notes.org" "c:/Users/nmart/.gtd/diary.org" "~/.gtd/tasks/thelist.org")))
  '(org-agenda-time-grid
    (quote
     (nil
      (800 1000 1200 1400 1600 1800 2000)
      "......" "----------------")))
  '(org-agenda-use-time-grid nil)
+ '(org-contact-files (quote ("~/gtd/contacts.org")) t)
  '(org-modules
    (quote
     (ol-bbdb ol-bibtex ol-docview ol-eww ol-gnus org-habit org-id ol-info ol-irc ol-mhe ol-rmail ol-w3m org-collector org-notify org-panel org-velocity)))
