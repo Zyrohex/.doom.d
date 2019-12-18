@@ -3,7 +3,6 @@
 (load! "+agenda")
 (load! "+publish")
 (load! "+graphviz")
-(load! "custom-id")
 
 (add-to-list 'org-babel-load-languages '(dot . t))
 (add-to-list 'org-babel-load-languages '(plantuml . t))
@@ -33,6 +32,8 @@
   '("xelatex -interaction nonstopmode %f"
      "xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
+(use-package dictionary)
+
 (setq org-latex-tables-centered t
       org-latex-default-class "koma-article")
 
@@ -46,7 +47,8 @@
       org-bullets-bullet-list '("✖" "✚")
       +org-export-directory "~/.export/")
 
-(setq org-html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/JjoYrzP.css\" type=\"text/css\"/>"
+(setq org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css\" type=\"text/css\"/>"
+      org-html-head-include-scripts t
       org-export-with-toc t
       org-export-with-author t
       org-export-headline-levels 5
@@ -83,6 +85,7 @@
 
 (set-popup-rule! "^\\*Org Agenda" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
 (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
+(set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3)
 
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
       org-outline-path-complete-in-steps nil

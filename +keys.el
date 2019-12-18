@@ -12,6 +12,9 @@
         :n "w" #'deft
         :n "n" #'plain-org-wiki
         :n "g" #'plain-org-gtd)
+      (:prefix "n"
+        :n "D" #'dictionary-lookup-definition
+        :n "T" #'powerthesaurus-lookup-word)
       (:prefix "f"
         :n "w" #'deft
         :n "g" #'plain-org-gtd
