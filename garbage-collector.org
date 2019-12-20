@@ -1,4 +1,0 @@
-#+TITLE: garbage-collector
-
-This is my garbage collection that I find interesting, but not of any real use yet.
-
