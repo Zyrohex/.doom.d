@@ -47,7 +47,7 @@
                                                 :order 4)))))))
                            ("n" "Notes"
                             ((todo ""
-                                   ((org-agenda-files '("~/.gtd/notes.org"))
+                                   ((org-agenda-files (f-files "~/.gtd/notes"))
                                     (org-agenda-overriding-header "Note Tasks")
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))

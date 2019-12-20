@@ -32,6 +32,11 @@
   '("xelatex -interaction nonstopmode %f"
      "xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
+(f-files "~/.gtd/notes"
+         (lambda (f)
+           (string= (f-ext f) "org"))
+         'recursive)
+
 (use-package dictionary)
 
 (setq org-latex-tables-centered t
@@ -146,16 +151,16 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.references/"
+  (setq deft-directory "~/.gtd/notes"
         deft-auto-save-interval 0
         deft-recursive t
-        deft-extensions '("md" "txt" "org" "org.txt" "tex")
+        deft-extensions '("md" "txt" "org")
         deft-use-filter-string-for-filename t
         deft-use-filename-as-title nil
-        deft-markdown-mode-title-level 1
-        deft-file-naming-rules '((noslash . "-")
-                                 (nospace . "-")
-                                 (case-fn . downcase))))
+        deft-markdown-mode-title-level 1))
+;        deft-file-naming-rules '((noslash . "-")
+;                                 (nospace . "-")
+;                                 (case-fn . downcase))))
 
 (global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
 (add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
