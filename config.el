@@ -150,7 +150,7 @@
         deft-auto-save-interval 0
         deft-recursive t
         deft-extensions '("md" "txt" "org" "org.txt" "tex")
-        deft-use-filter-string-for-filename nil
+        deft-use-filter-string-for-filename t
         deft-use-filename-as-title nil
         deft-markdown-mode-title-level 1
         deft-file-naming-rules '((noslash . "-")
