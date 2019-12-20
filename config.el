@@ -92,7 +92,6 @@
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
 
-(set-popup-rule! "^\\*Org Agenda" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
 (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
 (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3)
 
@@ -123,12 +122,13 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "REVIEW(R!)" "NOTE(N!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
+      '((sequence "TODO(t)" "REVIEW(R!)" "WAITING(w!)" "NOTE(N!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
       org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
         ("PROJ" :foreground "dark orange" :weight bold)
         ("NOTE" :foreground "GreenYellow" :weight bold)
         ("NEXT" :foreground "tomato" :weight bold)
+        ("WAITING" :foregrund "PaleVioletRed1" :weight bold)
         ("DELEGATED" :foreground "tomato" :weight bold)
         ("SOMEDAY" :foreground "yellow" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold)))
