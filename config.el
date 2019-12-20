@@ -40,14 +40,18 @@
 (setq org-habit-show-habits t)
 
 ;; Default Settings
-(setq doom-font (font-spec :family "Fira Code" :size 26)
-      doom-big-font (font-spec :family "Fira Code" :size 32)
+(setq doom-font (font-spec :family "Source Code Pro" :size 26)
+      doom-big-font (font-spec :family "Source Code Pro" :size 32)
       org-use-speed-commands t
       org-image-actual-width nil
       org-bullets-bullet-list '("✖" "✚")
       +org-export-directory "~/.export/")
 
 (setq org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css\" type=\"text/css\"/>"
+      org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css\" type=\"text/css\"/>"
+      org-html-head "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"></script>"
+      org-html-head "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js\"></script>"
+      org-html-head "<script type=\"text/javascript\" src=\"https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js\"></script>"
       org-html-head-include-scripts t
       org-export-with-toc t
       org-export-with-author t
