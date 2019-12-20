@@ -6,7 +6,7 @@
                                    ((org-agenda-overriding-header "Task list")
                                     (org-agenda-files '("~/.gtd/tasks/"))
                                     (org-super-agenda-groups
-                                     '((:auto-parent t)))))
+                                     '((:auto-property "Group-ID")))))
                              (todo "TODO|NEXT|NOTE|DELEGATED"
                                    ((org-agenda-overriding-header "Projects")
                                     (org-agenda-files '("~/.gtd/projects/"))
@@ -19,6 +19,9 @@
                                      '((:auto-parent t)))))
                              (todo "REVIEW"
                                    ((org-agenda-overriding-header "Items to review")
+                                    (org-agenda-files '("~/.gtd/tasks/"))))
+                             (todo "WAITING"
+                                   ((org-agenda-overriding-header "Tasks in waiting state")
                                     (org-agenda-files '("~/.gtd/tasks/"))))
                              (todo ""
                                    ((org-agenda-overriding-header "Emacs Items")
