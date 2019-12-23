@@ -52,13 +52,13 @@
        ;;multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
-       rotate-text       ; cycle region at point between text candidates
+       ;;rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
        dired             ; making dired pretty [functional]
-       electric          ; smarter, keyword-based electric-indent
+       ;;electric          ; smarter, keyword-based electric-indent
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
@@ -85,7 +85,7 @@
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
-       ;;pdf               ; pdf enhancements
+       pdf               ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
        ;;rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
@@ -179,4 +179,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("17cdbde38cde234ed848a4d34cad63b03594881af1a2c75484d0685cc7a4e6ab" "1a84f1066b99544c58ad26e234f1052ba1bfbd525e7c99b2529f749dbed7f69a" "1f2caf23ffdd94ccb0c224c1a7f4fa8acf897ff068d2f5dc95ba42bbf115f0f5" "38d557defc1374831298f6092edfc48b7408909478ea6786d73e7adbe61e8a54" default)))
+ '(doom-big-font-mode t)
+ '(org-agenda-files
+   (quote
+    ("c:/Users/nmart/.gtd/reminders/notes.org" "~/.gtd/tasks/thelist.org")))
  '(org-super-agenda-mode t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

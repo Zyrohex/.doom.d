@@ -12,11 +12,6 @@
                                     (org-agenda-files '("~/.gtd/projects/"))
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))
-                             (todo "NOTE"
-                                   ((org-agenda-files '("~/.gtd/tasks/"))
-                                    (org-agenda-overriding-header "Remember")
-                                    (org-super-agenda-groups
-                                     '((:auto-parent t)))))
                              (todo "REVIEW"
                                    ((org-agenda-overriding-header "Items to review")
                                     (org-agenda-files '("~/.gtd/tasks/"))))

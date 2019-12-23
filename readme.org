@@ -2,6 +2,7 @@ What I would like to implement eventually...
 
 * Agenda
 ** TODO Better suited for GTD
+** TODO [[https://github.com/Malabarba/org-agenda-property][Agenda properties]]
 ** DONE Project oriented agenda
 CLOSED: [2019-12-16 Mon 20:13]
 :LOGBOOK:
@@ -18,11 +19,28 @@ CLOSED: [2019-12-16 Mon 20:13]
 ** TODO Better Latex PDF Exports
 * Passwords
 ** TODO Keep records of passwords in emacs
+* Modules
+** TODO [[https://github.com/millejoh/emacs-ipython-notebook][iPython]]
 * Interesting modules or snippets
 ** Agenda start day current day
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-start-day (org-today))
 #+END_SRC
+** Agenda string for header level
+#+BEGIN_EXAMPLE
+(defun my-agenda-prefix ()
+  (format "%s" (my-agenda-indent-string (org-current-level))))
+
+(defun my-agenda-indent-string (level)
+  (if (= level 1)
+      ""
+    (let ((str ""))
+      (while (> level 2)
+        (setq level (1- level)
+              str (concat str "──")))
+      (concat str "►"))))
+#+END_EXAMPLE
+
 ** Auto update checkboxes on subtasks
 #+BEGIN_SRC emacs-lisp
 (defun org-update-cookies-after-save()
