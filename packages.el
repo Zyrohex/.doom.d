@@ -21,3 +21,4 @@
 (package! powerthesaurus)
 (package! helm-mu)
 (package! org-ql)
+(package! pdf-tools)

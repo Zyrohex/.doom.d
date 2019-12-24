@@ -25,7 +25,7 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.gtd"
+  (setq deft-directory "~/.gtd/notes"
         deft-auto-save-interval 0
         deft-use-filename-as-title nil
         deft-recursive t
