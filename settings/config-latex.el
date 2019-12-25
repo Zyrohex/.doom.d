@@ -1,5 +1,9 @@
 ;;; c:/Users/nmart/.doom.d/latex-classes.el -*- lexical-binding: t; -*-
 
+(setq org-latex-to-pdf-process
+  '("xelatex -interaction nonstopmode %f"
+     "xelatex -interaction nonstopmode %f"))
+
 (add-to-list 'org-latex-classes
              '("koma-article"
                "\\documentclass{scrartcl}

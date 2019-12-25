@@ -185,7 +185,7 @@
  '(doom-big-font-mode t)
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.gtd/reminders/notes.org" "~/.gtd/tasks/thelist.org")))
+    ("c:/Users/nmart/.doom.d/gc.org" "c:/Users/nmart/.gtd/reminders/notes.org" "~/.gtd/tasks/thelist.org")))
  '(org-super-agenda-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

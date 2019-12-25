@@ -1,5 +1,22 @@
 ;;; c:/Users/nmart/.doom.d/my-deft-title.el -*- lexical-binding: t; -*-
 
+(use-package deft
+  :bind (("<f8>" . deft))
+  :commands (deft deft-open-file deft-new-file-named)
+  :config
+  (setq deft-directory "~/.references"
+        deft-auto-save-interval 0
+        deft-use-filename-as-title nil
+        deft-recursive t
+        deft-extensions '("md" "txt" "org")
+        deft-markdown-mode-title-level 1
+        deft-file-naming-rules '((noslash . "-")
+                                 (nospace . "-")
+                                 (case-fn . downcase))))
+
+(require 'my-deft-title)
+(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
+
 (defun my-deft/strip-quotes (str)
   (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
         ((string-match "'\\(.+\\)'" str) (match-string 1 str))
