@@ -1,5 +1,5 @@
-This readme file will contain snippets of each of my config-*.el files
-
+#+OPTIONS: toc:nil
+#+EXPORT_FILE_NAME: README
 * Orgmode
 #+INCLUDE: ./settings/config-orgmode.el src emacs-lisp
 * Agenda Settings
