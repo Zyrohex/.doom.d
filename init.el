@@ -182,10 +182,10 @@
  '(custom-safe-themes
    (quote
     ("17cdbde38cde234ed848a4d34cad63b03594881af1a2c75484d0685cc7a4e6ab" "1a84f1066b99544c58ad26e234f1052ba1bfbd525e7c99b2529f749dbed7f69a" "1f2caf23ffdd94ccb0c224c1a7f4fa8acf897ff068d2f5dc95ba42bbf115f0f5" "38d557defc1374831298f6092edfc48b7408909478ea6786d73e7adbe61e8a54" default)))
- '(doom-big-font-mode t)
+ '(doom-big-font-mode nil)
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.doom.d/gc.org" "c:/Users/nmart/.gtd/reminders/notes.org" "~/.gtd/tasks/thelist.org")))
+    ("c:/Users/nmart/.references/usage/installing-docker.org" "c:/Users/nmart/.doom.d/gc.org" "c:/Users/nmart/.gtd/reminders/notes.org")))
  '(org-super-agenda-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

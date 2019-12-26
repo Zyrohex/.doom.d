@@ -4,7 +4,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-12-25 Wed 17:45 -->
+<!-- 2019-12-25 Wed 18:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>&lrm;</title>
@@ -243,28 +243,9 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org2724454">Orgmode</a></li>
-<li><a href="#org677d84b">Agenda Settings</a></li>
-<li><a href="#orgde59837">Publish Settings</a></li>
-<li><a href="#org7c9689f">Mindmap</a></li>
-<li><a href="#orgf73310e">Deft</a></li>
-<li><a href="#org014b788">Elfeed</a></li>
-<li><a href="#orgbd49b54">Doom Settings</a></li>
-<li><a href="#org3a78c44">Latex</a></li>
-</ul>
-</div>
-</div>
-<p>
-This readme file will contain snippets of each of my config-*.el files
-</p>
-
-<div id="outline-container-org2724454" class="outline-2">
-<h2 id="org2724454">Orgmode</h2>
-<div class="outline-text-2" id="text-org2724454">
+<div id="outline-container-orgdbb405f" class="outline-2">
+<h2 id="orgdbb405f">Orgmode</h2>
+<div class="outline-text-2" id="text-orgdbb405f">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">c:/Users/nmart/.doom.d/org-settings.el -*- lexical-binding: t; -*-</span>
 
@@ -362,7 +343,7 @@ This readme file will contain snippets of each of my config-*.el files
       <span style="color: #dcaeea;">org-agenda-skip-scheduled-if-done</span> t
       <span style="color: #dcaeea;">org-agenda-skip-deadline-if-done</span> t<span style="color: #51afef;">)</span>
 
-<span style="color: #51afef;">(</span><span style="color: #51afef;">setq</span> <span style="color: #dcaeea;">org-habit-show-habits</span> t<span style="color: #51afef;">)</span>
+<span style="color: #51afef;">(</span><span style="color: #51afef;">setq</span> org-habit-show-habits t<span style="color: #51afef;">)</span>
 
 <span style="color: #51afef;">(</span><span style="color: #c678dd;">add-to-list</span> <span style="color: #51afef;">'</span><span style="color: #dcaeea;">org-babel-load-languages</span> <span style="color: #51afef;">'</span><span style="color: #c678dd;">(</span>dot . t<span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
 <span style="color: #51afef;">(</span><span style="color: #c678dd;">add-to-list</span> <span style="color: #51afef;">'</span><span style="color: #dcaeea;">org-babel-load-languages</span> <span style="color: #51afef;">'</span><span style="color: #c678dd;">(</span>plantuml . t<span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
@@ -375,30 +356,33 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 </div>
 </div>
-<div id="outline-container-org677d84b" class="outline-2">
-<h2 id="org677d84b">Agenda Settings</h2>
-<div class="outline-text-2" id="text-org677d84b">
+<div id="outline-container-orgb3990bc" class="outline-2">
+<h2 id="orgb3990bc">Agenda Settings</h2>
+<div class="outline-text-2" id="text-orgb3990bc">
+<p>
+Agenda needs to focus on 4 areas:
+</p>
+<ol class="org-ol">
+<li>Tasks</li>
+<li>Projects</li>
+<li>Someday</li>
+<li>Inbox</li>
+</ol>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">~/.doom.d/agenda.el -*- lexical-binding: t; -*-</span>
 
 <span style="color: #51afef;">(</span><span style="color: #51afef;">after!</span> org-agenda <span style="color: #c678dd;">(</span><span style="color: #51afef;">setq</span> <span style="color: #dcaeea;">org-agenda-custom-commands</span>
                          <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #51afef;">(</span><span style="color: #98be65;">"t"</span> <span style="color: #98be65;">"Tasks"</span>
-                            <span style="color: #c678dd;">(</span><span style="color: #98be65;">(</span>todo <span style="color: #98be65;">"</span><span style="color: #ECBE7B; font-weight: bold;">TODO</span><span style="color: #98be65;">|NEXT|DELEGATED"</span>
+                            <span style="color: #c678dd;">(</span><span style="color: #98be65;">(</span>todo <span style="color: #98be65;">"</span><span style="color: #ECBE7B; font-weight: bold;">TODO</span><span style="color: #98be65;">|NEXT|DELEGATED|</span><span style="color: #51afef; font-weight: bold;">REVIEW</span><span style="color: #98be65;">|WAITING|STARTED"</span>
                                    <span style="color: #51afef;">(</span><span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-overriding-header</span> <span style="color: #98be65;">"Task list"</span><span style="color: #c678dd;">)</span>
-                                    <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-files</span> <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #98be65;">"~/.gtd/tasks/"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span>
+                                    <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-files</span> <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #98be65;">"~/.gtd/tasks"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span>
                                     <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-super-agenda-groups</span>
                                      <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #51afef;">(</span><span style="color: #c678dd;">:auto-property</span> <span style="color: #98be65;">"Group-ID"</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-                             <span style="color: #98be65;">(</span>todo <span style="color: #98be65;">"</span><span style="color: #ECBE7B; font-weight: bold;">TODO</span><span style="color: #98be65;">|NEXT|</span><span style="color: #98be65; font-weight: bold;">NOTE</span><span style="color: #98be65;">|DELEGATED"</span>
+                             <span style="color: #98be65;">(</span>todo <span style="color: #98be65;">"</span><span style="color: #ECBE7B; font-weight: bold;">TODO</span><span style="color: #98be65;">|NEXT|DELEGATED|</span><span style="color: #51afef; font-weight: bold;">REVIEW</span><span style="color: #98be65;">|WAITING|STARTED"</span>
                                    <span style="color: #51afef;">(</span><span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-overriding-header</span> <span style="color: #98be65;">"Projects"</span><span style="color: #c678dd;">)</span>
                                     <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-files</span> <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #98be65;">"~/.gtd/projects/"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span>
                                     <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-super-agenda-groups</span>
                                      <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #51afef;">(</span><span style="color: #c678dd;">:auto-parent</span> t<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-                             <span style="color: #98be65;">(</span>todo <span style="color: #98be65;">"</span><span style="color: #51afef; font-weight: bold;">REVIEW</span><span style="color: #98be65;">"</span>
-                                   <span style="color: #51afef;">(</span><span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-overriding-header</span> <span style="color: #98be65;">"Items to review"</span><span style="color: #c678dd;">)</span>
-                                    <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-files</span> <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #98be65;">"~/.gtd/tasks/"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-                             <span style="color: #98be65;">(</span>todo <span style="color: #98be65;">"WAITING"</span>
-                                   <span style="color: #51afef;">(</span><span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-overriding-header</span> <span style="color: #98be65;">"Tasks in waiting state"</span><span style="color: #c678dd;">)</span>
-                                    <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-files</span> <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #98be65;">"~/.gtd/tasks/"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
                              <span style="color: #98be65;">(</span>todo <span style="color: #98be65;">""</span>
                                    <span style="color: #51afef;">(</span><span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-overriding-header</span> <span style="color: #98be65;">"Emacs Items"</span><span style="color: #c678dd;">)</span>
                                     <span style="color: #c678dd;">(</span><span style="color: #dcaeea;">org-agenda-files</span> <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #98be65;">"~/.doom.d/readme.org"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span>
@@ -452,9 +436,9 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 </div>
 </div>
-<div id="outline-container-orgde59837" class="outline-2">
-<h2 id="orgde59837">Publish Settings</h2>
-<div class="outline-text-2" id="text-orgde59837">
+<div id="outline-container-orgde776ef" class="outline-2">
+<h2 id="orgde776ef">Publish Settings</h2>
+<div class="outline-text-2" id="text-orgde776ef">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">~/.doom.d/publish.el -*- lexical-binding: t; -*-</span>
 
@@ -516,9 +500,9 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 </div>
 </div>
-<div id="outline-container-org7c9689f" class="outline-2">
-<h2 id="org7c9689f">Mindmap</h2>
-<div class="outline-text-2" id="text-org7c9689f">
+<div id="outline-container-orge93597c" class="outline-2">
+<h2 id="orge93597c">Mindmap</h2>
+<div class="outline-text-2" id="text-orge93597c">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">~/.doom.d/graphviz.el -*- lexical-binding: t; -*-</span>
 
@@ -540,9 +524,9 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 </div>
 </div>
-<div id="outline-container-orgf73310e" class="outline-2">
-<h2 id="orgf73310e">Deft</h2>
-<div class="outline-text-2" id="text-orgf73310e">
+<div id="outline-container-orgec88297" class="outline-2">
+<h2 id="orgec88297">Deft</h2>
+<div class="outline-text-2" id="text-orgec88297">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">c:/Users/nmart/.doom.d/my-deft-title.el -*- lexical-binding: t; -*-</span>
 
@@ -559,51 +543,13 @@ This readme file will contain snippets of each of my config-*.el files
         deft-file-naming-rules <span style="color: #51afef;">'</span><span style="color: #98be65;">(</span><span style="color: #51afef;">(</span>noslash . <span style="color: #98be65;">"-"</span><span style="color: #51afef;">)</span>
                                  <span style="color: #51afef;">(</span>nospace . <span style="color: #98be65;">"-"</span><span style="color: #51afef;">)</span>
                                  <span style="color: #51afef;">(</span>case-fn . downcase<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #a9a1e1;">require</span> <span style="color: #51afef;">'</span><span style="color: #a9a1e1;">my-deft-title</span><span style="color: #51afef;">)</span>
-<span style="color: #51afef;">(</span><span style="color: #c678dd;">advice-add</span> <span style="color: #51afef;">'</span><span style="color: #ECBE7B;">deft-parse-title</span> <span style="color: #c678dd;">:around</span> <span style="color: #51afef;">#'</span><span style="color: #ECBE7B;">my-deft/parse-title-with-directory-prepended</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #51afef;">defun</span> <span style="color: #c678dd;">my-deft/strip-quotes</span> <span style="color: #c678dd;">(</span>str<span style="color: #c678dd;">)</span>
-  <span style="color: #c678dd;">(</span><span style="color: #51afef;">cond</span> <span style="color: #98be65;">(</span><span style="color: #51afef;">(</span><span style="color: #a9a1e1;">string-match</span> <span style="color: #98be65;">"\"</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">(</span><span style="color: #98be65;">.+</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">)</span><span style="color: #98be65;">\""</span> str<span style="color: #51afef;">)</span> <span style="color: #51afef;">(</span><span style="color: #c678dd;">match-string</span> <span style="color: #da8548; font-weight: bold;">1</span> str<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-        <span style="color: #98be65;">(</span><span style="color: #51afef;">(</span><span style="color: #a9a1e1;">string-match</span> <span style="color: #98be65;">"'</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">(</span><span style="color: #98be65;">.+</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">)</span><span style="color: #98be65;">'"</span> str<span style="color: #51afef;">)</span> <span style="color: #51afef;">(</span><span style="color: #c678dd;">match-string</span> <span style="color: #da8548; font-weight: bold;">1</span> str<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-        <span style="color: #98be65;">(</span>t str<span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #51afef;">defun</span> <span style="color: #c678dd;">my-deft/parse-title-from-front-matter-data</span> <span style="color: #c678dd;">(</span>str<span style="color: #c678dd;">)</span>
-  <span style="color: #c678dd;">(</span><span style="color: #51afef;">if</span> <span style="color: #98be65;">(</span><span style="color: #a9a1e1;">string-match</span> <span style="color: #98be65;">"^title: </span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">(</span><span style="color: #98be65;">.+</span><span style="color: #51afef; font-weight: bold;">\\</span><span style="color: #51afef; font-weight: bold;">)</span><span style="color: #98be65;">"</span> str<span style="color: #98be65;">)</span>
-      <span style="color: #98be65;">(</span><span style="color: #51afef;">let*</span> <span style="color: #51afef;">(</span><span style="color: #c678dd;">(</span>title-text <span style="color: #98be65;">(</span><span style="color: #c678dd;">my-deft/strip-quotes</span> <span style="color: #51afef;">(</span><span style="color: #c678dd;">match-string</span> <span style="color: #da8548; font-weight: bold;">1</span> str<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span>
-             <span style="color: #c678dd;">(</span>is-draft <span style="color: #98be65;">(</span><span style="color: #a9a1e1;">string-match</span> <span style="color: #98be65;">"^draft: true"</span> str<span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-        <span style="color: #51afef;">(</span><span style="color: #a9a1e1;">concat</span> <span style="color: #c678dd;">(</span><span style="color: #51afef;">if</span> is-draft <span style="color: #98be65;">"[DRAFT] "</span> <span style="color: #98be65;">""</span><span style="color: #c678dd;">)</span> title-text<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #51afef;">defun</span> <span style="color: #c678dd;">my-deft/deft-file-relative-directory</span> <span style="color: #c678dd;">(</span>filename<span style="color: #c678dd;">)</span>
-  <span style="color: #c678dd;">(</span><span style="color: #a9a1e1;">file-name-directory</span> <span style="color: #98be65;">(</span><span style="color: #c678dd;">file-relative-name</span> filename deft-directory<span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #51afef;">defun</span> <span style="color: #c678dd;">my-deft/title-prefix-from-file-name</span> <span style="color: #c678dd;">(</span>filename<span style="color: #c678dd;">)</span>
-  <span style="color: #c678dd;">(</span><span style="color: #51afef;">let</span> <span style="color: #98be65;">(</span><span style="color: #51afef;">(</span>reldir <span style="color: #c678dd;">(</span><span style="color: #c678dd;">my-deft/deft-file-relative-directory</span> filename<span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-    <span style="color: #98be65;">(</span><span style="color: #51afef;">if</span> reldir
-        <span style="color: #51afef;">(</span><span style="color: #a9a1e1;">concat</span> <span style="color: #c678dd;">(</span><span style="color: #a9a1e1;">directory-file-name</span> reldir<span style="color: #c678dd;">)</span> <span style="color: #98be65;">" &gt; "</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #51afef;">defun</span> <span style="color: #c678dd;">my-deft/parse-title-with-directory-prepended</span> <span style="color: #c678dd;">(</span>orig <span style="color: #ECBE7B;">&amp;rest</span> args<span style="color: #c678dd;">)</span>
-  <span style="color: #c678dd;">(</span><span style="color: #51afef;">let</span> <span style="color: #98be65;">(</span><span style="color: #51afef;">(</span>str <span style="color: #c678dd;">(</span><span style="color: #a9a1e1;">nth</span> <span style="color: #da8548; font-weight: bold;">1</span> args<span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-        <span style="color: #51afef;">(</span>filename <span style="color: #c678dd;">(</span><span style="color: #a9a1e1;">car</span> args<span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-    <span style="color: #98be65;">(</span><span style="color: #a9a1e1;">concat</span>
-      <span style="color: #51afef;">(</span><span style="color: #c678dd;">my-deft/title-prefix-from-file-name</span> filename<span style="color: #51afef;">)</span>
-      <span style="color: #51afef;">(</span><span style="color: #51afef;">let</span> <span style="color: #c678dd;">(</span><span style="color: #98be65;">(</span>nondir <span style="color: #51afef;">(</span><span style="color: #a9a1e1;">file-name-nondirectory</span> filename<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span>
-        <span style="color: #c678dd;">(</span><span style="color: #51afef;">if</span> <span style="color: #98be65;">(</span><span style="color: #51afef;">or</span> <span style="color: #51afef;">(</span><span style="color: #c678dd;">string-prefix-p</span> <span style="color: #98be65;">"README"</span> nondir<span style="color: #51afef;">)</span>
-                <span style="color: #51afef;">(</span><span style="color: #c678dd;">string-suffix-p</span> <span style="color: #98be65;">".txt"</span> filename<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span>
-            nondir
-          <span style="color: #98be65;">(</span><span style="color: #51afef;">if</span> <span style="color: #51afef;">(</span><span style="color: #c678dd;">string-prefix-p</span> <span style="color: #98be65;">"---\n"</span> str<span style="color: #51afef;">)</span>
-              <span style="color: #51afef;">(</span><span style="color: #c678dd;">my-deft/parse-title-from-front-matter-data</span>
-               <span style="color: #c678dd;">(</span><span style="color: #a9a1e1;">car</span> <span style="color: #98be65;">(</span><span style="color: #c678dd;">split-string</span> <span style="color: #51afef;">(</span><span style="color: #a9a1e1;">substring</span> str <span style="color: #da8548; font-weight: bold;">4</span><span style="color: #51afef;">)</span> <span style="color: #98be65;">"\n---\n"</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-            <span style="color: #51afef;">(</span><span style="color: #a9a1e1;">apply</span> orig args<span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span><span style="color: #98be65;">)</span><span style="color: #c678dd;">)</span><span style="color: #51afef;">)</span>
-
-<span style="color: #51afef;">(</span><span style="color: #a9a1e1;">provide</span> <span style="color: #51afef;">'</span><span style="color: #a9a1e1;">my-deft-title</span><span style="color: #51afef;">)</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org014b788" class="outline-2">
-<h2 id="org014b788">Elfeed</h2>
-<div class="outline-text-2" id="text-org014b788">
+<div id="outline-container-org1b3db06" class="outline-2">
+<h2 id="org1b3db06">Elfeed</h2>
+<div class="outline-text-2" id="text-org1b3db06">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">c:/Users/nmart/.doom.d/settings/config-elfeed.el -*- lexical-binding: t; -*-</span>
 
@@ -624,9 +570,9 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 </div>
 </div>
-<div id="outline-container-orgbd49b54" class="outline-2">
-<h2 id="orgbd49b54">Doom Settings</h2>
-<div class="outline-text-2" id="text-orgbd49b54">
+<div id="outline-container-org19820b4" class="outline-2">
+<h2 id="org19820b4">Doom Settings</h2>
+<div class="outline-text-2" id="text-org19820b4">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">c:/Users/nmart/.doom.d/settings/config-doom.el -*- lexical-binding: t; -*-</span>
 
@@ -637,9 +583,9 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 </div>
 </div>
-<div id="outline-container-org3a78c44" class="outline-2">
-<h2 id="org3a78c44">Latex</h2>
-<div class="outline-text-2" id="text-org3a78c44">
+<div id="outline-container-orgca22f90" class="outline-2">
+<h2 id="orgca22f90">Latex</h2>
+<div class="outline-text-2" id="text-orgca22f90">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #5B6268;">;;; </span><span style="color: #5B6268;">c:/Users/nmart/.doom.d/latex-classes.el -*- lexical-binding: t; -*-</span>
 
@@ -698,7 +644,7 @@ This readme file will contain snippets of each of my config-*.el files
 </div>
 <div id="postamble" class="status">
 <p class="email">Email: <a href="mailto:nmart@DESKTOP-S5UNCQP">nmart@DESKTOP-S5UNCQP</a></p>
-<p class="date">Created: 2019-12-25 Wed 17:45</p>
+<p class="date">Created: 2019-12-25 Wed 18:06</p>
 </div>
 </body>
 </html>

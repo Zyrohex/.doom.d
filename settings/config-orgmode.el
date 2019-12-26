@@ -30,8 +30,9 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "REVIEW(R!)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
-      org-todo-keyword-faces
+      '((sequence "TODO(t)" "REVIEW(R!)" "WAITING(w!)" "IN-PROGRESS(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
+
+(setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
         ("REVIEW" :foreground "royal blue" :weight bold)
         ("WAITING" :foreground "Green Yellow" :weight bold)

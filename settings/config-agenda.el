@@ -2,28 +2,6 @@
 
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
-                            ((todo "TODO|NEXT|DELEGATED"
-                                   ((org-agenda-overriding-header "Task list")
-                                    (org-agenda-files '("~/.gtd/tasks/"))
-                                    (org-super-agenda-groups
-                                     '((:auto-property "Group-ID")))))
-                             (todo "TODO|NEXT|NOTE|DELEGATED"
-                                   ((org-agenda-overriding-header "Projects")
-                                    (org-agenda-files '("~/.gtd/projects/"))
-                                    (org-super-agenda-groups
-                                     '((:auto-parent t)))))
-                             (todo "REVIEW"
-                                   ((org-agenda-overriding-header "Items to review")
-                                    (org-agenda-files '("~/.gtd/tasks/"))))
-                             (todo "WAITING"
-                                   ((org-agenda-overriding-header "Tasks in waiting state")
-                                    (org-agenda-files '("~/.gtd/tasks/"))))
-                             (todo ""
-                                   ((org-agenda-overriding-header "Emacs Items")
-                                    (org-agenda-files '("~/.doom.d/readme.org"))
-                                    (org-super-agenda-groups
-                                     '((:auto-parent t)))))))
-                           ("c" "On Calendar"
                             ((agenda ""
                                      ((org-agenda-files '("~/.gtd/habits.org" "~/.gtd/tasks/" "~/.gtd/projects/"))
                                       (org-agenda-overriding-header "What's on my calendar")
@@ -42,7 +20,22 @@
                                                 :order 3)
                                          (:name "Deadline approaching"
                                                 :deadline t
-                                                :order 4)))))))
+                                                :order 4)))))
+                             (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
+                                   ((org-agenda-overriding-header "Task list")
+                                    (org-agenda-files '("~/.gtd/tasks"))
+                                    (org-super-agenda-groups
+                                     '((:auto-property "Group-ID")))))
+                             (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
+                                   ((org-agenda-overriding-header "Projects")
+                                    (org-agenda-files '("~/.gtd/projects/"))
+                                    (org-super-agenda-groups
+                                     '((:auto-parent t)))))
+                             (todo ""
+                                   ((org-agenda-overriding-header "Emacs Items")
+                                    (org-agenda-files '("~/.doom.d/readme.org"))
+                                    (org-super-agenda-groups
+                                     '((:auto-parent t)))))))
                            ("n" "Notes"
                             ((todo ""
                                    ((org-agenda-files (f-files "~/.gtd/notes"))

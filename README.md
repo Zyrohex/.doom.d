@@ -111,26 +111,27 @@
 
 # Agenda Settings
 
+Agenda needs to focus on 4 areas:
+
+1.  Tasks
+2.  Projects
+3.  Someday
+4.  Inbox
+
     ;;; ~/.doom.d/agenda.el -*- lexical-binding: t; -*-
     
     (after! org-agenda (setq org-agenda-custom-commands
                              '(("t" "Tasks"
-                                ((todo "TODO|NEXT|DELEGATED"
+                                ((todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|STARTED"
                                        ((org-agenda-overriding-header "Task list")
-                                        (org-agenda-files '("~/.gtd/tasks/"))
+                                        (org-agenda-files '("~/.gtd/tasks"))
                                         (org-super-agenda-groups
                                          '((:auto-property "Group-ID")))))
-                                 (todo "TODO|NEXT|NOTE|DELEGATED"
+                                 (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|STARTED"
                                        ((org-agenda-overriding-header "Projects")
                                         (org-agenda-files '("~/.gtd/projects/"))
                                         (org-super-agenda-groups
                                          '((:auto-parent t)))))
-                                 (todo "REVIEW"
-                                       ((org-agenda-overriding-header "Items to review")
-                                        (org-agenda-files '("~/.gtd/tasks/"))))
-                                 (todo "WAITING"
-                                       ((org-agenda-overriding-header "Tasks in waiting state")
-                                        (org-agenda-files '("~/.gtd/tasks/"))))
                                  (todo ""
                                        ((org-agenda-overriding-header "Emacs Items")
                                         (org-agenda-files '("~/.doom.d/readme.org"))
@@ -279,44 +280,6 @@
             deft-file-naming-rules '((noslash . "-")
                                      (nospace . "-")
                                      (case-fn . downcase))))
-    
-    (require 'my-deft-title)
-    (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
-    
-    (defun my-deft/strip-quotes (str)
-      (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
-            ((string-match "'\\(.+\\)'" str) (match-string 1 str))
-            (t str)))
-    
-    (defun my-deft/parse-title-from-front-matter-data (str)
-      (if (string-match "^title: \\(.+\\)" str)
-          (let* ((title-text (my-deft/strip-quotes (match-string 1 str)))
-                 (is-draft (string-match "^draft: true" str)))
-            (concat (if is-draft "[DRAFT] " "") title-text))))
-    
-    (defun my-deft/deft-file-relative-directory (filename)
-      (file-name-directory (file-relative-name filename deft-directory)))
-    
-    (defun my-deft/title-prefix-from-file-name (filename)
-      (let ((reldir (my-deft/deft-file-relative-directory filename)))
-        (if reldir
-            (concat (directory-file-name reldir) " > "))))
-    
-    (defun my-deft/parse-title-with-directory-prepended (orig &rest args)
-      (let ((str (nth 1 args))
-            (filename (car args)))
-        (concat
-          (my-deft/title-prefix-from-file-name filename)
-          (let ((nondir (file-name-nondirectory filename)))
-            (if (or (string-prefix-p "README" nondir)
-                    (string-suffix-p ".txt" filename))
-                nondir
-              (if (string-prefix-p "---\n" str)
-                  (my-deft/parse-title-from-front-matter-data
-                   (car (split-string (substring str 4) "\n---\n")))
-                (apply orig args)))))))
-    
-    (provide 'my-deft-title)
 
 
 # Elfeed

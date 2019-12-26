@@ -1,15 +1,20 @@
 ;; Place your private configuration here
-(load! "./settings/config-keys")
+(load! "./settings/config-doom")
+(load! "./settings/config-orgmode")
 (load! "./settings/config-agenda")
+(load! "./settings/config-deft")
+(load! "./settings/config-keys")
 (load! "./settings/config-publish")
 (load! "./settings/config-mindmap")
-(load! "./settings/config-orgmode")
-(load! "./settings/config-deft")
 (load! "./settings/config-elfeed")
-(load! "./settings/config-doom")
-(load! "./settings/config-latex")
+;(load! "./settings/config-latex")
+(load! "./settings/config-dictionary")
 
-(use-package dictionary)
+;; Custom modules
+(load! "./modules/my-deft-title")
+
+(require 'my-deft-title)
+(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
 (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3)
