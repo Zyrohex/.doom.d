@@ -3,7 +3,7 @@
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
                             ((agenda ""
-                                     ((org-agenda-files '("~/.gtd/habits.org" "~/.gtd/tasks/" "~/.gtd/projects/"))
+                                     ((org-agenda-files '("~/.gtd/habits.org" "~/.gtd/tasks.org" "~/.gtd/projects.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
                                       (org-agenda-start-day (org-today))
@@ -23,26 +23,21 @@
                                                 :order 4)))))
                              (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
                                    ((org-agenda-overriding-header "Task list")
-                                    (org-agenda-files '("~/.gtd/tasks"))
+                                    (org-agenda-files '("~/.gtd/tasks.org"))
                                     (org-super-agenda-groups
                                      '((:auto-property "Group-ID")))))
                              (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
                                    ((org-agenda-overriding-header "Projects")
-                                    (org-agenda-files '("~/.gtd/projects/"))
-                                    (org-super-agenda-groups
-                                     '((:auto-parent t)))))
-                             (todo ""
-                                   ((org-agenda-overriding-header "Emacs Items")
-                                    (org-agenda-files '("~/.doom.d/readme.org"))
+                                    (org-agenda-files '("~/.gtd/projects.org"))
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))
                            ("n" "Notes"
                             ((todo ""
-                                   ((org-agenda-files (f-files "~/.gtd/notes"))
+                                   ((org-agenda-files (f-files "~/.references/notes/" "~/.references/usage/"))
                                     (org-agenda-overriding-header "Note Tasks")
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))))
-                           ("i" "Inbox/Someday"
+                           ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.gtd/inbox.org"))
                                     (org-agenda-overriding-header "Items in my inbox")
@@ -52,11 +47,11 @@
                            ("x" "Get to someday"
                             ((todo "SOMEDAY"
                                    ((org-agenda-overriding-header "Things I need to get to someday")
-                                    (org-agenda-files '("~/.gtd/tasks/"))
+                                    (org-agenda-files '("~/.gtd/"))
                                     (org-super-agenda-groups
                                      '((:auto-parent t)))))
                              (todo "SOMEDAY"
                                    ((org-agenda-overriding-header "Projects marked Someday")
-                                    (org-agenda-files '("~/.gtd/projects/"))
+                                    (org-agenda-files '("~/.gtd/"))
                                     (org-super-agenda-groups
                                      '((:auto-parent t))))))))))

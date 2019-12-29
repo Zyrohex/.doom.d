@@ -1,14 +1,17 @@
 ;; Place your private configuration here
 (load! "./settings/config-doom")
 (load! "./settings/config-orgmode")
+(load! "./settings/config-orgmode_capture")
 (load! "./settings/config-agenda")
-(load! "./settings/config-deft")
 (load! "./settings/config-keys")
+(load! "./settings/config-deft")
 (load! "./settings/config-publish")
-(load! "./settings/config-mindmap")
+;(load! "./settings/config-mindmap")
 (load! "./settings/config-elfeed")
-;(load! "./settings/config-latex")
+(load! "./settings/config-plantuml")
 (load! "./settings/config-dictionary")
+(load! "./settings/config-popups")
+(load! "./settings/config-latex")
 
 ;; Custom modules
 (load! "./modules/my-deft-title")

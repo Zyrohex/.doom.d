@@ -35,24 +35,12 @@
 (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
         ("REVIEW" :foreground "royal blue" :weight bold)
-        ("WAITING" :foreground "Green Yellow" :weight bold)
-        ("STARTED" :foreground "snow" :weight bold)
-        ("NEXT" :foreground "tomato" :weight bold)
-        ("DELEGATED" :foreground "tomato" :weight bold)
+        ("WAITING" :foreground "light sea green" :weight bold)
+        ("IN-PROGRESS" :foreground "navajo white" :weight bold)
+        ("NEXT" :foreground "violet red" :weight bold)
+        ("DELEGATED" :foreground "sky blue" :weight bold)
         ("SOMEDAY" :foreground "yellow" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold)))
-
-(setq org-capture-templates
-      '(("h" "Habit" entry (file"~/.gtd/habit.org") ; Habit tracking in org agenda
-         "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a +1d>>\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:LOGGING: DONE(!)\n:END:") ; Default scheduled for daily reminders (+1d) [you can change to weekly (+1w) monthly (+1m) or yearly (+1y) and auto-sets style to "HABIT" with Repeat state to "TODO".
-        ("g" "Get Shit Done" entry (file"~/.gtd/inbox.org") ; Sets all "Get Shit Done" captures to INBOX.ORG
-         "* TODO %? %^{Group-ID}p\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("c" "Conversations" entry (file+olp+datetree "~/.gtd/conversations.org")
-         "** %?%^{PERSON}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:END:\n:LOGBOOK:\n:END:" :tree-type week)
-        ("d" "Diary" entry (file+olp+datetree "~/.gtd/journey/diary.org")
-         "** [%<%H:%M>] %? %^{SUBJECT}p" :tree-type week)
-        ("j" "Journal" entry (file+olp+datetree "~/.gtd/journal.org")
-         "** [%<%H:%M>] %?%^{ACCOUNT}p%^{SOURCE}p%^{AUDIENCE}p%^{TASK}p%^{TOPIC}p\n:PROPERTIES:\n:CREATED: <%<%Y-%m-%d>>\n:MONTH:    %<%b>\n:WEEK:     %<W%V>\n:DAY:      %<%a>\n:END:\n:LOGBOOK:\n:END:" :tree-type week :clock-in t :clock-resume t)))
 
 (setq org-use-speed-commands t
       org-image-actual-width nil
@@ -60,7 +48,7 @@
       +org-export-directory "~/.export/")
 
 (setq org-export-backends
-      '((pandoc md html latex odt)))
+      '((ascii md pandoc markdown html latex)))
 
 (setq org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css\" type=\"text/css\"/>"
       org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css\" type=\"text/css\"/>"

@@ -181,11 +181,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("17cdbde38cde234ed848a4d34cad63b03594881af1a2c75484d0685cc7a4e6ab" "1a84f1066b99544c58ad26e234f1052ba1bfbd525e7c99b2529f749dbed7f69a" "1f2caf23ffdd94ccb0c224c1a7f4fa8acf897ff068d2f5dc95ba42bbf115f0f5" "38d557defc1374831298f6092edfc48b7408909478ea6786d73e7adbe61e8a54" default)))
+    ("97538cc113aee49648db14a7d9f3aaccc8798f84d8255f24168c9702d205abe0" "8093b3027cdf83248ea794b68a5e3a9808fce93a2f450779510f04ba02afee4e" "d16a338fae245938444b0020487b774c86c7a7871d4218f463a776d15c7bebc8" "990f07eca3816eedd98d95d36b93a7a0028a9ba540c400314f4d9dceabf08982" "e9ed1019f0bdf754a36ec468c57a801c36869146d4da7a3f39e868d447647713" "797122315ca9898dab709e0d5d374c0e4aef19d94d87f1328dc158223204b476" "4466190c9e0f24f3bff1a755f8e6c39db1dba49719f0fe63a4b8a895164de809" "8683ed1804c0a09f02b8f535a95c33d18e4c078996e1774039a2b19d6ee01b4c" "17cdbde38cde234ed848a4d34cad63b03594881af1a2c75484d0685cc7a4e6ab" "1a84f1066b99544c58ad26e234f1052ba1bfbd525e7c99b2529f749dbed7f69a" "1f2caf23ffdd94ccb0c224c1a7f4fa8acf897ff068d2f5dc95ba42bbf115f0f5" "38d557defc1374831298f6092edfc48b7408909478ea6786d73e7adbe61e8a54" default)))
  '(doom-big-font-mode nil)
  '(org-agenda-files
    (quote
-    ("c:/Users/nmart/.references/usage/installing-docker.org" "c:/Users/nmart/.doom.d/gc.org" "c:/Users/nmart/.gtd/reminders/notes.org")))
+    ("c:/Users/nmart/.gtd/someday.org" "c:/Users/nmart/.gtd/tasks.org" "c:/Users/nmart/.references/usage/emacs.org" "c:/Users/nmart/.references/usage/installing-docker.org" "c:/Users/nmart/.doom.d/gc.org")))
  '(org-super-agenda-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -1,5 +1,16 @@
 
 
+# Doom Settings
+
+    ;;; c:/Users/nmart/.doom.d/settings/config-doom.el -*- lexical-binding: t; -*-
+    
+    (setq doom-theme 'doom-city-lights)
+    
+    (setq doom-font (font-spec :family "Source Code Pro" :size 26)
+          doom-big-font (font-spec :family "Source Code Pro" :size 32)
+          doom-variable-pitch-font (font-spec :family "Fira Code"))
+
+
 # Orgmode
 
     ;;; c:/Users/nmart/.doom.d/org-settings.el -*- lexical-binding: t; -*-
@@ -34,8 +45,9 @@
             ("attach" . "~/org/.attach/")))
     
     (setq org-todo-keywords
-          '((sequence "TODO(t)" "REVIEW(R!)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))
-          org-todo-keyword-faces
+          '((sequence "TODO(t)" "REVIEW(R!)" "WAITING(w!)" "IN-PROGRESS(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
+    
+    (setq org-todo-keyword-faces
           '(("TODO" :foreground "tomato" :weight bold)
             ("REVIEW" :foreground "royal blue" :weight bold)
             ("WAITING" :foreground "Green Yellow" :weight bold)
@@ -63,7 +75,7 @@
           +org-export-directory "~/.export/")
     
     (setq org-export-backends
-          '((pandoc md html latex odt)))
+          '((pandoc md html latex)))
     
     (setq org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css\" type=\"text/css\"/>"
           org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css\" type=\"text/css\"/>"
@@ -122,24 +134,8 @@ Agenda needs to focus on 4 areas:
     
     (after! org-agenda (setq org-agenda-custom-commands
                              '(("t" "Tasks"
-                                ((todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|STARTED"
-                                       ((org-agenda-overriding-header "Task list")
-                                        (org-agenda-files '("~/.gtd/tasks"))
-                                        (org-super-agenda-groups
-                                         '((:auto-property "Group-ID")))))
-                                 (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|STARTED"
-                                       ((org-agenda-overriding-header "Projects")
-                                        (org-agenda-files '("~/.gtd/projects/"))
-                                        (org-super-agenda-groups
-                                         '((:auto-parent t)))))
-                                 (todo ""
-                                       ((org-agenda-overriding-header "Emacs Items")
-                                        (org-agenda-files '("~/.doom.d/readme.org"))
-                                        (org-super-agenda-groups
-                                         '((:auto-parent t)))))))
-                               ("c" "On Calendar"
                                 ((agenda ""
-                                         ((org-agenda-files '("~/.gtd/habits.org" "~/.gtd/tasks/" "~/.gtd/projects/"))
+                                         ((org-agenda-files '("~/.gtd/habits.org" "~/.gtd/tasks.org" "~/.gtd/projects.org"))
                                           (org-agenda-overriding-header "What's on my calendar")
                                           (org-agenda-span 'day)
                                           (org-agenda-start-day (org-today))
@@ -156,14 +152,24 @@ Agenda needs to focus on 4 areas:
                                                     :order 3)
                                              (:name "Deadline approaching"
                                                     :deadline t
-                                                    :order 4)))))))
+                                                    :order 4)))))
+                                 (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
+                                       ((org-agenda-overriding-header "Task list")
+                                        (org-agenda-files '("~/.gtd/tasks.org"))
+                                        (org-super-agenda-groups
+                                         '((:auto-property "Group-ID")))))
+                                 (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
+                                       ((org-agenda-overriding-header "Projects")
+                                        (org-agenda-files '("~/.gtd/projects.org"))
+                                        (org-super-agenda-groups
+                                         '((:auto-parent t)))))))
                                ("n" "Notes"
                                 ((todo ""
-                                       ((org-agenda-files (f-files "~/.gtd/notes"))
+                                       ((org-agenda-files (f-files "~/.references/notes/" "~/.references/usage/"))
                                         (org-agenda-overriding-header "Note Tasks")
                                         (org-super-agenda-groups
                                          '((:auto-parent t)))))))
-                               ("i" "Inbox/Someday"
+                               ("i" "Inbox"
                                 ((todo ""
                                        ((org-agenda-files '("~/.gtd/inbox.org"))
                                         (org-agenda-overriding-header "Items in my inbox")
@@ -173,14 +179,70 @@ Agenda needs to focus on 4 areas:
                                ("x" "Get to someday"
                                 ((todo "SOMEDAY"
                                        ((org-agenda-overriding-header "Things I need to get to someday")
-                                        (org-agenda-files '("~/.gtd/tasks/"))
+                                        (org-agenda-files '("~/.gtd/"))
                                         (org-super-agenda-groups
                                          '((:auto-parent t)))))
                                  (todo "SOMEDAY"
                                        ((org-agenda-overriding-header "Projects marked Someday")
-                                        (org-agenda-files '("~/.gtd/projects/"))
+                                        (org-agenda-files '("~/.gtd/"))
                                         (org-super-agenda-groups
                                          '((:auto-parent t))))))))))
+
+
+# Deft
+
+    ;;; c:/Users/nmart/.doom.d/my-deft-title.el -*- lexical-binding: t; -*-
+    
+    (use-package deft
+      :bind (("<f8>" . deft))
+      :commands (deft deft-open-file deft-new-file-named)
+      :config
+      (setq deft-directory "~/.references"
+            deft-auto-save-interval 0
+            deft-use-filename-as-title nil
+            deft-current-sort-method 'title
+            deft-recursive t
+            deft-extensions '("md" "txt" "org")
+            deft-markdown-mode-title-level 1
+            deft-file-naming-rules '((noslash . "-")
+                                     (nospace . "-")
+                                     (case-fn . downcase))))
+
+
+# Bind Keys
+
+Minor tweaks to add additional keybindings
+
+    ;;; c:/Users/nmart/.doom.d/+keys.el -*- lexical-binding: t; -*-
+    
+    (map! :leader
+          :n "e" #'ace-window
+          :n "!" #'swiper
+          :n "@" #'swiper-all
+          :n "X" #'helm-org-capture-templates
+          (:prefix "o"
+            :n "e" #'elfeed
+            :n "u" #'elfeed-update
+            :n "v" #'org-brain-visualize
+            :n "w" #'deft
+            :n "n" #'plain-org-wiki
+            :n "g" #'plain-org-gtd)
+          (:prefix "n"
+            :n "D" #'dictionary-lookup-definition
+            :n "T" #'powerthesaurus-lookup-word)
+          (:prefix "f"
+            :n "w" #'deft
+            :n "g" #'plain-org-gtd
+            :n "n" #'plain-org-wiki
+            :n "d" #'org-journal-new-entry)
+          (:prefix "b"
+            :n "c" #'org-board-new
+            :n "e" #'org-board-open)
+          (:prefix "t"
+            :n "s" #'org-narrow-to-subtree
+            :n "w" #'widen)
+          (:prefix "/"
+            :n "j" #'org-journal-search))
 
 
 # Publish Settings
@@ -193,42 +255,41 @@ Agenda needs to focus on 4 areas:
              :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
              :publishing-directory "~/publish_html/references/images"
              :publishing-function org-publish-attachment)
-            ("references"
+            ("references-md"
              :base-directory "~/.references/"
-             :publishing-directory "~/publish_html/references"
+             :publishing-directory "~/publish_md"
              :base-extension "org"
              :recursive t
-             :html-link-home "./sitemap.html"
-             :auto-sitemap t
+             :html-link-home "../readme.md"
+             :sitemap-filename "index"
+             :sitemap-title "Nick's Site generated by Emacs"
+             :headline-levels 5
              :publishing-function org-html-publish-to-html
              :section-numbers nil
-             :html-head "<link rel=\"stylesheet\"
-    href=\"https://codepen.io/nmartin84/pen/JjoYrzP.css\"
-    type=\"text/css\"/>"
+    ;         :html-head "<link rel=\"stylesheet\"
+    ;href=\"https://codepen.io/nmartin84/pen/ExaWKqy.css\"
+    ;type=\"text/css\"/>"
              :with-email t
              :html-link-up "."
              :auto-preamble t
              :with-toc t)
             ("tasks"
              :base-directory "~/.gtd/"
-             :publishing-directory "~/publish_html/gtd"
+             :publishing-directory "~/publish_tasks"
              :base-extension "org"
              :recursive t
-             :html-link-home "./sitemap.html"
              :auto-sitemap t
+             :sitemap-filename "index"
+             :html-link-home "../index.html"
              :publishing-function org-html-publish-to-html
              :section-numbers nil
-             :html-head "<link rel=\"stylesheet\"
-    href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
-    type=\"text/css\"/>"
+    ;         :html-head "<link rel=\"stylesheet\"
+    ;href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
+    ;type=\"text/css\"/>"
              :with-email t
-             :html-link-up "."
+             :html-link-up ".."
              :auto-preamble t
              :with-toc t)
-            ("test"
-             :base-directory "~/.references/"
-             :publishing-function org-html-publish-to-html
-             :publishing-directory "/ssh:nick@Docker-Box:~/html/publish/")
             ("pdf"
              :base-directory "~/.gtd/references/"
              :base-extension "org"
@@ -240,10 +301,12 @@ Agenda needs to focus on 4 areas:
              :latex-class "koma-article"
              :headline-levels 5
              :with-toc t)
-             ("myprojectweb" :components("references-attachments" "pdf" "test" "references" "tasks"))))
+             ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks"))))
 
 
 # Mindmap
+
+Create mindmaps from org files, no requirements.
 
     ;;; ~/.doom.d/graphviz.el -*- lexical-binding: t; -*-
     
@@ -261,25 +324,6 @@ Agenda needs to focus on 4 areas:
       ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
       ;; (setq org-mind-map-engine "circo")  ; Circular Layout
       )
-
-
-# Deft
-
-    ;;; c:/Users/nmart/.doom.d/my-deft-title.el -*- lexical-binding: t; -*-
-    
-    (use-package deft
-      :bind (("<f8>" . deft))
-      :commands (deft deft-open-file deft-new-file-named)
-      :config
-      (setq deft-directory "~/.references"
-            deft-auto-save-interval 0
-            deft-use-filename-as-title nil
-            deft-recursive t
-            deft-extensions '("md" "txt" "org")
-            deft-markdown-mode-title-level 1
-            deft-file-naming-rules '((noslash . "-")
-                                     (nospace . "-")
-                                     (case-fn . downcase))))
 
 
 # Elfeed
@@ -301,13 +345,38 @@ Agenda needs to focus on 4 areas:
                       elfeed-db-directory "~/.elfeed/"))
 
 
-# Doom Settings
+# Plantuml
 
-    ;;; c:/Users/nmart/.doom.d/settings/config-doom.el -*- lexical-binding: t; -*-
+Requires Graphviz to be installed on your system.
+
+    (use-package ob-plantuml
+      :ensure nil
+      :commands
+      (org-babel-execute:plantuml)
+      :config
+      (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
+
+
+# Dictionary
+
+Basics for dictionary
+
+    ;;; c:/Users/nmart/.doom.d/settings/config-dictionary.el -*- lexical-binding: t; -*-
     
-    (setq doom-font (font-spec :family "Source Code Pro" :size 26)
-          doom-big-font (font-spec :family "Source Code Pro" :size 32)
-          doom-variable-pitch-font (font-spec :family "Fira Code"))
+    (use-package dictionary
+      :config
+      (setq dictionary-tooltip-mode t))
+
+
+# Popups
+
+Configuring popup rules
+
+    ;;; c:/Users/nmart/.doom.d/settings/config-popups.el -*- lexical-binding: t; -*-
+    
+    (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
+    (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3)
+    (set-popup-rule! "*eww pdf*" :side 'right :width 60 :select t :vslot 3 :ttl 3)
 
 
 # Latex
@@ -318,7 +387,7 @@ Agenda needs to focus on 4 areas:
       '("xelatex -interaction nonstopmode %f"
          "xelatex -interaction nonstopmode %f"))
     
-    (add-to-list 'org-latex-classes
+    (setq org-latex-classes
                  '("koma-article"
                    "\\documentclass{scrartcl}
     \\usepackage[T1]{fontenc}
@@ -336,30 +405,4 @@ Agenda needs to focus on 4 areas:
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-    
-    (setq org-latex-classes '(("article"
-         "\\documentclass[11pt]{article}"
-         ("\\section{%s}" . "\\section*{%s}")
-         ("\\subsection{%s}" . "\\subsection*{%s}")
-         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-         ("\\paragraph{%s}" . "\\paragraph*{%s}")
-         ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-        ("report"
-         "\\documentclass[11pt]{report}"
-         ("\\part{%s}" . "\\part*{%s}")
-         ("\\chapter{%s}" . "\\chapter*{%s}")
-         ("\\section{%s}" . "\\section*{%s}")
-         ("\\subsection{%s}" . "\\subsection*{%s}")
-         ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-        ("book"
-         "\\documentclass[11pt]{book}"
-         ("\\part{%s}" . "\\part*{%s}")
-         ("\\chapter{%s}" . "\\chapter*{%s}")
-         ("\\section{%s}" . "\\section*{%s}")
-         ("\\subsection{%s}" . "\\subsection*{%s}")
-         ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-        ("beamer"
-         "\\documentclass{beamer}"
-         org-beamer-sectioning
-         )))
 

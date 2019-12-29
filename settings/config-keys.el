@@ -4,8 +4,10 @@
       :n "e" #'ace-window
       :n "!" #'swiper
       :n "@" #'swiper-all
-      :n "X" #'helm-org-capture-templates
+      :n "X" #'org-capture
       (:prefix "o"
+        :n "." #'org-wiki-helm
+        :n "b" #'org-wiki-new
         :n "e" #'elfeed
         :n "u" #'elfeed-update
         :n "v" #'org-brain-visualize
