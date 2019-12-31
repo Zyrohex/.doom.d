@@ -1,27 +1,29 @@
 ;;; c:/Users/nmart/.doom.d/+keys.el -*- lexical-binding: t; -*-
 
+(map!
+ :nvime "<f5> d" #'helm-org-rifle-directories
+ :nvime "<f5> b" #'helm-org-rifle-current-buffer
+ :nvime "<f5> a" #'helm-org-rifle-agenda-files)
+
 (map! :leader
       :n "e" #'ace-window
       :n "!" #'swiper
       :n "@" #'swiper-all
+      :n "#" #'deadgrep
+      :n "$" #'helm-org-rifle-directories
       :n "X" #'org-capture
       (:prefix "o"
-        :n "." #'org-wiki-helm
-        :n "b" #'org-wiki-new
         :n "e" #'elfeed
+        :n "o" #'org-open-at-point
         :n "u" #'elfeed-update
-        :n "v" #'org-brain-visualize
-        :n "w" #'deft
-        :n "n" #'plain-org-wiki
-        :n "g" #'plain-org-gtd)
+        :n "w" #'deft)
       (:prefix "n"
         :n "D" #'dictionary-lookup-definition
         :n "T" #'powerthesaurus-lookup-word)
-      (:prefix "f"
-        :n "w" #'deft
-        :n "g" #'plain-org-gtd
-        :n "n" #'plain-org-wiki
-        :n "d" #'org-journal-new-entry)
+      (:prefix "s"
+        :n "d" #'deadgrep
+        :n "b" #'helm-org-rifle-current-buffer
+        :n "." #'helm-org-rifle-directories)
       (:prefix "b"
         :n "c" #'org-board-new
         :n "e" #'org-board-open)

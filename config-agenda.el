@@ -9,23 +9,26 @@
                                       (org-agenda-start-day (org-today))
                                       (org-agenda-current-span 'day)
                                       (org-super-agenda-groups
-                                       '((:name "Habits"
+                                       '((:name "Urgent"
+                                                :priority>= "B"
+                                                :order 5)
+                                         (:name "Habits"
                                                 :habit t
-                                                :order 1)
+                                                :order 10)
                                          (:name "Today's Schedule"
                                                 :time-grid t
-                                                :order 2)
+                                                :order 12)
                                          (:name "In future"
                                                 :scheduled t
-                                                :order 3)
+                                                :order 13)
                                          (:name "Deadline approaching"
                                                 :deadline t
-                                                :order 4)))))
+                                                :order 14)))))
                              (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
                                    ((org-agenda-overriding-header "Task list")
                                     (org-agenda-files '("~/.gtd/tasks.org"))
                                     (org-super-agenda-groups
-                                     '((:auto-property "Group-ID")))))
+                                     '((:auto-parent t)))))
                              (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
                                    ((org-agenda-overriding-header "Projects")
                                     (org-agenda-files '("~/.gtd/projects.org"))

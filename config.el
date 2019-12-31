@@ -1,35 +1,60 @@
-;; Place your private configuration here
-(load! "./settings/config-doom")
-(load! "./settings/config-orgmode")
-(load! "./settings/config-orgmode_capture")
-(load! "./settings/config-agenda")
-(load! "./settings/config-keys")
-(load! "./settings/config-deft")
-(load! "./settings/config-publish")
-;(load! "./settings/config-mindmap")
-(load! "./settings/config-elfeed")
-(load! "./settings/config-plantuml")
-(load! "./settings/config-dictionary")
-(load! "./settings/config-popups")
-(load! "./settings/config-latex")
-
-;; Custom modules
-(load! "./modules/my-deft-title")
-
-(require 'my-deft-title)
-(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        Global Settings                                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-auto-revert-mode t)
+(org-super-agenda-mode t)
+(add-to-list 'load-path  "~/.doom.d/modules/")
+(setq user-full-name "Nicholas Martin"
+      user-mail-address "nmartin84@gmail.com")
+(setq doom-font (font-spec :family "Source Code Pro" :size 22)
+      doom-big-font (font-spec :family "Source Code Pro" :size 28))
+(setq doom-theme 'doom-city-lights)
+(setq org-directory "~/.gtd/")
+(setq display-line-numbers-type nil)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        Popup Rules                                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; These settings will define how popups are handled.
 (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3)
 (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3)
+(set-popup-rule! "*helm*" :side 'bottom :height 40 :select t :vslot 5 :ttl 3)
+(set-popup-rule! "*deadgrep" :side 'bottom :height 40 :select t :vslot 4 :ttl 3)
+(set-popup-rule! "*org agenda*" :side 'right :width 60 :height 40 :select t :vslot 6 :ttl 3)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        To Change                                                      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(global-auto-revert-mode t) ;; Auto revert files when file changes detected on disk
-(add-to-list 'load-path  "~/.doom.d/modules/") ; Load plain-org-wiki .el module
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        Org Settings                                                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq org-agenda-files
+      '("~/.gtd/" "~/.references/"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        Org Agenda                                                     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(load! "config-keys")
+(load! "config-doom")
+(load! "config-orgmode")
+(load! "config-orgmode_capture")
+(load! "config-agenda")
+(load! "config-keys")
+(load! "config-deft")
+(load! "config-publish")
+(load! "config-mindmap")
+(load! "config-elfeed")
+(load! "config-plantuml")
+(load! "config-gnuplot")
+(load! "config-dictionary")
+(load! "config-popups")
+(load! "config-latex")
 
-(defun org-update-cookies-after-save()
-  (interactive)
-  (let ((current-prefix-arg '(4)))
-    (org-update-statistics-cookies "ALL")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        Org Capture                                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                        Custom Modules                                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path  "~/.doom.d/modules/")
+(require 'my-deft-title)
+(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)

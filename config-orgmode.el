@@ -85,10 +85,5 @@
 
 (setq org-habit-show-habits t)
 
-(add-to-list 'org-babel-load-languages '(dot . t))
-(add-to-list 'org-babel-load-languages '(plantuml . t))
-(add-to-list 'org-babel-load-languages '(sql .t))
-(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
-
-(setq org-latex-tables-centered t
-      org-latex-default-class "koma-article")
+;(setq org-latex-tables-centered t
+;      org-latex-default-class "koma-article")

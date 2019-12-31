@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: HTML_THEME
-# key: HTMLTHEME
-# --
-#+SETUPFILE: https://raw.githubusercontent.com/nmartin84/scripted-installs-repo/master/theme-readtheorg.setup

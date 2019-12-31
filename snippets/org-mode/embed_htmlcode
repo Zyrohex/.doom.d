@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: embed_htmlcode
-# key: embedhtml
-# --
-@@html:$1@@

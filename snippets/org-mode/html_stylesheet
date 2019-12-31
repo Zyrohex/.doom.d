@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: html_stylesheet
-# key: html_stylesheet
-# --
-#+SETUPFILE ~/.doom.d/in-buffer-templates/setupfile$1.org
-#+AUTHOR: $2
-#+EMAIL: $3
