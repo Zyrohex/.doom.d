@@ -3,7 +3,7 @@
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
                             ((agenda ""
-                                     ((org-agenda-files '("~/.gtd/habits.org" "~/.gtd/tasks.org" "~/.gtd/projects.org"))
+                                     ((org-agenda-files '("~/.gtd/tasks.org" "~/.gtd/projects.org" "~/.gtd/recurring.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
                                       (org-agenda-start-day (org-today))
@@ -11,19 +11,12 @@
                                       (org-super-agenda-groups
                                        '((:name "Urgent"
                                                 :priority>= "B"
-                                                :order 5)
-                                         (:name "Habits"
-                                                :habit t
-                                                :order 10)
+                                                :order 11)
                                          (:name "Today's Schedule"
                                                 :time-grid t
-                                                :order 12)
-                                         (:name "In future"
                                                 :scheduled t
-                                                :order 13)
-                                         (:name "Deadline approaching"
                                                 :deadline t
-                                                :order 14)))))
+                                                :order 12)))))
                              (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
                                    ((org-agenda-overriding-header "Task list")
                                     (org-agenda-files '("~/.gtd/tasks.org"))

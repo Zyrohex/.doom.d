@@ -5,6 +5,14 @@
         ("d" "Data Tracker")))
 
 (add-to-list 'org-capture-templates
+             '("gx" "Recurring Task" entry (file "~/.gtd/recurring.org")
+"* TODO %^{description}
+:PROPERTIES:
+:CREATED:    %U
+:END:
+** notes
+%?"))
+(add-to-list 'org-capture-templates
              '("gp" "Project" entry (file "~/.gtd/projects.org")
 "* TODO %^{Description}
 :PROPERTIES:
