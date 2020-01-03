@@ -7,6 +7,12 @@
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
 
+(add-to-list 'org-emphasis-alist
+             '("_" (:foreground "red")))
+
+(setq org-scheduled-delay-days 0
+      org-scheduled-past-days 10)
+
 (setq org-log-state-notes-insert-after-drawers nil
       org-log-into-drawer t
       org-log-done 'note
@@ -15,7 +21,7 @@
       org-log-reschedule 'time)
 
 (setq org-tags-column -80
-      org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@emacs" . ?E) ("@watch" . ?W) ("@computer" . ?c) ("@purchase" . ?P)))
+      org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P)))
 
 (setq org-link-abbrev-alist
       '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
@@ -36,13 +42,14 @@
       '(("TODO" :foreground "tomato" :weight bold)
         ("REVIEW" :foreground "royal blue" :weight bold)
         ("WAITING" :foreground "light sea green" :weight bold)
-        ("IN-PROGRESS" :foreground "navajo white" :weight bold)
+        ("IN-PROGRESS" :foreground "Turquoise" :weight bold)
         ("NEXT" :foreground "violet red" :weight bold)
         ("DELEGATED" :foreground "sky blue" :weight bold)
         ("SOMEDAY" :foreground "yellow" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold)))
 
 (setq org-use-speed-commands t
+      org-directory "~/.notes"
       org-image-actual-width nil
       org-bullets-bullet-list '("✖" "✚")
       +org-export-directory "~/.export/")
@@ -50,12 +57,7 @@
 (setq org-export-backends
       '((ascii md pandoc markdown html latex)))
 
-(setq org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css\" type=\"text/css\"/>"
-      org-html-head "<link rel=\"stylesheet\" href=\"https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css\" type=\"text/css\"/>"
-      org-html-head "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"></script>"
-      org-html-head "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js\"></script>"
-      org-html-head "<script type=\"text/javascript\" src=\"https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js\"></script>"
-      org-html-head-include-scripts t
+(setq org-html-head-include-scripts t
       org-export-with-toc t
       org-export-with-author t
       org-export-headline-levels 5

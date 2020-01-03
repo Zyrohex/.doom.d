@@ -12,6 +12,7 @@
 (package! gnuplot)
 (package! gnuplot-mode)
 (package! deadgrep)
+(package! mixed-pitch)
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 

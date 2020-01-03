@@ -2,6 +2,7 @@
 
 (setq org-capture-templates
       '(("g" "Getting things done")
+        ("r" "References & Notes")
         ("d" "Data Tracker")))
 
 (add-to-list 'org-capture-templates
@@ -33,48 +34,28 @@
 :CREATED:    %U
 :END:
 
+*links*:
+%^L
+
 *next steps*:
 - [ ] %^{next steps}
 
 *** notes
 %?"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                            References & Notes                                                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'org-capture-templates
-             '("gu" "Task with URL" entry (file"~/.gtd/inbox.org")
-"** TODO %^{Description}
-:PROPERTIES:
-:CREATED:    %U
-:END:
-:RESOURCES:
-- %^L
-:END:
-
-*next steps*:
-- [ ] %^{next steps}
-
-*** notes
-%?"))
-
+             '("rr" "Reference"  entry (file"~/.gtd/references.org")
+               "* %^{description}\n\n*links*:\n%^L\n\n%?"))
 (add-to-list 'org-capture-templates
-             '("gr" "Task with resources" entry (file"~/.gtd/inbox.org")
-"** TODO %^{Description}
-:PROPERTIES:
-:CREATED:    %U
-:END:
-:RESOURCES:
-- %^L
-:END:
+             '("rs" "Reference with code block" entry (file"~/.gtd/references.org")
+               "* %^{description}\n#+BEGIN_SRC %^{lang}\n%x\n#+END_SRC\n:END:\n%?"))
 
-*next steps*:
-- [ ] %^{next steps}
-
-*** notes
-%?"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;               Data Trackers                     ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                            Data Trackers                                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'org-capture-templates
              '("db" "Big Purchases" table-line (file+headline"~/.gtd/data-tracker.org" "Big Purchases")

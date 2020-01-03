@@ -4,7 +4,7 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.references"
+  (setq deft-directory "~/.notes"
         deft-auto-save-interval 0
         deft-use-filename-as-title nil
         deft-current-sort-method 'title
