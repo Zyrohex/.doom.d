@@ -2,7 +2,7 @@
 
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
-                            ((agenda ""
+                             ((agenda ""
                                      ((org-agenda-files '("~/.gtd/tasks.org" "~/.gtd/projects.org" "~/.gtd/recurring.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
@@ -78,6 +78,10 @@
                                     (org-super-agenda-groups
                                      '((:name none
                                               :auto-ts t)))))))
+                           ("r" "Thankful reminders"
+                            ((todo ""
+                                   ((org-agenda-overriding-header "[[~/.gtd/reminders.org][Daily reminders]]")
+                                    (org-agenda-files '("~/.gtd/reminders.org"))))))
                            ("x" "Get to someday"
                             ((tags-todo "-@computer-@email-@configure-@read-@watch-@personal"
                                    ((org-agenda-overriding-header "Projects marked Someday")

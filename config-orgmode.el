@@ -36,17 +36,18 @@
         ("attach" . "~/org/.attach/")))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "REVIEW(R!)" "WAITING(w!)" "IN-PROGRESS(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
+      '((sequence "TODO(t)" "REVIEW(R!)" "[-](-!)" "WAITING(w!)" "IN-PROGRESS(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)")))
 
 (setq org-todo-keyword-faces
-      '(("TODO" :foreground "tomato" :weight bold)
-        ("REVIEW" :foreground "royal blue" :weight bold)
-        ("WAITING" :foreground "light sea green" :weight bold)
-        ("IN-PROGRESS" :foreground "Turquoise" :weight bold)
-        ("NEXT" :foreground "violet red" :weight bold)
-        ("DELEGATED" :foreground "sky blue" :weight bold)
-        ("SOMEDAY" :foreground "yellow" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold)))
+      '(("TODO" :foreground "tomato" :background "GhostWhite" :weight bold)
+        ("REVIEW" :foreground "royal blue" :background "GhostWhite" :weight bold)
+        ("WAITING" :foreground "light sea green" :background "GhostWhite" :weight bold)
+        ("IN-PROGRESS" :foreground "Turquoise" :background "GhostWhite" :weight bold)
+        ("NEXT" :foreground "violet red" :background "GhostWhite" :weight bold)
+        ("[-]" :foreground "violet red" :background "GhostWhite" :weight bold)
+        ("DELEGATED" :foreground "sky blue" :background "GhostWhite" :weight bold)
+        ("SOMEDAY" :foreground "yellow" :background "GhostWhite" :weight bold)
+        ("DONE" :foreground "slategrey" :background "GhostWhite" :weight bold)))
 
 (setq org-use-speed-commands t
       org-directory "~/.notes"
