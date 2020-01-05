@@ -54,8 +54,10 @@
       org-bullets-bullet-list '("✖" "✚")
       +org-export-directory "~/.export/")
 
-(setq org-export-backends
-      '((ascii md pandoc markdown html latex)))
+(add-to-list 'org-export-backends 'pandoc)
+(add-to-list 'org-export-backends 'pdf)
+
+;      '((ascii md pandoc markdown html latex)))
 
 (setq org-html-head-include-scripts t
       org-export-with-toc t

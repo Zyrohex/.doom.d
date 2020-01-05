@@ -12,7 +12,8 @@
 (package! gnuplot)
 (package! gnuplot-mode)
 (package! deadgrep)
-(package! mixed-pitch)
+(package! mu4e)
+(package! metrics-tracker)
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 

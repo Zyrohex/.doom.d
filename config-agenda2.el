@@ -56,7 +56,14 @@
                                    ((org-agenda-overriding-header "[[~/.gtd/projects.org][Projects]]")
                                     (org-agenda-files '("~/.gtd/projects.org"))
                                     (org-super-agenda-groups
-                                     '((:auto-parent t)))))))
+                                     '((:auto-parent t)))))
+                             (agenda ""
+                                     ((org-agenda-files '("~/.gtd/habits.org"))
+                                      (org-agenda-overriding-header "Habits Tracker")
+                                      (org-agenda-span 'day)
+                                      (org-agenda-start-day (org-today))
+                                      (org-super-agenda-groups
+                                       '((:auto-parent t)))))))
                            ("n" "Notes"
                             ((todo ""
                                    ((org-agenda-files (f-files "~/.notes/notes/" "~/.notes/usage/"))

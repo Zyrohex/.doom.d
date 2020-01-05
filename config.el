@@ -32,13 +32,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-agenda-files
       '("~/.gtd/" "~/.notes/"))
+
+(load! "./modules/plain-org-gtd")
+(use-package! plain-org-gtd
+  :config
+  (setq plain-org-gtd-directory "~/.gtd/"))
+
+(setq diary-file "~/.gtd/diary.org")
+(setq org-agenda-diary-file "~/.gtd/diary.org")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Org Agenda                                                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load! "config-keys")
 (load! "config-orgmode")
 (load! "config-orgmode_capture")
-(load! "config-mixed-pitch")
 (load! "config-agenda2")
 (load! "config-keys")
 (load! "config-deft")
@@ -48,8 +55,8 @@
 (load! "config-plantuml")
 (load! "config-gnuplot")
 (load! "config-dictionary")
-(load! "config-popups")
 (load! "config-latex")
+(load! "config-plain-org-wiki")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Org Capture                                                    ;;

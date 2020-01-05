@@ -15,9 +15,12 @@
       :n "X" #'org-capture
       (:prefix "o"
         :n "e" #'elfeed
+        :n "g" #'metrics-tracker-graph
         :n "o" #'org-open-at-point
         :n "u" #'elfeed-update
         :n "w" #'deft)
+      (:prefix "f"
+        :n "o" #'plain-org-wiki-helm)
       (:prefix "m"
         (:prefix "r"
           :n "." #'+org/refile-to-current-file
