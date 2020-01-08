@@ -3,7 +3,7 @@
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
                              ((agenda ""
-                                     ((org-agenda-files '("~/.gtd/tasks.org" "~/.gtd/projects.org" "~/.gtd/recurring.org"))
+                                     ((org-agenda-files '("~/.gtd/tasks.org" "~/.gtd/habits.org" "~/.gtd/projects.org" "~/.gtd/recurring.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
                                       (org-agenda-start-day (org-today))
@@ -15,6 +15,9 @@
                                          (:name "[[~/.gtd/recurring.org][Bills]]"
                                                 :tag "@bills"
                                                 :order 4)
+                                         (:name "[[~/.gtd/habits.org][Habits]]"
+                                                :habit t
+                                                :order 5)
                                          (:name "Today's Schedule"
                                                 :time-grid t
                                                 :scheduled t
@@ -56,14 +59,7 @@
                                    ((org-agenda-overriding-header "[[~/.gtd/projects.org][Projects]]")
                                     (org-agenda-files '("~/.gtd/projects.org"))
                                     (org-super-agenda-groups
-                                     '((:auto-parent t)))))
-                             (agenda ""
-                                     ((org-agenda-files '("~/.gtd/habits.org"))
-                                      (org-agenda-overriding-header "Habits Tracker")
-                                      (org-agenda-span 'day)
-                                      (org-agenda-start-day (org-today))
-                                      (org-super-agenda-groups
-                                       '((:auto-parent t)))))))
+                                     '((:auto-parent t)))))))
                            ("n" "Notes"
                             ((todo ""
                                    ((org-agenda-files (f-files "~/.notes/notes/" "~/.notes/usage/"))

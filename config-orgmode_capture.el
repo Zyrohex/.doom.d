@@ -37,7 +37,7 @@
 :END:
 
 *links*:
-%^L
+
 
 *next steps*:
 - [ ] %^{next steps}
@@ -90,4 +90,4 @@
 
 (add-to-list 'org-capture-templates
              '("dd" "Journal with Data" plain (file+olp"~/.gtd/diary.org" "Data Tracker")
-"%<%Y-%m-%d> %<%H:%M> %^{activity|walking|sugar|calories|bicycle|running|att dps miss|eating out|drinks cost|food cost} %^{value}" :immediate-finish t))
+"%<%Y-%m-%d> %<%H:%M> %^{activity|walking|sugar|calories|bicycle|running|eating out|drinks cost|food cost} %^{value}" :immediate-finish t))
