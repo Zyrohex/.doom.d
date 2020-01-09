@@ -4,6 +4,7 @@
 (after! org-agenda (setq org-super-agenda-mode t))
 
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+      org-hide-emphasis-markers t
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
 
@@ -85,6 +86,7 @@
 
 (setq org-agenda-files '("~/.gtd/tasks/thelist.org" "~/.gtd/inbox/someday.org")
       org-agenda-diary-file '("~/.org/diary.org")
+      org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t)
 

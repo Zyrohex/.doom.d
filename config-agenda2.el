@@ -54,23 +54,17 @@
                                        (:name "Watch this"
                                               :tag ("@watch")
                                               :order 9)
-                                       (:discard (:anything t))))))
-                             (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
-                                   ((org-agenda-overriding-header "[[~/.gtd/projects.org][Projects]]")
-                                    (org-agenda-files '("~/.gtd/projects.org"))
-                                    (org-super-agenda-groups
-                                     '((:auto-parent t)))))))
-                           ("n" "Notes"
+                                       (:discard (:anything t))))))))
+                           ("T" "Tasks by outline"
                             ((todo ""
-                                   ((org-agenda-files (f-files "~/.notes/notes/" "~/.notes/usage/"))
-                                    (org-agenda-overriding-header "Note Tasks")
+                                   ((org-agenda-overriding-header "Tasks outline")
+                                    (org-agenda-files '("~/.gtd/tasks.org"))
                                     (org-super-agenda-groups
-                                     '((:auto-parent t)))))))
+                                     '((:auto-outline-path t)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.gtd/inbox.org"))
                                     (org-agenda-overriding-header "Items in my inbox")
-                                    (tags-todo "-@computer")
                                     (org-super-agenda-groups
                                      '((:name none
                                               :auto-ts t)))))))
@@ -82,6 +76,5 @@
                             ((tags-todo "-@computer-@email-@configure-@read-@watch-@personal"
                                    ((org-agenda-overriding-header "Projects marked Someday")
                                     (org-agenda-files '("~/.gtd/tasks.org"))
-                                    (tags-todo)
                                     (org-super-agenda-groups
                                      '((:auto-ts t))))))))))

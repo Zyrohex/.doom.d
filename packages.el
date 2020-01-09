@@ -14,6 +14,7 @@
 (package! deadgrep)
 (package! mu4e)
 (package! metrics-tracker)
+(package! wakatime-mode)
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 

@@ -9,11 +9,12 @@
 (setq doom-font (font-spec :family "InputMono" :size 18)
       doom-variable-pitch-font (font-spec :family "InputMono")
       doom-unicode-font (font-spec :family "DejaVu Sans")
-      doom-big-font (font-spec :family "InputMono" :size 24))
+      doom-big-font (font-spec :family "InputMono" :size 20))
 (setq doom-theme 'doom-solarized-light)
 (setq org-directory "~/.gtd/")
 (setq display-line-numbers-type nil)
 (setq org-ellipsis "▼")
+(global-wakatime-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Popup Rules                                                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,6 +87,7 @@
   (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
     (call-interactively #'org-refile)))
 (provide 'zyrohex/org-reference-refile)
+
 (defun zyrohex/org-notes-refile ()
   "Process an item to the references bucket"
   (interactive)
