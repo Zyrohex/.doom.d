@@ -12,33 +12,52 @@
 "* TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
+:WHO:     %^{who}
+:WHAT:    %^{what}
+:WHERE:   %^{where}
+:WHY:     %^{why}
+:END:
+:RESOURCES:
+%^{url}
 :END:
 
 ** notes
-%?"))
+%?
+"))
 (add-to-list 'org-capture-templates
              '("gp" "Project" entry (file "~/.gtd/projects.org")
 "* TODO %^{Description}
 :PROPERTIES:
+:SUBJECT: %^{subject}
+:GOAL:    %^{goal}
 :END:
 :RESOURCES:
 [[%^{url}]]
 :END:
 
-*Requirements*:
+*requirements*:
 %^{requirements}
 
-** TODO %^{task1}%?"))
+*notes*:
+%?
+
+** TODO %^{task1}
+"))
 
 (add-to-list 'org-capture-templates
              '("gt" "Task" entry (file"~/.gtd/inbox.org")
 "** TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
+:GOAL:    %^{goal}
+:WHO:     %^{who}
+:WHAT:    %^{what}
+:WHY:     %^{why}
+:WHERE:   %^{where}
 :END:
-
-*links*:
+:RESOURCES:
 [[%^{url}]]
+:END:
 
 *next steps*:
 - [ ] %^{next steps}

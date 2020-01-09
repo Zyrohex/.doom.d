@@ -2,4 +2,4 @@
 
 (use-package gnuplot
   :config
-  (setq gnuplot-program "C:/Program Files (x86)/gnuplot/bin/gnuplot.exe"))
+  (setq gnuplot-program "gnuplot.exe"))

@@ -1,5 +1,6 @@
 (package! helm-org-rifle)
 (package! org-super-agenda)
+(package! org-ql)
 (package! elfeed)
 (package! elfeed-org)
 (package! org-board)
@@ -12,9 +13,7 @@
 (package! gnuplot)
 (package! gnuplot-mode)
 (package! deadgrep)
-(package! mu4e)
 (package! metrics-tracker)
-(package! wakatime-mode)
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 

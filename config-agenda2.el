@@ -1,5 +1,5 @@
 ;;; c:/Users/nmart/.doom.d/config-agenda2.el -*- lexical-binding: t; -*-
-
+(org-super-agenda-mode t)
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
                              ((agenda ""
@@ -66,8 +66,7 @@
                                    ((org-agenda-files '("~/.gtd/inbox.org"))
                                     (org-agenda-overriding-header "Items in my inbox")
                                     (org-super-agenda-groups
-                                     '((:name none
-                                              :auto-ts t)))))))
+                                     '((:auto-ts t)))))))
                            ("r" "Thankful reminders"
                             ((todo ""
                                    ((org-agenda-overriding-header "[[~/.gtd/reminders.org][Daily reminders]]")

@@ -2,7 +2,6 @@
 ;;                                        Global Settings                                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-auto-revert-mode t)
-(org-super-agenda-mode t)
 (add-to-list 'load-path  "~/.doom.d/modules/")
 (setq user-full-name "Nicholas Martin"
       user-mail-address "nmartin84@gmail.com")
@@ -11,10 +10,8 @@
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
 (setq doom-theme 'doom-solarized-light)
-(setq org-directory "~/.gtd/")
 (setq display-line-numbers-type nil)
 (setq org-ellipsis "▼")
-(global-wakatime-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Popup Rules                                                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -26,23 +23,6 @@
 (set-popup-rule! "*org agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        To Change                                                      ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                                        Org Settings                                                   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-agenda-files
-      '("~/.gtd/" "~/.notes/"))
-
-(load! "./modules/plain-org-gtd")
-(use-package! plain-org-gtd
-  :config
-  (setq plain-org-gtd-directory "~/.gtd/"))
-
-(setq diary-file "~/.gtd/diary.org")
-(setq org-agenda-diary-file "~/.gtd/diary.org")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                                        Org Agenda                                                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load! "config-keys")
 (load! "config-orgmode")
@@ -57,8 +37,6 @@
 (load! "config-gnuplot")
 (load! "config-dictionary")
 (load! "config-latex")
-(load! "config-plain-org-wiki")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Org Capture                                                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -95,3 +73,17 @@
         (org-refile-allow-creating-parent-nodes 'confirm))
     (call-interactively #'org-refile)))
 (provide 'zyrohex/org-notes-refile)
+
+(defun my--browse-url (url &optional _new-window)
+  ;; new-window ignored
+  "Opens link via powershell.exe"
+  (interactive (browse-url-interactive-arg "URL: "))
+  (let ((quotedUrl (format "start '%s'" url)))
+    (apply 'call-process "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" nil
+           0 nil
+           (list "-Command" quotedUrl))))
+
+(setq-default browse-url-browser-function 'my--browse-url)
+
+(after! org (add-to-list 'org-emphasis-alist
+             '("_" (:foreground "red"))))

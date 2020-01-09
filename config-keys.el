@@ -37,8 +37,9 @@
         :n "T" #'powerthesaurus-lookup-word)
       (:prefix "s"
         :n "d" #'deadgrep
+        :n "q" #'org-ql-search
         :n "b" #'helm-org-rifle-current-buffer
-        :n "a" #'helm-org-rifle-org-directory
+        :n "o" #'helm-org-rifle-org-directory
         :n "." #'helm-org-rifle-directories)
       (:prefix "b"
         :n "c" #'org-board-new
