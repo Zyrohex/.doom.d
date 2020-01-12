@@ -1,4 +1,4 @@
-;;; c:/Users/nmart/.doom.d/+keys.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/config-keys.el -*- lexical-binding: t; -*-
 
 (map!
  :nvime "<f5> d" #'helm-org-rifle-directories

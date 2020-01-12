@@ -1,13 +1,13 @@
-;;; ~/.doom.d/publish.el -*- lexical-binding: t; -*-
+;;; c:/Users/nmart/.doom.d/config-publish.el -*- lexical-binding: t; -*-
 
 (setq org-publish-project-alist
       '(("references-attachments"
-         :base-directory "~/.notes/images/"
+         :base-directory "~/.org/notes/images/"
          :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
          :publishing-directory "~/publish_html/references/images"
          :publishing-function org-publish-attachment)
         ("references-md"
-         :base-directory "~/.notes/"
+         :base-directory "~/.org/notes/"
          :publishing-directory "~/publish_md"
          :base-extension "org"
          :recursive t
@@ -19,7 +19,7 @@
          :with-email t
          :with-toc t)
         ("tasks"
-         :base-directory "~/.gtd/"
+         :base-directory "~/.org/gtd/"
          :publishing-directory "~/publish_tasks"
          :base-extension "org"
          :recursive t
@@ -36,7 +36,7 @@
          :auto-preamble t
          :with-toc t)
         ("pdf"
-         :base-directory "~/.gtd/references/"
+         :base-directory "~/.org/gtd/references/"
          :base-extension "org"
          :publishing-directory "~/publish"
          :preparation-function somepreparationfunction

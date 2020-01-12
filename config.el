@@ -1,19 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Global Settings                                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(load! "config-agenda")
+(load! "config-capture")
+(load! "config-extras")
 (load! "config-keys")
-(load! "config-orgmode")
-(load! "config-orgmode_capture")
-(load! "config-agenda2")
-(load! "config-keys")
-(load! "config-deft")
-(load! "config-publish")
-(load! "config-mindmap")
-(load! "config-elfeed")
-(load! "config-plantuml")
-(load! "config-gnuplot")
-(load! "config-dictionary")
 (load! "config-latex")
+(load! "config-orgmode")
+(load! "config-publish")
 (global-auto-revert-mode t)
 (add-to-list 'load-path  "~/.doom.d/modules/")
 (setq user-full-name "Nicholas Martin"
