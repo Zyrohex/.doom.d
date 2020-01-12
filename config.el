@@ -8,6 +8,8 @@
 (load! "config-latex")
 (load! "config-orgmode")
 (load! "config-publish")
+(setq-default fill-column 140)
+(setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
 (add-to-list 'load-path  "~/.doom.d/modules/")
 (setq user-full-name "Nicholas Martin"
@@ -19,7 +21,6 @@
 (setq doom-theme 'doom-city-lights)
 (setq display-line-numbers-type nil)
 (setq org-ellipsis "▼")
-(setq fill-column 140)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                        Popup Rules                                                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

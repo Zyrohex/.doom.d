@@ -35,7 +35,7 @@
         ("attach" . "~/org/.attach/")))
 
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "REVIEW(R!)" "[-](-!)" "WAITING(w!)" "IN-PROGRESS(s!)" "NEXT(n!)" "DELEGATED(e!)" "SOMEDAY(l!)" "|" "INVALID(I!)" "DONE(d!)"))))
+      '((sequence "TODO(t)" "WAITING(w!)" "IN-PROGRESS(s!)" "NEXT(n!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)

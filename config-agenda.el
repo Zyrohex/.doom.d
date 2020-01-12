@@ -68,13 +68,9 @@
                                     (org-agenda-overriding-header "Items in my inbox")
                                     (org-super-agenda-groups
                                      '((:auto-ts t)))))))
-                           ("r" "Thankful reminders"
-                            ((todo ""
-                                   ((org-agenda-overriding-header "[[~/.org/gtd/reminders.org][Daily reminders]]")
-                                    (org-agenda-files '("~/.org/gtd/reminders.org"))))))
                            ("x" "Get to someday"
                             ((tags-todo "-@computer-@email-@configure-@read-@watch-@personal"
                                    ((org-agenda-overriding-header "Projects marked Someday")
-                                    (org-agenda-files '("~/.org/gtd/tasks.org"))
+                                    (org-agenda-files '("~/.org/gtd/someday.org"))
                                     (org-super-agenda-groups
                                      '((:auto-ts t))))))))))
