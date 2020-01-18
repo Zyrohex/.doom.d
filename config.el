@@ -236,12 +236,10 @@
          :with-toc t)
          ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks"))))
 
-(setq org-log-state-notes-insert-after-drawers nil
-      org-log-into-drawer t
-      org-log-done 'note
-      org-log-repeat 'time
-      org-log-redeadline 'time
-      org-log-reschedule 'time)
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+      org-hide-emphasis-markers nil
+      org-outline-path-complete-in-steps nil
+      org-refile-allow-creating-parent-nodes 'confirm)
 
 (setq org-tags-column -80
       org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P)))

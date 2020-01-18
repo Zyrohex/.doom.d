@@ -317,12 +317,10 @@ Getting errors on start up for this one. Will need to look into it.
 #+END_SRC
 ** Refiling
 #+BEGIN_SRC emacs-lisp
-(setq org-log-state-notes-insert-after-drawers nil
-      org-log-into-drawer t
-      org-log-done 'note
-      org-log-repeat 'time
-      org-log-redeadline 'time
-      org-log-reschedule 'time)
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+      org-hide-emphasis-markers nil
+      org-outline-path-complete-in-steps nil
+      org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
 ** Tags
 #+BEGIN_SRC emacs-lisp
