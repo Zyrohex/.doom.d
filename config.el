@@ -336,6 +336,42 @@
             (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
 (provide 'org-update-cookies-after-save)
 
+(defun zyrohex/org-tasks-refile ()
+  "Process a single TODO task item."
+  (interactive)
+  (call-interactively 'org-agenda-schedule)
+  (org-agenda-set-tags)
+  (org-agenda-priority)
+  (let ((org-refile-targets '((helm-read-file-name :maxlevel .6)))
+        (call-interactively #'org-refile))))
+(provide 'zyrohex/org-tasks-refile)
+
+(defun zyrohex/org-reference-refile (arg)
+  "Process an item to the reference bucket"
+  (interactive "P")
+  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
+    (call-interactively #'org-refile)))
+(provide 'zyrohex/org-reference-refile)
+
+(defun zyrohex/org-notes-refile ()
+  "Process an item to the references bucket"
+  (interactive)
+  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6)))
+        (org-refile-allow-creating-parent-nodes 'confirm))
+    (call-interactively #'org-refile)))
+(provide 'zyrohex/org-notes-refile)
+
+(defun my--browse-url (url &optional _new-window)
+  ;; new-window ignored
+  "Opens link via powershell.exe"
+  (interactive (browse-url-interactive-arg "URL: "))
+  (let ((quotedUrl (format "start '%s'" url)))
+    (apply 'call-process "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" nil
+           0 nil
+           (list "-Command" quotedUrl))))
+
+(setq-default browse-url-browser-function 'my--browse-url)
+
 (org-super-agenda-mode t)
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
