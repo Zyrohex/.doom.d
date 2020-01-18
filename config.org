@@ -1,10 +1,21 @@
+* General Settings
+** Fonts
+
+For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
+
+#+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "InputMono" :size 18)
       doom-variable-pitch-font (font-spec :family "InputMono")
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
-
+#+END_SRC
+** Lines
+For this we just make small tweaks to line numbers.
+#+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type nil)
-
+#+END_SRC
+** Keys
+#+BEGIN_SRC emacs-lisp
 (map!
  :nvime "<f5> d" #'helm-org-rifle-directories
  :nvime "<f5> b" #'helm-org-rifle-current-buffer
@@ -54,26 +65,38 @@
         :n "w" #'widen)
       (:prefix "/"
         :n "j" #'org-journal-search))
-
+#+END_SRC
+* Doom Settings
+** Theme
+#+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-solarized-light)
-
+#+END_SRC
+* Org Mode Settings
+** Agenda
+#+BEGIN_SRC emacs-lisp
 (setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
       org-agenda-diary-file "~/.org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
       org-habit-show-habits t)
-
+#+END_SRC
+** Captures
+#+BEGIN_SRC emacs-lisp
 (after! org (setq org-capture-templates
       '(("g" "Getting things done")
         ("d" "Diary")
         ("p" "Graph Data")
         ("t" "Data Tracker"))))
-
+#+END_SRC
+*** GTD Recurring Tasks
+#+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
                "* TODO %^{description}\n:PROPERTIES:\n:CREATED:    %U\n:END:\n:RESOURCES:\n%^{url}\n:END:\n\n** notes\n%?")))
-
+#+END_SRC
+*** GTD Projects
+#+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("gp" "Project" entry (file+headline"~/.org/gtd/tasks.org" "Projects")
 "* TODO %^{Description}
@@ -92,7 +115,9 @@
 %?
 
 \** TODO %^{task1}")))
-
+#+END_SRC
+*** GTD Capture
+#+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("gt" "Task" entry (file"~/.org/gtd/inbox.org")
 "** TODO %^{description}
@@ -108,19 +133,25 @@
 
 \*notes*:
 %?")))
-
+#+END_SRC
+*** References Notes
+#+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("n" "Note" entry(file"~/.org/gtd/notes.org")
 "* [%<%a %m-%d %H:%M>] %^{note}
 %?")))
-
+#+END_SRC
+** Directories
+#+BEGIN_SRC emacs-lisp
 (setq org-directory "~/.org/"
       org-image-actual-width nil
       +org-export-directory "~/.export/"
       org-archive-location "~/.org/gtd/archive.org::datetree/"
       org-default-notes-file "~/.org/gtd/inbox.org"
       projectile-project-search-path '("~/"))
-
+#+END_SRC
+** Exports
+#+BEGIN_SRC emacs-lisp
 (setq org-html-head-include-scripts t
       org-export-with-toc t
       org-export-with-author t
@@ -135,17 +166,47 @@
 
 ;(after! org (add-to-list 'org-export-backends 'pandoc))
 (after! org (add-to-list 'org-export-backends 'pdf))
-
+#+END_SRC
+** Faces
+#+BEGIN_SRC emacs-lisp
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
         ("WAITING" :foreground "light sea green" :weight bold)
         ("STARTED" :foreground "Turquoise" :weight bold)
         ("NEXT" :foreground "violet red" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold))))
-
+#+END_SRC
+** Keywords
+#+BEGIN_SRC emacs-lisp
 (after! org (setq org-todo-keywords
       '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "|" "INVALID(I!)" "DONE(d!)"))))
+#+END_SRC
+** TODO Latex Exports
 
+Getting errors on start up for this one and not sure why.
+
+#+BEGIN_EXAMPLE
+(add-to-list 'org-latex-classes
+             '("koma-article"
+               "\\documentclass{scrartcl}
+\\usepackage[T1]{fontenc}
+\\usepackage[bitstream-charter]{mathdesign}
+\\usepackage[scaled=.9]{helvet}
+\\usepackage{courier} % tt
+\\usepackage{geometry}
+\\usepackage{booktabs}
+\\usepackage{multicol}
+\\usepackage{paralist}
+\\geometry{letter, textwidth=6.5in, textheight=10in,
+            marginparsep=7pt, marginparwidth=.6in}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_EXAMPLE
+** Link Abbreviations
+#+BEGIN_SRC emacs-lisp
 (setq org-link-abbrev-alist
       '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
         ("wolfram" . "https://wolframalpha.com/input/?i=%s")
@@ -157,16 +218,22 @@
         ("youtu" . "https://youtube.com/results?search_query=%s")
         ("github" . "https://github.com/%s")
         ("attachments" . "~/.org/.attachments/")))
-
+#+END_SRC
+** Logging & Drawers
+#+BEGIN_SRC emacs-lisp
 (setq org-log-state-notes-insert-after-drawers nil
       org-log-into-drawer t
       org-log-done 'note
       org-log-repeat 'time
       org-log-redeadline 'time
       org-log-reschedule 'time)
-
+#+END_SRC
+** Prettify
+#+BEGIN_SRC emacs-lisp
 (setq org-bullets-bullet-list '("✖" "✚"))
-
+#+END_SRC
+** Publishing
+#+BEGIN_SRC emacs-lisp
 (setq org-publish-project-alist
       '(("references-attachments"
          :base-directory "~/.org/notes/images/"
@@ -214,24 +281,34 @@
          :headline-levels 5
          :with-toc t)
          ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks"))))
-
+#+END_SRC
+** Refiling
+#+BEGIN_SRC emacs-lisp
 (setq org-log-state-notes-insert-after-drawers nil
       org-log-into-drawer t
       org-log-done 'note
       org-log-repeat 'time
       org-log-redeadline 'time
       org-log-reschedule 'time)
-
+#+END_SRC
+** Tags
+#+BEGIN_SRC emacs-lisp
 (setq org-tags-column -80
       org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P)))
+#+END_SRC
 
+* Extra Modules
+** Plantuml
+#+BEGIN_SRC emacs-lisp
 (use-package ob-plantuml
   :ensure nil
   :commands
   (org-babel-execute:plantuml)
   :config
   (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
-
+#+END_SRC
+** Org-Mind-Map
+#+BEGIN_SRC emacs-lisp
 (use-package org-mind-map
   :init
   (require 'ox-org)
@@ -246,11 +323,15 @@
   ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
   ;; (setq org-mind-map-engine "circo")  ; Circular Layout
   )
-
+#+END_SRC
+** Gnuplot
+#+BEGIN_SRC emacs-lisp
 (use-package gnuplot
   :config
   (setq gnuplot-program "gnuplot.exe"))
-
+#+END_SRC
+** Deft
+#+BEGIN_SRC emacs-lisp
 (defun my-deft/strip-quotes (str)
   (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
         ((string-match "'\\(.+\\)'" str) (match-string 1 str))
@@ -285,7 +366,8 @@
             (apply orig args)))))))
 
 (provide 'my-deft-title)
-
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
 (use-package deft
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
@@ -302,7 +384,9 @@
                                  (case-fn . downcase))))
 (require 'my-deft-title)
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
-
+#+END_SRC
+** Elfeed
+#+BEGIN_SRC emacs-lisp
 (use-package elfeed
   :config
   (setq elfeed-db-directory "~/.elfeed/"))
@@ -316,7 +400,9 @@
 (elfeed-org)
 (after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
                   elfeed-db-directory "~/.elfeed/"))
-
+#+END_SRC
+** Org-Clock-Switch
+#+BEGIN_SRC emacs-lisp
 (defun org-clock-switch ()
   "Switch task and go-to that task"
   (interactive)
@@ -325,7 +411,9 @@
   (org-clock-in)
   (org-clock-goto))
 (provide 'org-clock-switch)
-
+#+END_SRC
+** Update Tickboxes
+#+BEGIN_SRC emacs-lisp
 (defun org-update-cookies-after-save()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -335,7 +423,9 @@
           (lambda ()
             (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
 (provide 'org-update-cookies-after-save)
-
+#+END_SRC
+* Super Agenda Groups
+#+BEGIN_SRC emacs-lisp
 (org-super-agenda-mode t)
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
@@ -402,3 +492,4 @@
                                          (org-agenda-files '("~/.org/gtd/someday.org"))
                                          (org-super-agenda-groups
                                           '((:auto-ts t))))))))))
+#+END_SRC

@@ -15,3 +15,4 @@
 (package! deadgrep)
 (package! metrics-tracker)
 (package! org-web-tools)
+(package! grip-mode)
