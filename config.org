@@ -100,7 +100,16 @@ For this we just make small tweaks to line numbers.
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
-               "* TODO %^{description}\n:PROPERTIES:\n:CREATED:    %U\n:END:\n:RESOURCES:\n%^{url}\n:END:\n\n** notes\n%?")))
+               "* TODO %^{description}
+:PROPERTIES:
+:CREATED:    %U
+:END:
+:RESOURCES:
+%^{url}
+:END:
+
+\** notes
+%?")))
 #+END_SRC
 *** GTD Projects
 #+BEGIN_SRC emacs-lisp
@@ -174,7 +183,10 @@ For this we just make small tweaks to line numbers.
 ;(after! org (add-to-list 'org-export-backends 'pandoc))
 (after! org (add-to-list 'org-export-backends 'pdf))
 #+END_SRC
-** Faces
+** TODO Faces
+
+Need to add condition to adjust faces based on theme select.
+
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
@@ -190,7 +202,7 @@ For this we just make small tweaks to line numbers.
 #+END_SRC
 ** TODO Latex Exports
 
-Getting errors on start up for this one and not sure why.
+Getting errors on start up for this one. Will need to look into it.
 
 #+BEGIN_EXAMPLE
 (add-to-list 'org-latex-classes
@@ -336,7 +348,7 @@ Getting errors on start up for this one and not sure why.
 #+BEGIN_SRC emacs-lisp
 (use-package gnuplot
   :config
-  (setq gnuplot-program "gnuplot.exe"))
+  (setq gnuplot-program "gnuplot"))
 #+END_SRC
 ** Deft
 #+BEGIN_SRC emacs-lisp

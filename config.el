@@ -76,7 +76,16 @@
 
 (after! org (add-to-list 'org-capture-templates
              '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
-               "* TODO %^{description}\n:PROPERTIES:\n:CREATED:    %U\n:END:\n:RESOURCES:\n%^{url}\n:END:\n\n** notes\n%?")))
+               "* TODO %^{description}
+:PROPERTIES:
+:CREATED:    %U
+:END:
+:RESOURCES:
+%^{url}
+:END:
+
+\** notes
+%?")))
 
 (after! org (add-to-list 'org-capture-templates
              '("gp" "Project" entry (file+headline"~/.org/gtd/tasks.org" "Projects")
@@ -254,7 +263,7 @@
 
 (use-package gnuplot
   :config
-  (setq gnuplot-program "gnuplot.exe"))
+  (setq gnuplot-program "gnuplot"))
 
 (defun my-deft/strip-quotes (str)
   (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
