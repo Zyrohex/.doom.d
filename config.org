@@ -1,3 +1,4 @@
+#+EXPORT_FILE_NAME: README
 * General Settings
 ** Fonts
 
