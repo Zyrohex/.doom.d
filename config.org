@@ -1,4 +1,8 @@
 #+EXPORT_FILE_NAME: README
+
+My DOOM emacs private configuration:
+https://i.imgur.com/EBp5TxA.png
+
 * General Settings
 ** Fonts
 
@@ -72,6 +76,15 @@ For this we just make small tweaks to line numbers.
 (setq-default fill-column 140)
 (setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
+#+END_SRC
+** Popup Rules
+#+BEGIN_SRC emacs-lisp
+(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3))
+(after! org (set-popup-rule! "*helm*" :side 'bottom :height .40 :select t :vslot 5 :ttl 3))
+(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
+(after! org (set-popup-rule! "*xwidget" :side 'right :size .40 :select t :vslot 5 :ttl 3))
+(after! org (set-popup-rule! "*org agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 #+END_SRC
 * Doom Settings
 ** Theme
@@ -538,12 +551,7 @@ Getting errors on start up for this one. Will need to look into it.
                                               :order 7)
                                        (:name "Projects"
                                               :category "Projects"
-                                              :order 8)))))
-                             (agenda ""
-                                     ((org-agenda-overriding-header "Habits")
-                                      (org-agenda-files '("~/.org/gtd/habits.org"))
-                                      (org-agenda-span 'day)
-                                      (org-agenda-start-day (org-today))))))
+                                              :order 8)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.org/gtd/inbox.org"))

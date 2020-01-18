@@ -1,53 +1,56 @@
 
 # Table of Contents
 
--   [General Settings](#org089e584)
-    -   [Fonts](#org80ea95c)
-    -   [Lines](#org5aac472)
-    -   [Keys](#org012f35d)
-    -   [General settings](#org313c1ea)
--   [Doom Settings](#org96a769f)
-    -   [Theme](#org0b47b82)
--   [Org Mode Settings](#orga2220f3)
-    -   [Agenda](#org1f10ef2)
-    -   [Captures](#org256162c)
-        -   [GTD Recurring Tasks](#org5bd8fc6)
-        -   [GTD Projects](#orgadb26e6)
-        -   [GTD Capture](#orgce6e955)
-        -   [References Notes](#org7f04e29)
-    -   [Directories](#org9715359)
-    -   [Exports](#orgd8ad39c)
-    -   [Faces](#org0215c11)
-    -   [Keywords](#org7b6920b)
-    -   [Latex Exports](#org1b2c932)
-    -   [Link Abbreviations](#org8ee0d53)
-    -   [Logging & Drawers](#org1ad964d)
-    -   [Prettify](#org4ed15b8)
-    -   [Publishing](#org865c79d)
-    -   [Refiling](#org0d9f24b)
-    -   [Tags](#org1eb7533)
--   [Extra Modules](#orgc7e2b37)
-    -   [Plantuml](#orgfdb6b32)
-    -   [Org-Mind-Map](#org3c71e94)
-    -   [Gnuplot](#org20da483)
-    -   [Deft](#orgcacad01)
-    -   [Elfeed](#org0fee7a9)
-    -   [Org-Clock-Switch](#orgfa69b4c)
-    -   [Update Tickboxes](#org29a9735)
-    -   [Zyrohex/org-tasks-refile](#orgfb8f58c)
-    -   [Zyrohex/org-reference-refile](#org567803c)
-    -   [Zyrohex/org-notes-refile](#org514662d)
-    -   [WSL Browser](#orgc6f8a62)
--   [Super Agenda Groups](#org589ee7e)
+-   [General Settings](#orgd9453e9)
+    -   [Fonts](#org60aa92f)
+    -   [Lines](#org786cba3)
+    -   [Keys](#orga262910)
+    -   [General settings](#org9d9b3b8)
+    -   [Popup Rules](#orgd54b113)
+-   [Doom Settings](#org64dcb56)
+    -   [Theme](#org9e52452)
+-   [Org Mode Settings](#orga3ddc83)
+    -   [Agenda](#org3a59956)
+    -   [Captures](#org8954f8d)
+        -   [GTD Recurring Tasks](#org6144c35)
+        -   [GTD Projects](#orgb7c5915)
+        -   [GTD Capture](#orgaeaf757)
+        -   [References Notes](#org97f2865)
+    -   [Directories](#org565a2ce)
+    -   [Exports](#orge327955)
+    -   [Faces](#org85dd6e0)
+    -   [Keywords](#orge2445b0)
+    -   [Latex Exports](#orga5d7250)
+    -   [Link Abbreviations](#orgd8cd705)
+    -   [Logging & Drawers](#org3e2f92e)
+    -   [Prettify](#orgcc4832d)
+    -   [Publishing](#org1360216)
+    -   [Refiling](#org092c724)
+    -   [Tags](#orgf69ac28)
+-   [Extra Modules](#orgec46207)
+    -   [Plantuml](#orgf2790a3)
+    -   [Org-Mind-Map](#org71dc579)
+    -   [Gnuplot](#orgff4fee3)
+    -   [Deft](#orgd642afe)
+    -   [Elfeed](#org29abec2)
+    -   [Org-Clock-Switch](#orgef895de)
+    -   [Update Tickboxes](#org9c38a0d)
+    -   [Zyrohex/org-tasks-refile](#orgc12b413)
+    -   [Zyrohex/org-reference-refile](#org2b6681e)
+    -   [Zyrohex/org-notes-refile](#org3e05d99)
+    -   [WSL Browser](#orgf9d9f32)
+-   [Super Agenda Groups](#org01e9ca5)
+
+My DOOM emacs private configuration:
+![img](https://i.imgur.com/EBp5TxA.png)
 
 
-
-<a id="org089e584"></a>
+<a id="orgd9453e9"></a>
 
 # General Settings
 
 
-<a id="org80ea95c"></a>
+<a id="org60aa92f"></a>
 
 ## Fonts
 
@@ -59,7 +62,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-big-font (font-spec :family "InputMono" :size 20))
 
 
-<a id="org5aac472"></a>
+<a id="org786cba3"></a>
 
 ## Lines
 
@@ -68,7 +71,7 @@ For this we just make small tweaks to line numbers.
     (setq display-line-numbers-type t)
 
 
-<a id="org012f35d"></a>
+<a id="orga262910"></a>
 
 ## Keys
 
@@ -123,7 +126,7 @@ For this we just make small tweaks to line numbers.
             :n "j" #'org-journal-search))
 
 
-<a id="org313c1ea"></a>
+<a id="org9d9b3b8"></a>
 
 ## General settings
 
@@ -132,24 +135,36 @@ For this we just make small tweaks to line numbers.
     (global-auto-revert-mode t)
 
 
-<a id="org96a769f"></a>
+<a id="orgd54b113"></a>
+
+## Popup Rules
+
+    (after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3))
+    (after! org (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3))
+    (after! org (set-popup-rule! "*helm*" :side 'bottom :height .40 :select t :vslot 5 :ttl 3))
+    (after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
+    (after! org (set-popup-rule! "*xwidget" :side 'right :size .40 :select t :vslot 5 :ttl 3))
+    (after! org (set-popup-rule! "*org agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
+
+
+<a id="org64dcb56"></a>
 
 # Doom Settings
 
 
-<a id="org0b47b82"></a>
+<a id="org9e52452"></a>
 
 ## Theme
 
     (setq doom-theme 'doom-solarized-light)
 
 
-<a id="orga2220f3"></a>
+<a id="orga3ddc83"></a>
 
 # Org Mode Settings
 
 
-<a id="org1f10ef2"></a>
+<a id="org3a59956"></a>
 
 ## Agenda
 
@@ -161,7 +176,7 @@ For this we just make small tweaks to line numbers.
           org-habit-show-habits t)
 
 
-<a id="org256162c"></a>
+<a id="org8954f8d"></a>
 
 ## Captures
 
@@ -172,7 +187,7 @@ For this we just make small tweaks to line numbers.
             ("t" "Data Tracker"))))
 
 
-<a id="org5bd8fc6"></a>
+<a id="org6144c35"></a>
 
 ### GTD Recurring Tasks
 
@@ -190,7 +205,7 @@ For this we just make small tweaks to line numbers.
     %?")))
 
 
-<a id="orgadb26e6"></a>
+<a id="orgb7c5915"></a>
 
 ### GTD Projects
 
@@ -214,7 +229,7 @@ For this we just make small tweaks to line numbers.
     \** TODO %^{task1}")))
 
 
-<a id="orgce6e955"></a>
+<a id="orgaeaf757"></a>
 
 ### GTD Capture
 
@@ -235,7 +250,7 @@ For this we just make small tweaks to line numbers.
     %?")))
 
 
-<a id="org7f04e29"></a>
+<a id="org97f2865"></a>
 
 ### References Notes
 
@@ -245,7 +260,7 @@ For this we just make small tweaks to line numbers.
     %?")))
 
 
-<a id="org9715359"></a>
+<a id="org565a2ce"></a>
 
 ## Directories
 
@@ -257,7 +272,7 @@ For this we just make small tweaks to line numbers.
           projectile-project-search-path '("~/"))
 
 
-<a id="orgd8ad39c"></a>
+<a id="orge327955"></a>
 
 ## Exports
 
@@ -277,7 +292,7 @@ For this we just make small tweaks to line numbers.
     (after! org (add-to-list 'org-export-backends 'pdf))
 
 
-<a id="org0215c11"></a>
+<a id="org85dd6e0"></a>
 
 ## TODO Faces
 
@@ -291,7 +306,7 @@ Need to add condition to adjust faces based on theme select.
             ("DONE" :foreground "slategrey" :weight bold))))
 
 
-<a id="org7b6920b"></a>
+<a id="orge2445b0"></a>
 
 ## Keywords
 
@@ -299,7 +314,7 @@ Need to add condition to adjust faces based on theme select.
           '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
 
-<a id="org1b2c932"></a>
+<a id="orga5d7250"></a>
 
 ## TODO Latex Exports
 
@@ -325,7 +340,7 @@ Getting errors on start up for this one. Will need to look into it.
                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 
-<a id="org8ee0d53"></a>
+<a id="orgd8cd705"></a>
 
 ## Link Abbreviations
 
@@ -342,7 +357,7 @@ Getting errors on start up for this one. Will need to look into it.
             ("attachments" . "~/.org/.attachments/")))
 
 
-<a id="org1ad964d"></a>
+<a id="org3e2f92e"></a>
 
 ## Logging & Drawers
 
@@ -354,7 +369,7 @@ Getting errors on start up for this one. Will need to look into it.
           org-log-reschedule 'time)
 
 
-<a id="org4ed15b8"></a>
+<a id="orgcc4832d"></a>
 
 ## Prettify
 
@@ -362,7 +377,7 @@ Getting errors on start up for this one. Will need to look into it.
           org-ellipsis "▼")
 
 
-<a id="org865c79d"></a>
+<a id="org1360216"></a>
 
 ## Publishing
 
@@ -415,7 +430,7 @@ Getting errors on start up for this one. Will need to look into it.
              ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks"))))
 
 
-<a id="org0d9f24b"></a>
+<a id="org092c724"></a>
 
 ## Refiling
 
@@ -427,7 +442,7 @@ Getting errors on start up for this one. Will need to look into it.
           org-log-reschedule 'time)
 
 
-<a id="org1eb7533"></a>
+<a id="orgf69ac28"></a>
 
 ## Tags
 
@@ -435,12 +450,12 @@ Getting errors on start up for this one. Will need to look into it.
           org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P)))
 
 
-<a id="orgc7e2b37"></a>
+<a id="orgec46207"></a>
 
 # Extra Modules
 
 
-<a id="orgfdb6b32"></a>
+<a id="orgf2790a3"></a>
 
 ## Plantuml
 
@@ -452,7 +467,7 @@ Getting errors on start up for this one. Will need to look into it.
       (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
 
 
-<a id="org3c71e94"></a>
+<a id="org71dc579"></a>
 
 ## Org-Mind-Map
 
@@ -472,7 +487,7 @@ Getting errors on start up for this one. Will need to look into it.
       )
 
 
-<a id="org20da483"></a>
+<a id="orgff4fee3"></a>
 
 ## Gnuplot
 
@@ -481,7 +496,7 @@ Getting errors on start up for this one. Will need to look into it.
       (setq gnuplot-program "gnuplot"))
 
 
-<a id="orgcacad01"></a>
+<a id="orgd642afe"></a>
 
 ## Deft
 
@@ -538,7 +553,7 @@ Getting errors on start up for this one. Will need to look into it.
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org0fee7a9"></a>
+<a id="org29abec2"></a>
 
 ## Elfeed
 
@@ -557,7 +572,7 @@ Getting errors on start up for this one. Will need to look into it.
                       elfeed-db-directory "~/.elfeed/"))
 
 
-<a id="orgfa69b4c"></a>
+<a id="orgef895de"></a>
 
 ## Org-Clock-Switch
 
@@ -571,7 +586,7 @@ Getting errors on start up for this one. Will need to look into it.
     (provide 'org-clock-switch)
 
 
-<a id="org29a9735"></a>
+<a id="org9c38a0d"></a>
 
 ## Update Tickboxes
 
@@ -586,7 +601,7 @@ Getting errors on start up for this one. Will need to look into it.
     (provide 'org-update-cookies-after-save)
 
 
-<a id="orgfb8f58c"></a>
+<a id="orgc12b413"></a>
 
 ## Zyrohex/org-tasks-refile
 
@@ -601,7 +616,7 @@ Getting errors on start up for this one. Will need to look into it.
     (provide 'zyrohex/org-tasks-refile)
 
 
-<a id="org567803c"></a>
+<a id="org2b6681e"></a>
 
 ## Zyrohex/org-reference-refile
 
@@ -613,7 +628,7 @@ Getting errors on start up for this one. Will need to look into it.
     (provide 'zyrohex/org-reference-refile)
 
 
-<a id="org514662d"></a>
+<a id="org3e05d99"></a>
 
 ## Zyrohex/org-notes-refile
 
@@ -626,7 +641,7 @@ Getting errors on start up for this one. Will need to look into it.
     (provide 'zyrohex/org-notes-refile)
 
 
-<a id="orgc6f8a62"></a>
+<a id="orgf9d9f32"></a>
 
 ## WSL Browser
 
@@ -642,7 +657,7 @@ Getting errors on start up for this one. Will need to look into it.
     (setq-default browse-url-browser-function 'my--browse-url)
 
 
-<a id="org589ee7e"></a>
+<a id="org01e9ca5"></a>
 
 # Super Agenda Groups
 
@@ -694,12 +709,7 @@ Getting errors on start up for this one. Will need to look into it.
                                                   :order 7)
                                            (:name "Projects"
                                                   :category "Projects"
-                                                  :order 8)))))
-                                 (agenda ""
-                                         ((org-agenda-overriding-header "Habits")
-                                          (org-agenda-files '("~/.org/gtd/habits.org"))
-                                          (org-agenda-span 'day)
-                                          (org-agenda-start-day (org-today))))))
+                                                  :order 8)))))))
                                ("i" "Inbox"
                                 ((todo ""
                                        ((org-agenda-files '("~/.org/gtd/inbox.org"))

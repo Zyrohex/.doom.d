@@ -59,6 +59,13 @@
 (setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
 
+(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3))
+(after! org (set-popup-rule! "*helm*" :side 'bottom :height .40 :select t :vslot 5 :ttl 3))
+(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
+(after! org (set-popup-rule! "*xwidget" :side 'right :size .40 :select t :vslot 5 :ttl 3))
+(after! org (set-popup-rule! "*org agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
+
 (setq doom-theme 'doom-solarized-light)
 
 (setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
@@ -434,12 +441,7 @@
                                               :order 7)
                                        (:name "Projects"
                                               :category "Projects"
-                                              :order 8)))))
-                             (agenda ""
-                                     ((org-agenda-overriding-header "Habits")
-                                      (org-agenda-files '("~/.org/gtd/habits.org"))
-                                      (org-agenda-span 'day)
-                                      (org-agenda-start-day (org-today))))))
+                                              :order 8)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.org/gtd/inbox.org"))
