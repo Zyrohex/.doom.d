@@ -13,7 +13,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 ** Lines
 For this we just make small tweaks to line numbers.
 #+BEGIN_SRC emacs-lisp
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type t)
 #+END_SRC
 ** Keys
 #+BEGIN_SRC emacs-lisp

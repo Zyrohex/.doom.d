@@ -3,7 +3,7 @@
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
 
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type t)
 
 (map!
  :nvime "<f5> d" #'helm-org-rifle-directories
