@@ -67,6 +67,12 @@ For this we just make small tweaks to line numbers.
       (:prefix "/"
         :n "j" #'org-journal-search))
 #+END_SRC
+** General settings
+#+BEGIN_SRC emacs-lisp
+(setq-default fill-column 140)
+(setq diary-file "~/.org/gtd/diary.org")
+(global-auto-revert-mode t)
+#+END_SRC
 * Doom Settings
 ** Theme
 #+BEGIN_SRC emacs-lisp
@@ -231,7 +237,8 @@ Getting errors on start up for this one and not sure why.
 #+END_SRC
 ** Prettify
 #+BEGIN_SRC emacs-lisp
-(setq org-bullets-bullet-list '("✖" "✚"))
+(setq org-bullets-bullet-list '("✖" "✚")
+      org-ellipsis "▼")
 #+END_SRC
 ** Publishing
 #+BEGIN_SRC emacs-lisp

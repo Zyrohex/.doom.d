@@ -55,6 +55,10 @@
       (:prefix "/"
         :n "j" #'org-journal-search))
 
+(setq-default fill-column 140)
+(setq diary-file "~/.org/gtd/diary.org")
+(global-auto-revert-mode t)
+
 (setq doom-theme 'doom-solarized-light)
 
 (setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
@@ -165,7 +169,8 @@
       org-log-redeadline 'time
       org-log-reschedule 'time)
 
-(setq org-bullets-bullet-list '("✖" "✚"))
+(setq org-bullets-bullet-list '("✖" "✚")
+      org-ellipsis "▼")
 
 (setq org-publish-project-alist
       '(("references-attachments"
