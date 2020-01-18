@@ -449,7 +449,7 @@
                                     (org-super-agenda-groups
                                      '((:auto-ts t)))))))
                            ("x" "Get to someday"
-                            ((tags-todo "-@computer-@email-@configure-@read-@watch-@personal"
+                            ((todo ""
                                         ((org-agenda-overriding-header "Projects marked Someday")
                                          (org-agenda-files '("~/.org/gtd/someday.org"))
                                          (org-super-agenda-groups
