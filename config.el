@@ -26,17 +26,6 @@
         :n "w" #'deft)
       (:prefix "f"
         :n "o" #'plain-org-wiki-helm)
-      (:prefix "m"
-        (:prefix "r"
-          :n "." #'+org/refile-to-current-file
-          :n "O" #'+org/refile-to-other-buffer
-          :n "c" #'+org/refile-to-running-clock
-          :n "l" #'+org/refile-to-last-location
-          :n "o" #'+org/refile-to-other-window
-          :n "v" #'+org/refile-to-visible
-          :n "r" #'org-refile
-          :n "x" #'zyrohex/org-reference-refile
-          :n "z" #'zyrohex/org-tasks-refile))
       (:prefix "n"
         :n "D" #'dictionary-lookup-definition
         :n "T" #'powerthesaurus-lookup-word)
@@ -77,6 +66,7 @@
 
 (after! org (setq org-capture-templates
       '(("g" "Getting things done")
+        ("r" "References")
         ("d" "Diary")
         ("p" "Graph Data")
         ("t" "Data Tracker"))))
@@ -130,8 +120,21 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("n" "Note" entry(file"~/.org/gtd/notes.org")
+             '("gn" "New Note" entry(file"~/.org/gtd/notes.org")
 "* [%<%a %m-%d %H:%M>] %^{note}
+%?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("re" "Yank new Example" entry(file+headline"~/.org/notes/examples.org" "INBOX")
+"* %^{example}
+:PROPERTIES:
+:SOURCE:  %^{source|Command|Script|Code|Usage}
+:SUBJECT: %^{subject}
+:END:
+
+\#+BEGIN_SRC
+%x
+\#+END_SRC
 %?")))
 
 (setq org-directory "~/.org/"
