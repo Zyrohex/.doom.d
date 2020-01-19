@@ -161,7 +161,7 @@ For this we just make small tweaks to line numbers.
 "* [%<%a %m-%d %H:%M>] %^{note}
 %?")))
 #+END_SRC
-*** References
+*** Reference - Yank Example
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("re" "Yank new Example" entry(file+headline"~/.org/notes/examples.org" "INBOX")
