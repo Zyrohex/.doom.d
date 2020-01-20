@@ -3,6 +3,9 @@
 My DOOM emacs private configuration:
 https://i.imgur.com/EBp5TxA.png
 
+High focus on GTD process workflow:
+[[https://i.imgur.com/X1rjCTa.png]]
+
 * General Settings
 ** Fonts
 
@@ -69,7 +72,7 @@ For this we just make small tweaks to line numbers.
 #+END_SRC
 ** Popup Rules
 #+BEGIN_SRC emacs-lisp
-(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3))
 (after! org (set-popup-rule! "*helm*" :side 'bottom :height .40 :select t :vslot 5 :ttl 3))
 (after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
@@ -159,6 +162,11 @@ For this we just make small tweaks to line numbers.
 (after! org (add-to-list 'org-capture-templates
              '("gn" "New Note" entry(file"~/.org/gtd/notes.org")
 "* [%<%a %m-%d %H:%M>] %^{note}
+:PROPERTIES:
+:CATEGORY: %^{category}
+:END:
+:RESOURCES:
+:END:
 %?")))
 #+END_SRC
 *** Reference - Yank Example
@@ -448,6 +456,15 @@ Getting errors on start up for this one. Will need to look into it.
   (org-clock-in)
   (org-clock-goto))
 (provide 'org-clock-switch)
+#+END_SRC
+** TODO Org-Rifle
+:PROPERTIES:
+:ID:       3256ce1c-aa68-4b99-823c-4c8fd6545c0b
+:END:
+
+I'll want to add some of my own custom rifle actions here.
+
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
 ** Update Tickboxes
 #+BEGIN_SRC emacs-lisp

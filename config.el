@@ -48,7 +48,7 @@
 (setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
 
-(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :height .30 :width 60 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "Dictionary" :side 'bottom :height .40 :width 20 :select t :vslot 3 :ttl 3))
 (after! org (set-popup-rule! "*helm*" :side 'bottom :height .40 :select t :vslot 5 :ttl 3))
 (after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
@@ -122,6 +122,11 @@
 (after! org (add-to-list 'org-capture-templates
              '("gn" "New Note" entry(file"~/.org/gtd/notes.org")
 "* [%<%a %m-%d %H:%M>] %^{note}
+:PROPERTIES:
+:CATEGORY: %^{category}
+:END:
+:RESOURCES:
+:END:
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
@@ -347,6 +352,8 @@
   (org-clock-in)
   (org-clock-goto))
 (provide 'org-clock-switch)
+
+
 
 (defun org-update-cookies-after-save()
   (interactive)
