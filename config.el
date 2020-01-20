@@ -55,7 +55,7 @@
 (after! org (set-popup-rule! "*xwidget" :side 'right :size .40 :select t :vslot 5 :ttl 3))
 (after! org (set-popup-rule! "*org agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
-(setq doom-theme 'doom-solarized-light)
+(setq doom-theme 'doom-city-lights)
 
 (setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
       org-agenda-diary-file "~/.org/diary.org"
@@ -462,3 +462,88 @@
                                          (org-agenda-files '("~/.org/gtd/someday.org"))
                                          (org-super-agenda-groups
                                           '((:auto-ts t))))))))))
+
+@startuml
+start
+#white:you have a thought about something you need to do;
+#lightgreen:Start GTD Capture Process;
+note right
+This can be done via capture-templates,
+adding directly to your inbox.org file
+or calling snippet templates. Whatever
+works for you.
+end note
+if (Can it be done in <2 minutes?) then (yes)
+#hotpink:Just do it!;
+stop
+else (no)
+if (Is the item an appoinment\nor have a due date?) then (yes)
+:Assign dates to task\nAssign context tags\nAssign 'NEXTACTION' property\nAssign estimates;
+note right
+Estimates will be used to
+predict how much time any
+tasks may take
+end note
+note left
+Context tags will help define your next
+action such as @computer @email and will
+help your org agenda in later steps to
+only show NEXTACTION tasks
+end note
+#hotpink:Refile to your NEXTACTIONS file immediately;
+stop
+else (no)
+#hotpink:refile to INBOX;
+stop
+
+#lightgreen:REVIEW STAGE;
+:Review INBOX/SOMEDAY once a day/week (what works for you);
+if (Can you commit to next action?) then (yes)
+if (Can you delegate the item?) then (yes)
+#hotpink:Change TODO state to DELEGATED;
+:Assign deadline/date when you expect item to be completed\nAssign :WHO: property;
+#hotpink:Refile to NEXTACTIONS file;
+stop
+else (no)
+:Assign date when you plan to work on item\nAssign context tags\nAssign 'NEXTACTION' property\nAssign estimates;
+#hotpink:Refile to NEXTACTIONS file;
+stop
+endif
+else (no)
+if (Can you action sometime in future?) then (yes)
+#hotpink:Refile to SOMEDAY;
+stop
+else (no)
+if (Do you need to keep for future reference?) then (yes)
+#hotpink:Refile to REFERENCES;
+stop
+else (no)
+#hotpink:Delete the ITEM;
+stop
+endif
+
+start
+#lightgreen:Start NEXTACTIONS Process;
+if (tasks has become stale) then (yes)
+:Update 'NEXTACTION' states
+re-assign new date to complete task;
+note right
+Setting logging state to 'note'
+in emacs on reschedules will force
+you to be honest with yourself
+end note
+:If repeated attempts fail
+Refile to SOMEDAY/REFERENCES;
+stop
+else (no)
+if (is task on-going?) then (yes)
+:Keep 'NEXTACTIONS' updated;
+:Move dates if needed;
+stop
+else (no)
+#lightgreen:Start new capture process to your notes section;
+:Record import details of the task and how you completed it;
+#hotpink:Archive task to ARCHIVE file;
+stop
+
+@enduml
