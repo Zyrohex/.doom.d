@@ -120,16 +120,6 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("gn" "New Note" entry(file"~/.org/gtd/notes.org")
-"* [%<%a %m-%d %H:%M>] %^{note}
-:PROPERTIES:
-:CATEGORY: %^{category}
-:END:
-:RESOURCES:
-:END:
-%?")))
-
-(after! org (add-to-list 'org-capture-templates
              '("re" "Yank new Example" entry(file+headline"~/.org/notes/examples.org" "INBOX")
 "* %^{example}
 :PROPERTIES:
@@ -141,6 +131,38 @@
 %x
 \#+END_SRC
 %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("rn" "Yank new Example" entry(file+headline"~/.org/notes/references.org" "INBOX")
+"* %^{example}
+:PROPERTIES:
+:CATEGORY: %^{category}
+:SUBJECT:  %^{subject}
+:END:
+:RESOURCES:
+:END:
+
+%?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Dailies")
+"* %^{example}
+:PROPERTIES:
+:CATEGORY: %^{category}
+:SUBJECT:  %^{subject}
+:MOOD:     %^{mood}
+:END:
+:RESOURCES:
+:END:
+
+\*What was one good thing you learned today?*:
+- %^{whatilearnedtoday}
+
+\*List one thing you could have done better*:
+- %^{onethingdobetter}
+
+\*Describe in your own words how your day was*:
+- %?")))
 
 (setq org-directory "~/.org/"
       org-image-actual-width nil
@@ -167,12 +189,13 @@
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
         ("WAITING" :foreground "light sea green" :weight bold)
-        ("STARTED" :foreground "Turquoise" :weight bold)
+        ("STARTED" :foreground "DodgerBlue" :weight bold)
+        ("DELEGATED" :foreground "Gold" :weight bold)
         ("NEXT" :foreground "violet red" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold))))
 
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "|" "INVALID(I!)" "DONE(d!)"))))
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(d!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
 (setq org-link-abbrev-alist
       '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
@@ -188,10 +211,10 @@
 
 (setq org-log-state-notes-insert-after-drawers nil
       org-log-into-drawer t
-      org-log-done 'note
+      org-log-done 'time
       org-log-repeat 'time
-      org-log-redeadline 'time
-      org-log-reschedule 'time)
+      org-log-redeadline 'note
+      org-log-reschedule 'note)
 
 (setq org-bullets-bullet-list '("✖" "✚")
       org-ellipsis "▼")
@@ -422,7 +445,7 @@
                                                 :scheduled t
                                                 :deadline t
                                                 :order 13)))))
-                             (todo "TODO|NEXT|DELEGATED|REVIEW|WAITING|IN-PROGRESS"
+                             (todo "TODO|NEXT|REVIEW|WAITING|IN-PROGRESS"
                                    ((org-agenda-overriding-header "[[~/.org/gtd/tasks.org][Task list]]")
                                     (org-agenda-files '("~/.org/gtd/tasks.org"))
                                     (org-super-agenda-groups
@@ -449,7 +472,12 @@
                                               :order 7)
                                        (:name "Projects"
                                               :category "Projects"
-                                              :order 8)))))))
+                                              :order 8)))))
+                             (todo "DELEGATED"
+                                   ((org-agenda-overriding-header "Delegated Tasks by WHO")
+                                    (org-agenda-files '("~/.org/gtd/tasks.org"))
+                                    (org-super-agenda-groups
+                                     '((:auto-property "WHO")))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.org/gtd/inbox.org"))
@@ -462,88 +490,3 @@
                                          (org-agenda-files '("~/.org/gtd/someday.org"))
                                          (org-super-agenda-groups
                                           '((:auto-ts t))))))))))
-
-@startuml
-start
-#white:you have a thought about something you need to do;
-#lightgreen:Start GTD Capture Process;
-note right
-This can be done via capture-templates,
-adding directly to your inbox.org file
-or calling snippet templates. Whatever
-works for you.
-end note
-if (Can it be done in <2 minutes?) then (yes)
-#hotpink:Just do it!;
-stop
-else (no)
-if (Is the item an appoinment\nor have a due date?) then (yes)
-:Assign dates to task\nAssign context tags\nAssign 'NEXTACTION' property\nAssign estimates;
-note right
-Estimates will be used to
-predict how much time any
-tasks may take
-end note
-note left
-Context tags will help define your next
-action such as @computer @email and will
-help your org agenda in later steps to
-only show NEXTACTION tasks
-end note
-#hotpink:Refile to your NEXTACTIONS file immediately;
-stop
-else (no)
-#hotpink:refile to INBOX;
-stop
-
-#lightgreen:REVIEW STAGE;
-:Review INBOX/SOMEDAY once a day/week (what works for you);
-if (Can you commit to next action?) then (yes)
-if (Can you delegate the item?) then (yes)
-#hotpink:Change TODO state to DELEGATED;
-:Assign deadline/date when you expect item to be completed\nAssign :WHO: property;
-#hotpink:Refile to NEXTACTIONS file;
-stop
-else (no)
-:Assign date when you plan to work on item\nAssign context tags\nAssign 'NEXTACTION' property\nAssign estimates;
-#hotpink:Refile to NEXTACTIONS file;
-stop
-endif
-else (no)
-if (Can you action sometime in future?) then (yes)
-#hotpink:Refile to SOMEDAY;
-stop
-else (no)
-if (Do you need to keep for future reference?) then (yes)
-#hotpink:Refile to REFERENCES;
-stop
-else (no)
-#hotpink:Delete the ITEM;
-stop
-endif
-
-start
-#lightgreen:Start NEXTACTIONS Process;
-if (tasks has become stale) then (yes)
-:Update 'NEXTACTION' states
-re-assign new date to complete task;
-note right
-Setting logging state to 'note'
-in emacs on reschedules will force
-you to be honest with yourself
-end note
-:If repeated attempts fail
-Refile to SOMEDAY/REFERENCES;
-stop
-else (no)
-if (is task on-going?) then (yes)
-:Keep 'NEXTACTIONS' updated;
-:Move dates if needed;
-stop
-else (no)
-#lightgreen:Start new capture process to your notes section;
-:Record import details of the task and how you completed it;
-#hotpink:Archive task to ARCHIVE file;
-stop
-
-@enduml
