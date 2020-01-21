@@ -7,12 +7,11 @@ High focus on GTD process workflow:
 #+RESULTS:
 [[file:./attachments/gtd.png]]
 
-* Getting started with this REPO
-If you are starting with a fresh DOOM Emacs Installation, you can follow the following steps:
+* Getting started
+If you have not installed DOOM Emacs but would like to:
 #+BEGIN_EXAMPLE
 git clone https://github.com/nmartin84/.doom.d.git ~/.doom.d
 git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
-sed -i 's/;;literate/literate/' ~/.doom.d/init.el
 ~/.emacs.d/bin/doom install
 #+END_EXAMPLE
 
@@ -20,12 +19,11 @@ Otherwise, backup your existing DOOM private config and run:
 #+BEGIN_EXAMPLE
 mv ~/.doom.d ~/.doom.d_backup
 git clone https://github.com/nmartin84/.doom.d.git ~/.doom.d
-sed -i 's/;;literate/literate/' ~/.doom.d/init.el
 ~/.emacs.d/bin/doom refresh
 #+END_EXAMPLE
 
 This repo uses a literate configuration, with basic settings in ~./init.el~, ~./packags.el~, the content of ~./config.el~ will be generated
-from the Emacs Lisp code blocks in ~config.org~.
+from the Emacs Lisp code blocks in ~config.org~. This readme file gets created when exporting ~config.org~ to markdown.
 
 * General Settings
 ** Fonts
