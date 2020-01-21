@@ -21,7 +21,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 ** Lines
 For this we just make small tweaks to line numbers.
 #+BEGIN_SRC emacs-lisp
-(setq display-line-numbers-type t)
+(setq display-line-numbers t)
 #+END_SRC
 ** Keys
 #+BEGIN_SRC emacs-lisp
@@ -88,7 +88,7 @@ For this we just make small tweaks to line numbers.
 * Org Mode Settings
 ** Agenda
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
+(setq org-agenda-files (list "~/.org/gtd/" "~/.org/notes/")
       org-agenda-diary-file "~/.org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
@@ -98,28 +98,28 @@ For this we just make small tweaks to line numbers.
 ** Captures
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-capture-templates
-      '(("g" "Getting things done")
-        ("r" "References")
-        ("d" "Diary")
-        ("p" "Graph Data")
-        ("t" "Data Tracker"))))
+                  '(("g" "Getting things done")
+                    ("r" "References")
+                    ("d" "Diary")
+                    ("p" "Graph Data")
+                    ("t" "Data Tracker"))))
 #+END_SRC
-*** GTD Recurring Tasks
+*** Getting Things Done
+**** Recurring Tasks
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
-               "* TODO %^{description}
+                         '("gr" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
+                           "* TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
 :END:
 :RESOURCES:
-%^{url}
 :END:
 
-\** notes
-%?")))
++ NOTES:
+  %?")))
 #+END_SRC
-*** GTD Projects
+**** Project
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("gp" "Project" entry (file+headline"~/.org/gtd/tasks.org" "Projects")
@@ -129,21 +129,20 @@ For this we just make small tweaks to line numbers.
 :GOAL:    %^{goal}
 :END:
 :RESOURCES:
-[[%^{url}]]
 :END:
 
-\*requirements*:
-%^{requirements}
++ REQUIREMENTS:
+  %^{requirements}
 
-\*notes*:
-%?
++ NOTES:
+  %?
 
 \** TODO %^{task1}")))
 #+END_SRC
-*** GTD Capture
+**** New Capture
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("gt" "Task" entry (file"~/.org/gtd/inbox.org")
+             '("gt" "Capture Task" entry (file"~/.org/gtd/inbox.org")
 "** TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
@@ -152,11 +151,11 @@ For this we just make small tweaks to line numbers.
 [[%^{url}]]
 :END:
 
-\*next steps*:
-- [ ] %^{next steps}
++ NEXT STEPS:
+  - [ ] %^{next steps}
 
-\*notes*:
-%?")))
++ NOTES:
+  %?")))
 #+END_SRC
 *** Reference - Yank Example
 #+BEGIN_SRC emacs-lisp

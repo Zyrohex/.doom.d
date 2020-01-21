@@ -3,7 +3,7 @@
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
 
-(setq display-line-numbers-type t)
+(setq display-line-numbers t)
 
 (map!
  :nvime "<f5> d" #'helm-org-rifle-directories
@@ -57,7 +57,7 @@
 
 (setq doom-theme 'doom-city-lights)
 
-(setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
+(setq org-agenda-files (list "~/.org/gtd/" "~/.org/notes/")
       org-agenda-diary-file "~/.org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
@@ -65,24 +65,23 @@
       org-habit-show-habits t)
 
 (after! org (setq org-capture-templates
-      '(("g" "Getting things done")
-        ("r" "References")
-        ("d" "Diary")
-        ("p" "Graph Data")
-        ("t" "Data Tracker"))))
+                  '(("g" "Getting things done")
+                    ("r" "References")
+                    ("d" "Diary")
+                    ("p" "Graph Data")
+                    ("t" "Data Tracker"))))
 
 (after! org (add-to-list 'org-capture-templates
-             '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
-               "* TODO %^{description}
+                         '("gr" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
+                           "* TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
 :END:
 :RESOURCES:
-%^{url}
 :END:
 
-\** notes
-%?")))
++ NOTES:
+  %?")))
 
 (after! org (add-to-list 'org-capture-templates
              '("gp" "Project" entry (file+headline"~/.org/gtd/tasks.org" "Projects")
@@ -92,19 +91,18 @@
 :GOAL:    %^{goal}
 :END:
 :RESOURCES:
-[[%^{url}]]
 :END:
 
-\*requirements*:
-%^{requirements}
++ REQUIREMENTS:
+  %^{requirements}
 
-\*notes*:
-%?
++ NOTES:
+  %?
 
 \** TODO %^{task1}")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("gt" "Task" entry (file"~/.org/gtd/inbox.org")
+             '("gt" "Capture Task" entry (file"~/.org/gtd/inbox.org")
 "** TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
@@ -113,11 +111,11 @@
 [[%^{url}]]
 :END:
 
-\*next steps*:
-- [ ] %^{next steps}
++ NEXT STEPS:
+  - [ ] %^{next steps}
 
-\*notes*:
-%?")))
++ NOTES:
+  %?")))
 
 (after! org (add-to-list 'org-capture-templates
              '("re" "Yank new Example" entry(file+headline"~/.org/notes/examples.org" "INBOX")
