@@ -7,6 +7,7 @@ High focus on GTD process workflow:
 #+RESULTS:
 [[file:./attachments/gtd.png]]
 
+* Getting started with this REPO
 If you are starting with a fresh DOOM Emacs Installation, you can follow the following steps:
 #+BEGIN_EXAMPLE
 git clone https://github.com/nmartin84/.doom.d.git ~/.doom.d
