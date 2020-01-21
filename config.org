@@ -212,8 +212,8 @@ For this we just make small tweaks to line numbers.
 *** Diary - Daily Log
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Dailies")
-"* %^{example}
+             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Daily Logs")
+"* %^{thought for the day}
 :PROPERTIES:
 :CATEGORY: %^{category}
 :SUBJECT:  %^{subject}
@@ -273,7 +273,7 @@ Need to add condition to adjust faces based on theme select.
 ** Keywords
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(d!)" "|" "INVALID(I!)" "DONE(d!)"))))
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(e!)" "|" "INVALID(I!)" "DONE(d!)"))))
 #+END_SRC
 ** TODO Latex Exports
 

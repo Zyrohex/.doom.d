@@ -146,8 +146,8 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Dailies")
-"* %^{example}
+             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Daily Logs")
+"* %^{thought for the day}
 :PROPERTIES:
 :CATEGORY: %^{category}
 :SUBJECT:  %^{subject}
@@ -196,7 +196,7 @@
         ("DONE" :foreground "slategrey" :weight bold))))
 
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(d!)" "|" "INVALID(I!)" "DONE(d!)"))))
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(e!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
 (setq org-link-abbrev-alist
       '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
