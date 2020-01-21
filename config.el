@@ -57,12 +57,15 @@
 
 (setq doom-theme 'doom-city-lights)
 
-(setq org-agenda-files (list "~/.org/gtd/" "~/.org/notes/")
-      org-agenda-diary-file "~/.org/diary.org"
+(setq org-agenda-diary-file "~/.org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
       org-habit-show-habits t)
+
+(load-library "find-lisp")
+(after! org (setq org-agenda-files
+                  (find-lisp-find-files "~/.org/" "\.org$")))
 
 (after! org (setq org-capture-templates
                   '(("g" "Getting things done")

@@ -88,12 +88,17 @@ For this we just make small tweaks to line numbers.
 * Org Mode Settings
 ** Agenda
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files (list "~/.org/gtd/" "~/.org/notes/")
-      org-agenda-diary-file "~/.org/diary.org"
+(setq org-agenda-diary-file "~/.org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
       org-habit-show-habits t)
+#+END_SRC
+** Load all *.org files to agenda
+#+BEGIN_SRC emacs-lisp
+(load-library "find-lisp")
+(after! org (setq org-agenda-files
+                  (find-lisp-find-files "~/.org/" "\.org$")))
 #+END_SRC
 ** Captures
 #+BEGIN_SRC emacs-lisp
