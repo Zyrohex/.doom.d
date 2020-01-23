@@ -3,7 +3,7 @@
 My DOOM emacs private configuration:
 https://i.imgur.com/EBp5TxA.png
 
-High focus on GTD process workflow:
+High focus on GTD process workflow: ([[https://github.com/nmartin84/.references/blob/master/gtd-babel.org][source]])
 #+RESULTS:
 [[file:./attachments/gtd.png]]
 
@@ -31,10 +31,10 @@ from the Emacs Lisp code blocks in ~config.org~. This readme file gets created w
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
 
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "InputMono" :size 18)
+(setq doom-font (font-spec :family "InputMono" :size 16)
       doom-variable-pitch-font (font-spec :family "InputMono")
       doom-unicode-font (font-spec :family "DejaVu Sans")
-      doom-big-font (font-spec :family "InputMono" :size 20))
+      doom-big-font (font-spec :family "InputMono" :size 18))
 #+END_SRC
 ** Lines
 For this we just make small tweaks to line numbers.
@@ -101,8 +101,14 @@ For this we just make small tweaks to line numbers.
 * Doom Settings
 ** Theme
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-city-lights)
+(setq doom-theme 'doom-one)
 #+END_SRC
+** Mode line
+#+BEGIN_SRC emacs-lisp
+(setq doom-modeline-gnus t
+      doom-modeline-gnus-timer 'nil)
+#+END_SRC
+
 * Org Mode Settings
 ** Agenda
 #+BEGIN_SRC emacs-lisp
@@ -166,19 +172,17 @@ For this we just make small tweaks to line numbers.
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("gt" "Capture Task" entry (file"~/.org/gtd/inbox.org")
-"** TODO %^{description}
+"** TODO %?
 :PROPERTIES:
 :CREATED:    %U
 :END:
 :RESOURCES:
-[[%^{url}]]
 :END:
 
 + NEXT STEPS:
   - [ ] %^{next steps}
 
-+ NOTES:
-  %?")))
++ NOTES:")))
 #+END_SRC
 *** Reference - Yank Example
 #+BEGIN_SRC emacs-lisp
@@ -255,7 +259,7 @@ For this we just make small tweaks to line numbers.
       org-export-with-smart-quotes t)
 
 ;(after! org (add-to-list 'org-export-backends 'pandoc))
-(after! org (add-to-list 'org-export-backends 'pdf))
+(after! org (setq org-export-backends '("pdf" "ascii" "html" "latex" "odt")))
 #+END_SRC
 ** TODO Faces
 
@@ -391,6 +395,80 @@ Getting errors on start up for this one. Will need to look into it.
 #+END_SRC
 
 * Extra Modules
+** Centaur Tabs
+#+BEGIN_SRC emacs-lisp
+(use-package centaur-tabs
+  :load-path "~/.emacs.d/other/centaur-tabs"
+  :config
+  (setq centaur-tabs-style "bar"
+        centaur-tabs-height 32
+        centaur-tabs-set-icons t
+        centaur-tabs-set-modified-marker t
+        centaur-tabs-set-bar 'under
+        x-underline-at-descent-line t)
+  (centaur-tabs-headline-match)
+  ;; (setq centaur-tabs-gray-out-icons 'buffer)
+  ;; (centaur-tabs-enable-buffer-reordering)
+  ;; (setq centaur-tabs-adjust-buffer-order t)
+  (centaur-tabs-mode t)
+  (setq uniquify-separator "/")
+  (setq uniquify-buffer-name-style 'forward)
+  (defun centaur-tabs-buffer-groups ()
+    "`centaur-tabs-buffer-groups' control buffers' group rules.
+
+ Group centaur-tabs with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
+ All buffer name start with * will group to \"Emacs\".
+ Other buffer group by `centaur-tabs-get-group-name' with project name."
+    (list
+     (cond
+      ;; ((not (eq (file-remote-p (buffer-file-name)) nil))
+      ;; "Remote")
+      ((or (string-equal "*" (substring (buffer-name) 0 1))
+           (memq major-mode '(magit-process-mode
+                              magit-status-mode
+                              magit-diff-mode
+                              magit-log-mode
+                              magit-file-mode
+                              magit-blob-mode
+                              magit-blame-mode
+                              )))
+       "Emacs")
+      ((derived-mode-p 'prog-mode)
+       "Editing")
+      ((derived-mode-p 'dired-mode)
+       "Dired")
+      ((memq major-mode '(helpful-mode
+                          help-mode))
+       "Help")
+      ((memq major-mode '(org-mode
+                          org-agenda-clockreport-mode
+                          org-src-mode
+                          org-agenda-mode
+                          org-beamer-mode
+                          org-indent-mode
+                          org-bullets-mode
+                          org-cdlatex-mode
+                          org-agenda-log-mode
+                          diary-mode))
+       "OrgMode")
+      (t
+       (centaur-tabs-get-group-name (current-buffer))))))
+  :hook
+  (dashboard-mode . centaur-tabs-local-mode)
+  (term-mode . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
+  (helpful-mode . centaur-tabs-local-mode)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward)
+  ("C-c t s" . centaur-tabs-counsel-switch-group)
+  ("C-c t p" . centaur-tabs-group-by-projectile-project)
+  ("C-c t g" . centaur-tabs-group-buffer-groups)
+  (:map evil-normal-state-map
+	  ("g t" . centaur-tabs-forward)
+	  ("g T" . centaur-tabs-backward)))
+#+END_SRC
 ** Plantuml
 #+BEGIN_SRC emacs-lisp
 (use-package ob-plantuml
@@ -625,7 +703,12 @@ I'll want to add some of my own custom rifle actions here.
                                    ((org-agenda-overriding-header "Delegated Tasks by WHO")
                                     (org-agenda-files '("~/.org/gtd/tasks.org"))
                                     (org-super-agenda-groups
-                                     '((:auto-property "WHO")))))))
+                                     '((:auto-property "WHO")))))
+                             (todo ""
+                                   ((org-agenda-overriding-header "References")
+                                    (org-agenda-files '("~/.org/gtd/references.org"))
+                                    (org-super-agenda-groups
+                                     '((:auto-ts t)))))))
                            ("i" "Inbox"
                             ((todo ""
                                    ((org-agenda-files '("~/.org/gtd/inbox.org"))
