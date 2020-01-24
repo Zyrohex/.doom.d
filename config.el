@@ -45,7 +45,6 @@
         :n "j" #'org-journal-search))
 
 (setq-default fill-column 140)
-(setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
 
 (after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .40 :select t :vslot 2 :ttl 3))
@@ -57,8 +56,9 @@
 
 (setq doom-theme 'doom-city-lights)
 
-(setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
-      org-agenda-diary-file "~/.org/diary.org"
+(setq org-agenda-files '("~/Dropbox/org/" "~/Dropbox/org/notes/")
+      org-agenda-diary-file "~/Dropbox/org/diary.org"
+      diary-file            "~/Dropbox/org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
@@ -72,7 +72,7 @@
         ("t" "Data Tracker"))))
 
 (after! org (add-to-list 'org-capture-templates
-             '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
+             '("gx" "Recurring Task" entry (file "~/Dropbox/org/recurring.org")
                "* TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
@@ -85,7 +85,7 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("gp" "Project" entry (file+headline"~/.org/gtd/tasks.org" "Projects")
+             '("gp" "Project" entry (file+headline"~/Dropbox/org/tasks.org" "Projects")
 "* TODO %^{Description}
 :PROPERTIES:
 :SUBJECT: %^{subject}
@@ -104,7 +104,7 @@
 \** TODO %^{task1}")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("gt" "Task" entry (file"~/.org/gtd/inbox.org")
+             '("gt" "Task" entry (file"~/Dropbox/org/inbox.org")
 "** TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
@@ -120,7 +120,7 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("re" "Yank new Example" entry(file+headline"~/.org/notes/examples.org" "INBOX")
+             '("re" "Yank new Example" entry(file+headline"~/Dropbox/org/notes/examples.org" "INBOX")
 "* %^{example}
 :PROPERTIES:
 :SOURCE:  %^{source|Command|Script|Code|Usage}
@@ -133,7 +133,7 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("rn" "Yank new Example" entry(file+headline"~/.org/notes/references.org" "INBOX")
+             '("rn" "Yank new Example" entry(file+headline"~/Dropbox/org/notes/references.org" "INBOX")
 "* %^{example}
 :PROPERTIES:
 :CATEGORY: %^{category}
@@ -145,7 +145,7 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Dailies")
+             '("dn" "New Diary Entry" entry(file+olp+datetree"~/Dropbox/org/diary.org" "Dailies")
 "* %^{example}
 :PROPERTIES:
 :CATEGORY: %^{category}
@@ -207,7 +207,7 @@
         ("youtube" . "https://youtube.com/watch?v=%s")
         ("youtu" . "https://youtube.com/results?search_query=%s")
         ("github" . "https://github.com/%s")
-        ("attachments" . "~/.org/.attachments/")))
+        ("attachments" . "~/Dropbox/org/.attachments/")))
 
 (setq org-log-state-notes-insert-after-drawers nil
       org-log-into-drawer t
@@ -221,12 +221,12 @@
 
 (setq org-publish-project-alist
       '(("references-attachments"
-         :base-directory "~/.org/notes/images/"
+         :base-directory "~/Dropbox/org/notes/images/"
          :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
          :publishing-directory "~/publish_html/references/images"
          :publishing-function org-publish-attachment)
         ("references-md"
-         :base-directory "~/.org/notes/"
+         :base-directory "~/Dropbox/org/notes/"
          :publishing-directory "~/publish_md"
          :base-extension "org"
          :recursive t
@@ -238,7 +238,7 @@
          :with-email t
          :with-toc t)
         ("tasks"
-         :base-directory "~/.org/gtd/"
+         :base-directory "~/Dropbox/org/"
          :publishing-directory "~/publish_tasks"
          :base-extension "org"
          :recursive t
@@ -255,7 +255,7 @@
          :auto-preamble t
          :with-toc t)
         ("pdf"
-         :base-directory "~/.org/gtd/references/"
+         :base-directory "~/Dropbox/org/references/"
          :base-extension "org"
          :publishing-directory "~/publish"
          :preparation-function somepreparationfunction
@@ -340,7 +340,7 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.org/"
+  (setq deft-directory "~/Dropbox/org/"
         deft-auto-save-interval 0
         deft-use-filename-as-title nil
         deft-current-sort-method 'title
@@ -446,8 +446,8 @@
                                                 :deadline t
                                                 :order 13)))))
                              (todo "TODO|NEXT|REVIEW|WAITING|IN-PROGRESS"
-                                   ((org-agenda-overriding-header "[[~/.org/gtd/tasks.org][Task list]]")
-                                    (org-agenda-files '("~/.org/gtd/tasks.org"))
+                                   ((org-agenda-overriding-header "[[~/Dropbox/org/tasks.org][Task list]]")
+                                    (org-agenda-files '("~/Dropbox/org/tasks.org"))
                                     (org-super-agenda-groups
                                      '((:name "CRITICAL"
                                               :priority "A"

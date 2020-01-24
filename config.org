@@ -3,9 +3,24 @@
 My DOOM emacs private configuration:
 https://i.imgur.com/EBp5TxA.png
 
+Note, in order to have the configurations in this literate file to take effect, for the first time using the file,
+please perform in a shell
+~/.emacs.d/bin/doom refresh
+
 High focus on GTD process workflow:
 #+RESULTS:
 [[file:./attachments/gtd.png]]
+
+* How Literate Configuration Works
+
+With basic settings in ./init.el, ./packags.el,
+the content of ./config.el will be generated from the Emacs Lisp code blocks
+in this literate file.
+
+The generation may be triggered by executing
+~/.emacs.d/bin/doom refresh
+or
+saving this file in the emacs running with the configuration.
 
 * General Settings
 ** Fonts
@@ -68,9 +83,11 @@ For this we just make small tweaks to line numbers.
 ** General settings
 #+BEGIN_SRC emacs-lisp
 (setq-default fill-column 140)
-(setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
 #+END_SRC
+Moving diary-file to Org Mode Settings/Agenda for better organization.
+Auto revert mode will automatically reflect changes to the file external to the current Emacs session.
+
 ** Popup Rules
 #+BEGIN_SRC emacs-lisp
 (after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .40 :select t :vslot 2 :ttl 3))
@@ -86,10 +103,12 @@ For this we just make small tweaks to line numbers.
 (setq doom-theme 'doom-city-lights)
 #+END_SRC
 * Org Mode Settings
+
 ** Agenda
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files '("~/.org/gtd/" "~/.org/notes/")
-      org-agenda-diary-file "~/.org/diary.org"
+(setq org-agenda-files '("~/Dropbox/org/" "~/Dropbox/org/notes/")
+      org-agenda-diary-file "~/Dropbox/org/diary.org"
+      diary-file            "~/Dropbox/org/diary.org"
       org-agenda-use-time-grid nil
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
@@ -107,7 +126,7 @@ For this we just make small tweaks to line numbers.
 *** GTD Recurring Tasks
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("gx" "Recurring Task" entry (file "~/.org/gtd/recurring.org")
+             '("gx" "Recurring Task" entry (file "~/Dropbox/org/recurring.org")
                "* TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
@@ -122,7 +141,7 @@ For this we just make small tweaks to line numbers.
 *** GTD Projects
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("gp" "Project" entry (file+headline"~/.org/gtd/tasks.org" "Projects")
+             '("gp" "Project" entry (file+headline"~/Dropbox/org/tasks.org" "Projects")
 "* TODO %^{Description}
 :PROPERTIES:
 :SUBJECT: %^{subject}
@@ -143,7 +162,7 @@ For this we just make small tweaks to line numbers.
 *** GTD Capture
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("gt" "Task" entry (file"~/.org/gtd/inbox.org")
+             '("gt" "Task" entry (file"~/Dropbox/org/inbox.org")
 "** TODO %^{description}
 :PROPERTIES:
 :CREATED:    %U
@@ -161,7 +180,7 @@ For this we just make small tweaks to line numbers.
 *** Reference - Yank Example
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("re" "Yank new Example" entry(file+headline"~/.org/notes/examples.org" "INBOX")
+             '("re" "Yank new Example" entry(file+headline"~/Dropbox/org/notes/examples.org" "INBOX")
 "* %^{example}
 :PROPERTIES:
 :SOURCE:  %^{source|Command|Script|Code|Usage}
@@ -176,7 +195,7 @@ For this we just make small tweaks to line numbers.
 *** Reference - New Entry
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("rn" "Yank new Example" entry(file+headline"~/.org/notes/references.org" "INBOX")
+             '("rn" "Yank new Example" entry(file+headline"~/Dropbox/org/notes/references.org" "INBOX")
 "* %^{example}
 :PROPERTIES:
 :CATEGORY: %^{category}
@@ -190,7 +209,7 @@ For this we just make small tweaks to line numbers.
 *** Diary - Daily Log
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("dn" "New Diary Entry" entry(file+olp+datetree"~/.org/diary.org" "Dailies")
+             '("dn" "New Diary Entry" entry(file+olp+datetree"~/Dropbox/org/diary.org" "Dailies")
 "* %^{example}
 :PROPERTIES:
 :CATEGORY: %^{category}
@@ -211,11 +230,11 @@ For this we just make small tweaks to line numbers.
 #+END_SRC
 ** Directories
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/.org/"
+(setq org-directory "~/Dropbox/org/"
       org-image-actual-width nil
       +org-export-directory "~/.export/"
-      org-archive-location "~/.org/gtd/archive.org::datetree/"
-      org-default-notes-file "~/.org/gtd/inbox.org"
+      org-archive-location "~/Dropbox/org/archive.org::datetree/"
+      org-default-notes-file "~/Dropbox/org/inbox.org"
       projectile-project-search-path '("~/"))
 #+END_SRC
 ** Exports
@@ -289,7 +308,7 @@ Getting errors on start up for this one. Will need to look into it.
         ("youtube" . "https://youtube.com/watch?v=%s")
         ("youtu" . "https://youtube.com/results?search_query=%s")
         ("github" . "https://github.com/%s")
-        ("attachments" . "~/.org/.attachments/")))
+        ("attachments" . "~/Dropbox/org/.attachments/")))
 #+END_SRC
 ** Logging & Drawers
 #+BEGIN_SRC emacs-lisp
@@ -309,12 +328,12 @@ Getting errors on start up for this one. Will need to look into it.
 #+BEGIN_SRC emacs-lisp
 (setq org-publish-project-alist
       '(("references-attachments"
-         :base-directory "~/.org/notes/images/"
+         :base-directory "~/Dropbox/org/notes/images/"
          :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
          :publishing-directory "~/publish_html/references/images"
          :publishing-function org-publish-attachment)
         ("references-md"
-         :base-directory "~/.org/notes/"
+         :base-directory "~/Dropbox/org/notes/"
          :publishing-directory "~/publish_md"
          :base-extension "org"
          :recursive t
@@ -326,7 +345,7 @@ Getting errors on start up for this one. Will need to look into it.
          :with-email t
          :with-toc t)
         ("tasks"
-         :base-directory "~/.org/gtd/"
+         :base-directory "~/Dropbox/org/"
          :publishing-directory "~/publish_tasks"
          :base-extension "org"
          :recursive t
@@ -343,7 +362,7 @@ Getting errors on start up for this one. Will need to look into it.
          :auto-preamble t
          :with-toc t)
         ("pdf"
-         :base-directory "~/.org/gtd/references/"
+         :base-directory "~/Dropbox/org/references/"
          :base-extension "org"
          :publishing-directory "~/publish"
          :preparation-function somepreparationfunction
@@ -443,7 +462,7 @@ Getting errors on start up for this one. Will need to look into it.
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.org/"
+  (setq deft-directory "~/Dropbox/org/"
         deft-auto-save-interval 0
         deft-use-filename-as-title nil
         deft-current-sort-method 'title
@@ -554,16 +573,16 @@ I'll want to add some of my own custom rifle actions here.
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("t" "Tasks"
                             ((agenda ""
-                                     ((org-agenda-files '("~/.org/gtd/tasks.org" "~/.org/gtd/tickler.org" "~/.org/gtd/projects.org"))
+                                     ((org-agenda-files '("~/Dropbox/org/tasks.org" "~/Dropbox/org/tickler.org" "~/Dropbox/org/projects.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
                                       (org-agenda-start-day (org-today))
                                       (org-agenda-current-span 'day)
                                       (org-super-agenda-groups
-                                       '((:name "[[~/.org/gtd/habits.org][Habits]]"
+                                       '((:name "[[~/Dropbox/org/habits.org][Habits]]"
                                                 :habit t
                                                 :order 1)
-                                         (:name "[[~/.org/gtd/recurring.org][Bills]]"
+                                         (:name "[[~/Dropbox/org/recurring.org][Bills]]"
                                                 :tag "@bills"
                                                 :order 4)
                                          (:name "Today's Schedule"
@@ -572,8 +591,8 @@ I'll want to add some of my own custom rifle actions here.
                                                 :deadline t
                                                 :order 13)))))
                              (todo "TODO|NEXT|REVIEW|WAITING|IN-PROGRESS"
-                                   ((org-agenda-overriding-header "[[~/.org/gtd/tasks.org][Task list]]")
-                                    (org-agenda-files '("~/.org/gtd/tasks.org"))
+                                   ((org-agenda-overriding-header "[[~/Dropbox/org/tasks.org][Task list]]")
+                                    (org-agenda-files '("~/Dropbox/org/tasks.org"))
                                     (org-super-agenda-groups
                                      '((:name "CRITICAL"
                                               :priority "A"
@@ -601,19 +620,29 @@ I'll want to add some of my own custom rifle actions here.
                                               :order 8)))))
                              (todo "DELEGATED"
                                    ((org-agenda-overriding-header "Delegated Tasks by WHO")
-                                    (org-agenda-files '("~/.org/gtd/tasks.org"))
+                                    (org-agenda-files '("~/Dropbox/org/tasks.org"))
                                     (org-super-agenda-groups
                                      '((:auto-property "WHO")))))))
                            ("i" "Inbox"
                             ((todo ""
-                                   ((org-agenda-files '("~/.org/gtd/inbox.org"))
+                                   ((org-agenda-files '("~/Dropbox/org/inbox.org"))
                                     (org-agenda-overriding-header "Items in my inbox")
                                     (org-super-agenda-groups
                                      '((:auto-ts t)))))))
                            ("x" "Get to someday"
                             ((todo ""
                                         ((org-agenda-overriding-header "Projects marked Someday")
-                                         (org-agenda-files '("~/.org/gtd/someday.org"))
+                                         (org-agenda-files '("~/Dropbox/org/someday.org"))
                                          (org-super-agenda-groups
                                           '((:auto-ts t))))))))))
 #+END_SRC
+* Dired listing sort by time
+#+begin_src emacs-lisp
+(setq dired-listing-switches "-aBhlt --group-directories-first")
+#+end_src
+
+Note, in the above code block,  :tangle yes cannot be used.
+Otherwise, only this code block is generated in config.el
+
+Also note, the change of setting may not be necessary, as in the dired buffer,
+one can use key o to toggle between sort by time or by name.
