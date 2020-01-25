@@ -40,7 +40,7 @@
       (:prefix "/"
         :n "j" #'org-journal-search))
 
-(setq-default fill-column 140)
+(setq-default fill-column 80)
 (setq diary-file "~/.org/gtd/diary.org")
 (global-auto-revert-mode t)
 
@@ -66,11 +66,11 @@
 
 (setq doom-theme 'doom-gruvbox)
 
-(setq org-agenda-diary-file "~/.org/diary.org"
-      org-agenda-use-time-grid nil
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t
-      org-habit-show-habits t)
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-use-time-grid nil
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-habit-show-habits t))
 
 (load-library "find-lisp")
 (after! org (setq org-agenda-files
@@ -172,27 +172,25 @@
 \*Describe in your own words how your day was*:
 - %?")))
 
-(setq org-directory "~/.org/"
-      org-image-actual-width nil
-      +org-export-directory "~/.export/"
-      org-archive-location "~/.org/gtd/archive.org::datetree/"
-      org-default-notes-file "~/.org/gtd/inbox.org"
-      projectile-project-search-path '("~/"))
+(after! org (setq org-directory "~/.org/"
+                  org-image-actual-width nil
+                  +org-export-directory "~/.export/"
+                  org-archive-location "~/.org/gtd/archive.org::datetree/"
+                  org-default-notes-file "~/.org/gtd/inbox.org"
+                  projectile-project-search-path '("~/")))
 
-(setq org-html-head-include-scripts t
-      org-export-with-toc t
-      org-export-with-author t
-      org-export-headline-levels 5
-      org-export-with-drawers t
-      org-export-with-email t
-      org-export-with-footnotes t
-      org-export-with-latex t
-      org-export-with-section-numbers nil
-      org-export-with-properties t
-      org-export-with-smart-quotes t)
-
-;(after! org (add-to-list 'org-export-backends 'pandoc))
-(after! org (setq org-export-backends '("pdf" "ascii" "html" "latex" "odt")))
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 5
+                  org-export-with-drawers t
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties t
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt pandoc)))
 
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
@@ -205,91 +203,91 @@
 (after! org (setq org-todo-keywords
       '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(e!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
-(setq org-link-abbrev-alist
-      '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
-        ("wolfram" . "https://wolframalpha.com/input/?i=%s")
-        ("duckduckgo" . "https://duckduckgo.com/?q=%s")
-        ("gmap" . "https://maps.google.com/maps?q=%s")
-        ("gimages" . "https://google.com/images?q=%s")
-        ("google" . "https://google.com/search?q=")
-        ("youtube" . "https://youtube.com/watch?v=%s")
-        ("youtu" . "https://youtube.com/results?search_query=%s")
-        ("github" . "https://github.com/%s")
-        ("attachments" . "~/.org/.attachments/")))
+(after! org (setq org-link-abbrev-alist
+                  '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
+                    ("wolfram" . "https://wolframalpha.com/input/?i=%s")
+                    ("duckduckgo" . "https://duckduckgo.com/?q=%s")
+                    ("gmap" . "https://maps.google.com/maps?q=%s")
+                    ("gimages" . "https://google.com/images?q=%s")
+                    ("google" . "https://google.com/search?q=")
+                    ("youtube" . "https://youtube.com/watch?v=%s")
+                    ("youtu" . "https://youtube.com/results?search_query=%s")
+                    ("github" . "https://github.com/%s")
+                    ("attachments" . "~/.org/.attachments/"))))
 
-(setq org-log-state-notes-insert-after-drawers nil
-      org-log-into-drawer t
-      org-log-done 'time
-      org-log-repeat 'time
-      org-log-redeadline 'note
-      org-log-reschedule 'note)
+(after! org (setq org-log-state-notes-insert-after-drawers nil
+                  org-log-into-drawer t
+                  org-log-done 'time
+                  org-log-repeat 'time
+                  org-log-redeadline 'note
+                  org-log-reschedule 'note))
 
 (after! org (setq org-bullets-bullet-list '("◉" "○")
                   org-hide-emphasis-markers t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
 
-(setq org-publish-project-alist
-      '(("references-attachments"
-         :base-directory "~/.org/notes/images/"
-         :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-         :publishing-directory "~/publish_html/references/images"
-         :publishing-function org-publish-attachment)
-        ("references-md"
-         :base-directory "~/.org/notes/"
-         :publishing-directory "~/publish_md"
-         :base-extension "org"
-         :recursive t
-         :headline-levels 5
-         :publishing-function org-html-publish-to-html
-         :section-numbers nil
-         :html-head "<link rel=\"stylesheet\" href=\"http://thomasf.github.io/solarized-css/solarized-light.min.css\" type=\"text/css\"/>"
-         :infojs-opt "view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomas.github.io/solarized-css/org-info.min.js"
-         :with-email t
-         :with-toc t)
-        ("tasks"
-         :base-directory "~/.org/gtd/"
-         :publishing-directory "~/publish_tasks"
-         :base-extension "org"
-         :recursive t
-         :auto-sitemap t
-         :sitemap-filename "index"
-         :html-link-home "../index.html"
-         :publishing-function org-html-publish-to-html
-         :section-numbers nil
-;         :html-head "<link rel=\"stylesheet\"
-;href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
-;type=\"text/css\"/>"
-         :with-email t
-         :html-link-up ".."
-         :auto-preamble t
-         :with-toc t)
-        ("pdf"
-         :base-directory "~/.org/gtd/references/"
-         :base-extension "org"
-         :publishing-directory "~/publish"
-         :preparation-function somepreparationfunction
-         :completion-function  somecompletionfunction
-         :publishing-function org-latex-publish-to-pdf
-         :recursive t
-         :latex-class "koma-article"
-         :headline-levels 5
-         :with-toc t)
-         ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks"))))
+(after! org (setq org-publish-project-alist
+                  '(("references-attachments"
+                     :base-directory "~/.org/notes/images/"
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                     :publishing-directory "~/publish_html/references/images"
+                     :publishing-function org-publish-attachment)
+                    ("references-md"
+                     :base-directory "~/.org/notes/"
+                     :publishing-directory "~/publish_md"
+                     :base-extension "org"
+                     :recursive t
+                     :headline-levels 5
+                     :publishing-function org-html-publish-to-html
+                     :section-numbers nil
+                     :html-head "<link rel=\"stylesheet\" href=\"http://thomasf.github.io/solarized-css/solarized-light.min.css\" type=\"text/css\"/>"
+                     :infojs-opt "view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomas.github.io/solarized-css/org-info.min.js"
+                     :with-email t
+                     :with-toc t)
+                    ("tasks"
+                     :base-directory "~/.org/gtd/"
+                     :publishing-directory "~/publish_tasks"
+                     :base-extension "org"
+                     :recursive t
+                     :auto-sitemap t
+                     :sitemap-filename "index"
+                     :html-link-home "../index.html"
+                     :publishing-function org-html-publish-to-html
+                     :section-numbers nil
+                     ;:html-head "<link rel=\"stylesheet\"
+                     ;href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
+                     ;type=\"text/css\"/>"
+                     :with-email t
+                     :html-link-up ".."
+                     :auto-preamble t
+                     :with-toc t)
+                    ("pdf"
+                     :base-directory "~/.org/gtd/references/"
+                     :base-extension "org"
+                     :publishing-directory "~/publish"
+                     :preparation-function somepreparationfunction
+                     :completion-function  somecompletionfunction
+                     :publishing-function org-latex-publish-to-pdf
+                     :recursive t
+                     :latex-class "koma-article"
+                     :headline-levels 5
+                     :with-toc t)
+                    ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks")))))
 
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-      org-hide-emphasis-markers nil
-      org-outline-path-complete-in-steps nil
-      org-refile-allow-creating-parent-nodes 'confirm)
+(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+                  org-hide-emphasis-markers nil
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm))
 
-(setq org-startup-indented t
-      org-src-tab-acts-natively t)
+(after! org (setq org-startup-indented t
+                  org-src-tab-acts-natively t))
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'org-num-mode)
 
-(setq org-tags-column -80
-      org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P)))
+(after! org (setq org-tags-column -80
+                  org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P))))
 
 (use-package ob-plantuml
   :ensure nil
