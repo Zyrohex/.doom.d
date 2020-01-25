@@ -26,14 +26,6 @@ This repo uses a literate configuration, with basic settings in ~./init.el~, ~./
 from the Emacs Lisp code blocks in ~config.org~. This readme file gets created when exporting ~config.org~ to markdown.
 
 * General Settings
-** Test Fonts
-#+BEGIN_SRC emacs-lisp
-(prefer-coding-system       'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
-#+END_SRC
 ** Lines
 For this we just make small tweaks to line numbers.
 #+BEGIN_SRC emacs-lisp
@@ -106,6 +98,11 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
       doom-variable-pitch-font (font-spec :family "InputMono" :height 120)
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 18))
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 #+END_SRC
 ** Mode line
 #+BEGIN_SRC emacs-lisp

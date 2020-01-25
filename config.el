@@ -1,9 +1,3 @@
-(prefer-coding-system       'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
-
 (setq display-line-numbers t)
 
 (bind-key "C-<down>" #'+org/insert-item-below)
@@ -61,6 +55,11 @@
       doom-variable-pitch-font (font-spec :family "InputMono" :height 120)
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 18))
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 
 (setq doom-modeline-gnus t
       doom-modeline-gnus-timer 'nil)
