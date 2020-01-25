@@ -1,54 +1,54 @@
 
 # Table of Contents
 
--   [Getting started](#org3a593fc)
--   [General Settings](#org8696c71)
-    -   [Lines](#org5a2de42)
-    -   [Keys](#org9151cb0)
-    -   [General settings](#orgbdd0032)
-    -   [Popup Rules](#org9fe4ed8)
--   [Doom Settings](#org860f81e)
-    -   [Fonts](#org8c6bf4c)
-    -   [Mode line](#org9e65700)
-    -   [Theme](#orgfc581ac)
--   [Org Mode Settings](#orgf110b06)
-    -   [Agenda](#org407bd79)
-    -   [Load all \*.org files to agenda](#org2abc6ab)
-    -   [Captures](#org9b672b3)
-        -   [Getting Things Done](#org1749ceb)
-            -   [Recurring Tasks](#org4ff7457)
-            -   [Project](#org6e50c64)
-            -   [New Capture](#org2befd57)
-        -   [Reference - Yank Example](#org5ea1000)
-        -   [Reference - New Entry](#org0009d7b)
-        -   [Diary - Daily Log](#org7f00e64)
-    -   [Directories](#org6facbe1)
-    -   [Exports](#org7134514)
-    -   [Faces](#orgc8d2b69)
-    -   [Keywords](#orgbc557ba)
-    -   [Latex Exports](#org8288bd0)
-    -   [Link Abbreviations](#orgea91565)
-    -   [Logging & Drawers](#orgb0b0128)
-    -   [Pitch Settings](#orgd90cf60)
-    -   [Prettify](#org06a7057)
-    -   [Publishing](#org939ff14)
-    -   [Refiling](#org6503572)
-    -   [Startup](#orge229b07)
-    -   [Tags](#org4d2902a)
--   [Extra Modules](#org369a207)
-    -   [Plantuml](#orgc8c60f8)
-    -   [Org-Mind-Map](#org6d8c37d)
-    -   [Gnuplot](#org01e72a9)
-    -   [Deft](#orgb6ff59c)
-    -   [Elfeed](#orgeb18cfd)
-    -   [Org-Clock-Switch](#orgecb0063)
-    -   [Org-Rifle](#orgb7a5347)
-    -   [Update Tickboxes](#org1a666d3)
-    -   [Zyrohex/org-tasks-refile](#org47265cc)
-    -   [Zyrohex/org-reference-refile](#orgc1280c0)
-    -   [Zyrohex/org-notes-refile](#org6e0746d)
-    -   [WSL Browser](#orgf58a184)
--   [Super Agenda Groups](#orgf66e53e)
+-   [Getting started](#org4fa7b95)
+-   [General Settings](#org6578fb3)
+    -   [Lines](#org3c0da26)
+    -   [Keys](#orgc6e0c91)
+    -   [General settings](#orgbbdfa9d)
+    -   [Popup Rules](#orge250498)
+-   [Doom Settings](#org55fd1d0)
+    -   [Fonts](#org6388e00)
+    -   [Mode line](#org188ecc4)
+    -   [Theme](#org68e5554)
+-   [Org Mode Settings](#org8215861)
+    -   [Agenda](#org5e70cd5)
+    -   [Load all \*.org files to agenda](#orgaa8fba5)
+    -   [Captures](#org007e3a0)
+        -   [Getting Things Done](#org623bfdc)
+            -   [Recurring Tasks](#org018fcf5)
+            -   [Project](#org594fd5e)
+            -   [New Capture](#org37941a4)
+        -   [Reference - Yank Example](#org7408746)
+        -   [Reference - New Entry](#org2c4ccd9)
+        -   [Diary - Daily Log](#orgac716c6)
+    -   [Directories](#orgcff7c26)
+    -   [Exports](#orga8e2d24)
+    -   [Faces](#orgd5e6ae6)
+    -   [Keywords](#orga2525b3)
+    -   [Latex Exports](#org0197b48)
+    -   [Link Abbreviations](#orgeba0ff3)
+    -   [Logging & Drawers](#org474a5e1)
+    -   [Pitch Settings](#org259ecaf)
+    -   [Prettify](#orgab7ed6e)
+    -   [Publishing](#org8420831)
+    -   [Refiling](#org786de15)
+    -   [Startup](#org5365d26)
+    -   [Tags](#org1c5ab11)
+-   [Extra Modules](#orga6fcbe1)
+    -   [Plantuml](#org0c27a09)
+    -   [Org-Mind-Map](#org9258534)
+    -   [Gnuplot](#orga1c3a3c)
+    -   [Deft](#orga500cd7)
+    -   [Elfeed](#org8808220)
+    -   [Org-Clock-Switch](#org9353075)
+    -   [Org-Rifle](#orgff009a7)
+    -   [Update Tickboxes](#org4106727)
+    -   [Zyrohex/org-tasks-refile](#orgdff411c)
+    -   [Zyrohex/org-reference-refile](#orgcc1a471)
+    -   [Zyrohex/org-notes-refile](#orgc3604b8)
+    -   [WSL Browser](#org3ecc855)
+-   [Super Agenda Groups](#org45632a5)
 
 My DOOM emacs private configuration:
 ![img](https://i.imgur.com/0NBUc3c.png)
@@ -58,7 +58,7 @@ High focus on GTD process workflow: ([source](https://github.com/nmartin84/.refe
 ![img](./attachments/gtd.png)
 
 
-<a id="org3a593fc"></a>
+<a id="org4fa7b95"></a>
 
 # Getting started
 
@@ -78,12 +78,12 @@ This repo uses a literate configuration, with basic settings in `./init.el`, `./
 from the Emacs Lisp code blocks in `config.org`. This readme file gets created when exporting `config.org` to markdown.
 
 
-<a id="org8696c71"></a>
+<a id="org6578fb3"></a>
 
 # General Settings
 
 
-<a id="org5a2de42"></a>
+<a id="org3c0da26"></a>
 
 ## Lines
 
@@ -92,7 +92,7 @@ For this we just make small tweaks to line numbers.
     (setq display-line-numbers t)
 
 
-<a id="org9151cb0"></a>
+<a id="orgc6e0c91"></a>
 
 ## Keys
 
@@ -137,16 +137,16 @@ For this we just make small tweaks to line numbers.
             :n "j" #'org-journal-search))
 
 
-<a id="orgbdd0032"></a>
+<a id="orgbbdfa9d"></a>
 
 ## General settings
 
-    (setq-default fill-column 140)
+    (setq-default fill-column 80)
     (setq diary-file "~/.org/gtd/diary.org")
     (global-auto-revert-mode t)
 
 
-<a id="org9fe4ed8"></a>
+<a id="orge250498"></a>
 
 ## Popup Rules
 
@@ -158,12 +158,12 @@ For this we just make small tweaks to line numbers.
     (after! org (set-popup-rule! "*org agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
 
-<a id="org860f81e"></a>
+<a id="org55fd1d0"></a>
 
 # Doom Settings
 
 
-<a id="org8c6bf4c"></a>
+<a id="org6388e00"></a>
 
 ## Fonts
 
@@ -180,7 +180,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (setq default-buffer-file-coding-system 'utf-8)
 
 
-<a id="org9e65700"></a>
+<a id="org188ecc4"></a>
 
 ## Mode line
 
@@ -188,30 +188,30 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-modeline-gnus-timer 'nil)
 
 
-<a id="orgfc581ac"></a>
+<a id="org68e5554"></a>
 
 ## Theme
 
     (setq doom-theme 'doom-gruvbox)
 
 
-<a id="orgf110b06"></a>
+<a id="org8215861"></a>
 
 # Org Mode Settings
 
 
-<a id="org407bd79"></a>
+<a id="org5e70cd5"></a>
 
 ## Agenda
 
-    (setq org-agenda-diary-file "~/.org/diary.org"
-          org-agenda-use-time-grid nil
-          org-agenda-skip-scheduled-if-done t
-          org-agenda-skip-deadline-if-done t
-          org-habit-show-habits t)
+    (after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                      org-agenda-use-time-grid nil
+                      org-agenda-skip-scheduled-if-done t
+                      org-agenda-skip-deadline-if-done t
+                      org-habit-show-habits t))
 
 
-<a id="org2abc6ab"></a>
+<a id="orgaa8fba5"></a>
 
 ## Load all \*.org files to agenda
 
@@ -220,7 +220,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       (find-lisp-find-files "~/.org/" "\.org$")))
 
 
-<a id="org9b672b3"></a>
+<a id="org007e3a0"></a>
 
 ## Captures
 
@@ -232,12 +232,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                         ("t" "Data Tracker"))))
 
 
-<a id="org1749ceb"></a>
+<a id="org623bfdc"></a>
 
 ### Getting Things Done
 
 
-<a id="org4ff7457"></a>
+<a id="org018fcf5"></a>
 
 #### Recurring Tasks
 
@@ -254,7 +254,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
       %?")))
 
 
-<a id="org6e50c64"></a>
+<a id="org594fd5e"></a>
 
 #### Project
 
@@ -277,7 +277,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     \** TODO %^{task1}")))
 
 
-<a id="org2befd57"></a>
+<a id="org37941a4"></a>
 
 #### New Capture
 
@@ -296,7 +296,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     + NOTES:")))
 
 
-<a id="org5ea1000"></a>
+<a id="org7408746"></a>
 
 ### Reference - Yank Example
 
@@ -314,7 +314,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org0009d7b"></a>
+<a id="org2c4ccd9"></a>
 
 ### Reference - New Entry
 
@@ -331,7 +331,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org7f00e64"></a>
+<a id="orgac716c6"></a>
 
 ### Diary - Daily Log
 
@@ -356,39 +356,37 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     - %?")))
 
 
-<a id="org6facbe1"></a>
+<a id="orgcff7c26"></a>
 
 ## Directories
 
-    (setq org-directory "~/.org/"
-          org-image-actual-width nil
-          +org-export-directory "~/.export/"
-          org-archive-location "~/.org/gtd/archive.org::datetree/"
-          org-default-notes-file "~/.org/gtd/inbox.org"
-          projectile-project-search-path '("~/"))
+    (after! org (setq org-directory "~/.org/"
+                      org-image-actual-width nil
+                      +org-export-directory "~/.export/"
+                      org-archive-location "~/.org/gtd/archive.org::datetree/"
+                      org-default-notes-file "~/.org/gtd/inbox.org"
+                      projectile-project-search-path '("~/")))
 
 
-<a id="org7134514"></a>
+<a id="orga8e2d24"></a>
 
 ## Exports
 
-    (setq org-html-head-include-scripts t
-          org-export-with-toc t
-          org-export-with-author t
-          org-export-headline-levels 5
-          org-export-with-drawers t
-          org-export-with-email t
-          org-export-with-footnotes t
-          org-export-with-latex t
-          org-export-with-section-numbers nil
-          org-export-with-properties t
-          org-export-with-smart-quotes t)
-    
-    ;(after! org (add-to-list 'org-export-backends 'pandoc))
-    (after! org (setq org-export-backends '("pdf" "ascii" "html" "latex" "odt")))
+    (after! org (setq org-html-head-include-scripts t
+                      org-export-with-toc t
+                      org-export-with-author t
+                      org-export-headline-levels 5
+                      org-export-with-drawers t
+                      org-export-with-email t
+                      org-export-with-footnotes t
+                      org-export-with-latex t
+                      org-export-with-section-numbers nil
+                      org-export-with-properties t
+                      org-export-with-smart-quotes t
+                      org-export-backends '(pdf ascii html latex odt pandoc)))
 
 
-<a id="orgc8d2b69"></a>
+<a id="orgd5e6ae6"></a>
 
 ## TODO Faces
 
@@ -403,7 +401,7 @@ Need to add condition to adjust faces based on theme select.
             ("DONE" :foreground "slategrey" :weight bold))))
 
 
-<a id="orgbc557ba"></a>
+<a id="orga2525b3"></a>
 
 ## Keywords
 
@@ -411,7 +409,7 @@ Need to add condition to adjust faces based on theme select.
           '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(e!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
 
-<a id="org8288bd0"></a>
+<a id="org0197b48"></a>
 
 ## TODO Latex Exports
 
@@ -437,41 +435,41 @@ Getting errors on start up for this one. Will need to look into it.
                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 
-<a id="orgea91565"></a>
+<a id="orgeba0ff3"></a>
 
 ## Link Abbreviations
 
-    (setq org-link-abbrev-alist
-          '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
-            ("wolfram" . "https://wolframalpha.com/input/?i=%s")
-            ("duckduckgo" . "https://duckduckgo.com/?q=%s")
-            ("gmap" . "https://maps.google.com/maps?q=%s")
-            ("gimages" . "https://google.com/images?q=%s")
-            ("google" . "https://google.com/search?q=")
-            ("youtube" . "https://youtube.com/watch?v=%s")
-            ("youtu" . "https://youtube.com/results?search_query=%s")
-            ("github" . "https://github.com/%s")
-            ("attachments" . "~/.org/.attachments/")))
+    (after! org (setq org-link-abbrev-alist
+                      '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
+                        ("wolfram" . "https://wolframalpha.com/input/?i=%s")
+                        ("duckduckgo" . "https://duckduckgo.com/?q=%s")
+                        ("gmap" . "https://maps.google.com/maps?q=%s")
+                        ("gimages" . "https://google.com/images?q=%s")
+                        ("google" . "https://google.com/search?q=")
+                        ("youtube" . "https://youtube.com/watch?v=%s")
+                        ("youtu" . "https://youtube.com/results?search_query=%s")
+                        ("github" . "https://github.com/%s")
+                        ("attachments" . "~/.org/.attachments/"))))
 
 
-<a id="orgb0b0128"></a>
+<a id="org474a5e1"></a>
 
 ## Logging & Drawers
 
-    (setq org-log-state-notes-insert-after-drawers nil
-          org-log-into-drawer t
-          org-log-done 'time
-          org-log-repeat 'time
-          org-log-redeadline 'note
-          org-log-reschedule 'note)
+    (after! org (setq org-log-state-notes-insert-after-drawers nil
+                      org-log-into-drawer t
+                      org-log-done 'time
+                      org-log-repeat 'time
+                      org-log-redeadline 'note
+                      org-log-reschedule 'note))
 
 
-<a id="orgd90cf60"></a>
+<a id="org259ecaf"></a>
 
 ## Pitch Settings
 
 
-<a id="org06a7057"></a>
+<a id="orgab7ed6e"></a>
 
 ## Prettify
 
@@ -481,94 +479,94 @@ Getting errors on start up for this one. Will need to look into it.
                       org-ellipsis "▼"))
 
 
-<a id="org939ff14"></a>
+<a id="org8420831"></a>
 
 ## Publishing
 
-    (setq org-publish-project-alist
-          '(("references-attachments"
-             :base-directory "~/.org/notes/images/"
-             :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-             :publishing-directory "~/publish_html/references/images"
-             :publishing-function org-publish-attachment)
-            ("references-md"
-             :base-directory "~/.org/notes/"
-             :publishing-directory "~/publish_md"
-             :base-extension "org"
-             :recursive t
-             :headline-levels 5
-             :publishing-function org-html-publish-to-html
-             :section-numbers nil
-             :html-head "<link rel=\"stylesheet\" href=\"http://thomasf.github.io/solarized-css/solarized-light.min.css\" type=\"text/css\"/>"
-             :infojs-opt "view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomas.github.io/solarized-css/org-info.min.js"
-             :with-email t
-             :with-toc t)
-            ("tasks"
-             :base-directory "~/.org/gtd/"
-             :publishing-directory "~/publish_tasks"
-             :base-extension "org"
-             :recursive t
-             :auto-sitemap t
-             :sitemap-filename "index"
-             :html-link-home "../index.html"
-             :publishing-function org-html-publish-to-html
-             :section-numbers nil
-    ;         :html-head "<link rel=\"stylesheet\"
-    ;href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
-    ;type=\"text/css\"/>"
-             :with-email t
-             :html-link-up ".."
-             :auto-preamble t
-             :with-toc t)
-            ("pdf"
-             :base-directory "~/.org/gtd/references/"
-             :base-extension "org"
-             :publishing-directory "~/publish"
-             :preparation-function somepreparationfunction
-             :completion-function  somecompletionfunction
-             :publishing-function org-latex-publish-to-pdf
-             :recursive t
-             :latex-class "koma-article"
-             :headline-levels 5
-             :with-toc t)
-             ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks"))))
+    (after! org (setq org-publish-project-alist
+                      '(("references-attachments"
+                         :base-directory "~/.org/notes/images/"
+                         :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                         :publishing-directory "~/publish_html/references/images"
+                         :publishing-function org-publish-attachment)
+                        ("references-md"
+                         :base-directory "~/.org/notes/"
+                         :publishing-directory "~/publish_md"
+                         :base-extension "org"
+                         :recursive t
+                         :headline-levels 5
+                         :publishing-function org-html-publish-to-html
+                         :section-numbers nil
+                         :html-head "<link rel=\"stylesheet\" href=\"http://thomasf.github.io/solarized-css/solarized-light.min.css\" type=\"text/css\"/>"
+                         :infojs-opt "view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomas.github.io/solarized-css/org-info.min.js"
+                         :with-email t
+                         :with-toc t)
+                        ("tasks"
+                         :base-directory "~/.org/gtd/"
+                         :publishing-directory "~/publish_tasks"
+                         :base-extension "org"
+                         :recursive t
+                         :auto-sitemap t
+                         :sitemap-filename "index"
+                         :html-link-home "../index.html"
+                         :publishing-function org-html-publish-to-html
+                         :section-numbers nil
+                         ;:html-head "<link rel=\"stylesheet\"
+                         ;href=\"https://codepen.io/nmartin84/pen/MWWdwbm.css\"
+                         ;type=\"text/css\"/>"
+                         :with-email t
+                         :html-link-up ".."
+                         :auto-preamble t
+                         :with-toc t)
+                        ("pdf"
+                         :base-directory "~/.org/gtd/references/"
+                         :base-extension "org"
+                         :publishing-directory "~/publish"
+                         :preparation-function somepreparationfunction
+                         :completion-function  somecompletionfunction
+                         :publishing-function org-latex-publish-to-pdf
+                         :recursive t
+                         :latex-class "koma-article"
+                         :headline-levels 5
+                         :with-toc t)
+                        ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks")))))
 
 
-<a id="org6503572"></a>
+<a id="org786de15"></a>
 
 ## Refiling
 
-    (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-          org-hide-emphasis-markers nil
-          org-outline-path-complete-in-steps nil
-          org-refile-allow-creating-parent-nodes 'confirm)
+    (after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+                      org-hide-emphasis-markers nil
+                      org-outline-path-complete-in-steps nil
+                      org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="orge229b07"></a>
+<a id="org5365d26"></a>
 
 ## Startup
 
-    (setq org-startup-indented t
-          org-src-tab-acts-natively t)
+    (after! org (setq org-startup-indented t
+                      org-src-tab-acts-natively t))
     (add-hook 'org-mode-hook 'variable-pitch-mode)
     (add-hook 'org-mode-hook 'visual-line-mode)
     (add-hook 'org-mode-hook 'org-num-mode)
 
 
-<a id="org4d2902a"></a>
+<a id="org1c5ab11"></a>
 
 ## Tags
 
-    (setq org-tags-column -80
-          org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P)))
+    (after! org (setq org-tags-column -80
+                      org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P))))
 
 
-<a id="org369a207"></a>
+<a id="orga6fcbe1"></a>
 
 # Extra Modules
 
 
-<a id="orgc8c60f8"></a>
+<a id="org0c27a09"></a>
 
 ## Plantuml
 
@@ -580,7 +578,7 @@ Getting errors on start up for this one. Will need to look into it.
       (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
 
 
-<a id="org6d8c37d"></a>
+<a id="org9258534"></a>
 
 ## Org-Mind-Map
 
@@ -600,7 +598,7 @@ Getting errors on start up for this one. Will need to look into it.
       )
 
 
-<a id="org01e72a9"></a>
+<a id="orga1c3a3c"></a>
 
 ## Gnuplot
 
@@ -609,7 +607,7 @@ Getting errors on start up for this one. Will need to look into it.
       (setq gnuplot-program "gnuplot"))
 
 
-<a id="orgb6ff59c"></a>
+<a id="orga500cd7"></a>
 
 ## Deft
 
@@ -666,7 +664,7 @@ Getting errors on start up for this one. Will need to look into it.
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orgeb18cfd"></a>
+<a id="org8808220"></a>
 
 ## Elfeed
 
@@ -685,7 +683,7 @@ Getting errors on start up for this one. Will need to look into it.
                       elfeed-db-directory "~/.elfeed/"))
 
 
-<a id="orgecb0063"></a>
+<a id="org9353075"></a>
 
 ## Org-Clock-Switch
 
@@ -699,7 +697,7 @@ Getting errors on start up for this one. Will need to look into it.
     (provide 'org-clock-switch)
 
 
-<a id="orgb7a5347"></a>
+<a id="orgff009a7"></a>
 
 ## TODO Org-Rifle
 
@@ -708,7 +706,7 @@ Getting errors on start up for this one. Will need to look into it.
 I&rsquo;ll want to add some of my own custom rifle actions here.
 
 
-<a id="org1a666d3"></a>
+<a id="org4106727"></a>
 
 ## Update Tickboxes
 
@@ -723,7 +721,7 @@ I&rsquo;ll want to add some of my own custom rifle actions here.
     (provide 'org-update-cookies-after-save)
 
 
-<a id="org47265cc"></a>
+<a id="orgdff411c"></a>
 
 ## Zyrohex/org-tasks-refile
 
@@ -738,7 +736,7 @@ I&rsquo;ll want to add some of my own custom rifle actions here.
     (provide 'zyrohex/org-tasks-refile)
 
 
-<a id="orgc1280c0"></a>
+<a id="orgcc1a471"></a>
 
 ## Zyrohex/org-reference-refile
 
@@ -750,7 +748,7 @@ I&rsquo;ll want to add some of my own custom rifle actions here.
     (provide 'zyrohex/org-reference-refile)
 
 
-<a id="org6e0746d"></a>
+<a id="orgc3604b8"></a>
 
 ## Zyrohex/org-notes-refile
 
@@ -763,7 +761,7 @@ I&rsquo;ll want to add some of my own custom rifle actions here.
     (provide 'zyrohex/org-notes-refile)
 
 
-<a id="orgf58a184"></a>
+<a id="org3ecc855"></a>
 
 ## WSL Browser
 
@@ -779,7 +777,7 @@ I&rsquo;ll want to add some of my own custom rifle actions here.
     (setq-default browse-url-browser-function 'my--browse-url)
 
 
-<a id="orgf66e53e"></a>
+<a id="org45632a5"></a>
 
 # Super Agenda Groups
 
