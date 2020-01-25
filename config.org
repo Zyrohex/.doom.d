@@ -1,7 +1,7 @@
 #+EXPORT_FILE_NAME: README
 
 My DOOM emacs private configuration:
-https://i.imgur.com/EBp5TxA.png
+https://i.imgur.com/0NBUc3c.png
 
 High focus on GTD process workflow: ([[https://github.com/nmartin84/.references/blob/master/gtd-babel.org][source]])
 #+RESULTS:
