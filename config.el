@@ -136,7 +136,7 @@
 :SUBJECT: %^{subject}
 :END:
 
-\#+BEGIN_SRC
+\#+BEGIN_SRC %^{lang}
 %x
 \#+END_SRC
 %?")))
