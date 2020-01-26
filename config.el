@@ -285,7 +285,7 @@
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'org-num-mode)
 
-(after! org (setq org-tags-column -80
+(after! org (setq org-tags-column 0
                   org-tag-persistent-alist '(("@email" . ?e) ("@write" . ?W) ("@phone" . ?p) ("@configure" . ?C) ("@work" . ?w) ("@personal" . ?l) ("@read" . ?r) ("@watch" . ?W) ("@computer" . ?c) ("@bills" . ?b) ("@purchase" . ?P))))
 
 (use-package ob-plantuml
@@ -447,18 +447,12 @@
                                       (org-agenda-start-day (org-today))
                                       (org-agenda-current-span 'day)
                                       (org-super-agenda-groups
-                                       '((:name "[[~/.org/gtd/habits.org][Habits]]"
-                                                :habit t
-                                                :order 1)
-                                         (:name "[[~/.org/gtd/recurring.org][Bills]]"
-                                                :tag "@bills"
-                                                :order 4)
-                                         (:name "Today's Schedule"
-                                                :time-grid t
+                                         '((:name "Today's Schedule"
                                                 :scheduled t
+                                                :time-grid t
                                                 :deadline t
                                                 :order 13)))))
-                             (todo "TODO|NEXT|REVIEW|WAITING|IN-PROGRESS"
+                             (todo ""
                                    ((org-agenda-overriding-header "[[~/.org/gtd/tasks.org][Task list]]")
                                     (org-agenda-files '("~/.org/gtd/tasks.org"))
                                     (org-super-agenda-groups
