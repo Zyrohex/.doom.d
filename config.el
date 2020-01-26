@@ -276,7 +276,6 @@
                     ("myprojectweb" :components("references-attachments" "pdf" "references-md" "tasks")))))
 
 (after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-                  org-hide-emphasis-markers nil
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm))
 

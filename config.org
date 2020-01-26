@@ -389,7 +389,6 @@ Getting errors on start up for this one. Will need to look into it.
 ** Refiling
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-                  org-hide-emphasis-markers nil
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm))
 #+END_SRC
