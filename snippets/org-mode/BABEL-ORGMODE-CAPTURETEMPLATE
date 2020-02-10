@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: BABEL-ORGMODE-CAPTURETEMPLATE
+# key: BABEL ORGMODE CAPTURE TEMPLATE
+# --
+(after! org (add-to-list 'org-capture-templates
+             '("$1" "$2" $3($4"$5" "$6")
+               "$7")))

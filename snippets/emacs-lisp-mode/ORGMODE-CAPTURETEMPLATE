@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: ORGMODE-CAPTURETEMPLATE
+# key: ORGMODE CAPTURE TEMPLATE
+# --
+(after! org (add-to-list 'org-capture-templates
+             '("$1" "$2" entry(file+olp+datetree"~/.org/gtd/workout.org" "Workout Log")
+               "** <%<%I:%M:%S>> %^{workout description} %^{calories}p %^{reps}p%?
+:PROPERTIES:
+:CREATED:    %U
+:END:")))

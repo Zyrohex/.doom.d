@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: TODO-WORKOUTS
+# key: TODO WORKOUTS
+# --
+** TODO Weekly Workouts [%]
+
+*** TODO Boxing on Monday
+*** TODO Boxing on Tuesday
+*** TODO Boxing on Thursday
+*** TODO Boxing on Friday
