@@ -1,6 +1,5 @@
 ;; Must Have packages
 (package! helm-org-rifle)
-(package! org-ql)
 (package! org-super-agenda)
 (package! elfeed)
 (package! elfeed-org)
@@ -9,7 +8,6 @@
 (package! deadgrep)
 (package! org-web-tools)
 ;; Optional
-(package! org-sidebar)
 ;(package! org-board)
 ;(package! org-mind-map)
 ;(package! pdf-tools)
@@ -20,5 +18,3 @@
 (package! org-autolist)
 (package! org-mru-clock)
 (package! org-time-budgets)
-(package! grip-mode)
-(package! org-dashboard)
