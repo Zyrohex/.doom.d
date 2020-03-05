@@ -1,7 +1,7 @@
 #+EXPORT_FILE_NAME: README
 
 My DOOM emacs private configuration:
-https://i.imgur.com/0NBUc3c.png
+[[file:attachments/doom.png]]
 
 High focus on GTD process workflow: ([[https://github.com/nmartin84/.references/blob/master/gtd-babel.org][source]])
 #+RESULTS:
@@ -571,7 +571,7 @@ Need to add condition to adjust faces based on theme select.
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("k" "Tasks"
                             ((agenda "TODO|ACTIVE|HOLDING|NEXT"
-                                     ((org-agenda-files '("~/.org/gtd/"))
+                                     ((org-agenda-files '("~/.org/gtd/tasks.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
                                       (org-agenda-start-day (org-today))

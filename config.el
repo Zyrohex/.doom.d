@@ -444,7 +444,7 @@
 (after! org-agenda (setq org-agenda-custom-commands
                          '(("k" "Tasks"
                             ((agenda "TODO|ACTIVE|HOLDING|NEXT"
-                                     ((org-agenda-files '("~/.org/gtd/"))
+                                     ((org-agenda-files '("~/.org/gtd/tasks.org"))
                                       (org-agenda-overriding-header "What's on my calendar")
                                       (org-agenda-span 'day)
                                       (org-agenda-start-day (org-today))
