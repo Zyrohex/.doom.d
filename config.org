@@ -131,8 +131,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
             ("~" (:foreground "PaleTurquoise"))
             ("+" (:strike-through t))))
     (custom-theme-set-faces
-     'user
-     '(org-block-begin-line ((t (:background "#282A36"))))))
+     'user))
 #+END_SRC
 * Org Mode Settings
 ** Agenda
@@ -351,13 +350,6 @@ Need to add condition to adjust faces based on theme select.
                   org-hide-emphasis-markers nil
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
-(setq org-emphasis-alist
-  '(("*" (bold :foreground "Orange" ))
-    ("/" (italic :foreground "sky blue"))
-    ("_" underline)
-    ("=" (:foreground "maroon"))
-    ("~" (:foreground "deep sky blue"))
-    ("+" (:strike-through t))))
 #+END_SRC
 ** Publishing
 #+BEGIN_SRC emacs-lisp
@@ -414,18 +406,6 @@ Need to add condition to adjust faces based on theme select.
 #+END_SRC
 
 * Extra Modules
-** Archive File
-#+BEGIN_SRC emacs-lisp
-(defvar org-archive-directory "~/.org/archives/")
-(defun org-archive-file ()
-  "Moves the current buffer to the archived folder"
-  (interactive)
-  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
-        (dir (read-directory-name "Move to: " org-archive-directory)))
-    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
-    (delete-file old)))
-(provide 'org-archive-file)
-#+END_SRC
 ** Deft
 #+BEGIN_SRC emacs-lisp
 (defun my-deft/strip-quotes (str)
@@ -501,37 +481,6 @@ Need to add condition to adjust faces based on theme select.
 ;  :config
 ;  (setq gnuplot-program "gnuplot"))
 #+END_SRC
-** Insert Item Below w/timestamp
-Because i'm always inserting inactive timestamps into new header items, so save
-my fingers the abuse.
-#+BEGIN_SRC emacs-lisp
-(defun +org/insert-item-below-w-timestamp (count)
-  "Inserts a new item below with inactive timestamp asserted."
-  (interactive "p")
-  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
-(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
-#+END_SRC
-** Move capture
-#+BEGIN_SRC emacs-lisp
-(defun my/last-captured-org-note ()
-  "Move to the last line of the last org capture note."
-  (interactive)
-  (goto-char (point-max)))
-#+END_SRC
-** Org Agenda Prefix
-#+BEGIN_SRC emacs-lisp
-(defun my-agenda-prefix ()
-  (format "%s" (my-agenda-indent-string (org-current-level))))
-
-(defun my-agenda-indent-string (level)
-  (if (= level 1)
-      ""
-    (let ((str ""))
-      (while (> level 2)
-        (setq level (1- level)
-              str (concat str "──")))
-      (concat str "►"))))
-#+END_SRC
 ** Org Agenda Property
 #+BEGIN_SRC emacs-lisp
 ;(after! org (setq org-agenda-property-list '("WHO" "NEXTACT")
@@ -594,12 +543,6 @@ my fingers the abuse.
   :config
   (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
 #+END_SRC
-** Prompt filename
-#+BEGIN_SRC emacs-lisp
-(defun my/generate-org-note-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org"my-org-note--name) "~/.org/gtd/projects/"))
-#+END_SRC
 ** Truncate
 #+BEGIN_SRC emacs-lisp
 (setq-default truncate-lines t)
@@ -608,18 +551,6 @@ my fingers the abuse.
   (setq truncate-lines nil))
 
 (add-hook 'text-mode-hook 'jethro/truncate-lines-hook)
-#+END_SRC
-** Update Tickboxes
-#+BEGIN_SRC emacs-lisp
-(defun org-update-cookies-after-save()
-  (interactive)
-  (let ((current-prefix-arg '(4)))
-    (org-update-statistics-cookies "ALL")))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
-(provide 'org-update-cookies-after-save)
 #+END_SRC
 ** WSL Browser
 #+BEGIN_SRC emacs-lisp
@@ -633,37 +564,6 @@ my fingers the abuse.
            (list "-Command" quotedUrl))))
 
 (setq-default browse-url-browser-function 'my--browse-url)
-#+END_SRC
-** Zyrohex/org-notes-refile
-#+BEGIN_SRC emacs-lisp
-(defun zyrohex/org-notes-refile ()
-  "Process an item to the references bucket"
-  (interactive)
-  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6)))
-        (org-refile-allow-creating-parent-nodes 'confirm))
-    (call-interactively #'org-refile)))
-(provide 'zyrohex/org-notes-refile)
-#+END_SRC
-** Zyrohex/org-reference-refile
-#+BEGIN_SRC emacs-lisp
-(defun zyrohex/org-reference-refile (arg)
-  "Process an item to the reference bucket"
-  (interactive "P")
-  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
-    (call-interactively #'org-refile)))
-(provide 'zyrohex/org-reference-refile)
-#+END_SRC
-** Zyrohex/org-tasks-refile
-#+BEGIN_SRC emacs-lisp
-(defun zyrohex/org-tasks-refile ()
-  "Process a single TODO task item."
-  (interactive)
-  (call-interactively 'org-agenda-schedule)
-  (org-agenda-set-tags)
-  (org-agenda-priority)
-  (let ((org-refile-targets '((helm-read-file-name :maxlevel .6)))
-        (call-interactively #'org-refile))))
-(provide 'zyrohex/org-tasks-refile)
 #+END_SRC
 * Super Agenda Groups
 #+BEGIN_SRC emacs-lisp
@@ -701,4 +601,97 @@ my fingers the abuse.
                                     (org-agenda-files '("~/.org/gtd/"))
                                     (org-super-agenda-groups
                                      '((:auto-outline-path t))))))))))
+#+END_SRC
+* Custom Functions
+** Archive File
+#+BEGIN_SRC emacs-lisp
+(defvar org-archive-directory "~/.org/archives/")
+(defun org-archive-file ()
+  "Moves the current buffer to the archived folder"
+  (interactive)
+  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
+        (dir (read-directory-name "Move to: " org-archive-directory)))
+    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
+    (delete-file old)))
+(provide 'org-archive-file)
+#+END_SRC
+** Insert Item Below w/timestamp
+Because i'm always inserting inactive timestamps into new header items, so save
+my fingers the abuse.
+#+BEGIN_SRC emacs-lisp
+(defun +org/insert-item-below-w-timestamp (count)
+  "Inserts a new item below with inactive timestamp asserted."
+  (interactive "p")
+  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
+(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
+#+END_SRC
+** Move capture
+#+BEGIN_SRC emacs-lisp
+(defun my/last-captured-org-note ()
+  "Move to the last line of the last org capture note."
+  (interactive)
+  (goto-char (point-max)))
+#+END_SRC
+** Org Agenda Prefix
+#+BEGIN_SRC emacs-lisp
+(defun my-agenda-prefix ()
+  (format "%s" (my-agenda-indent-string (org-current-level))))
+
+(defun my-agenda-indent-string (level)
+  (if (= level 1)
+      ""
+    (let ((str ""))
+      (while (> level 2)
+        (setq level (1- level)
+              str (concat str "──")))
+      (concat str "►"))))
+#+END_SRC
+** Prompt filename
+#+BEGIN_SRC emacs-lisp
+(defun my/generate-org-note-name ()
+  (setq my-org-note--name (read-string "Name: "))
+  (expand-file-name (format "%s.org"my-org-note--name) "~/.org/gtd/projects/"))
+#+END_SRC
+** Update Tickboxes
+#+BEGIN_SRC emacs-lisp
+(defun org-update-cookies-after-save()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (org-update-statistics-cookies "ALL")))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
+(provide 'org-update-cookies-after-save)
+#+END_SRC
+** Zyrohex/org-notes-refile
+#+BEGIN_SRC emacs-lisp
+(defun zyrohex/org-notes-refile ()
+  "Process an item to the references bucket"
+  (interactive)
+  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6)))
+        (org-refile-allow-creating-parent-nodes 'confirm))
+    (call-interactively #'org-refile)))
+(provide 'zyrohex/org-notes-refile)
+#+END_SRC
+** Zyrohex/org-reference-refile
+#+BEGIN_SRC emacs-lisp
+(defun zyrohex/org-reference-refile (arg)
+  "Process an item to the reference bucket"
+  (interactive "P")
+  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
+    (call-interactively #'org-refile)))
+(provide 'zyrohex/org-reference-refile)
+#+END_SRC
+** Zyrohex/org-tasks-refile
+#+BEGIN_SRC emacs-lisp
+(defun zyrohex/org-tasks-refile ()
+  "Process a single TODO task item."
+  (interactive)
+  (call-interactively 'org-agenda-schedule)
+  (org-agenda-set-tags)
+  (org-agenda-priority)
+  (let ((org-refile-targets '((helm-read-file-name :maxlevel .6)))
+        (call-interactively #'org-refile))))
+(provide 'zyrohex/org-tasks-refile)
 #+END_SRC

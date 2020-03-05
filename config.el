@@ -84,8 +84,7 @@
             ("~" (:foreground "PaleTurquoise"))
             ("+" (:strike-through t))))
     (custom-theme-set-faces
-     'user
-     '(org-block-begin-line ((t (:background "#282A36"))))))
+     'user))
 
 (after! org (setq org-agenda-use-time-grid nil
                   org-agenda-skip-scheduled-if-done t
@@ -258,13 +257,6 @@
                   org-hide-emphasis-markers nil
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
-(setq org-emphasis-alist
-  '(("*" (bold :foreground "Orange" ))
-    ("/" (italic :foreground "sky blue"))
-    ("_" underline)
-    ("=" (:foreground "maroon"))
-    ("~" (:foreground "deep sky blue"))
-    ("+" (:strike-through t))))
 
 (after! org (setq org-publish-project-alist
                   '(("references-attachments"
@@ -310,16 +302,6 @@
                                   ("Context")
                                   ("Task")
                                   (:endgrouptag))))
-
-(defvar org-archive-directory "~/.org/archives/")
-(defun org-archive-file ()
-  "Moves the current buffer to the archived folder"
-  (interactive)
-  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
-        (dir (read-directory-name "Move to: " org-archive-directory)))
-    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
-    (delete-file old)))
-(provide 'org-archive-file)
 
 (defun my-deft/strip-quotes (str)
   (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
@@ -390,29 +372,6 @@
 ;  :config
 ;  (setq gnuplot-program "gnuplot"))
 
-(defun +org/insert-item-below-w-timestamp (count)
-  "Inserts a new item below with inactive timestamp asserted."
-  (interactive "p")
-  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
-(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
-
-(defun my/last-captured-org-note ()
-  "Move to the last line of the last org capture note."
-  (interactive)
-  (goto-char (point-max)))
-
-(defun my-agenda-prefix ()
-  (format "%s" (my-agenda-indent-string (org-current-level))))
-
-(defun my-agenda-indent-string (level)
-  (if (= level 1)
-      ""
-    (let ((str ""))
-      (while (> level 2)
-        (setq level (1- level)
-              str (concat str "──")))
-      (concat str "►"))))
-
 ;(after! org (setq org-agenda-property-list '("WHO" "NEXTACT")
 ;                  org-agenda-property-position 'where-it-fits))
 
@@ -463,26 +422,12 @@
   :config
   (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
 
-(defun my/generate-org-note-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org"my-org-note--name) "~/.org/gtd/projects/"))
-
 (setq-default truncate-lines t)
 
 (defun jethro/truncate-lines-hook ()
   (setq truncate-lines nil))
 
 (add-hook 'text-mode-hook 'jethro/truncate-lines-hook)
-
-(defun org-update-cookies-after-save()
-  (interactive)
-  (let ((current-prefix-arg '(4)))
-    (org-update-statistics-cookies "ALL")))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
-(provide 'org-update-cookies-after-save)
 
 (defun my--browse-url (url &optional _new-window)
   ;; new-window ignored
@@ -494,31 +439,6 @@
            (list "-Command" quotedUrl))))
 
 (setq-default browse-url-browser-function 'my--browse-url)
-
-(defun zyrohex/org-notes-refile ()
-  "Process an item to the references bucket"
-  (interactive)
-  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6)))
-        (org-refile-allow-creating-parent-nodes 'confirm))
-    (call-interactively #'org-refile)))
-(provide 'zyrohex/org-notes-refile)
-
-(defun zyrohex/org-reference-refile (arg)
-  "Process an item to the reference bucket"
-  (interactive "P")
-  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
-    (call-interactively #'org-refile)))
-(provide 'zyrohex/org-reference-refile)
-
-(defun zyrohex/org-tasks-refile ()
-  "Process a single TODO task item."
-  (interactive)
-  (call-interactively 'org-agenda-schedule)
-  (org-agenda-set-tags)
-  (org-agenda-priority)
-  (let ((org-refile-targets '((helm-read-file-name :maxlevel .6)))
-        (call-interactively #'org-refile))))
-(provide 'zyrohex/org-tasks-refile)
 
 (org-super-agenda-mode t)
 (after! org-agenda (setq org-agenda-custom-commands
@@ -554,3 +474,75 @@
                                     (org-agenda-files '("~/.org/gtd/"))
                                     (org-super-agenda-groups
                                      '((:auto-outline-path t))))))))))
+
+(defvar org-archive-directory "~/.org/archives/")
+(defun org-archive-file ()
+  "Moves the current buffer to the archived folder"
+  (interactive)
+  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
+        (dir (read-directory-name "Move to: " org-archive-directory)))
+    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
+    (delete-file old)))
+(provide 'org-archive-file)
+
+(defun +org/insert-item-below-w-timestamp (count)
+  "Inserts a new item below with inactive timestamp asserted."
+  (interactive "p")
+  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
+(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
+
+(defun my/last-captured-org-note ()
+  "Move to the last line of the last org capture note."
+  (interactive)
+  (goto-char (point-max)))
+
+(defun my-agenda-prefix ()
+  (format "%s" (my-agenda-indent-string (org-current-level))))
+
+(defun my-agenda-indent-string (level)
+  (if (= level 1)
+      ""
+    (let ((str ""))
+      (while (> level 2)
+        (setq level (1- level)
+              str (concat str "──")))
+      (concat str "►"))))
+
+(defun my/generate-org-note-name ()
+  (setq my-org-note--name (read-string "Name: "))
+  (expand-file-name (format "%s.org"my-org-note--name) "~/.org/gtd/projects/"))
+
+(defun org-update-cookies-after-save()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (org-update-statistics-cookies "ALL")))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
+(provide 'org-update-cookies-after-save)
+
+(defun zyrohex/org-notes-refile ()
+  "Process an item to the references bucket"
+  (interactive)
+  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6)))
+        (org-refile-allow-creating-parent-nodes 'confirm))
+    (call-interactively #'org-refile)))
+(provide 'zyrohex/org-notes-refile)
+
+(defun zyrohex/org-reference-refile (arg)
+  "Process an item to the reference bucket"
+  (interactive "P")
+  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
+    (call-interactively #'org-refile)))
+(provide 'zyrohex/org-reference-refile)
+
+(defun zyrohex/org-tasks-refile ()
+  "Process a single TODO task item."
+  (interactive)
+  (call-interactively 'org-agenda-schedule)
+  (org-agenda-set-tags)
+  (org-agenda-priority)
+  (let ((org-refile-targets '((helm-read-file-name :maxlevel .6)))
+        (call-interactively #'org-refile))))
+(provide 'zyrohex/org-tasks-refile)
