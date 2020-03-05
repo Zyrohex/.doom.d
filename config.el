@@ -70,11 +70,22 @@
       doom-modeline-gnus-timer 'nil)
 
 (setq doom-theme 'doom-city-lights)
-;(set-face-attribute 'org-headline-done nil :strike-through t)
-;(custom-theme-set-faces
-; 'user
-; '(org-block ((t (:background "#20222b"))))
-; '(org-block-begin-line ((t (:background "#282A36")))))
+(if (equal doom-theme 'doom-snazzy)
+    (custom-theme-set-faces
+     'user
+     '(org-block ((t (:background "#20222b"))))
+     '(org-block-begin-line ((t (:background "#282A36"))))))
+(if (equal doom-theme 'doom-city-lights)
+    (setq org-emphasis-alist
+          '(("*" (bold :foreground "MediumPurple"))
+            ("/" (italic :foreground "VioletRed"))
+            ("_" underline)
+            ("=" (:foreground "PaleTurquoise"))
+            ("~" (:foreground "PaleTurquoise"))
+            ("+" (:strike-through t))))
+    (custom-theme-set-faces
+     'user
+     '(org-block-begin-line ((t (:background "#282A36"))))))
 
 (after! org (setq org-agenda-use-time-grid nil
                   org-agenda-skip-scheduled-if-done t
