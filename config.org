@@ -147,7 +147,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 #+BEGIN_SRC emacs-lisp
 (load-library "find-lisp")
 (after! org (setq org-agenda-files
-(find-lisp-find-files "~/.org/tasks/" "\.org$")))
+(find-lisp-find-files "~/.org/" "\.org$")))
 #+END_SRC
 ** Captures
 *** Diary

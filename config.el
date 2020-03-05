@@ -95,7 +95,7 @@
 
 (load-library "find-lisp")
 (after! org (setq org-agenda-files
-(find-lisp-find-files "~/.org/tasks/" "\.org$")))
+(find-lisp-find-files "~/.org/" "\.org$")))
 
 (defun my/generate-org-diary-name ()
   (setq my-org-note--name (read-string "Name: "))
