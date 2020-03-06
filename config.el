@@ -143,34 +143,13 @@
                            "%(format \"#+TITLE: %s: %s\n\" my-org-note--category my-org-note--name)
 %?")))
 
-(defun doom/load-session (file)
-  "TODO"
-  (interactive
-   (let ((session-file (doom-session-file)))
-     (list (or (read-file-name "Session to restore: "
-                               (file-name-directory session-file)
-                               (file-name-nondirectory session-file)
-                               t)
-               (user-error "No session selected. Aborting")))))
-  (unless file
-    (error "No session file selected"))
-  (message "Loading '%s' session" file)
-  (doom-load-session file)
-  (message "Session restored. Welcome back."))
-;(defun org-file-existing ()
-;  "Select a file from directory"
-;  (setq org-notes-directory "~/.org/notes/")
-;  (interactive)
-;  (let ((old "nil")
-;        (dir (read-file-name "Move to: " org-notes-directory)))
-;    (concat dir)))
-(defun org-file-test ()
+(defun org-capture-file-selector ()
   "test file selector"
   (interactive)
   (setq org-notes-directory "~/.org/notes/")
   (concat (read-file-name "Select file: " org-notes-directory)))
 (after! org (add-to-list 'org-capture-templates
-                         '("te" "Existing Note" entry (file org-file-test)
+                         '("te" "Existing Note" entry (file org-capture-file-selector)
                            "* %?")))
 
 (defun my/generate-org-diary-name ()
