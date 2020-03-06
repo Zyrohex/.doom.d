@@ -97,15 +97,9 @@
 (after! org (setq org-agenda-files
 (find-lisp-find-files "~/.org/" "\.org$")))
 
-(defun my/generate-org-diary-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (setq my-org-note--time (format-time-string "%Y-%m-%d"))
-  (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/diary/"))
-
 (after! org (setq org-capture-templates
-                  '(("d" "Diary" plain (file my/generate-org-diary-name)
-                     "%(format \"#+TITLE: %s\n\" my-org-note--name my-org-note--time)
-%u %?")
+                  '(("t" "Tasks")
+                    ("d" "Diary")
                     ("l" "Ledger"))))
 
 (defun my/generate-org-task-name ()
@@ -114,7 +108,7 @@
   (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/tasks/"))
 
 (after! org (add-to-list 'org-capture-templates
-             '("t" "Task File" plain (file my/generate-org-task-name)
+             '("tf" "Task File" plain (file my/generate-org-task-name)
                "%(format \"#+TITLE: %s\n\" my-org-note--name)
 \* INBOX %(format my-org-note--name) %?
 :PROPERTIES:
@@ -123,9 +117,17 @@
 ")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("c" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
+             '("tc" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
 "* %^{keyword|TODO|INBOX} %u %^{task}
 %?" :empty-lines 1)))
+
+(after! org (add-to-list 'org-capture-templates
+             '("tx" "Capture [WORKLOAD]" entry (file "~/.org/workload/inbox.org")
+"* INBOX %^{taskname}%?
+:PROPERTIES:
+:CREATED:    %U
+:END:
+" :immediate-finish t)))
 
 (setq my/org-note-categories '(("Topic: ") ("Account: ") ("Symptom: ")))
 (defun my/generate-org-note-categories ()
@@ -137,20 +139,52 @@
   (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
 
 (after! org (add-to-list 'org-capture-templates
-                         '("n" "Note" plain (file my/generate-org-note-name)
+                         '("tn" "New note" plain (file my/generate-org-note-name)
                            "%(format \"#+TITLE: %s: %s\n\" my-org-note--category my-org-note--name)
 %?")))
 
+(defun doom/load-session (file)
+  "TODO"
+  (interactive
+   (let ((session-file (doom-session-file)))
+     (list (or (read-file-name "Session to restore: "
+                               (file-name-directory session-file)
+                               (file-name-nondirectory session-file)
+                               t)
+               (user-error "No session selected. Aborting")))))
+  (unless file
+    (error "No session file selected"))
+  (message "Loading '%s' session" file)
+  (doom-load-session file)
+  (message "Session restored. Welcome back."))
+;(defun org-file-existing ()
+;  "Select a file from directory"
+;  (setq org-notes-directory "~/.org/notes/")
+;  (interactive)
+;  (let ((old "nil")
+;        (dir (read-file-name "Move to: " org-notes-directory)))
+;    (concat dir)))
+(defun org-file-test ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
 (after! org (add-to-list 'org-capture-templates
-             '("x" "Capture [WORKLOAD]" entry (file "~/.org/workload/inbox.org")
-"* INBOX %^{taskname}%?
-:PROPERTIES:
-:CREATED:    %U
-:END:
-" :immediate-finish t)))
+                         '("te" "Existing Note" entry (file org-file-test)
+                           "* %?")))
+
+(defun my/generate-org-diary-name ()
+  (setq my-org-note--name (read-string "Name: "))
+  (setq my-org-note--time (format-time-string "%Y-%m-%d"))
+  (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/diary/"))
 
 (after! org (add-to-list 'org-capture-templates
-             '("w" "Workout Log" entry(file+olp+datetree"~/.org/journal/workout.org")
+                  '("dd" "Diary" plain (file my/generate-org-diary-name)
+                     "%(format \"#+TITLE: %s\n\" my-org-note--name my-org-note--time)
+%u %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("dw" "Workout Log" entry(file+olp+datetree"~/.org/journal/workout.org")
                "** %\\1 (%\\2 calories) :: %\\3 (reps)
 :PROPERTIES:
 :ACTIVITY: %^{ACTIVITY}
@@ -160,7 +194,7 @@
 ")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("F" "Food Log" entry(file+olp+datetree"~/.org/journal/food.org")
+             '("dF" "Food Log" entry(file+olp+datetree"~/.org/journal/food.org")
 "** %\\1 [%\\2]
 :PROPERTIES:
 :FOOD:     %^{FOOD}
@@ -169,7 +203,7 @@
 :END:")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("W" "Weigh In" entry(file+olp+datetree"~/.org/journal/food.org")
+             '("dW" "Weigh In" entry(file+olp+datetree"~/.org/journal/food.org")
 "** %\\1 [%\\2]
 :PROPERTIES:
 :WEIGHT: %^{WEIGHT}
@@ -507,10 +541,6 @@
         (setq level (1- level)
               str (concat str "──")))
       (concat str "►"))))
-
-(defun my/generate-org-note-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org"my-org-note--name) "~/.org/gtd/projects/"))
 
 (defun org-update-cookies-after-save()
   (interactive)

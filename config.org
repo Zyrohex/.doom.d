@@ -150,20 +150,14 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 (find-lisp-find-files "~/.org/" "\.org$")))
 #+END_SRC
 ** Captures
-*** Diary
 #+BEGIN_SRC emacs-lisp
-(defun my/generate-org-diary-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (setq my-org-note--time (format-time-string "%Y-%m-%d"))
-  (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/diary/"))
-
 (after! org (setq org-capture-templates
-                  '(("d" "Diary" plain (file my/generate-org-diary-name)
-                     "%(format \"#+TITLE: %s\n\" my-org-note--name my-org-note--time)
-%u %?")
+                  '(("t" "Tasks")
+                    ("d" "Diary")
                     ("l" "Ledger"))))
 #+END_SRC
-*** New Task File
+*** Getting Things Done
+**** New Task File
 #+BEGIN_SRC emacs-lisp
 (defun my/generate-org-task-name ()
   (setq my-org-note--name (read-string "Name: "))
@@ -171,7 +165,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
   (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/tasks/"))
 
 (after! org (add-to-list 'org-capture-templates
-             '("t" "Task File" plain (file my/generate-org-task-name)
+             '("tf" "Task File" plain (file my/generate-org-task-name)
                "%(format \"#+TITLE: %s\n\" my-org-note--name)
 \* INBOX %(format my-org-note--name) %?
 :PROPERTIES:
@@ -179,14 +173,24 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 :END:
 ")))
 #+END_SRC
-*** Child Task
+**** Child Task
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("c" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
+             '("tc" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
 "* %^{keyword|TODO|INBOX} %u %^{task}
 %?" :empty-lines 1)))
 #+END_SRC
-*** Notes
+**** Capture
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("tx" "Capture [WORKLOAD]" entry (file "~/.org/workload/inbox.org")
+"* INBOX %^{taskname}%?
+:PROPERTIES:
+:CREATED:    %U
+:END:
+" :immediate-finish t)))
+#+END_SRC
+**** New Note
 #+BEGIN_SRC emacs-lisp
 (setq my/org-note-categories '(("Topic: ") ("Account: ") ("Symptom: ")))
 (defun my/generate-org-note-categories ()
@@ -198,24 +202,59 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
   (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
 
 (after! org (add-to-list 'org-capture-templates
-                         '("n" "Note" plain (file my/generate-org-note-name)
+                         '("tn" "New note" plain (file my/generate-org-note-name)
                            "%(format \"#+TITLE: %s: %s\n\" my-org-note--category my-org-note--name)
 %?")))
 #+END_SRC
-*** Capture
+**** Existing Note
 #+BEGIN_SRC emacs-lisp
+(defun doom/load-session (file)
+  "TODO"
+  (interactive
+   (let ((session-file (doom-session-file)))
+     (list (or (read-file-name "Session to restore: "
+                               (file-name-directory session-file)
+                               (file-name-nondirectory session-file)
+                               t)
+               (user-error "No session selected. Aborting")))))
+  (unless file
+    (error "No session file selected"))
+  (message "Loading '%s' session" file)
+  (doom-load-session file)
+  (message "Session restored. Welcome back."))
+;(defun org-file-existing ()
+;  "Select a file from directory"
+;  (setq org-notes-directory "~/.org/notes/")
+;  (interactive)
+;  (let ((old "nil")
+;        (dir (read-file-name "Move to: " org-notes-directory)))
+;    (concat dir)))
+(defun org-file-test ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
 (after! org (add-to-list 'org-capture-templates
-             '("x" "Capture [WORKLOAD]" entry (file "~/.org/workload/inbox.org")
-"* INBOX %^{taskname}%?
-:PROPERTIES:
-:CREATED:    %U
-:END:
-" :immediate-finish t)))
+                         '("te" "Existing Note" entry (file org-file-test)
+                           "* %?")))
 #+END_SRC
-*** Workouts
+*** Diary
+**** Diary Entry
+#+BEGIN_SRC emacs-lisp
+(defun my/generate-org-diary-name ()
+  (setq my-org-note--name (read-string "Name: "))
+  (setq my-org-note--time (format-time-string "%Y-%m-%d"))
+  (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/diary/"))
+
+(after! org (add-to-list 'org-capture-templates
+                  '("dd" "Diary" plain (file my/generate-org-diary-name)
+                     "%(format \"#+TITLE: %s\n\" my-org-note--name my-org-note--time)
+%u %?")))
+#+END_SRC
+**** Workouts
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("w" "Workout Log" entry(file+olp+datetree"~/.org/journal/workout.org")
+             '("dw" "Workout Log" entry(file+olp+datetree"~/.org/journal/workout.org")
                "** %\\1 (%\\2 calories) :: %\\3 (reps)
 :PROPERTIES:
 :ACTIVITY: %^{ACTIVITY}
@@ -224,10 +263,10 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 :COMMENT:  %^{COMMENT}
 ")))
 #+END_SRC
-*** Food
+**** Food
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("F" "Food Log" entry(file+olp+datetree"~/.org/journal/food.org")
+             '("dF" "Food Log" entry(file+olp+datetree"~/.org/journal/food.org")
 "** %\\1 [%\\2]
 :PROPERTIES:
 :FOOD:     %^{FOOD}
@@ -235,17 +274,18 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 :COMMENT:  %^{COMMENT}
 :END:")))
 #+END_SRC
-*** Weigh In
+**** Weigh In
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
-             '("W" "Weigh In" entry(file+olp+datetree"~/.org/journal/food.org")
+             '("dW" "Weigh In" entry(file+olp+datetree"~/.org/journal/food.org")
 "** %\\1 [%\\2]
 :PROPERTIES:
 :WEIGHT: %^{WEIGHT}
 :COMMENT:  %^{COMMENT}
 :END:")))
 #+END_SRC
-*** Ledger Expense
+*** Ledger
+**** Ledger Expense
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("le" "Ledger Expense" plain(file"~/.org/journal/finance.dat")
@@ -253,7 +293,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
     Expenses:%^{category|Snacks|Eating Out|Drinks|Movies|Games|Clothes|Shopping|Electronics}   %^{Dollar ammount}
     Assets:%^{account|Checking|CreditCard}" :empty-lines 1)))
 #+END_SRC
-*** Ledger Expense Date
+**** Ledger Expense Date
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("ld" "Ledger Expense Date" plain(file"~/.org/journal/finance.dat")
@@ -261,7 +301,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
     Expenses:%^{category}   %^{Dollar ammount}
     Income:%^{account}" :empty-lines 1)))
 #+END_SRC
-*** Ledger Income
+**** Ledger Income
 #+BEGIN_SRC emacs-lisp
 (after! org (add-to-list 'org-capture-templates
              '("li" "Ledger Income" plain(file"~/.org/journal/finance.dat")
@@ -645,12 +685,6 @@ my fingers the abuse.
         (setq level (1- level)
               str (concat str "──")))
       (concat str "►"))))
-#+END_SRC
-** Prompt filename
-#+BEGIN_SRC emacs-lisp
-(defun my/generate-org-note-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org"my-org-note--name) "~/.org/gtd/projects/"))
 #+END_SRC
 ** Update Tickboxes
 #+BEGIN_SRC emacs-lisp
