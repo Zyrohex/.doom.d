@@ -1,69 +1,69 @@
 
 # Table of Contents
 
--   [Getting started](#orgc2dbbcd)
--   [General Settings](#org20dacfb)
-    -   [Keys](#org0ea4a0f)
-    -   [General settings](#orgf820621)
-    -   [Popup Rules](#org1fe0383)
-    -   [User Settings](#org756594d)
--   [Doom Settings](#org2e37457)
-    -   [Fonts](#orgb9c9950)
-    -   [Mode line](#orga45c635)
-    -   [Theme](#orgb922687)
--   [Org Mode Settings](#orgf9e8436)
-    -   [Agenda](#orgcde019c)
-    -   [Load all \*.org files to agenda](#org683d1bf)
-    -   [Captures](#orgf9e099c)
-        -   [Getting Things Done](#orga916355)
-            -   [New Task File](#orgd529745)
-            -   [Child Task](#orgd435fd2)
-            -   [Capture](#org218f26d)
-            -   [New Note](#org79707da)
-            -   [Existing Note](#org5458f43)
-        -   [Diary](#orgb194dd6)
-            -   [Diary Entry](#org2903c0a)
-            -   [Workouts](#org19c4cd3)
-            -   [Food](#orgbe418a9)
-            -   [Weigh In](#org05412b6)
-        -   [Ledger](#orge46700b)
-            -   [Ledger Expense](#org483e78f)
-            -   [Ledger Expense Date](#orgd644422)
-            -   [Ledger Income](#org6d90f0a)
-    -   [Directories](#orge99fddb)
-    -   [Exports](#orgea21c5e)
-    -   [Faces](#org621e9b6)
-    -   [Keywords](#org3ad3ee1)
-    -   [Ledger](#orgce64136)
-    -   [Link Abbreviations](#org2685418)
-    -   [Logging & Drawers](#orge7e4bdd)
-    -   [Prettify](#orgb9cc014)
-    -   [Publishing](#org2c6ab51)
-    -   [Refiling](#orgc5220c8)
-    -   [Startup](#org1d3a34f)
-    -   [Tags](#orgfd91a1f)
--   [Extra Modules](#orge6ec72c)
-    -   [Deft](#orgfd17b08)
-    -   [Elfeed](#orgae9e2e0)
-    -   [Gnuplot](#orgd1cb766)
-    -   [Org Agenda Property](#orgd0a7680)
-    -   [Org Clock MRU](#org3030b3a)
-    -   [Org Clock Switch](#org640e96b)
-    -   [Org Mind Map](#orga097af8)
-    -   [Org Outlook](#orgdc59174)
-    -   [Plantuml](#org77dda82)
-    -   [Truncate](#org97764d9)
-    -   [WSL Browser](#org11c3911)
--   [Super Agenda Groups](#orgeb73199)
--   [Custom Functions](#org8435a64)
-    -   [Archive File](#org530ea58)
-    -   [Insert Item Below w/timestamp](#org63dc7e3)
-    -   [Move capture](#org729c69b)
-    -   [Org Agenda Prefix](#org1c7a688)
-    -   [Update Tickboxes](#org53f1502)
-    -   [Zyrohex/org-notes-refile](#orgc624916)
-    -   [Zyrohex/org-reference-refile](#orgc1a0c05)
-    -   [Zyrohex/org-tasks-refile](#org166a393)
+-   [Getting started](#org51ff802)
+-   [General Settings](#org70af951)
+    -   [Keys](#org8636f29)
+    -   [General settings](#orgcb0876b)
+    -   [Popup Rules](#orgcd9d995)
+    -   [User Settings](#orgc669626)
+-   [Doom Settings](#orga5c304e)
+    -   [Fonts](#orgf67be0a)
+    -   [Mode line](#org987d9a5)
+    -   [Theme](#org3f13c7d)
+-   [Org Mode Settings](#org2699c96)
+    -   [Agenda](#orge7b54e6)
+    -   [Load all \*.org files to agenda](#orgc0418d8)
+    -   [Captures](#org276a3be)
+        -   [Getting Things Done](#org3a95373)
+            -   [New Task File](#org48403fd)
+            -   [Child Task](#org00b1b3a)
+            -   [Capture](#orgfebc787)
+            -   [New Note](#org255240d)
+            -   [Existing Note](#orgaf98186)
+        -   [Diary](#org6e33700)
+            -   [Diary Entry](#orgb5c019a)
+            -   [Workouts](#org2102f74)
+            -   [Food](#org1bc0615)
+            -   [Weigh In](#org709bac7)
+        -   [Ledger](#org3bad6d4)
+            -   [Ledger Expense](#org161d465)
+            -   [Ledger Expense Date](#org8b37aa8)
+            -   [Ledger Income](#orgf7ac662)
+    -   [Directories](#orgc13bb71)
+    -   [Exports](#org29c84bf)
+    -   [Faces](#org30282c4)
+    -   [Keywords](#orgb6c4bd0)
+    -   [Ledger](#orga40e2ca)
+    -   [Link Abbreviations](#org2e40f8d)
+    -   [Logging & Drawers](#orgeeae48c)
+    -   [Prettify](#orgc6e5cb9)
+    -   [Publishing](#org1460aaf)
+    -   [Refiling](#orgaca2dae)
+    -   [Startup](#orge4b424a)
+    -   [Tags](#org4b480d3)
+-   [Extra Modules](#org56e748f)
+    -   [Deft](#org79ce1de)
+    -   [Elfeed](#org5240ce7)
+    -   [Gnuplot](#orgffbeaf0)
+    -   [Org Agenda Property](#org1e4b2dc)
+    -   [Org Clock MRU](#org630bdde)
+    -   [Org Clock Switch](#orgb474f9c)
+    -   [Org Mind Map](#org85011ca)
+    -   [Org Outlook](#orgd50795a)
+    -   [Plantuml](#org7818791)
+    -   [Truncate](#org3b83370)
+    -   [WSL Browser](#orge8b7ecf)
+-   [Super Agenda Groups](#orgfeb16b8)
+-   [Custom Functions](#org839c0f5)
+    -   [Archive File](#org8ff44ed)
+    -   [Insert Item Below w/timestamp](#org7ef62b3)
+    -   [Move capture](#orgd2a7e7b)
+    -   [Org Agenda Prefix](#orgff0de67)
+    -   [Update Tickboxes](#orgbd702bf)
+    -   [Zyrohex/org-notes-refile](#orgf34dcd3)
+    -   [Zyrohex/org-reference-refile](#org2cb9bc9)
+    -   [Zyrohex/org-tasks-refile](#org883e532)
 
 My DOOM emacs private configuration:
 ![img](attachments/doom.png)
@@ -73,7 +73,7 @@ High focus on GTD process workflow: ([source](https://github.com/nmartin84/.refe
 ![img](./attachments/gtd.png)
 
 
-<a id="orgc2dbbcd"></a>
+<a id="org51ff802"></a>
 
 # Getting started
 
@@ -93,12 +93,12 @@ This repo uses a literate configuration, with basic settings in `./init.el`, `./
 from the Emacs Lisp code blocks in `config.org`. This readme file gets created when exporting `config.org` to markdown.
 
 
-<a id="org20dacfb"></a>
+<a id="org70af951"></a>
 
 # General Settings
 
 
-<a id="org0ea4a0f"></a>
+<a id="org8636f29"></a>
 
 ## Keys
 
@@ -145,14 +145,14 @@ from the Emacs Lisp code blocks in `config.org`. This readme file gets created w
             :n "j" #'org-journal-search))
 
 
-<a id="orgf820621"></a>
+<a id="orgcb0876b"></a>
 
 ## General settings
 
     (global-auto-revert-mode t)
 
 
-<a id="org1fe0383"></a>
+<a id="orgcd9d995"></a>
 
 ## Popup Rules
 
@@ -169,7 +169,7 @@ from the Emacs Lisp code blocks in `config.org`. This readme file gets created w
     (after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 
 
-<a id="org756594d"></a>
+<a id="orgc669626"></a>
 
 ## User Settings
 
@@ -177,12 +177,12 @@ from the Emacs Lisp code blocks in `config.org`. This readme file gets created w
           user-mail-address "nmartin84.com")
 
 
-<a id="org2e37457"></a>
+<a id="orga5c304e"></a>
 
 # Doom Settings
 
 
-<a id="orgb9c9950"></a>
+<a id="orgf67be0a"></a>
 
 ## Fonts
 
@@ -198,7 +198,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (set-keyboard-coding-system 'utf-8)
 
 
-<a id="orga45c635"></a>
+<a id="org987d9a5"></a>
 
 ## Mode line
 
@@ -206,7 +206,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-modeline-gnus-timer 'nil)
 
 
-<a id="orgb922687"></a>
+<a id="org3f13c7d"></a>
 
 ## Theme
 
@@ -228,12 +228,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
          'user))
 
 
-<a id="orgf9e8436"></a>
+<a id="org2699c96"></a>
 
 # Org Mode Settings
 
 
-<a id="orgcde019c"></a>
+<a id="orge7b54e6"></a>
 
 ## Agenda
 
@@ -245,7 +245,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       '((:auto-category t))))
 
 
-<a id="org683d1bf"></a>
+<a id="orgc0418d8"></a>
 
 ## Load all \*.org files to agenda
 
@@ -254,7 +254,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (find-lisp-find-files "~/.org/" "\.org$")))
 
 
-<a id="orgf9e099c"></a>
+<a id="org276a3be"></a>
 
 ## Captures
 
@@ -264,12 +264,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                         ("l" "Ledger"))))
 
 
-<a id="orga916355"></a>
+<a id="org3a95373"></a>
 
 ### Getting Things Done
 
 
-<a id="orgd529745"></a>
+<a id="org48403fd"></a>
 
 #### New Task File
 
@@ -288,7 +288,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     ")))
 
 
-<a id="orgd435fd2"></a>
+<a id="org00b1b3a"></a>
 
 #### Child Task
 
@@ -298,7 +298,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?" :empty-lines 1)))
 
 
-<a id="org218f26d"></a>
+<a id="orgfebc787"></a>
 
 #### Capture
 
@@ -311,7 +311,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     " :immediate-finish t)))
 
 
-<a id="org79707da"></a>
+<a id="org255240d"></a>
 
 #### New Note
 
@@ -330,47 +330,26 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org5458f43"></a>
+<a id="orgaf98186"></a>
 
 #### Existing Note
 
-    (defun doom/load-session (file)
-      "TODO"
-      (interactive
-       (let ((session-file (doom-session-file)))
-         (list (or (read-file-name "Session to restore: "
-                                   (file-name-directory session-file)
-                                   (file-name-nondirectory session-file)
-                                   t)
-                   (user-error "No session selected. Aborting")))))
-      (unless file
-        (error "No session file selected"))
-      (message "Loading '%s' session" file)
-      (doom-load-session file)
-      (message "Session restored. Welcome back."))
-    ;(defun org-file-existing ()
-    ;  "Select a file from directory"
-    ;  (setq org-notes-directory "~/.org/notes/")
-    ;  (interactive)
-    ;  (let ((old "nil")
-    ;        (dir (read-file-name "Move to: " org-notes-directory)))
-    ;    (concat dir)))
-    (defun org-file-test ()
+    (defun org-capture-file-selector ()
       "test file selector"
       (interactive)
       (setq org-notes-directory "~/.org/notes/")
       (concat (read-file-name "Select file: " org-notes-directory)))
     (after! org (add-to-list 'org-capture-templates
-                             '("te" "Existing Note" entry (file org-file-test)
+                             '("te" "Existing Note" entry (file org-capture-file-selector)
                                "* %?")))
 
 
-<a id="orgb194dd6"></a>
+<a id="org6e33700"></a>
 
 ### Diary
 
 
-<a id="org2903c0a"></a>
+<a id="orgb5c019a"></a>
 
 #### Diary Entry
 
@@ -385,7 +364,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %u %?")))
 
 
-<a id="org19c4cd3"></a>
+<a id="org2102f74"></a>
 
 #### Workouts
 
@@ -400,7 +379,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     ")))
 
 
-<a id="orgbe418a9"></a>
+<a id="org1bc0615"></a>
 
 #### Food
 
@@ -414,7 +393,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     :END:")))
 
 
-<a id="org05412b6"></a>
+<a id="org709bac7"></a>
 
 #### Weigh In
 
@@ -427,12 +406,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     :END:")))
 
 
-<a id="orge46700b"></a>
+<a id="org3bad6d4"></a>
 
 ### Ledger
 
 
-<a id="org483e78f"></a>
+<a id="org161d465"></a>
 
 #### Ledger Expense
 
@@ -443,7 +422,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
         Assets:%^{account|Checking|CreditCard}" :empty-lines 1)))
 
 
-<a id="orgd644422"></a>
+<a id="org8b37aa8"></a>
 
 #### Ledger Expense Date
 
@@ -454,7 +433,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
         Income:%^{account}" :empty-lines 1)))
 
 
-<a id="org6d90f0a"></a>
+<a id="orgf7ac662"></a>
 
 #### Ledger Income
 
@@ -465,7 +444,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
         Payee:%^{who}" :empty-lines 1)))
 
 
-<a id="orge99fddb"></a>
+<a id="orgc13bb71"></a>
 
 ## Directories
 
@@ -477,7 +456,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       projectile-project-search-path '("~/.org/")))
 
 
-<a id="orgea21c5e"></a>
+<a id="org29c84bf"></a>
 
 ## Exports
 
@@ -495,7 +474,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       org-export-backends '(pdf ascii html md latex odt pandoc)))
 
 
-<a id="org621e9b6"></a>
+<a id="org30282c4"></a>
 
 ## Faces
 
@@ -512,7 +491,7 @@ Need to add condition to adjust faces based on theme select.
             ("DONE" :foreground "slategrey" :weight bold))))
 
 
-<a id="org3ad3ee1"></a>
+<a id="orgb6c4bd0"></a>
 
 ## Keywords
 
@@ -520,7 +499,7 @@ Need to add condition to adjust faces based on theme select.
           '((sequence "TODO(t!)" "ACTIVE(a!)" "HOLDING(h!)" "NEXT(n!)" "DELEGATED(e!)" "INBOX(i!)" "SOMEDAY(s!)" "|" "INVALID(I!)" "DONE(d!)"))))
 
 
-<a id="orgce64136"></a>
+<a id="orga40e2ca"></a>
 
 ## Ledger
 
@@ -532,7 +511,7 @@ Need to add condition to adjust faces based on theme select.
     (use-package flycheck-ledger :after ledger-mode)
 
 
-<a id="org2685418"></a>
+<a id="org2e40f8d"></a>
 
 ## Link Abbreviations
 
@@ -549,7 +528,7 @@ Need to add condition to adjust faces based on theme select.
                         ("attachments" . "~/.org/.attachments/"))))
 
 
-<a id="orge7e4bdd"></a>
+<a id="orgeeae48c"></a>
 
 ## Logging & Drawers
 
@@ -561,7 +540,7 @@ Need to add condition to adjust faces based on theme select.
                       org-log-reschedule 'note))
 
 
-<a id="orgb9cc014"></a>
+<a id="orgc6e5cb9"></a>
 
 ## Prettify
 
@@ -571,7 +550,7 @@ Need to add condition to adjust faces based on theme select.
                       org-ellipsis "▼"))
 
 
-<a id="org2c6ab51"></a>
+<a id="org1460aaf"></a>
 
 ## Publishing
 
@@ -598,7 +577,7 @@ Need to add condition to adjust faces based on theme select.
                         ("myprojectweb" :components("references-attachments" "references-md")))))
 
 
-<a id="orgc5220c8"></a>
+<a id="orgaca2dae"></a>
 
 ## Refiling
 
@@ -607,7 +586,7 @@ Need to add condition to adjust faces based on theme select.
                       org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="org1d3a34f"></a>
+<a id="orge4b424a"></a>
 
 ## Startup
 
@@ -617,7 +596,7 @@ Need to add condition to adjust faces based on theme select.
     ;(add-hook 'org-mode-hook 'org-num-mode)
 
 
-<a id="orgfd91a1f"></a>
+<a id="org4b480d3"></a>
 
 ## Tags
 
@@ -636,12 +615,12 @@ Need to add condition to adjust faces based on theme select.
                                       (:endgrouptag))))
 
 
-<a id="orge6ec72c"></a>
+<a id="org56e748f"></a>
 
 # Extra Modules
 
 
-<a id="orgfd17b08"></a>
+<a id="org79ce1de"></a>
 
 ## Deft
 
@@ -697,7 +676,7 @@ Need to add condition to adjust faces based on theme select.
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orgae9e2e0"></a>
+<a id="org5240ce7"></a>
 
 ## Elfeed
 
@@ -716,7 +695,7 @@ Need to add condition to adjust faces based on theme select.
                       elfeed-db-directory "~/.elfeed/"))
 
 
-<a id="orgd1cb766"></a>
+<a id="orgffbeaf0"></a>
 
 ## Gnuplot
 
@@ -725,7 +704,7 @@ Need to add condition to adjust faces based on theme select.
     ;  (setq gnuplot-program "gnuplot"))
 
 
-<a id="orgd0a7680"></a>
+<a id="org1e4b2dc"></a>
 
 ## Org Agenda Property
 
@@ -733,7 +712,7 @@ Need to add condition to adjust faces based on theme select.
     ;                  org-agenda-property-position 'where-it-fits))
 
 
-<a id="org3030b3a"></a>
+<a id="org630bdde"></a>
 
 ## Org Clock MRU
 
@@ -743,7 +722,7 @@ Need to add condition to adjust faces based on theme select.
     (setq org-mru-clock-files #'org-agenda-files)
 
 
-<a id="org640e96b"></a>
+<a id="orgb474f9c"></a>
 
 ## Org Clock Switch
 
@@ -757,7 +736,7 @@ Need to add condition to adjust faces based on theme select.
     ;(provide 'org-clock-switch)
 
 
-<a id="orga097af8"></a>
+<a id="org85011ca"></a>
 
 ## Org Mind Map
 
@@ -777,7 +756,7 @@ Need to add condition to adjust faces based on theme select.
     ;  )
 
 
-<a id="orgdc59174"></a>
+<a id="orgd50795a"></a>
 
 ## Org Outlook
 
@@ -793,7 +772,7 @@ Need to add condition to adjust faces based on theme select.
     ;(require 'org-outlook)
 
 
-<a id="org77dda82"></a>
+<a id="org7818791"></a>
 
 ## Plantuml
 
@@ -805,7 +784,7 @@ Need to add condition to adjust faces based on theme select.
       (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
 
 
-<a id="org97764d9"></a>
+<a id="org3b83370"></a>
 
 ## Truncate
 
@@ -817,7 +796,7 @@ Need to add condition to adjust faces based on theme select.
     (add-hook 'text-mode-hook 'jethro/truncate-lines-hook)
 
 
-<a id="org11c3911"></a>
+<a id="orge8b7ecf"></a>
 
 ## WSL Browser
 
@@ -833,7 +812,7 @@ Need to add condition to adjust faces based on theme select.
     (setq-default browse-url-browser-function 'my--browse-url)
 
 
-<a id="orgeb73199"></a>
+<a id="orgfeb16b8"></a>
 
 # Super Agenda Groups
 
@@ -873,12 +852,12 @@ Need to add condition to adjust faces based on theme select.
                                          '((:auto-outline-path t))))))))))
 
 
-<a id="org8435a64"></a>
+<a id="org839c0f5"></a>
 
 # Custom Functions
 
 
-<a id="org530ea58"></a>
+<a id="org8ff44ed"></a>
 
 ## Archive File
 
@@ -893,7 +872,7 @@ Need to add condition to adjust faces based on theme select.
     (provide 'org-archive-file)
 
 
-<a id="org63dc7e3"></a>
+<a id="org7ef62b3"></a>
 
 ## Insert Item Below w/timestamp
 
@@ -907,7 +886,7 @@ my fingers the abuse.
     (map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
 
 
-<a id="org729c69b"></a>
+<a id="orgd2a7e7b"></a>
 
 ## Move capture
 
@@ -917,7 +896,7 @@ my fingers the abuse.
       (goto-char (point-max)))
 
 
-<a id="org1c7a688"></a>
+<a id="orgff0de67"></a>
 
 ## Org Agenda Prefix
 
@@ -934,7 +913,7 @@ my fingers the abuse.
           (concat str "►"))))
 
 
-<a id="org53f1502"></a>
+<a id="orgbd702bf"></a>
 
 ## Update Tickboxes
 
@@ -949,7 +928,7 @@ my fingers the abuse.
     (provide 'org-update-cookies-after-save)
 
 
-<a id="orgc624916"></a>
+<a id="orgf34dcd3"></a>
 
 ## Zyrohex/org-notes-refile
 
@@ -962,7 +941,7 @@ my fingers the abuse.
     (provide 'zyrohex/org-notes-refile)
 
 
-<a id="orgc1a0c05"></a>
+<a id="org2cb9bc9"></a>
 
 ## Zyrohex/org-reference-refile
 
@@ -974,7 +953,7 @@ my fingers the abuse.
     (provide 'zyrohex/org-reference-refile)
 
 
-<a id="org166a393"></a>
+<a id="org883e532"></a>
 
 ## Zyrohex/org-tasks-refile
 
