@@ -1,6 +1,6 @@
 (package! helm-org-rifle)
 (package! org-super-agenda)
-;;(package! org-ql)
+(package! org-ql)
 ;;(package! elfeed)
 ;;(package! elfeed-org)
 ;;(package! org-board)

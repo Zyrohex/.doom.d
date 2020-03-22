@@ -182,7 +182,15 @@ ox-latex should not be quoted!
 *** Setup for Chinese text
 #+BEGIN_SRC emacs-lisp
 (after! ox-latex
-  (setq org-latex-pdf-process '("xelatex \\\\nonstopmode\\\\input %f")))
+  (setq org-latex-pdf-process
+            '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "xelatex -interaction nonstopmode -output-directory %o %f"
+              "xelatex -interaction nonstopmode -output-directory %o %f"
+              "xelatex -interaction nonstopmode -output-directory %o %f"
+              ;;"rm -fr %b.out %b.log %b.tex auto"
+              )))
 #+END_SRC
 Note, the value of org-latex-pdf-process should be a list of string, not a
 string!
@@ -200,8 +208,7 @@ string!
     (add-to-list 'org-latex-packages-alist '("" "minted"))
     (setq org-latex-listings 'minted)
     (setq org-src-fontify-natively t)
-    (setq org-latex-pdf-process
-          "xelatex \\\\nonstopmode\\\\input %f"))
+    )
 
 **** Not used org-latex-pdf-process commands
 The following is not used as it dosen't tolerate the warning of font missing.
@@ -661,6 +668,20 @@ otherwise, return nil"
           "  :RESET_CHECK_BOXES: t\n  :END:\n  %U\n  %a"))
 
 #+end_src
+
+* Examples of using org-ql with org-super-agenda
+
+;; TODAY
+(org-ql-block
+ ;; Query
+ '(and (todo)
+       (scheduled :on today))
+ ;; Block config
+ ((org-ql-block-header "Today")))
+
+ Next, need to specify what I want to have for agenda view, or translate my
+ current one into a specification.
+Check out the examples in org-ql: https://github.com/alphapapa/org-ql/blob/master/examples.org#agenda-like-view
 
 * Note, limitation of Doom config: literate, generated config.el should be less than 481 lines
 otherwise, the top part of the generation would be cut off!
