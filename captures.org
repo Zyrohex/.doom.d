@@ -59,12 +59,6 @@
                "* TODO %^{taskname} %^G
 :PROPERTIES:
 :CREATED: %U
-:CASE:     %^{case}
-:CATEGORY: %^{category|Datacenters|Fullfilment|DPS Projects|Escalations|Firmware|Hardware|Help Desk|Networking|Processes|Servers Crashing|Software}
-:COMPONENT: %^{component}
-:SUB-COMPONENT: %^{sub component}
-:CUSTOMER: %\\1
-:PLATFORM: %^{platform}
 :WHO:      %^{who}
 :END:
 
