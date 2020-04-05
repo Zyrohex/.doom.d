@@ -1,30 +1,37 @@
 ;;; ~/.doom.d/agenda.el -*- lexical-binding: t; -*-
 
-;; Prompt user for answers
-(defun org-capture-template-selector ()
-  "Function to choose which template you want to create"
+(defun org-capture-templates-file-select (checklist)
+  "Concat results to function"
   (interactive)
-  (let ((choose '("New File" "Existing File")))
-    (org-completing-read "Choose: " choose)))
-(org-capture-template-selector)
-(defun org-capture-template-select ()
-  "Select which template you want"
-  (interactive)
-  (org-capture-template-selector)
-  (if (equal choose "New File")
-      (message "true")
-    (message "false")))
-(org-capture-template-select)
+  (if (equal checklist "Buffer")
+      (concat (buffer-name))
+    (org-capture-file-selector)))
 
-;; Define parent or child task
-(defun org-capture-template-parchild ()
-  "Function to choose which template you want to create"
-  (interactive)
-  (let ((choose '("Parent" "Child")))
-    (org-completing-read "Choose: " choose)))
-(org-capture-template-parchild)
+(org-capture-templates-file-selector)
 
-;;
-(defun org-capture-template-builder ()
-  "Dynamic template builder"
-  (if (equal org-capture-template-parchild "Parent")))
+(defun org-capture-templates-file-selector ()
+  "Select your choice"
+  (interactive)
+  (let ((choice '("Buffer" "File")))
+    (org-capture-templates-file-select (org-completing-read "Pick option: " choice))))
+
+(defun org-capture-headline-finder (&optional arg)
+  "Like `org-todo-list', but using only the current buffer's file."
+  (interactive "P")
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a file" (buffer-name (current-buffer)))
+      (counsel-org-agenda-headlines)))
+  (goto-char (org-end-of-subtree)))
+
+(defun org-capture-headline-finder2 (&optional arg)
+  "Like `org-todo-list', but using only the current buffer's file."
+  (interactive "P")
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a file" (buffer-name (current-buffer)))
+      (org-refile))))
+
+(setq org-capture-templates
+      '(("x" "Test Item" plain (file+function org-capture-templates-file-selector org-capture-headline-finder)
+         "%(format \"%s\" (org-capture-template-selector))%?")))

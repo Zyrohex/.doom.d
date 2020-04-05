@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: HTML-THEME-DOCNORANG-MOD
+# key: HTML THEME DOCNORANG MOD
+# --
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+HTML_HEAD: <style type="text/css">body{ max-width:80%;  }</style>

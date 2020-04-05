@@ -1,3 +1,30 @@
+(setq doom-font (font-spec :family "InputMono" :size 16)
+      doom-variable-pitch-font (font-spec :family "InputMono" :height 120)
+      doom-unicode-font (font-spec :family "DejaVu Sans")
+      doom-big-font (font-spec :family "InputMono" :size 20))
+
+(setq doom-theme 'doom-one)
+;(setq org-emphasis-alist
+;      '(("*" (bold :foreground "MediumPurple"))
+;        ("/" (italic :foreground "VioletRed"))
+;        ("_" underline)
+;        ("=" (:foreground "PaleTurquoise"))
+;        ("~" (:foreground "PaleTurquoise"))
+;        ("+" (:strike-through t))))
+(custom-theme-set-faces
+ 'user
+ '(org-ellipsis ((t (:foreground "SpringGreen")))))
+(if (equal doom-theme 'doom-snazzy)
+    (custom-theme-set-faces
+     'user
+     '(org-block ((t (:background "#20222b"))))
+     '(org-block-begin-line ((t (:background "#282A36"))))
+     '(org-ellipsis ((t (:foreground "SpringGreen"))))
+     '(org-headline-done ((t (:strike-through t))))))
+
+(setq user-full-name "Nicholas Martin"
+      user-mail-address "nmartin84.com")
+
 (global-set-key (kbd "C-c C-x i") #'org-mru-clock-in)
 (global-set-key (kbd "C-c C-x C-j") #'org-mru-clock-select-recent-task)
 (bind-key "C-<down>" #'+org/insert-item-below)
@@ -40,94 +67,180 @@
       (:prefix "/"
         :n "j" #'org-journal-search))
 
-(global-auto-revert-mode t)
-
 (after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "Dictionary" :side 'bottom :size .30 :select t :vslot 3 :ttl 3))
 (after! org (set-popup-rule! "*helm*" :side 'bottom :size .30 :select t :vslot 5 :ttl 3))
 (after! org (set-popup-rule! "*eww*" :side 'right :size .30 :slect t :vslot 5 :ttl 3))
 (after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-(after! org (set-popup-rule! "*org-roam" :side 'right :size .40 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*Ledger Report*" :side 'right :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*xwidget" :side 'right :size .50 :select t :vslot 5 :ttl 3))
-;(after! org (set-popup-rule! "*org agenda*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 
-(setq user-full-name "Nicholas Martin"
-      user-mail-address "nmartin84.com")
+(global-auto-revert-mode t)
 
-(setq doom-font (font-spec :family "InputMono" :size 18)
-      doom-variable-pitch-font (font-spec :family "InputMono" :height 120)
-      doom-unicode-font (font-spec :family "InputMono")
-      doom-big-font (font-spec :family "InputMono" :size 20))
-(prefer-coding-system       'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
+(use-package helm-org-rifle
+  :after (helm org)
+  :preface
+  (autoload 'helm-org-rifle-wiki "helm-org-rifle")
+  :config
+  ;; Define Helm actions to insert a link.
+  ;; Note that these actions are effective only in org-mode and its
+  ;; derived modes.
+  (add-to-list 'helm-org-rifle-actions
+               '("Insert link"
+                 . helm-org-rifle--insert-link)
+               t)
+  (add-to-list 'helm-org-rifle-actions
+               '("Insert link with custom ID"
+                 . helm-org-rifle--insert-link-with-custom-id)
+               t)
+  (add-to-list 'helm-org-rifle-actions
+               '("Store link"
+                 . helm-org-rifle--store-link)
+               t)
+  (add-to-list 'helm-org-rifle-actions
+               '("Store link with custom ID"
+                 . helm-org-rifle--store-link-with-custom-id)
+               t)
+  (add-to-list 'helm-org-rifle-actions
+               '("Add org-edna dependency on this entry (with ID)"
+                 . akirak/helm-org-rifle-add-edna-blocker-with-id)
+               t)
+  (defun helm-org-rifle--store-link (candidate &optional use-custom-id)
+    "Store a link to CANDIDATE."
+    (-let (((buffer . pos) candidate))
+      (with-current-buffer buffer
+        (org-with-wide-buffer
+         (goto-char pos)
+         (when (and use-custom-id
+                    (not (org-entry-get nil "CUSTOM_ID")))
+           (org-set-property "CUSTOM_ID"
+                             (read-string (format "Set CUSTOM_ID for %s: "
+                                                  (substring-no-properties
+                                                   (org-format-outline-path
+                                                    (org-get-outline-path t nil))))
+                                          (helm-org-rifle--make-default-custom-id
+                                           (nth 4 (org-heading-components))))))
+         (call-interactively 'org-store-link)))))
+  (defun helm-org-rifle--store-link-with-custom-id (candidate)
+    "Store a link to CANDIDATE with a custom ID.."
+    (helm-org-rifle--store-link candidate 'use-custom-id))
+  (defun helm-org-rifle--insert-link (candidate &optional use-custom-id)
+    "Insert a link to CANDIDATE."
+    (unless (derived-mode-p 'org-mode)
+      (user-error "Cannot insert a link into a non-org-mode"))
+    (let ((orig-marker (point-marker)))
+      (helm-org-rifle--store-link candidate use-custom-id)
+      (-let (((dest label) (pop org-stored-links)))
+        (org-goto-marker-or-bmk orig-marker)
+        (org-insert-link nil dest label)
+        (message "Inserted a link to %s" dest))))
+  (defun helm-org-rifle--make-default-custom-id (title)
+    (downcase (replace-regexp-in-string "[[:space:]]" "-" title)))
+  (defun helm-org-rifle--insert-link-with-custom-id (candidate)
+    "Insert a link to CANDIDATE with a custom ID."
+    (helm-org-rifle--insert-link candidate t))
+  ;; Based on the definition of helm-org-rifle-files in helm-org-rifle.el
+  (helm-org-rifle-define-command
+   "wiki" ()
+   "Search in \"~/lib/notes/writing\" and `plain-org-wiki-directory' or create a new wiki entry"
+   :sources `(,(helm-build-sync-source "Exact wiki entry"
+                 :candidates (plain-org-wiki-files)
+                 :action #'plain-org-wiki-find-file)
+              ,@(--map (helm-org-rifle-get-source-for-file it) files)
+              ,(helm-build-dummy-source "Wiki entry"
+                 :action #'plain-org-wiki-find-file))
+   :let ((files (let ((directories (list "~/lib/notes/writing"
+                                         plain-org-wiki-directory
+                                         "~/lib/notes")))
+                  (-flatten (--map (f-files it
+                                            (lambda (file)
+                                              (s-matches? helm-org-rifle-directories-filename-regexp
+                                                          (f-filename file))))
+                                   directories))))
+         (helm-candidate-separator " ")
+         (helm-cleanup-hook (lambda ()
+                              ;; Close new buffers if enabled
+                              (when helm-org-rifle-close-unopened-file-buffers
+                                (if (= 0 helm-exit-status)
+                                    ;; Candidate selected; close other new buffers
+                                    (let ((candidate-source (helm-attr 'name (helm-get-current-source))))
+                                      (dolist (source helm-sources)
+                                        (unless (or (equal (helm-attr 'name source)
+                                                           candidate-source)
+                                                    (not (helm-attr 'new-buffer source)))
+                                          (kill-buffer (helm-attr 'buffer source)))))
+                                  ;; No candidates; close all new buffers
+                                  (dolist (source helm-sources)
+                                    (when (helm-attr 'new-buffer source)
+                                      (kill-buffer (helm-attr 'buffer source))))))))))
+  :general
+  (:keymaps 'org-mode-map
+            "M-s r" #'helm-org-rifle-current-buffer)
+  :custom
+  (helm-org-rifle-directories-recursive nil)
+  (helm-org-rifle-show-path t)
+  (helm-org-rifle-test-against-path t))
 
-(setq doom-modeline-gnus t
-      doom-modeline-gnus-timer 'nil)
+(provide 'setup-helm-org-rifle)
 
-(setq doom-theme 'doom-city-lights)
-(if (equal doom-theme 'doom-snazzy)
-    (custom-theme-set-faces
-     'user
-     '(org-block ((t (:background "#20222b"))))
-     '(org-block-begin-line ((t (:background "#282A36"))))))
-(if (equal doom-theme 'doom-city-lights)
-    (setq org-emphasis-alist
-          '(("*" (bold :foreground "MediumPurple"))
-            ("/" (italic :foreground "VioletRed"))
-            ("_" underline)
-            ("=" (:foreground "PaleTurquoise"))
-            ("~" (:foreground "PaleTurquoise"))
-            ("+" (:strike-through t))))
-    (custom-theme-set-faces
-     'user))
+(use-package! org-roam
+  :commands (org-roam-insert org-roam-find-file org-roam)
+  :init
+  (setq org-roam-directory "~/.org/notes/")
+  (setq org-roam-graph-viewer "/usr/bin/open")
+  :bind (:map org-roam-mode-map
+          (("C-c n l" . org-roam)
+           ("C-c n f" . org-roam-find-file)
+           ("C-c n b" . org-roam-switch-to-buffer)
+           ("C-c n g" . org-roam-graph-show))
+          :map org-mode-map
+          (("C-c n i" . org-roam-insert)))
+  :config
+  (org-roam-mode +1))
 
-(after! org (setq org-agenda-use-time-grid nil
+(setq deft-directory "~/.org/notes/")
+(setq deft-current-sort-method 'title)
+
+(after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
+;(after! org (setq org-super-agenda-groups
+;                  '((:auto-category t))))
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-dim-blocked-tasks t
+                  org-agenda-use-time-grid t
+                  org-agenda-hide-tags-regexp "**"
+;                  org-agenda-prefix-format " %(my-agenda-prefix) "
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
+                  org-enforce-todo-checkbox-dependencies nil
                   org-habit-show-habits t))
-(after! org (setq org-super-agenda-groups
-                  '((:auto-category t))))
 
 (load-library "find-lisp")
 (after! org (setq org-agenda-files
-(find-lisp-find-files "~/.org/" "\.org$")))
+                  (find-lisp-find-files "~/.org/workload/" "\.org$")))
 
 (after! org (setq org-capture-templates
-                  '(("t" "Tasks")
-                    ("d" "Diary")
-                    ("l" "Ledger"))))
-
-(defun my/generate-org-task-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (setq my-org-note--time (format-time-string "%Y-%m-%d"))
-  (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/tasks/"))
+                  '(("h" "Headline")
+                    ("b" "Buffer Find")
+                    ("f" "File Find")
+                    ("fn" "Notes")
+                    ("ft" "Tasks")
+                    ("c" "Captures"))))
 
 (after! org (add-to-list 'org-capture-templates
-             '("tf" "Task File" plain (file my/generate-org-task-name)
-               "%(format \"#+TITLE: %s\n\" my-org-note--name)
-\* INBOX %(format my-org-note--name) %?
+             '("ct" "Task" entry (file "~/.org/workload/inbox.org")
+               "* TODO %^{taskname} %^{CATEGORY}p
 :PROPERTIES:
 :CREATED: %U
 :END:
 ")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("tc" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
-"* %^{keyword|TODO|INBOX} %u %^{task}
-%?" :empty-lines 1)))
-
-(after! org (add-to-list 'org-capture-templates
-             '("tx" "Capture [WORKLOAD]" entry (file "~/.org/workload/inbox.org")
-"* INBOX %^{taskname}%?
-:PROPERTIES:
-:CREATED:    %U
-:END:
-" :immediate-finish t)))
+             '("cr" "Reference" entry (file "~/.org/workload/references.org")
+"* TODO %u %^{reference}
+%?")))
 
 (setq my/org-note-categories '(("Topic: ") ("Account: ") ("Symptom: ")))
 (defun my/generate-org-note-categories ()
@@ -139,9 +252,47 @@
   (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
 
 (after! org (add-to-list 'org-capture-templates
-                         '("tn" "New note" plain (file my/generate-org-note-name)
-                           "%(format \"#+TITLE: %s: %s\n\" my-org-note--category my-org-note--name)
+                         '("cn" "Note" plain (file my/generate-org-note-name)
+                           "%(format \"#+TITLE: %s\n\" my-org-note--name)
 %?")))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("cd" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
+                           "- [ ] %t %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("cx" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
+               "* [%\\1] %\\7 for %\\5
+:PROPERTIES:
+:CASENUMBER: %^{Case or SVCTAG}
+:ACCOUNT:  %^{account}
+:AUDIENCE: %^{audience|Internal - Support|Internal - TSM|Internal - Account Team|Internal - CTL Peers|Internal - Manager|Customer Facing|Other}
+:SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
+:PERSON:   %^{Whose asking for help?}
+:TASK:     %^{task}
+:DESCRIPTION: %^{description}
+:CREATED:  %u
+:END:
+:LOGBOOK:
+:END:
+%?" :tree-type week :clock-in t :clock-resume t)))
+
+(after! org (add-to-list 'org-capture-templates
+             '("hh" "Append Headline" entry (file+function buffer-name org-end-of-subtree)
+"* %u %^{name}
+%?" :empty-lines 1)))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("hi" "Headline Item" plain (file+function buffer-name org-end-of-subtree)
+                         "+ %u %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("hc" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
+"* TODO %u %^{task}%? %^G")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("fne" "Entry to Headline" entry (file+function org-capture-file-selector org-capture-headline-finder)
+"* %u %^{note}%? :%^G")))
 
 (defun org-capture-file-selector ()
   "test file selector"
@@ -149,115 +300,78 @@
   (setq org-notes-directory "~/.org/notes/")
   (concat (read-file-name "Select file: " org-notes-directory)))
 (after! org (add-to-list 'org-capture-templates
-                         '("te" "Existing Note" entry (file org-capture-file-selector)
+                         '("fnh" "New Headline to Note" entry (file org-capture-file-selector)
                            "* %?")))
 
-(defun my/generate-org-diary-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (setq my-org-note--time (format-time-string "%Y-%m-%d"))
-  (expand-file-name (format "%s %s.org" my-org-note--time my-org-note--name) "~/.org/diary/"))
+(defun org-capture-file-selector ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
+(after! org (add-to-list 'org-capture-templates
+                         '("fni" "New Item to Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
+                           "+ %u %?")))
 
 (after! org (add-to-list 'org-capture-templates
-                  '("dd" "Diary" plain (file my/generate-org-diary-name)
-                     "%(format \"#+TITLE: %s\n\" my-org-note--name my-org-note--time)
-%u %?")))
+             '("fti" "+Task Item" plain (file+function "~/.org/workload/tasks.org" org-capture-headline-finder)
+"+ %u %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("dw" "Workout Log" entry(file+olp+datetree"~/.org/journal/workout.org")
-               "** %\\1 (%\\2 calories) :: %\\3 (reps)
-:PROPERTIES:
-:ACTIVITY: %^{ACTIVITY}
-:CALORIES: %^{CALORIES}
-:REPS:     %^{REPS}
-:COMMENT:  %^{COMMENT}
-")))
+             '("ftc" "Child Task" entry (file+function "~/.org/workload/tasks.org" org-find-task-headline)
+"* TODO %u %^{task}%? %^G")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("dF" "Food Log" entry(file+olp+datetree"~/.org/journal/food.org")
-"** %\\1 [%\\2]
-:PROPERTIES:
-:FOOD:     %^{FOOD}
-:CALORIES: %^{CALORIES}
-:COMMENT:  %^{COMMENT}
-:END:")))
+             '("bt" "Task" entry (file+function buffer-name org-find-task-headline)
+"* TODO %u %^{task} %^G
+%?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("dW" "Weigh In" entry(file+olp+datetree"~/.org/journal/food.org")
-"** %\\1 [%\\2]
-:PROPERTIES:
-:WEIGHT: %^{WEIGHT}
-:COMMENT:  %^{COMMENT}
-:END:")))
+             '("bh" "Child Headline" entry (file+function buffer-name org-find-task-headline)
+"* %u %^{note}
+%?")))
 
+(defun org-task-item-option ()
+  "Simple function to select if you want a item or checklist inserted"
+  (interactive)
+  (let (choices ("Item" "Checklist")))
+  (if (equal (choices "Item"))
+      (concat "+ %u %?")
+    (concat "+ [ ] %u %?")))
 (after! org (add-to-list 'org-capture-templates
-             '("le" "Ledger Expense" plain(file"~/.org/journal/finance.dat")
-               "%<%Y/%m/%d> * %^{Creditor}
-    Expenses:%^{category|Snacks|Eating Out|Drinks|Movies|Games|Clothes|Shopping|Electronics}   %^{Dollar ammount}
-    Assets:%^{account|Checking|CreditCard}" :empty-lines 1)))
-
-(after! org (add-to-list 'org-capture-templates
-             '("ld" "Ledger Expense Date" plain(file"~/.org/journal/finance.dat")
-               "2020/%^{month}/%^{date} * %^{Creditor}
-    Expenses:%^{category}   %^{Dollar ammount}
-    Income:%^{account}" :empty-lines 1)))
-
-(after! org (add-to-list 'org-capture-templates
-             '("li" "Ledger Income" plain(file"~/.org/journal/finance.dat")
-               "%<%Y/%m/%d> * %^{Payee}
-    Income:%^{account}   %^{Dollar ammount}
-    Payee:%^{who}" :empty-lines 1)))
+                         '("bi" "Headline Item" plain (file+function buffer-name org-capture-headline-finder)
+                         "+ %u %?")))
 
 (after! org (setq org-directory "~/.org/"
                   org-image-actual-width nil
                   +org-export-directory "~/.export/"
-                  org-archive-location "~/.org/gtd/archive.org::datetree/"
-                  org-default-notes-file "~/.org/gtd/inbox.org"
+                  org-archive-location "~/.org/workload/archive.org::datetree/"
+                  org-default-notes-file "~/.org/workload/inbox.org"
                   projectile-project-search-path '("~/.org/")))
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
                   org-export-with-author t
                   org-export-headline-levels 5
-                  org-export-with-drawers t
+                  org-export-with-drawers nil
                   org-export-with-email t
                   org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
                   org-export-with-latex t
                   org-export-with-section-numbers nil
                   org-export-with-properties t
                   org-export-with-smart-quotes t
-                  org-export-backends '(pdf ascii html md latex odt pandoc)))
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
 
 (after! org (setq org-todo-keyword-faces
-      '(("TODO" :foreground "tomato" :weight bold)
-        ("WAITING" :foreground "light sea green" :weight bold)
-        ("STARTED" :foreground "DodgerBlue" :weight bold)
-        ("SOMEDAY" :foreground "sky blue" :weight bold)
+      '(("TODO" :foreground "OrangeRed" :weight bold)
+        ("INBOX" :foreground "SteelBlue" :weight bold)
+        ("SOMEDAY" :foreground "gold" :weight bold)
+        ("ACTIVE" :foreground "DeepPink" :weight bold)
         ("INBOX" :foreground "spring green" :weight bold)
-        ("DELEGATED" :foreground "Gold" :weight bold)
-        ("NEXT" :foreground "violet red" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold))))
+        ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
 
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t!)" "ACTIVE(a!)" "HOLDING(h!)" "NEXT(n!)" "DELEGATED(e!)" "INBOX(i!)" "SOMEDAY(s!)" "|" "INVALID(I!)" "DONE(d!)"))))
-
-(use-package ledger-mode
-  :mode ("\\.dat\\'"
-         "\\.ledger\\'")
-  :custom (ledger-clear-whole-transactions t))
-
-(use-package flycheck-ledger :after ledger-mode)
-
-(after! org (setq org-link-abbrev-alist
-                  '(("doom-repo" . "https://github.com/hlissner/doom-emacs/%s")
-                    ("wolfram" . "https://wolframalpha.com/input/?i=%s")
-                    ("duckduckgo" . "https://duckduckgo.com/?q=%s")
-                    ("gmap" . "https://maps.google.com/maps?q=%s")
-                    ("gimages" . "https://google.com/images?q=%s")
-                    ("google" . "https://google.com/search?q=")
-                    ("youtube" . "https://youtube.com/watch?v=%s")
-                    ("youtu" . "https://youtube.com/results?search_query=%s")
-                    ("github" . "https://github.com/%s")
-                    ("attachments" . "~/.org/.attachments/"))))
+      '((sequence "TODO(t)" "INBOX(i!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
 
 (after! org (setq org-log-state-notes-insert-after-drawers nil
                   org-log-into-drawer t
@@ -266,181 +380,88 @@
                   org-log-redeadline 'note
                   org-log-reschedule 'note))
 
-(after! org (setq org-bullets-bullet-list '("◉" "○")
+(after! org (setq org-bullets-bullet-list '("•" "◦")
                   org-hide-emphasis-markers nil
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
 
 (after! org (setq org-publish-project-alist
-                  '(("references-attachments"
-                     :base-directory "~/.org/attachments/"
+                  '(("attachments"
+                     :base-directory "~/.org/notes/attachments/"
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html/attachments"
+                     :publishing-directory "~/publish_html/images/"
                      :publishing-function org-publish-attachment)
-                    ("references-md"
-                     :base-directory "~/.org/brain/"
-                     :publishing-directory "~/publish"
+                    ("notes"
+                     :base-directory "~/.org/"
+                     :publishing-directory "~/publish_html"
                      :base-extension "org"
+                     :with-drawers t
+                     :recursive t
                      :auto-sitemap t
                      :sitemap-filename "index.html"
-                     :recursive t
-                     :headline-levels 5
                      :publishing-function org-html-publish-to-html
                      :section-numbers nil
-                     :html-head "<link rel=\"stylesheet\" href=\"http://thomasf.github.io/solarized-css/solarized-light.min.css\" type=\"text/css\"/>"
-                     :infojs-opt "view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomas.github.io/solarized-css/org-info.min.js"
+                     :html-head "<link rel=\"stylesheet\"
+                     href=\"http://dakrone.github.io/org.css\"
+                     type=\"text/css\"/>"
+                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
                      :with-email t
+                     :html-link-up ".."
+                     :auto-preamble t
                      :with-toc t)
-                    ("myprojectweb" :components("references-attachments" "references-md")))))
+                    ("myprojectweb" :components("attachments" "notes")))))
 
-(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
+(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm))
 
 (after! org (setq org-startup-indented t
                   org-src-tab-acts-natively t))
-(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
+;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+(add-hook 'org-mode-hook 'org-num-mode)
 ;(add-hook 'org-mode-hook 'org-num-mode)
 
 (after! org (setq org-tags-column -80))
-(after! org (setq org-tag-alist '((:startgrouptag)
-                                  ("GTD")
-                                  (:grouptags)
-                                  ("Control" . ?c)
-                                  ("Persp")
-                                  (:endgrouptag)
-                                  (:startgrouptag)
-                                  ("Control")
-                                  (:grouptags)
-                                  ("Context")
-                                  ("Task")
-                                  (:endgrouptag))))
 
-(defun my-deft/strip-quotes (str)
-  (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
-        ((string-match "'\\(.+\\)'" str) (match-string 1 str))
-        (t str)))
+(org-super-agenda-mode t)
 
-(defun my-deft/parse-title-from-front-matter-data (str)
-  (if (string-match "^title: \\(.+\\)" str)
-      (let* ((title-text (my-deft/strip-quotes (match-string 1 str)))
-             (is-draft (string-match "^draft: true" str)))
-        (concat (if is-draft "[DRAFT] " "") title-text))))
+(defun find-org-files (dir)
+  "Simple function that'll scan a folder and return all ORG files"
+  (interactive "p")
+  (load-library "find-lisp")
+  (setq org-agenda-files
+        (find-lisp-find-files dir "\.org$")))
 
-(defun my-deft/deft-file-relative-directory (filename)
-  (file-name-directory (file-relative-name filename deft-directory)))
+(setq org-agenda-custom-commands
+      '(("k" "Tasks"
+         ((agenda ""
+           ((org-agenda-overriding-header "Agenda")
+            (org-agenda-span 'day)
+            (org-agenda-start-day (org-today))
+            (org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/tickler.org"))))
+          (todo ""
+                  ((org-agenda-overriding-header "Tasks")
+                   (org-agenda-files '("~/.org/workload/tasks.org"))
+                   (org-super-agenda-groups
+                    '((:auto-category t)))))
+          (todo ""
+                ((org-agenda-overriding-header "Inbox")
+                 (org-agenda-files '("~/.org/workload/inbox.org"))))))
+        ("s" "Someday"
+         ((todo ""
+                ((org-agenda-overriding-header "Someday Tasks")
+                 (org-agenda-files '("~/.org/workload/someday.org"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))))))
 
-(defun my-deft/title-prefix-from-file-name (filename)
-  (let ((reldir (my-deft/deft-file-relative-directory filename)))
-    (if reldir
-        (concat (directory-file-name reldir) " > "))))
-
-(defun my-deft/parse-title-with-directory-prepended (orig &rest args)
-  (let ((str (nth 1 args))
-        (filename (car args)))
-    (concat
-      (my-deft/title-prefix-from-file-name filename)
-      (let ((nondir (file-name-nondirectory filename)))
-        (if (or (string-prefix-p "README" nondir)
-                (string-suffix-p ".txt" filename))
-            nondir
-          (if (string-prefix-p "---\n" str)
-              (my-deft/parse-title-from-front-matter-data
-               (car (split-string (substring str 4) "\n---\n")))
-            (apply orig args)))))))
-
-(provide 'my-deft-title)
-(use-package deft
-  :bind (("<f8>" . deft))
-  :commands (deft deft-open-file deft-new-file-named)
-  :config
-  (setq deft-directory "~/.org/notes/"
-        deft-auto-save-interval 0
-        deft-use-filename-as-title nil
-        deft-current-sort-method 'title
-        deft-recursive t
-        deft-extensions '("md" "txt" "org")
-        deft-markdown-mode-title-level 1
-        deft-file-naming-rules '((noslash . "-")
-                                 (nospace . "-")
-                                 (case-fn . downcase))))
-(require 'my-deft-title)
-(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
-
-(use-package elfeed
-  :config
-  (setq elfeed-db-directory "~/.elfeed/"))
-
-(use-package elfeed-org
-  :config
-  (setq rhm-elfeed-org-files (list "~/.elfeed/elfeed.org")))
-
-(require 'elfeed)
-(require 'elfeed-org)
-(elfeed-org)
-(after! org (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")
-                  elfeed-db-directory "~/.elfeed/"))
-
-;(use-package gnuplot
-;  :config
-;  (setq gnuplot-program "gnuplot"))
-
-;(after! org (setq org-agenda-property-list '("WHO" "NEXTACT")
-;                  org-agenda-property-position 'where-it-fits))
-
-(setq org-mru-clock-how-many 10)
-(setq org-mru-clock-completing-read #'ivy-completing-read)
-(setq org-mru-clock-keep-formatting t)
-(setq org-mru-clock-files #'org-agenda-files)
-
-;(defun org-clock-switch ()
-;  "Switch task and go-to that task"
-;  (interactive)
-;  (setq current-prefix-arg '(12)) ; C-u
-;  (call-interactively 'org-clock-goto)
-;  (org-clock-in)
-;  (org-clock-goto))
-;(provide 'org-clock-switch)
-
-;(use-package org-mind-map
-;  :init
-;  (require 'ox-org)
-;  ;; Uncomment the below if 'ensure-system-packages` is installed
-;  ;;:ensure-system-package (gvgen . graphviz)
-;  :config
-;  (setq org-mind-map-engine "dot")       ; Default. Directed Graph
-;  ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
-;  ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
-;  ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
-;  ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
-;  ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
-;  ;; (setq org-mind-map-engine "circo")  ; Circular Layout
-;  )
-
-;(require 'org)
-
-;(org-add-link-type "outlook" 'org-outlook-open)
-
-;(defun org-outlook-open (id)
-;   "Open the Outlook item identified by ID.  ID should be an Outlook GUID."
-;   (w32-shell-execute "open" (concat "outlook:" id)))
-
-;(provide 'org-outlook)
-;(require 'org-outlook)
-
-(use-package ob-plantuml
-  :ensure nil
-  :commands
-  (org-babel-execute:plantuml)
-  :config
-  (setq org-plantuml-jar-path (expand-file-name "~/.tools/plantuml.jar")))
-
-(setq-default truncate-lines t)
-
-(defun jethro/truncate-lines-hook ()
-  (setq truncate-lines nil))
-
-(add-hook 'text-mode-hook 'jethro/truncate-lines-hook)
+(defun +org/insert-item-below-w-timestamp (count)
+  "Inserts a new item below with inactive timestamp asserted."
+  (interactive "p")
+  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
+(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
 
 (defun my--browse-url (url &optional _new-window)
   ;; new-window ignored
@@ -450,64 +471,7 @@
     (apply 'call-process "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" nil
            0 nil
            (list "-Command" quotedUrl))))
-
 (setq-default browse-url-browser-function 'my--browse-url)
-
-(org-super-agenda-mode t)
-(after! org-agenda (setq org-agenda-custom-commands
-                         '(("k" "Tasks"
-                            ((agenda "TODO|ACTIVE|HOLDING|NEXT"
-                                     ((org-agenda-files '("~/.org/gtd/tasks.org"))
-                                      (org-agenda-overriding-header "What's on my calendar")
-                                      (org-agenda-span 'day)
-                                      (org-agenda-start-day (org-today))
-                                      (org-agenda-current-span 'day)
-                                      (org-time-budgets-for-agenda)
-                                      (org-super-agenda-groups
-                                       '((:name "Today's Schedule"
-                                                :scheduled t
-                                                :time-grid t
-                                                :deadline t)))))
-                             (todo "TODO|ACTIVE|HOLDING|NEXT"
-                                   ((org-agenda-overriding-header "[[~/.org/gtd/tasks.org][Task list]]")
-                                    (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files '("~/.org/gtd/"))
-                                    (org-super-agenda-groups
-                                     '((:auto-category t)))))))
-                           ("i" "Inbox"
-                            ((todo "INBOX|REFILE"
-                                   ((org-agenda-files '("~/.org/gtd/"))
-                                    (org-agenda-overriding-header "Items in my inbox")
-                                    (org-super-agenda-groups
-                                     '((:auto-ts t)))))))
-                           ("x" "Get to someday"
-                            ((todo "SOMEDAY"
-                                   ((org-agenda-overriding-header "Projects marked Someday")
-                                    (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                                    (org-agenda-files '("~/.org/gtd/"))
-                                    (org-super-agenda-groups
-                                     '((:auto-outline-path t))))))))))
-
-(defvar org-archive-directory "~/.org/archives/")
-(defun org-archive-file ()
-  "Moves the current buffer to the archived folder"
-  (interactive)
-  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
-        (dir (read-directory-name "Move to: " org-archive-directory)))
-    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
-    (delete-file old)))
-(provide 'org-archive-file)
-
-(defun +org/insert-item-below-w-timestamp (count)
-  "Inserts a new item below with inactive timestamp asserted."
-  (interactive "p")
-  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
-(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
-
-(defun my/last-captured-org-note ()
-  "Move to the last line of the last org capture note."
-  (interactive)
-  (goto-char (point-max)))
 
 (defun my-agenda-prefix ()
   (format "%s" (my-agenda-indent-string (org-current-level))))
@@ -521,6 +485,75 @@
               str (concat str "──")))
       (concat str "►"))))
 
+(defvar my-archive-dir "~/.org/archives/" "My Archive Directory")
+
+(defun my/org-archive-task ()
+  "Moves the current buffer to the archived folder"
+  (interactive)
+  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
+        (dir (read-directory-name "Move to: " my-archive-dir)))
+    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
+    (delete-file old)))
+
+(defvar org-archive-directory "~/.org/archives/")
+(defun org-archive-file ()
+  "Moves the current buffer to the archived folder"
+  (interactive)
+  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
+        (dir (read-directory-name "Move to: " org-archive-directory)))
+    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
+    (delete-file old)))
+(provide 'org-archive-file)
+
+(defun org-capture-file-selector ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
+
+(defun org-capture-headline-finder (&optional arg)
+  "Like `org-todo-list', but using only the current buffer's file."
+  (interactive "P")
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a file" (buffer-name (current-buffer)))
+      (counsel-org-agenda-headlines)))
+  (goto-char (org-end-of-subtree)))
+
+(defun org-capture-template-select (checkitem)
+  "Concat results to function"
+  (if (equal checkitem "Checklist")
+      (concat "+ [ ] ")
+    (concat (format-time-string "+ [%Y-%m-%d] "))))
+
+(defun org-capture-template-selector ()
+  "Select your choice"
+  (interactive)
+  (let ((choice '("Checklist" "Unordered List")))
+    (org-capture-template-select (org-completing-read "Pick option: " choice))))
+
+(defun org-find-task-headline ()
+  "Find headline in Task Files"
+  (interactive)
+  (setq org-agenda-files '("~/.org/workload/tasks.org"))
+  (counsel-org-agenda-headlines))
+
+(defun org-new-task ()
+  "Creates a new task below current header"
+  (interactive)
+  (setq task-name (read-string "Task name: "))
+  (setq task-category (read-string "Category: "))
+  (setq task-case (read-string "Case Number: "))
+  (+org--insert-item 'below) (org-end-of-subtree)
+  (insert
+   (format "TODO %s" task-name))
+  (insert
+   (format"\n:PROPERTIES:\n:CATEGORY: %s" task-category))
+  (if task-case
+      (insert (format "\n:CASENUMBER: %s" task-case)))
+  (insert
+   (format"\n:END:")))
+
 (defun org-update-cookies-after-save()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -531,27 +564,9 @@
             (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
 (provide 'org-update-cookies-after-save)
 
-(defun zyrohex/org-notes-refile ()
-  "Process an item to the references bucket"
-  (interactive)
-  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6)))
-        (org-refile-allow-creating-parent-nodes 'confirm))
-    (call-interactively #'org-refile)))
-(provide 'zyrohex/org-notes-refile)
+(setq-default truncate-lines t)
 
-(defun zyrohex/org-reference-refile (arg)
-  "Process an item to the reference bucket"
-  (interactive "P")
-  (let ((org-refile-targets '(("~/.gtd/references.org" :maxlevel . 6))))
-    (call-interactively #'org-refile)))
-(provide 'zyrohex/org-reference-refile)
+(defun jethro/truncate-lines-hook ()
+  (setq truncate-lines nil))
 
-(defun zyrohex/org-tasks-refile ()
-  "Process a single TODO task item."
-  (interactive)
-  (call-interactively 'org-agenda-schedule)
-  (org-agenda-set-tags)
-  (org-agenda-priority)
-  (let ((org-refile-targets '((helm-read-file-name :maxlevel .6)))
-        (call-interactively #'org-refile))))
-(provide 'zyrohex/org-tasks-refile)
+(add-hook 'text-mode-hook 'jethro/truncate-lines-hook)
