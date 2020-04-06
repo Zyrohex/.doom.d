@@ -75,7 +75,7 @@
 (after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*Ledger Report*" :side 'right :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*xwidget" :side 'right :size .50 :select t :vslot 5 :ttl 3))
-(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
+;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 
 (global-auto-revert-mode t)
@@ -219,7 +219,7 @@
 
 (load-library "find-lisp")
 (after! org (setq org-agenda-files
-                  (find-lisp-find-files "~/.org/workload/" "\.org$")))
+                  (find-lisp-find-files "~/.org/" "\.org$")))
 
 (after! org (setq org-capture-templates
                   '(("h" "Headline")
@@ -449,6 +449,12 @@
           (todo ""
                 ((org-agenda-overriding-header "Inbox")
                  (org-agenda-files '("~/.org/workload/inbox.org"))))))
+        ("n" "Notes"
+         ((todo ""
+                ((org-agenda-overriding-header "Note Actions")
+                 (org-agenda-files '("~/.org/notes/"))
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))))
         ("s" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday Tasks")
