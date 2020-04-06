@@ -266,7 +266,7 @@
 :PROPERTIES:
 :CASENUMBER: %^{Case or SVCTAG}
 :ACCOUNT:  %^{account}
-:AUDIENCE: %^{audience|Internal - Support|Internal - TSM|Internal - Account Team|Internal - CTL Peers|Internal - Manager|Customer Facing|Other}
+:AUDIENCE: %^{audience}
 :SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
 :PERSON:   %^{Whose asking for help?}
 :TASK:     %^{task}
