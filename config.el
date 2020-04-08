@@ -451,10 +451,8 @@
                     (org-agenda-skip-if 'todo '("SOMEDAY"))))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:name "URGENT"
-                           :priority "A")
-                    (:name "High Priority"
-                           :priority "B")
+                  '((:name "Priority Items"
+                           :priority>= "B")
                     (:auto-category t)))))
           (todo ""
                 ((org-agenda-overriding-header "Delegated Tasks")
