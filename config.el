@@ -210,7 +210,7 @@
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t
                   org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp ":\w+:"
+                  org-agenda-hide-tags-regexp "**"
 ;                  org-agenda-prefix-format " %(my-agenda-prefix) "
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
@@ -441,27 +441,21 @@
                    (org-agenda-start-day (org-today))
                    (org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/tickler.org"))))
           (todo ""
-                ((org-agenda-overriding-header "Priority Tasks")
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-if nil '(scheduled deadline))
-                    (org-agenda-skip-entry-if 'notregexp "#[A-C]")
-                    (org-agenda-skip-entry-if 'notregexp ":#\\w+")
-                    (org-agenda-skip-entry-if 'todo '("SOMEDAY"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
-                 (org-super-agenda-groups
-                  '((:auto-priority t)))))
-          (todo ""
                 ((org-agenda-overriding-header "Tasks")
                  (org-agenda-skip-function
                   '(or
+                    (and
+                     (org-agenda-skip-entry-if 'notregexp "#[A-C]")
+                     (org-agenda-skip-entry-if 'notregexp ":@\\w+"))
                     (org-agenda-skip-if nil '(scheduled deadline))
-                    (org-agenda-skip-entry-if 'regexp "#[A-C]")
-                    (org-agenda-skip-entry-if 'todo '("SOMEDAY"))
-                    (org-agenda-skip-entry-if 'notregexp ":#\\w+")))
+                    (org-agenda-skip-if 'todo '("SOMEDAY"))))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-category t)))))
+                  '((:name "URGENT"
+                           :priority "A")
+                    (:name "High Priority"
+                           :priority "B")
+                    (:auto-category t)))))
           (todo ""
                 ((org-agenda-overriding-header "Delegated Tasks")
                  (org-agenda-files '("~/.org/workload/tasks.org"))
@@ -482,23 +476,25 @@
                 ((org-agenda-overriding-header "Inbox")
                  (org-agenda-skip-function
                   '(or
-                    (org-agenda-skip-entry-if 'regexp ":#\\w+")
+                    (org-agenda-skip-entry-if 'regexp ":@\\w+")
                     (org-agenda-skip-entry-if 'regexp "\[#[A-E]\]")
                     (org-agenda-skip-if 'nil '(scheduled deadline))
                     (org-agenda-skip-entry-if 'todo '("SOMEDAY"))
                     (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-ts t)))))))
-        ("s" "Someday"
-         ((todo ""
+                  '((:auto-ts t)))))
+          (todo ""
                 ((org-agenda-overriding-header "Someday")
                  (org-agenda-skip-function
                   '(or
-                    (org-agenda-skip-entry-if 'nottodo '("SOMEDAY"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                    (org-agenda-skip-entry-if 'regexp ":@\\w+")
+                    (org-agenda-skip-entry-if 'regexp "#[A-C]")
+                    (org-agenda-skip-if 'nil '(scheduled deadline))
+                    (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
+                 (org-agenda-files '("~/.org/workload/taksks.org"))
                  (org-super-agenda-groups
-                  '((:auto-outline-path t)))))))))
+                  '((:auto-ts t)))))))))
 
 (defun +org/insert-item-below-w-timestamp (count)
   "Inserts a new item below with inactive timestamp asserted."
