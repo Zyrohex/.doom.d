@@ -28,11 +28,7 @@
 (map! :after org
       :map org-mode-map
       :localleader
-      :desc "Deft" "D" #'deft
       :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
-      :prefix ("E" . "Elfeed")
-      "e" #'elfeed
-      "u" #'elfeed-update
       :prefix ("R" . "Rifle")
       "b" #'helm-org-rifle-current-buffer
       "a" #'helm-org-rifle-agenda-files
@@ -43,7 +39,10 @@
 
 (map! :leader
       :prefix ("s" . "search")
-      :desc "Deadgrep Directory" "d" #'deadgrep)
+      :desc "Deadgrep Directory" "d" #'deadgrep
+      :prefix ("o" . "open")
+      :desc "Elfeed" "e" #'elfeed
+      :desc "Deft" "w" #'deft)
 
 (after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "Dictionary" :side 'bottom :size .30 :select t :vslot 3 :ttl 3))
