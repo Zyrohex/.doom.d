@@ -481,8 +481,9 @@
                     (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-ts t)))))
-          (todo ""
+                  '((:auto-ts t)))))))
+        ("s" "Someday"
+         ((todo ""
                 ((org-agenda-overriding-header "Someday")
                  (org-agenda-skip-function
                   '(or
@@ -490,9 +491,9 @@
                     (org-agenda-skip-entry-if 'regexp "#[A-C]")
                     (org-agenda-skip-if 'nil '(scheduled deadline))
                     (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
-                 (org-agenda-files '("~/.org/workload/taksks.org"))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-ts t)))))))))
+                  '((:auto-parent t)))))))))
 
 (defun +org/insert-item-below-w-timestamp (count)
   "Inserts a new item below with inactive timestamp asserted."
