@@ -3,7 +3,7 @@
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
 
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-snazzy)
 ;(setq org-emphasis-alist
 ;      '(("*" (bold :foreground "MediumPurple"))
 ;        ("/" (italic :foreground "VioletRed"))
@@ -364,14 +364,14 @@
 
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "OrangeRed" :weight bold)
-        ("INBOX" :foreground "SteelBlue" :weight bold)
+        ("NEXT" :foreground "SteelBlue" :weight bold)
         ("SOMEDAY" :foreground "gold" :weight bold)
         ("ACTIVE" :foreground "DeepPink" :weight bold)
-        ("INBOX" :foreground "spring green" :weight bold)
+        ("NEXT" :foreground "spring green" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
 
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "INBOX(i!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
+      '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
 
 (after! org (setq org-log-state-notes-insert-after-drawers nil
                   org-log-into-drawer t
@@ -380,8 +380,9 @@
                   org-log-redeadline 'note
                   org-log-reschedule 'note))
 
-(after! org (setq org-bullets-bullet-list '("•" "◦")
-                  org-hide-emphasis-markers nil
+;(after! org (setq org-bullets-bullet-list '("•" "◦")
+(after! org (setq org-hide-emphasis-markers nil
+                  org-bullets-bullet-list '("◉" "⚫" "○")
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
 
@@ -420,8 +421,6 @@
 ;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
-(add-hook 'org-mode-hook 'org-num-mode)
-;(add-hook 'org-mode-hook 'org-num-mode)
 
 (after! org (setq org-tags-column -80))
 
@@ -437,18 +436,35 @@
 (setq org-agenda-custom-commands
       '(("k" "Tasks"
          ((agenda ""
-           ((org-agenda-overriding-header "Agenda")
-            (org-agenda-span 'day)
-            (org-agenda-start-day (org-today))
-            (org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/tickler.org"))))
+                  ((org-agenda-overriding-header "Agenda")
+                   (org-agenda-span 'day)
+                   (org-agenda-start-day (org-today))
+                   (org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/tickler.org"))))
           (todo ""
-                  ((org-agenda-overriding-header "Tasks")
-                   (org-agenda-files '("~/.org/workload/tasks.org"))
-                   (org-super-agenda-groups
-                    '((:auto-category t)))))
+                ((org-agenda-overriding-header "Tasks")
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-if nil '(scheduled deadline))
+                    (org-agenda-skip-entry-if 'notregexp ":#\\w+")))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))
           (todo ""
                 ((org-agenda-overriding-header "Inbox")
-                 (org-agenda-files '("~/.org/workload/inbox.org"))))))
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-entry-if 'regexp ":#\\w+")
+                    (org-agenda-skip-entry-if 'regexp "\[#[A-E]\]")
+                    (org-agenda-skip-if 'nil '(scheduled deadline))
+                    (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))))
+          (todo ""
+                ((org-agenda-overriding-header "Delegated Tasks")
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                 (org-tags-match-list-sublevels nil)
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-subtree-if 'nottodo '("DELEGATED"))))))))
         ("n" "Notes"
          ((todo ""
                 ((org-agenda-overriding-header "Note Actions")
