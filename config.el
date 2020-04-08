@@ -210,7 +210,7 @@
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t
                   org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp "**"
+                  org-agenda-hide-tags-regexp ":\w+:"
 ;                  org-agenda-prefix-format " %(my-agenda-prefix) "
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
@@ -461,7 +461,7 @@
                     (org-agenda-skip-entry-if 'notregexp ":#\\w+")))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-tags t)))))
+                  '((:auto-category t)))))
           (todo ""
                 ((org-agenda-overriding-header "Delegated Tasks")
                  (org-agenda-files '("~/.org/workload/tasks.org"))
