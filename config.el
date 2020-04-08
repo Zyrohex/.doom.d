@@ -25,47 +25,25 @@
 (setq user-full-name "Nicholas Martin"
       user-mail-address "nmartin84.com")
 
-(global-set-key (kbd "C-c C-x i") #'org-mru-clock-in)
-(global-set-key (kbd "C-c C-x C-j") #'org-mru-clock-select-recent-task)
-(bind-key "C-<down>" #'+org/insert-item-below)
-(map!
- :nvime "<f5> d" #'helm-org-rifle-directories
- :nvime "<f5> b" #'helm-org-rifle-current-buffer
- :nvime "<f5> o" #'helm-org-rifle-org-directory
- :nvime "<f5> a" #'helm-org-rifle-agenda-files)
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :desc "Deft" "D" #'deft
+      :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
+      :prefix ("E" . "Elfeed")
+      "e" #'elfeed
+      "u" #'elfeed-update
+      :prefix ("R" . "Rifle")
+      "b" #'helm-org-rifle-current-buffer
+      "a" #'helm-org-rifle-agenda-files
+      "o" #'helm-org-rifle-org-directory
+      "d" #'helm-org-rifle-directories
+      :prefix ("g" . "+goto")
+      "q" #'orgql-search)
 
 (map! :leader
-      :n "e" #'ace-window
-      :desc "Search buffer" :n "!" #'swiper
-      :desc "Search all" :n "@" #'swiper-all
-      :desc "Deadgrep search" :n "#" #'deadgrep
-      :desc "Rifle directories" :n "$" #'helm-org-rifle-directories
-      :desc "Capture" :n "X" #'org-capture
-      (:prefix "o"
-        :desc "Open Elfeed" :n "e" #'elfeed
-        :n "g" #'metrics-tracker-graph
-        :n "o" #'org-open-at-point
-        :n "u" #'elfeed-update
-        :n "w" #'deft)
-      (:prefix "f"
-        :n "o" #'plain-org-wiki-helm)
-      (:prefix "n"
-        :n "D" #'dictionary-lookup-definition
-        :n "T" #'powerthesaurus-lookup-word)
-      (:prefix "s"
-        :n "d" #'deadgrep
-        :n "q" #'org-ql-search
-        :n "b" #'helm-org-rifle-current-buffer
-        :n "o" #'helm-org-rifle-org-directory
-        :n "." #'helm-org-rifle-directories)
-      (:prefix "b"
-        :n "c" #'org-board-new
-        :n "e" #'org-board-open)
-      (:prefix "t"
-        :n "s" #'org-narrow-to-subtree
-        :n "w" #'widen)
-      (:prefix "/"
-        :n "j" #'org-journal-search))
+      :prefix ("s" . "search")
+      :desc "Deadgrep Directory" "d" #'deadgrep)
 
 (after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "Dictionary" :side 'bottom :size .30 :select t :vslot 3 :ttl 3))

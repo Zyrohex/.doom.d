@@ -1,65 +1,65 @@
 
 # Table of Contents
 
--   [Getting started](#orga7c7f0a)
--   [Pretty](#org0ce10d8)
-    -   [Fonts](#org04ab381)
-    -   [Theme](#org0dde86a)
--   [Envrionment](#orgbd2242e)
-    -   [User Settings](#org78083a5)
-    -   [Keys](#org08e1b4a)
--   [Behavior](#org5ba9da4)
-    -   [Popup Rules](#orgdbba8e7)
-    -   [Buffer Settings](#org2e588c6)
--   [Module Settings](#org6b21a6e)
-    -   [Org Rifle](#orgc4ae239)
-    -   [Org Roam](#orgca09782)
-    -   [Deft Mode](#org8947878)
-    -   [ORG MODE](#org349481f)
-        -   [Agenda](#org75d8c22)
-            -   [Load all \*.org files to agenda](#orgd8f8cf5)
-        -   [Captures](#org89888a4)
-            -   [Capture](#orgbd290c6)
-                -   [New Task](#org2e1bf83)
-                -   [Reference](#orgdf13e57)
-                -   [Notes](#org01a3c4f)
-                -   [Daily Tasks](#org05d08e4)
-                -   [Time Tracking](#orga379227)
-            -   [Headline](#org5345997)
-                -   [Append current heading](#org9c8f7cb)
-                -   [Itemized Notes](#orgdb31c59)
-                -   [Child Task](#org4874607)
-            -   [File](#orgb9f25e9)
-                -   [Notes](#org1bad77e)
-                -   [Tasks](#org04799cc)
-            -   [Buffer Find](#org9bd73e6)
-                -   [Child Task](#org0fe3467)
-                -   [Child Headline](#org5f47826)
-                -   [Headline Item](#org22632a3)
-        -   [Directories](#org855352f)
-        -   [Exports](#orge059a40)
-        -   [Faces](#orgc627641)
-        -   [Keywords](#orgf960daa)
-        -   [Logging & Drawers](#org311b1be)
-        -   [Prettify](#org988e636)
-        -   [Publishing](#org7f58cad)
-        -   [Refiling](#orgb7bdeca)
-        -   [Startup](#orgca92bb0)
-        -   [Tags](#orgf20e5d3)
-    -   [Super Agenda](#org6002c70)
--   [Custom Functions](#orgc86760e)
-    -   [+org/insert-item-below-w-timestamp](#orga7e7777)
-    -   [my&#x2013;browse-url](#orgda5e72f)
-    -   [my-agenda-prefix](#org85ea72d)
-    -   [my/org-archive-task](#orgb425dd6)
-    -   [org-archive-file](#org1335fc8)
-    -   [org-capture-file-selector](#orgd7f4466)
-    -   [org-capture-headline-finder](#orgc46611c)
-    -   [org-capture-template-select](#org4866854)
-    -   [org-find-task-headline](#orgd832f71)
-    -   [org-new-task](#org227da08)
-    -   [org-update-cookies-after-save](#org28a11c4)
-    -   [set-truncate-lines](#org03a6ac8)
+-   [Getting started](#org7e211a7)
+-   [Pretty](#orgb130e0f)
+    -   [Fonts](#org6e19bb6)
+    -   [Theme](#org544e448)
+-   [Environment](#orgcdd0370)
+    -   [User Settings](#org19179fa)
+    -   [Keys](#orga75feb4)
+-   [Behavior](#orge070dc1)
+    -   [Popup Rules](#orge97052b)
+    -   [Buffer Settings](#org491255b)
+-   [Module Settings](#org04dc1d4)
+    -   [Org Rifle](#org715c914)
+    -   [Org Roam](#orgca79bf5)
+    -   [Deft Mode](#org227e956)
+    -   [ORG MODE](#org62905f4)
+        -   [Agenda](#orgaed628f)
+            -   [Load all \*.org files to agenda](#orgf86bb1e)
+        -   [Captures](#orga33962e)
+            -   [Capture](#org5bf2815)
+                -   [New Task](#orgb1bb1d2)
+                -   [Reference](#org9b38bce)
+                -   [Notes](#orge0a712f)
+                -   [Daily Tasks](#orgd7dcf1b)
+                -   [Time Tracking](#org9769129)
+            -   [Headline](#org174cfb6)
+                -   [Append current heading](#orgfbb9ef3)
+                -   [Itemized Notes](#orgc3a4a04)
+                -   [Child Task](#org01decc6)
+            -   [File](#org30031c4)
+                -   [Notes](#org183f04c)
+                -   [Tasks](#org3815aad)
+            -   [Buffer Find](#org2ff6bca)
+                -   [Child Task](#org9270b20)
+                -   [Child Headline](#orga45583f)
+                -   [Headline Item](#org753f2c4)
+        -   [Directories](#org1a76ef8)
+        -   [Exports](#orgd85851c)
+        -   [Faces](#org218af7a)
+        -   [Keywords](#org4a5520a)
+        -   [Logging & Drawers](#org9117e17)
+        -   [Prettify](#org977b76d)
+        -   [Publishing](#org19ecb5f)
+        -   [Refiling](#orgf4b71fd)
+        -   [Startup](#orgd04d68b)
+        -   [Tags](#org4e912bb)
+    -   [Super Agenda](#orgc8e7106)
+-   [Custom Functions](#orga952558)
+    -   [+org/insert-item-below-w-timestamp](#org78f4350)
+    -   [my&#x2013;browse-url](#orgbcad55b)
+    -   [my-agenda-prefix](#org5b3041e)
+    -   [my/org-archive-task](#orge35a62b)
+    -   [org-archive-file](#org72f0f63)
+    -   [org-capture-file-selector](#org3717ee9)
+    -   [org-capture-headline-finder](#orgbbc0941)
+    -   [org-capture-template-select](#org4931ffe)
+    -   [org-find-task-headline](#org0c46e05)
+    -   [org-new-task](#orgf9a619d)
+    -   [org-update-cookies-after-save](#orgc2af26a)
+    -   [set-truncate-lines](#orgbf9fa0b)
 
 My DOOM emacs private configuration:
 ![img](attachments/doom.png)
@@ -69,7 +69,7 @@ High focus on GTD process workflow: ([source](https://github.com/nmartin84/.refe
 ![img](./attachments/gtd.png)
 
 
-<a id="orga7c7f0a"></a>
+<a id="org7e211a7"></a>
 
 # Getting started
 
@@ -89,12 +89,12 @@ This repo uses a literate configuration, with basic settings in `./init.el`, `./
 from the Emacs Lisp code blocks in `config.org`. This readme file gets created when exporting `config.org` to markdown.
 
 
-<a id="org0ce10d8"></a>
+<a id="orgb130e0f"></a>
 
 # Pretty
 
 
-<a id="org04ab381"></a>
+<a id="org6e19bb6"></a>
 
 ## Fonts
 
@@ -106,7 +106,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-big-font (font-spec :family "InputMono" :size 20))
 
 
-<a id="org0dde86a"></a>
+<a id="org544e448"></a>
 
 ## Theme
 
@@ -130,12 +130,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
          '(org-headline-done ((t (:strike-through t))))))
 
 
-<a id="orgbd2242e"></a>
+<a id="orgcdd0370"></a>
 
-# Envrionment
+# Environment
 
 
-<a id="org78083a5"></a>
+<a id="org19179fa"></a>
 
 ## User Settings
 
@@ -143,59 +143,37 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           user-mail-address "nmartin84.com")
 
 
-<a id="org08e1b4a"></a>
+<a id="orga75feb4"></a>
 
 ## Keys
 
-    (global-set-key (kbd "C-c C-x i") #'org-mru-clock-in)
-    (global-set-key (kbd "C-c C-x C-j") #'org-mru-clock-select-recent-task)
-    (bind-key "C-<down>" #'+org/insert-item-below)
-    (map!
-     :nvime "<f5> d" #'helm-org-rifle-directories
-     :nvime "<f5> b" #'helm-org-rifle-current-buffer
-     :nvime "<f5> o" #'helm-org-rifle-org-directory
-     :nvime "<f5> a" #'helm-org-rifle-agenda-files)
+    (map! :after org
+          :map org-mode-map
+          :localleader
+          :desc "Deft" "D" #'deft
+          :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
+          :prefix ("E" . "Elfeed")
+          "e" #'elfeed
+          "u" #'elfeed-update
+          :prefix ("R" . "Rifle")
+          "b" #'helm-org-rifle-current-buffer
+          "a" #'helm-org-rifle-agenda-files
+          "o" #'helm-org-rifle-org-directory
+          "d" #'helm-org-rifle-directories
+          :prefix ("g" . "+goto")
+          "q" #'orgql-search)
     
     (map! :leader
-          :n "e" #'ace-window
-          :desc "Search buffer" :n "!" #'swiper
-          :desc "Search all" :n "@" #'swiper-all
-          :desc "Deadgrep search" :n "#" #'deadgrep
-          :desc "Rifle directories" :n "$" #'helm-org-rifle-directories
-          :desc "Capture" :n "X" #'org-capture
-          (:prefix "o"
-            :desc "Open Elfeed" :n "e" #'elfeed
-            :n "g" #'metrics-tracker-graph
-            :n "o" #'org-open-at-point
-            :n "u" #'elfeed-update
-            :n "w" #'deft)
-          (:prefix "f"
-            :n "o" #'plain-org-wiki-helm)
-          (:prefix "n"
-            :n "D" #'dictionary-lookup-definition
-            :n "T" #'powerthesaurus-lookup-word)
-          (:prefix "s"
-            :n "d" #'deadgrep
-            :n "q" #'org-ql-search
-            :n "b" #'helm-org-rifle-current-buffer
-            :n "o" #'helm-org-rifle-org-directory
-            :n "." #'helm-org-rifle-directories)
-          (:prefix "b"
-            :n "c" #'org-board-new
-            :n "e" #'org-board-open)
-          (:prefix "t"
-            :n "s" #'org-narrow-to-subtree
-            :n "w" #'widen)
-          (:prefix "/"
-            :n "j" #'org-journal-search))
+          :prefix ("s" . "search")
+          :desc "Deadgrep Directory" "d" #'deadgrep)
 
 
-<a id="org5ba9da4"></a>
+<a id="orge070dc1"></a>
 
 # Behavior
 
 
-<a id="orgdbba8e7"></a>
+<a id="orge97052b"></a>
 
 ## Popup Rules
 
@@ -211,19 +189,19 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 
 
-<a id="org2e588c6"></a>
+<a id="org491255b"></a>
 
 ## Buffer Settings
 
     (global-auto-revert-mode t)
 
 
-<a id="org6b21a6e"></a>
+<a id="org04dc1d4"></a>
 
 # Module Settings
 
 
-<a id="orgc4ae239"></a>
+<a id="org715c914"></a>
 
 ## Org Rifle
 
@@ -334,7 +312,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgca09782"></a>
+<a id="orgca79bf5"></a>
 
 ## Org Roam
 
@@ -354,7 +332,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
       (org-roam-mode +1))
 
 
-<a id="org8947878"></a>
+<a id="org227e956"></a>
 
 ## Deft Mode
 
@@ -362,12 +340,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (setq deft-current-sort-method 'title)
 
 
-<a id="org349481f"></a>
+<a id="org62905f4"></a>
 
 ## ORG MODE
 
 
-<a id="org75d8c22"></a>
+<a id="orgaed628f"></a>
 
 ### Agenda
 
@@ -385,7 +363,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       org-habit-show-habits t))
 
 
-<a id="orgd8f8cf5"></a>
+<a id="orgf86bb1e"></a>
 
 #### Load all \*.org files to agenda
 
@@ -394,7 +372,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       (find-lisp-find-files "~/.org/" "\.org$")))
 
 
-<a id="org89888a4"></a>
+<a id="orga33962e"></a>
 
 ### Captures
 
@@ -407,12 +385,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                         ("c" "Captures"))))
 
 
-<a id="orgbd290c6"></a>
+<a id="org5bf2815"></a>
 
 #### Capture
 
 
-<a id="org2e1bf83"></a>
+<a id="orgb1bb1d2"></a>
 
 ##### New Task
 
@@ -425,7 +403,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     ")))
 
 
-<a id="orgdf13e57"></a>
+<a id="org9b38bce"></a>
 
 ##### Reference
 
@@ -435,7 +413,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org01a3c4f"></a>
+<a id="orge0a712f"></a>
 
 ##### Notes
 
@@ -454,7 +432,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org05d08e4"></a>
+<a id="orgd7dcf1b"></a>
 
 ##### Daily Tasks
 
@@ -463,7 +441,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                                "- [ ] %t %?")))
 
 
-<a id="orga379227"></a>
+<a id="org9769129"></a>
 
 ##### Time Tracking
 
@@ -485,12 +463,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?" :tree-type week :clock-in t :clock-resume t)))
 
 
-<a id="org5345997"></a>
+<a id="org174cfb6"></a>
 
 #### Headline
 
 
-<a id="org9c8f7cb"></a>
+<a id="orgfbb9ef3"></a>
 
 ##### Append current heading
 
@@ -500,7 +478,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?" :empty-lines 1)))
 
 
-<a id="orgdb31c59"></a>
+<a id="orgc3a4a04"></a>
 
 ##### Itemized Notes
 
@@ -509,7 +487,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                              "+ %u %?")))
 
 
-<a id="org4874607"></a>
+<a id="org01decc6"></a>
 
 ##### Child Task
 
@@ -518,12 +496,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     "* TODO %u %^{task}%? %^G")))
 
 
-<a id="orgb9f25e9"></a>
+<a id="org30031c4"></a>
 
 #### File
 
 
-<a id="org1bad77e"></a>
+<a id="org183f04c"></a>
 
 ##### Notes
 
@@ -556,7 +534,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                                    "+ %u %?")))
 
 
-<a id="org04799cc"></a>
+<a id="org3815aad"></a>
 
 ##### Tasks
 
@@ -573,12 +551,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
         "* TODO %u %^{task}%? %^G")))
 
 
-<a id="org9bd73e6"></a>
+<a id="org2ff6bca"></a>
 
 #### Buffer Find
 
 
-<a id="org0fe3467"></a>
+<a id="org9270b20"></a>
 
 ##### Child Task
 
@@ -588,7 +566,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org5f47826"></a>
+<a id="orga45583f"></a>
 
 ##### Child Headline
 
@@ -598,7 +576,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     %?")))
 
 
-<a id="org22632a3"></a>
+<a id="org753f2c4"></a>
 
 ##### Headline Item
 
@@ -614,7 +592,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                              "+ %u %?")))
 
 
-<a id="org855352f"></a>
+<a id="org1a76ef8"></a>
 
 ### Directories
 
@@ -626,7 +604,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       projectile-project-search-path '("~/.org/")))
 
 
-<a id="orge059a40"></a>
+<a id="orgd85851c"></a>
 
 ### Exports
 
@@ -645,7 +623,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
                       org-export-backends '(pdf ascii html latex odt md pandoc)))
 
 
-<a id="orgc627641"></a>
+<a id="org218af7a"></a>
 
 ### Faces
 
@@ -660,7 +638,7 @@ Need to add condition to adjust faces based on theme select.
             ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
 
 
-<a id="orgf960daa"></a>
+<a id="org4a5520a"></a>
 
 ### Keywords
 
@@ -668,7 +646,7 @@ Need to add condition to adjust faces based on theme select.
           '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
 
 
-<a id="org311b1be"></a>
+<a id="org9117e17"></a>
 
 ### Logging & Drawers
 
@@ -680,7 +658,7 @@ Need to add condition to adjust faces based on theme select.
                       org-log-reschedule 'note))
 
 
-<a id="org988e636"></a>
+<a id="org977b76d"></a>
 
 ### Prettify
 
@@ -691,7 +669,7 @@ Need to add condition to adjust faces based on theme select.
                       org-ellipsis "▼"))
 
 
-<a id="org7f58cad"></a>
+<a id="org19ecb5f"></a>
 
 ### Publishing
 
@@ -722,7 +700,7 @@ Need to add condition to adjust faces based on theme select.
                         ("myprojectweb" :components("attachments" "notes")))))
 
 
-<a id="orgb7bdeca"></a>
+<a id="orgf4b71fd"></a>
 
 ### Refiling
 
@@ -731,7 +709,7 @@ Need to add condition to adjust faces based on theme select.
                       org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="orgca92bb0"></a>
+<a id="orgd04d68b"></a>
 
 ### Startup
 
@@ -742,14 +720,14 @@ Need to add condition to adjust faces based on theme select.
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="orgf20e5d3"></a>
+<a id="org4e912bb"></a>
 
 ### Tags
 
     (after! org (setq org-tags-column -80))
 
 
-<a id="org6002c70"></a>
+<a id="orgc8e7106"></a>
 
 ## Super Agenda
 
@@ -822,12 +800,12 @@ Need to add condition to adjust faces based on theme select.
                       '((:auto-parent t)))))))))
 
 
-<a id="orgc86760e"></a>
+<a id="orga952558"></a>
 
 # Custom Functions
 
 
-<a id="orga7e7777"></a>
+<a id="org78f4350"></a>
 
 ## +org/insert-item-below-w-timestamp
 
@@ -838,7 +816,7 @@ Need to add condition to adjust faces based on theme select.
     (map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
 
 
-<a id="orgda5e72f"></a>
+<a id="orgbcad55b"></a>
 
 ## my&#x2013;browse-url
 
@@ -853,7 +831,7 @@ Need to add condition to adjust faces based on theme select.
     (setq-default browse-url-browser-function 'my--browse-url)
 
 
-<a id="org85ea72d"></a>
+<a id="org5b3041e"></a>
 
 ## my-agenda-prefix
 
@@ -870,7 +848,7 @@ Need to add condition to adjust faces based on theme select.
           (concat str "►"))))
 
 
-<a id="orgb425dd6"></a>
+<a id="orge35a62b"></a>
 
 ## my/org-archive-task
 
@@ -885,7 +863,7 @@ Need to add condition to adjust faces based on theme select.
         (delete-file old)))
 
 
-<a id="org1335fc8"></a>
+<a id="org72f0f63"></a>
 
 ## org-archive-file
 
@@ -900,7 +878,7 @@ Need to add condition to adjust faces based on theme select.
     (provide 'org-archive-file)
 
 
-<a id="orgd7f4466"></a>
+<a id="org3717ee9"></a>
 
 ## org-capture-file-selector
 
@@ -911,7 +889,7 @@ Need to add condition to adjust faces based on theme select.
       (concat (read-file-name "Select file: " org-notes-directory)))
 
 
-<a id="orgc46611c"></a>
+<a id="orgbbc0941"></a>
 
 ## org-capture-headline-finder
 
@@ -927,7 +905,7 @@ Need to add condition to adjust faces based on theme select.
       (goto-char (org-end-of-subtree)))
 
 
-<a id="org4866854"></a>
+<a id="org4931ffe"></a>
 
 ## org-capture-template-select
 
@@ -944,7 +922,7 @@ Need to add condition to adjust faces based on theme select.
         (org-capture-template-select (org-completing-read "Pick option: " choice))))
 
 
-<a id="orgd832f71"></a>
+<a id="org0c46e05"></a>
 
 ## org-find-task-headline
 
@@ -955,7 +933,7 @@ Need to add condition to adjust faces based on theme select.
       (counsel-org-agenda-headlines))
 
 
-<a id="org227da08"></a>
+<a id="orgf9a619d"></a>
 
 ## org-new-task
 
@@ -976,7 +954,7 @@ Need to add condition to adjust faces based on theme select.
        (format"\n:END:")))
 
 
-<a id="org28a11c4"></a>
+<a id="orgc2af26a"></a>
 
 ## org-update-cookies-after-save
 
@@ -991,7 +969,7 @@ Need to add condition to adjust faces based on theme select.
     (provide 'org-update-cookies-after-save)
 
 
-<a id="org03a6ac8"></a>
+<a id="orgbf9fa0b"></a>
 
 ## set-truncate-lines
 
