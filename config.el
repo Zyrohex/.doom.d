@@ -230,7 +230,7 @@
                     ("c" "Captures"))))
 
 (after! org (add-to-list 'org-capture-templates
-             '("ct" "Task" entry (file "~/.org/workload/inbox.org")
+             '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
                "* TODO %^{taskname} %^{CATEGORY}p
 :PROPERTIES:
 :CREATED: %U
@@ -441,29 +441,31 @@
                    (org-agenda-start-day (org-today))
                    (org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/tickler.org"))))
           (todo ""
+                ((org-agenda-overriding-header "Priority Tasks")
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-if nil '(scheduled deadline))
+                    (org-agenda-skip-entry-if 'notregexp "#[A-C]")
+                    (org-agenda-skip-entry-if 'notregexp ":#\\w+")
+                    (org-agenda-skip-entry-if 'todo '("SOMEDAY"))))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                 (org-super-agenda-groups
+                  '((:auto-priority t)))))
+          (todo ""
                 ((org-agenda-overriding-header "Tasks")
                  (org-agenda-skip-function
                   '(or
                     (org-agenda-skip-if nil '(scheduled deadline))
+                    (org-agenda-skip-entry-if 'regexp "#[A-C]")
+                    (org-agenda-skip-entry-if 'todo '("SOMEDAY"))
                     (org-agenda-skip-entry-if 'notregexp ":#\\w+")))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
                   '((:auto-tags t)))))
           (todo ""
-                ((org-agenda-overriding-header "Inbox")
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-entry-if 'regexp ":#\\w+")
-                    (org-agenda-skip-entry-if 'regexp "\[#[A-E]\]")
-                    (org-agenda-skip-if 'nil '(scheduled deadline))
-                    (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
-                 (org-super-agenda-groups
-                  '((:auto-ts t)))))
-          (todo ""
                 ((org-agenda-overriding-header "Delegated Tasks")
                  (org-agenda-files '("~/.org/workload/tasks.org"))
-                 (org-tags-match-list-sublevels nil)
+                 (org-tags-match-list-sublevels t)
                  (org-agenda-skip-function
                   '(or
                     (org-agenda-skip-subtree-if 'nottodo '("DELEGATED"))))
@@ -475,13 +477,28 @@
                  (org-agenda-files '("~/.org/notes/"))
                  (org-super-agenda-groups
                   '((:auto-category t)))))))
-        ("s" "Someday"
+        ("ii" "Inbox"
          ((todo ""
-                ((org-agenda-overriding-header "Someday Tasks")
-                 (org-agenda-files '("~/.org/workload/someday.org"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                ((org-agenda-overriding-header "Inbox")
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-entry-if 'regexp ":#\\w+")
+                    (org-agenda-skip-entry-if 'regexp "\[#[A-E]\]")
+                    (org-agenda-skip-if 'nil '(scheduled deadline))
+                    (org-agenda-skip-entry-if 'todo '("SOMEDAY"))
+                    (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-category t)))))))))
+                  '((:auto-ts t)))))))
+        ("is" "Someday"
+         ((todo ""
+                ((org-agenda-overriding-header "Someday")
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-entry-if 'nottodo '("SOMEDAY"))))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                 (org-super-agenda-groups
+                  '((:auto-outline-path t)))))))))
 
 (defun +org/insert-item-below-w-timestamp (count)
   "Inserts a new item below with inactive timestamp asserted."
