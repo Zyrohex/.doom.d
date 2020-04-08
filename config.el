@@ -448,7 +448,7 @@
                     (org-agenda-skip-entry-if 'notregexp ":#\\w+")))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
-                  '((:auto-category t)))))
+                  '((:auto-tags t)))))
           (todo ""
                 ((org-agenda-overriding-header "Inbox")
                  (org-agenda-skip-function
@@ -457,14 +457,18 @@
                     (org-agenda-skip-entry-if 'regexp "\[#[A-E]\]")
                     (org-agenda-skip-if 'nil '(scheduled deadline))
                     (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))))
+                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                 (org-super-agenda-groups
+                  '((:auto-ts t)))))
           (todo ""
                 ((org-agenda-overriding-header "Delegated Tasks")
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-tags-match-list-sublevels nil)
                  (org-agenda-skip-function
                   '(or
-                    (org-agenda-skip-subtree-if 'nottodo '("DELEGATED"))))))))
+                    (org-agenda-skip-subtree-if 'nottodo '("DELEGATED"))))
+                 (org-super-agenda-groups
+                  '((:auto-property "WHO")))))))
         ("n" "Notes"
          ((todo ""
                 ((org-agenda-overriding-header "Note Actions")
