@@ -477,7 +477,7 @@
                  (org-agenda-files '("~/.org/notes/"))
                  (org-super-agenda-groups
                   '((:auto-category t)))))))
-        ("ii" "Inbox"
+        ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "Inbox")
                  (org-agenda-skip-function
@@ -490,7 +490,7 @@
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
                   '((:auto-ts t)))))))
-        ("is" "Someday"
+        ("s" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday")
                  (org-agenda-skip-function
