@@ -487,10 +487,7 @@
                 ((org-agenda-overriding-header "Someday")
                  (org-agenda-skip-function
                   '(or
-                    (org-agenda-skip-entry-if 'regexp ":@\\w+")
-                    (org-agenda-skip-entry-if 'regexp "#[A-C]")
-                    (org-agenda-skip-if 'nil '(scheduled deadline))
-                    (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
+                    (org-agenda-skip-entry-if 'nottodo '("SOMEDAY"))))
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
