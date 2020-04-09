@@ -35,7 +35,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 #+END_SRC
 ** Theme
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-snazzy)
+(setq doom-theme 'doom-city-lights)
 ;(setq org-emphasis-alist
 ;      '(("*" (bold :foreground "MediumPurple"))
 ;        ("/" (italic :foreground "VioletRed"))
@@ -71,12 +71,15 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
       "a" #'helm-org-rifle-agenda-files
       "o" #'helm-org-rifle-org-directory
       "d" #'helm-org-rifle-directories
+      :prefix ("l" . "+links")
+      "o" #'org-open-at-point
       :prefix ("g" . "+goto")
       "q" #'orgql-search)
 
 (map! :leader
       :prefix ("s" . "search")
       :desc "Deadgrep Directory" "d" #'deadgrep
+      :desc "Swiper All" "@" #'swiper-all
       :prefix ("o" . "open")
       :desc "Elfeed" "e" #'elfeed
       :desc "Deft" "w" #'deft)
@@ -100,6 +103,267 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 (global-auto-revert-mode t)
 #+END_SRC
 * Module Settings
+** Deft Mode
+#+BEGIN_SRC emacs-lisp
+(setq deft-directory "~/.org/notes/")
+(setq deft-current-sort-method 'title)
+#+END_SRC
+** Elfeed
+#+BEGIN_SRC emacs-lisp
+(setq rmh-elfeed-org-files "~/.elfeed/elfeed.org")
+#+END_SRC
+** ORG MODE
+*** Agenda
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
+;(after! org (setq org-super-agenda-groups
+;                  '((:auto-category t))))
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-dim-blocked-tasks t
+                  org-agenda-use-time-grid t
+                  org-agenda-hide-tags-regexp ":\\w+:"
+;                  org-agenda-prefix-format " %(my-agenda-prefix) "
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-enforce-todo-checkbox-dependencies nil
+                  org-habit-show-habits t))
+#+END_SRC
+**** Load all *.org files to agenda
+#+BEGIN_SRC emacs-lisp
+(load-library "find-lisp")
+(after! org (setq org-agenda-files
+                  (find-lisp-find-files "~/.org/" "\.org$")))
+#+END_SRC
+*** Captures
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-capture-templates
+                  '(("a" "Append")
+                    ("c" "Captures"))))
+#+END_SRC
+**** Capture
+***** New Task
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
+               "* TODO %^{taskname} %^{CATEGORY}p
+:PROPERTIES:
+:CREATED: %U
+:END:
+")))
+#+END_SRC
+***** Reference
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("cr" "Reference" entry (file "~/.org/workload/references.org")
+"* TODO %u %^{reference}
+%?")))
+#+END_SRC
+***** Notes
+#+BEGIN_SRC emacs-lisp
+(defun my/generate-org-note-name ()
+  (setq my-org-note--name (read-string "Name: "))
+  (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("cn" "Note" plain (file my/generate-org-note-name)
+                           "%(format \"#+TITLE: %s\n\" my-org-note--name)
+%?")))
+#+END_SRC
+****** +Entry to Note
+#+BEGIN_SRC emacs-lisp
+(defun org-capture-file-selector ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
+(after! org (add-to-list 'org-capture-templates
+                         '("fnh" "New Headline to Note" entry (file org-capture-file-selector)
+                           "* %?")))
+#+END_SRC
+****** +Item to Note Headline
+#+BEGIN_SRC emacs-lisp
+(defun org-capture-file-selector ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
+(after! org (add-to-list 'org-capture-templates
+                         '("fni" "New Item to Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
+                           "+ %u %?")))
+#+END_SRC
+****** +Item to Task
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("fti" "+Task Item" plain (file+function "~/.org/workload/tasks.org" org-capture-headline-finder)
+"+ %u %?")))
+#+END_SRC
+****** +Child Task
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("ftc" "Child Task" entry (file+function "~/.org/workload/tasks.org" org-find-task-headline)
+"* TODO %u %^{task}%? %^G")))
+#+END_SRC
+****** Child Task
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("bt" "Task" entry (file+function buffer-name org-find-task-headline)
+"* TODO %u %^{task} %^G
+%?")))
+#+END_SRC
+***** Daily Task List
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+                         '("cd" "Daily Task List" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
+                           "- [ ] %t %?")))
+#+END_SRC
+***** Time Tracking
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("cx" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
+               "* [%\\1] %\\7 for %\\5
+:PROPERTIES:
+:CASENUMBER: %^{Case or SVCTAG}
+:ACCOUNT:  %^{account}
+:AUDIENCE: %^{audience}
+:SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
+:PERSON:   %^{Whose asking for help?}
+:TASK:     %^{task}
+:DESCRIPTION: %^{description}
+:CREATED:  %u
+:END:
+:LOGBOOK:
+:END:
+%?" :tree-type week :clock-in t :clock-resume t)))
+#+END_SRC
+**** Append
+***** Task
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("at" "Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
+"* TODO %^{task}%?")))
+#+END_SRC
+***** +List to Headline
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+                         '("ai" "Add List to Headline" plain (file+function buffer-name org-end-of-subtree)
+                         "- %?")))
+#+END_SRC
+***** +List to Finder
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+                         '("af" "Add List to Find Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
+                         "+ %?")))
+#+END_SRC
+***** Child Headline
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+             '("an" "New Headline" entry (file+function buffer-name org-back-to-heading-or-point-min)
+"* %^{note}%?")))
+#+END_SRC
+*** Directories
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-directory "~/.org/"
+                  org-image-actual-width nil
+                  +org-export-directory "~/.export/"
+                  org-archive-location "~/.org/workload/archive.org::datetree/"
+                  org-default-notes-file "~/.org/workload/inbox.org"
+                  projectile-project-search-path '("~/.org/")))
+#+END_SRC
+*** Exports
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 5
+                  org-export-with-drawers nil
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties t
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
+#+END_SRC
+*** Faces
+Need to add condition to adjust faces based on theme select.
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-todo-keyword-faces
+      '(("TODO" :foreground "OrangeRed" :weight bold)
+        ("NEXT" :foreground "SteelBlue" :weight bold)
+        ("SOMEDAY" :foreground "gold" :weight bold)
+        ("ACTIVE" :foreground "DeepPink" :weight bold)
+        ("NEXT" :foreground "spring green" :weight bold)
+        ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
+#+END_SRC
+*** Keywords
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
+#+END_SRC
+*** Logging & Drawers
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-log-state-notes-insert-after-drawers nil
+                  org-log-into-drawer t
+                  org-log-done 'time
+                  org-log-repeat 'time
+                  org-log-redeadline 'note
+                  org-log-reschedule 'note))
+#+END_SRC
+*** Prettify
+#+BEGIN_SRC emacs-lisp
+;(after! org (setq org-bullets-bullet-list '("•" "◦")
+(after! org (setq org-hide-emphasis-markers nil
+                  org-bullets-bullet-list '("◉" "⚫" "○")
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
+                  org-ellipsis "▼"))
+#+END_SRC
+*** Publishing
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-publish-project-alist
+                  '(("attachments"
+                     :base-directory "~/.org/notes/attachments/"
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                     :publishing-directory "~/publish_html/images/"
+                     :publishing-function org-publish-attachment)
+                    ("notes"
+                     :base-directory "~/.org/"
+                     :publishing-directory "~/publish_html"
+                     :base-extension "org"
+                     :with-drawers t
+                     :recursive t
+                     :auto-sitemap t
+                     :sitemap-filename "index.html"
+                     :publishing-function org-html-publish-to-html
+                     :section-numbers nil
+                     :html-head "<link rel=\"stylesheet\"
+                     href=\"http://dakrone.github.io/org.css\"
+                     type=\"text/css\"/>"
+                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :with-email t
+                     :html-link-up ".."
+                     :auto-preamble t
+                     :with-toc t)
+                    ("myprojectweb" :components("attachments" "notes")))))
+#+END_SRC
+*** Refiling
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm))
+#+END_SRC
+*** Startup
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-startup-indented t
+                  org-src-tab-acts-natively t))
+;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+#+END_SRC
+*** Tags
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-tags-column -80))
+#+END_SRC
 ** Org Rifle
 #+BEGIN_SRC emacs-lisp
 (use-package helm-org-rifle
@@ -224,297 +488,8 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
           (("C-c n i" . org-roam-insert)))
   :config
   (org-roam-mode +1))
-#+END_SRC
-** Deft Mode
-#+BEGIN_SRC emacs-lisp
-(setq deft-directory "~/.org/notes/")
-(setq deft-current-sort-method 'title)
-#+END_SRC
-** ORG MODE
-*** Agenda
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
-;(after! org (setq org-super-agenda-groups
-;                  '((:auto-category t))))
-(after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-dim-blocked-tasks t
-                  org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp ":\\w+:"
-;                  org-agenda-prefix-format " %(my-agenda-prefix) "
-                  org-agenda-skip-scheduled-if-done t
-                  org-agenda-skip-deadline-if-done t
-                  org-enforce-todo-checkbox-dependencies nil
-                  org-habit-show-habits t))
-#+END_SRC
-**** Load all *.org files to agenda
-#+BEGIN_SRC emacs-lisp
-(load-library "find-lisp")
-(after! org (setq org-agenda-files
-                  (find-lisp-find-files "~/.org/" "\.org$")))
-#+END_SRC
-*** Captures
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-capture-templates
-                  '(("h" "Headline")
-                    ("b" "Buffer Find")
-                    ("f" "File Find")
-                    ("fn" "Notes")
-                    ("ft" "Tasks")
-                    ("c" "Captures"))))
-#+END_SRC
-**** Capture
-***** New Task
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
-               "* TODO %^{taskname} %^{CATEGORY}p
-:PROPERTIES:
-:CREATED: %U
-:END:
-")))
-#+END_SRC
-***** Reference
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("cr" "Reference" entry (file "~/.org/workload/references.org")
-"* TODO %u %^{reference}
-%?")))
-#+END_SRC
-***** Notes
-#+BEGIN_SRC emacs-lisp
-(setq my/org-note-categories '(("Topic: ") ("Account: ") ("Symptom: ")))
-(defun my/generate-org-note-categories ()
-  "Select a category for Notes"
-  (interactive (list (completing-read "Select a category: " my/org-note-categories))))
-(defun my/generate-org-note-name ()
-  (setq my-org-note--category (read-string "Category: "))
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("cn" "Note" plain (file my/generate-org-note-name)
-                           "%(format \"#+TITLE: %s\n\" my-org-note--name)
-%?")))
-#+END_SRC
-***** Daily Tasks
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-                         '("cd" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
-                           "- [ ] %t %?")))
-#+END_SRC
-***** Time Tracking
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("cx" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
-               "* [%\\1] %\\7 for %\\5
-:PROPERTIES:
-:CASENUMBER: %^{Case or SVCTAG}
-:ACCOUNT:  %^{account}
-:AUDIENCE: %^{audience}
-:SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
-:PERSON:   %^{Whose asking for help?}
-:TASK:     %^{task}
-:DESCRIPTION: %^{description}
-:CREATED:  %u
-:END:
-:LOGBOOK:
-:END:
-%?" :tree-type week :clock-in t :clock-resume t)))
-#+END_SRC
-**** Headline
-***** Append current heading
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("hh" "Append Headline" entry (file+function buffer-name org-end-of-subtree)
-"* %u %^{name}
-%?" :empty-lines 1)))
-#+END_SRC
-***** Itemized Notes
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-                         '("hi" "Headline Item" plain (file+function buffer-name org-end-of-subtree)
-                         "+ %u %?")))
-#+END_SRC
-***** Child Task
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("hc" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
-"* TODO %u %^{task}%? %^G")))
-#+END_SRC
-**** File
-***** Notes
-****** +Entry to Note Headline
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("fne" "Entry to Headline" entry (file+function org-capture-file-selector org-capture-headline-finder)
-"* %u %^{note}%? :%^G")))
-#+END_SRC
-****** +Entry to Note
-#+BEGIN_SRC emacs-lisp
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
-(after! org (add-to-list 'org-capture-templates
-                         '("fnh" "New Headline to Note" entry (file org-capture-file-selector)
-                           "* %?")))
-#+END_SRC
-****** +Item to Note Headline
-#+BEGIN_SRC emacs-lisp
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
-(after! org (add-to-list 'org-capture-templates
-                         '("fni" "New Item to Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
-                           "+ %u %?")))
-#+END_SRC
-***** Tasks
-****** +Item to Task
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("fti" "+Task Item" plain (file+function "~/.org/workload/tasks.org" org-capture-headline-finder)
-"+ %u %?")))
-#+END_SRC
-****** +Child Task
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("ftc" "Child Task" entry (file+function "~/.org/workload/tasks.org" org-find-task-headline)
-"* TODO %u %^{task}%? %^G")))
-#+END_SRC
-**** Buffer Find
-***** Child Task
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("bt" "Task" entry (file+function buffer-name org-find-task-headline)
-"* TODO %u %^{task} %^G
-%?")))
-#+END_SRC
-***** Child Headline
-#+BEGIN_SRC emacs-lisp
-(after! org (add-to-list 'org-capture-templates
-             '("bh" "Child Headline" entry (file+function buffer-name org-find-task-headline)
-"* %u %^{note}
-%?")))
-#+END_SRC
-***** Headline Item
-#+BEGIN_SRC emacs-lisp
-(defun org-task-item-option ()
-  "Simple function to select if you want a item or checklist inserted"
-  (interactive)
-  (let (choices ("Item" "Checklist")))
-  (if (equal (choices "Item"))
-      (concat "+ %u %?")
-    (concat "+ [ ] %u %?")))
-(after! org (add-to-list 'org-capture-templates
-                         '("bi" "Headline Item" plain (file+function buffer-name org-capture-headline-finder)
-                         "+ %u %?")))
-#+END_SRC
-*** Directories
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-directory "~/.org/"
-                  org-image-actual-width nil
-                  +org-export-directory "~/.export/"
-                  org-archive-location "~/.org/workload/archive.org::datetree/"
-                  org-default-notes-file "~/.org/workload/inbox.org"
-                  projectile-project-search-path '("~/.org/")))
-#+END_SRC
-*** Exports
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-html-head-include-scripts t
-                  org-export-with-toc t
-                  org-export-with-author t
-                  org-export-headline-levels 5
-                  org-export-with-drawers nil
-                  org-export-with-email t
-                  org-export-with-footnotes t
-                  org-export-with-sub-superscripts nil
-                  org-export-with-latex t
-                  org-export-with-section-numbers nil
-                  org-export-with-properties t
-                  org-export-with-smart-quotes t
-                  org-export-backends '(pdf ascii html latex odt md pandoc)))
-#+END_SRC
-*** Faces
-Need to add condition to adjust faces based on theme select.
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-todo-keyword-faces
-      '(("TODO" :foreground "OrangeRed" :weight bold)
-        ("NEXT" :foreground "SteelBlue" :weight bold)
-        ("SOMEDAY" :foreground "gold" :weight bold)
-        ("ACTIVE" :foreground "DeepPink" :weight bold)
-        ("NEXT" :foreground "spring green" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
-#+END_SRC
-*** Keywords
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
-#+END_SRC
-*** Logging & Drawers
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-log-state-notes-insert-after-drawers nil
-                  org-log-into-drawer t
-                  org-log-done 'time
-                  org-log-repeat 'time
-                  org-log-redeadline 'note
-                  org-log-reschedule 'note))
-#+END_SRC
-*** Prettify
-#+BEGIN_SRC emacs-lisp
-;(after! org (setq org-bullets-bullet-list '("•" "◦")
-(after! org (setq org-hide-emphasis-markers nil
-                  org-bullets-bullet-list '("◉" "⚫" "○")
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
-                  org-ellipsis "▼"))
-#+END_SRC
-*** Publishing
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-publish-project-alist
-                  '(("attachments"
-                     :base-directory "~/.org/notes/attachments/"
-                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html/images/"
-                     :publishing-function org-publish-attachment)
-                    ("notes"
-                     :base-directory "~/.org/"
-                     :publishing-directory "~/publish_html"
-                     :base-extension "org"
-                     :with-drawers t
-                     :recursive t
-                     :auto-sitemap t
-                     :sitemap-filename "index.html"
-                     :publishing-function org-html-publish-to-html
-                     :section-numbers nil
-                     :html-head "<link rel=\"stylesheet\"
-                     href=\"http://dakrone.github.io/org.css\"
-                     type=\"text/css\"/>"
-                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
-                     :with-email t
-                     :html-link-up ".."
-                     :auto-preamble t
-                     :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes")))))
-#+END_SRC
-*** Refiling
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-                  org-outline-path-complete-in-steps nil
-                  org-refile-allow-creating-parent-nodes 'confirm))
-#+END_SRC
-*** Startup
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-startup-indented t
-                  org-src-tab-acts-natively t))
-;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
-(add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-#+END_SRC
-*** Tags
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-tags-column -80))
+(require 'company-org-roam)
+(push 'company-org-roam company-backends)
 #+END_SRC
 ** Super Agenda
 #+BEGIN_SRC emacs-lisp
@@ -654,9 +629,6 @@ Need to add condition to adjust faces based on theme select.
   (concat (read-file-name "Select file: " org-notes-directory)))
 #+END_SRC
 ** org-capture-headline-finder
-:PROPERTIES:
-:CATEGORY: Test
-:END:
 #+BEGIN_SRC emacs-lisp
 (defun org-capture-headline-finder (&optional arg)
   "Like `org-todo-list', but using only the current buffer's file."
@@ -706,6 +678,16 @@ Need to add condition to adjust faces based on theme select.
       (insert (format "\n:CASENUMBER: %s" task-case)))
   (insert
    (format"\n:END:")))
+#+END_SRC
+** org-task-item-option
+#+BEGIN_SRC emacs-lisp
+(defun org-task-item-option ()
+  "Simple function to select if you want a item or checklist inserted"
+  (interactive)
+  (let (choices ("Item" "Checklist")))
+  (if (equal (choices "Item"))
+      (concat "+ %u %?")
+    (concat "+ [ ] %u %?")))
 #+END_SRC
 ** org-update-cookies-after-save
 #+BEGIN_SRC emacs-lisp

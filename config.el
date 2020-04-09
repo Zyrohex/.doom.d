@@ -3,7 +3,7 @@
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
 
-(setq doom-theme 'doom-snazzy)
+(setq doom-theme 'doom-city-lights)
 ;(setq org-emphasis-alist
 ;      '(("*" (bold :foreground "MediumPurple"))
 ;        ("/" (italic :foreground "VioletRed"))
@@ -34,12 +34,15 @@
       "a" #'helm-org-rifle-agenda-files
       "o" #'helm-org-rifle-org-directory
       "d" #'helm-org-rifle-directories
+      :prefix ("l" . "+links")
+      "o" #'org-open-at-point
       :prefix ("g" . "+goto")
       "q" #'orgql-search)
 
 (map! :leader
       :prefix ("s" . "search")
       :desc "Deadgrep Directory" "d" #'deadgrep
+      :desc "Swiper All" "@" #'swiper-all
       :prefix ("o" . "open")
       :desc "Elfeed" "e" #'elfeed
       :desc "Deft" "w" #'deft)
@@ -56,6 +59,205 @@
 (after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 
 (global-auto-revert-mode t)
+
+(setq deft-directory "~/.org/notes/")
+(setq deft-current-sort-method 'title)
+
+(setq rmh-elfeed-org-files "~/.elfeed/elfeed.org")
+
+(after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
+;(after! org (setq org-super-agenda-groups
+;                  '((:auto-category t))))
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-dim-blocked-tasks t
+                  org-agenda-use-time-grid t
+                  org-agenda-hide-tags-regexp ":\\w+:"
+;                  org-agenda-prefix-format " %(my-agenda-prefix) "
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-enforce-todo-checkbox-dependencies nil
+                  org-habit-show-habits t))
+
+(load-library "find-lisp")
+(after! org (setq org-agenda-files
+                  (find-lisp-find-files "~/.org/" "\.org$")))
+
+(after! org (setq org-capture-templates
+                  '(("a" "Append")
+                    ("c" "Captures"))))
+
+(after! org (add-to-list 'org-capture-templates
+             '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
+               "* TODO %^{taskname} %^{CATEGORY}p
+:PROPERTIES:
+:CREATED: %U
+:END:
+")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("cr" "Reference" entry (file "~/.org/workload/references.org")
+"* TODO %u %^{reference}
+%?")))
+
+(defun my/generate-org-note-name ()
+  (setq my-org-note--name (read-string "Name: "))
+  (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("cn" "Note" plain (file my/generate-org-note-name)
+                           "%(format \"#+TITLE: %s\n\" my-org-note--name)
+%?")))
+
+(defun org-capture-file-selector ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
+(after! org (add-to-list 'org-capture-templates
+                         '("fnh" "New Headline to Note" entry (file org-capture-file-selector)
+                           "* %?")))
+
+(defun org-capture-file-selector ()
+  "test file selector"
+  (interactive)
+  (setq org-notes-directory "~/.org/notes/")
+  (concat (read-file-name "Select file: " org-notes-directory)))
+(after! org (add-to-list 'org-capture-templates
+                         '("fni" "New Item to Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
+                           "+ %u %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("fti" "+Task Item" plain (file+function "~/.org/workload/tasks.org" org-capture-headline-finder)
+"+ %u %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("ftc" "Child Task" entry (file+function "~/.org/workload/tasks.org" org-find-task-headline)
+"* TODO %u %^{task}%? %^G")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("bt" "Task" entry (file+function buffer-name org-find-task-headline)
+"* TODO %u %^{task} %^G
+%?")))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("cd" "Daily Task List" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
+                           "- [ ] %t %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("cx" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
+               "* [%\\1] %\\7 for %\\5
+:PROPERTIES:
+:CASENUMBER: %^{Case or SVCTAG}
+:ACCOUNT:  %^{account}
+:AUDIENCE: %^{audience}
+:SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
+:PERSON:   %^{Whose asking for help?}
+:TASK:     %^{task}
+:DESCRIPTION: %^{description}
+:CREATED:  %u
+:END:
+:LOGBOOK:
+:END:
+%?" :tree-type week :clock-in t :clock-resume t)))
+
+(after! org (add-to-list 'org-capture-templates
+             '("at" "Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
+"* TODO %^{task}%?")))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("ai" "Add List to Headline" plain (file+function buffer-name org-end-of-subtree)
+                         "- %?")))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("af" "Add List to Find Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
+                         "+ %?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("an" "New Headline" entry (file+function buffer-name org-back-to-heading-or-point-min)
+"* %^{note}%?")))
+
+(after! org (setq org-directory "~/.org/"
+                  org-image-actual-width nil
+                  +org-export-directory "~/.export/"
+                  org-archive-location "~/.org/workload/archive.org::datetree/"
+                  org-default-notes-file "~/.org/workload/inbox.org"
+                  projectile-project-search-path '("~/.org/")))
+
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 5
+                  org-export-with-drawers nil
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties t
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
+
+(after! org (setq org-todo-keyword-faces
+      '(("TODO" :foreground "OrangeRed" :weight bold)
+        ("NEXT" :foreground "SteelBlue" :weight bold)
+        ("SOMEDAY" :foreground "gold" :weight bold)
+        ("ACTIVE" :foreground "DeepPink" :weight bold)
+        ("NEXT" :foreground "spring green" :weight bold)
+        ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
+
+(after! org (setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
+
+(after! org (setq org-log-state-notes-insert-after-drawers nil
+                  org-log-into-drawer t
+                  org-log-done 'time
+                  org-log-repeat 'time
+                  org-log-redeadline 'note
+                  org-log-reschedule 'note))
+
+;(after! org (setq org-bullets-bullet-list '("•" "◦")
+(after! org (setq org-hide-emphasis-markers nil
+                  org-bullets-bullet-list '("◉" "⚫" "○")
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
+                  org-ellipsis "▼"))
+
+(after! org (setq org-publish-project-alist
+                  '(("attachments"
+                     :base-directory "~/.org/notes/attachments/"
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                     :publishing-directory "~/publish_html/images/"
+                     :publishing-function org-publish-attachment)
+                    ("notes"
+                     :base-directory "~/.org/"
+                     :publishing-directory "~/publish_html"
+                     :base-extension "org"
+                     :with-drawers t
+                     :recursive t
+                     :auto-sitemap t
+                     :sitemap-filename "index.html"
+                     :publishing-function org-html-publish-to-html
+                     :section-numbers nil
+                     :html-head "<link rel=\"stylesheet\"
+                     href=\"http://dakrone.github.io/org.css\"
+                     type=\"text/css\"/>"
+                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :with-email t
+                     :html-link-up ".."
+                     :auto-preamble t
+                     :with-toc t)
+                    ("myprojectweb" :components("attachments" "notes")))))
+
+(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm))
+
+(after! org (setq org-startup-indented t
+                  org-src-tab-acts-natively t))
+;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+
+(after! org (setq org-tags-column -80))
 
 (use-package helm-org-rifle
   :after (helm org)
@@ -177,229 +379,8 @@
           (("C-c n i" . org-roam-insert)))
   :config
   (org-roam-mode +1))
-
-(setq deft-directory "~/.org/notes/")
-(setq deft-current-sort-method 'title)
-
-(after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
-;(after! org (setq org-super-agenda-groups
-;                  '((:auto-category t))))
-(after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-dim-blocked-tasks t
-                  org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp ":\\w+:"
-;                  org-agenda-prefix-format " %(my-agenda-prefix) "
-                  org-agenda-skip-scheduled-if-done t
-                  org-agenda-skip-deadline-if-done t
-                  org-enforce-todo-checkbox-dependencies nil
-                  org-habit-show-habits t))
-
-(load-library "find-lisp")
-(after! org (setq org-agenda-files
-                  (find-lisp-find-files "~/.org/" "\.org$")))
-
-(after! org (setq org-capture-templates
-                  '(("h" "Headline")
-                    ("b" "Buffer Find")
-                    ("f" "File Find")
-                    ("fn" "Notes")
-                    ("ft" "Tasks")
-                    ("c" "Captures"))))
-
-(after! org (add-to-list 'org-capture-templates
-             '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
-               "* TODO %^{taskname} %^{CATEGORY}p
-:PROPERTIES:
-:CREATED: %U
-:END:
-")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("cr" "Reference" entry (file "~/.org/workload/references.org")
-"* TODO %u %^{reference}
-%?")))
-
-(setq my/org-note-categories '(("Topic: ") ("Account: ") ("Symptom: ")))
-(defun my/generate-org-note-categories ()
-  "Select a category for Notes"
-  (interactive (list (completing-read "Select a category: " my/org-note-categories))))
-(defun my/generate-org-note-name ()
-  (setq my-org-note--category (read-string "Category: "))
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("cn" "Note" plain (file my/generate-org-note-name)
-                           "%(format \"#+TITLE: %s\n\" my-org-note--name)
-%?")))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("cd" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
-                           "- [ ] %t %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("cx" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
-               "* [%\\1] %\\7 for %\\5
-:PROPERTIES:
-:CASENUMBER: %^{Case or SVCTAG}
-:ACCOUNT:  %^{account}
-:AUDIENCE: %^{audience}
-:SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
-:PERSON:   %^{Whose asking for help?}
-:TASK:     %^{task}
-:DESCRIPTION: %^{description}
-:CREATED:  %u
-:END:
-:LOGBOOK:
-:END:
-%?" :tree-type week :clock-in t :clock-resume t)))
-
-(after! org (add-to-list 'org-capture-templates
-             '("hh" "Append Headline" entry (file+function buffer-name org-end-of-subtree)
-"* %u %^{name}
-%?" :empty-lines 1)))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("hi" "Headline Item" plain (file+function buffer-name org-end-of-subtree)
-                         "+ %u %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("hc" "Child Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
-"* TODO %u %^{task}%? %^G")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("fne" "Entry to Headline" entry (file+function org-capture-file-selector org-capture-headline-finder)
-"* %u %^{note}%? :%^G")))
-
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
-(after! org (add-to-list 'org-capture-templates
-                         '("fnh" "New Headline to Note" entry (file org-capture-file-selector)
-                           "* %?")))
-
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
-(after! org (add-to-list 'org-capture-templates
-                         '("fni" "New Item to Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
-                           "+ %u %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("fti" "+Task Item" plain (file+function "~/.org/workload/tasks.org" org-capture-headline-finder)
-"+ %u %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("ftc" "Child Task" entry (file+function "~/.org/workload/tasks.org" org-find-task-headline)
-"* TODO %u %^{task}%? %^G")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("bt" "Task" entry (file+function buffer-name org-find-task-headline)
-"* TODO %u %^{task} %^G
-%?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("bh" "Child Headline" entry (file+function buffer-name org-find-task-headline)
-"* %u %^{note}
-%?")))
-
-(defun org-task-item-option ()
-  "Simple function to select if you want a item or checklist inserted"
-  (interactive)
-  (let (choices ("Item" "Checklist")))
-  (if (equal (choices "Item"))
-      (concat "+ %u %?")
-    (concat "+ [ ] %u %?")))
-(after! org (add-to-list 'org-capture-templates
-                         '("bi" "Headline Item" plain (file+function buffer-name org-capture-headline-finder)
-                         "+ %u %?")))
-
-(after! org (setq org-directory "~/.org/"
-                  org-image-actual-width nil
-                  +org-export-directory "~/.export/"
-                  org-archive-location "~/.org/workload/archive.org::datetree/"
-                  org-default-notes-file "~/.org/workload/inbox.org"
-                  projectile-project-search-path '("~/.org/")))
-
-(after! org (setq org-html-head-include-scripts t
-                  org-export-with-toc t
-                  org-export-with-author t
-                  org-export-headline-levels 5
-                  org-export-with-drawers nil
-                  org-export-with-email t
-                  org-export-with-footnotes t
-                  org-export-with-sub-superscripts nil
-                  org-export-with-latex t
-                  org-export-with-section-numbers nil
-                  org-export-with-properties t
-                  org-export-with-smart-quotes t
-                  org-export-backends '(pdf ascii html latex odt md pandoc)))
-
-(after! org (setq org-todo-keyword-faces
-      '(("TODO" :foreground "OrangeRed" :weight bold)
-        ("NEXT" :foreground "SteelBlue" :weight bold)
-        ("SOMEDAY" :foreground "gold" :weight bold)
-        ("ACTIVE" :foreground "DeepPink" :weight bold)
-        ("NEXT" :foreground "spring green" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
-
-(after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
-
-(after! org (setq org-log-state-notes-insert-after-drawers nil
-                  org-log-into-drawer t
-                  org-log-done 'time
-                  org-log-repeat 'time
-                  org-log-redeadline 'note
-                  org-log-reschedule 'note))
-
-;(after! org (setq org-bullets-bullet-list '("•" "◦")
-(after! org (setq org-hide-emphasis-markers nil
-                  org-bullets-bullet-list '("◉" "⚫" "○")
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
-                  org-ellipsis "▼"))
-
-(after! org (setq org-publish-project-alist
-                  '(("attachments"
-                     :base-directory "~/.org/notes/attachments/"
-                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html/images/"
-                     :publishing-function org-publish-attachment)
-                    ("notes"
-                     :base-directory "~/.org/"
-                     :publishing-directory "~/publish_html"
-                     :base-extension "org"
-                     :with-drawers t
-                     :recursive t
-                     :auto-sitemap t
-                     :sitemap-filename "index.html"
-                     :publishing-function org-html-publish-to-html
-                     :section-numbers nil
-                     :html-head "<link rel=\"stylesheet\"
-                     href=\"http://dakrone.github.io/org.css\"
-                     type=\"text/css\"/>"
-                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
-                     :with-email t
-                     :html-link-up ".."
-                     :auto-preamble t
-                     :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes")))))
-
-(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-                  org-outline-path-complete-in-steps nil
-                  org-refile-allow-creating-parent-nodes 'confirm))
-
-(after! org (setq org-startup-indented t
-                  org-src-tab-acts-natively t))
-;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
-(add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-
-(after! org (setq org-tags-column -80))
+(require 'company-org-roam)
+(push 'company-org-roam company-backends)
 
 (org-super-agenda-mode t)
 
@@ -565,6 +546,14 @@
       (insert (format "\n:CASENUMBER: %s" task-case)))
   (insert
    (format"\n:END:")))
+
+(defun org-task-item-option ()
+  "Simple function to select if you want a item or checklist inserted"
+  (interactive)
+  (let (choices ("Item" "Checklist")))
+  (if (equal (choices "Item"))
+      (concat "+ %u %?")
+    (concat "+ [ ] %u %?")))
 
 (defun org-update-cookies-after-save()
   (interactive)
