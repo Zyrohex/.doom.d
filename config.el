@@ -3,24 +3,37 @@
       doom-unicode-font (font-spec :family "DejaVu Sans")
       doom-big-font (font-spec :family "InputMono" :size 20))
 
-(setq doom-theme 'doom-city-lights)
-;(setq org-emphasis-alist
-;      '(("*" (bold :foreground "MediumPurple"))
-;        ("/" (italic :foreground "VioletRed"))
-;        ("_" underline)
-;        ("=" (:foreground "PaleTurquoise"))
-;        ("~" (:foreground "PaleTurquoise"))
-;        ("+" (:strike-through t))))
+(setq doom-theme 'chocolate)
+                                        ;(setq org-emphasis-alist
+                                        ;      '(("*" (bold :foreground "MediumPurple"))
+                                        ;        ("/" (italic :foreground "VioletRed"))
+                                        ;        ("_" underline)
+                                        ;        ("=" (:foreground "PaleTurquoise"))
+                                        ;        ("~" (:foreground "PaleTurquoise"))
+                                        ;        ("+" (:strike-through t))))
 (custom-theme-set-faces
  'user
  '(org-ellipsis ((t (:foreground "SpringGreen")))))
-(if (equal doom-theme 'doom-snazzy)
-    (custom-theme-set-faces
-     'user
-     '(org-block ((t (:background "#20222b"))))
-     '(org-block-begin-line ((t (:background "#282A36"))))
-     '(org-ellipsis ((t (:foreground "SpringGreen"))))
-     '(org-headline-done ((t (:strike-through t))))))
+(if (equal doom-theme 'chocolate)
+     (custom-theme-set-faces
+      'user
+      '(org-list-dt ((t (:foreground "cadet blue"))))
+      '(org-ellipsis ((t (:foreground "gold"))))))
+(if (equal doom-theme 'chocolate)
+     (setq org-emphasis-alist
+           '(("*" (bold :foreground "MediumPurple"))
+             ("/" (italic :foreground "VioletRed"))
+             ("_" underline)
+             ("=" (:foreground "cadet blue"))
+             ("~" (:foreground "cadet blue"))
+             ("+" (:foreground "slate grey" :strike-through t)))))
+     (if (equal doom-theme 'doom-snazzy)
+         (custom-theme-set-faces
+          'user
+          '(org-block ((t (:background "#20222b"))))
+          '(org-block-begin-line ((t (:background "#282A36"))))
+          '(org-ellipsis ((t (:foreground "SpringGreen"))))
+          '(org-headline-done ((t (:strike-through t))))))
 
 (setq user-full-name "Nicholas Martin"
       user-mail-address "nmartin84.com")
@@ -87,6 +100,10 @@
                     ("c" "Captures"))))
 
 (after! org (add-to-list 'org-capture-templates
+             '("d" "Dynamic" entry (file+function buffer-name org-capture-template-dynamic)
+"%?")))
+
+(after! org (add-to-list 'org-capture-templates
              '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
                "* TODO %^{taskname} %^{CATEGORY}p
 :PROPERTIES:
@@ -96,8 +113,7 @@
 
 (after! org (add-to-list 'org-capture-templates
              '("cr" "Reference" entry (file "~/.org/workload/references.org")
-"* TODO %u %^{reference}
-%?")))
+"* TODO %u %^{reference}%?")))
 
 (defun my/generate-org-note-name ()
   (setq my-org-note--name (read-string "Name: "))
@@ -140,7 +156,7 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-                         '("cd" "Daily Task List" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
+                         '("cd" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
                            "- [ ] %t %?")))
 
 (after! org (add-to-list 'org-capture-templates
@@ -171,10 +187,6 @@
 (after! org (add-to-list 'org-capture-templates
                          '("af" "Add List to Find Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
                          "+ %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("an" "New Headline" entry (file+function buffer-name org-back-to-heading-or-point-min)
-"* %^{note}%?")))
 
 (after! org (setq org-directory "~/.org/"
                   org-image-actual-width nil
@@ -515,9 +527,12 @@
 
 (defun org-capture-template-select (checkitem)
   "Concat results to function"
+  (end-of-line)
+  (newline-and-indent)
   (if (equal checkitem "Checklist")
-      (concat "+ [ ] ")
-    (concat (format-time-string "+ [%Y-%m-%d] "))))
+      (insert (concat "+ [ ] ")))
+  (if (equal checkitem "Unordered List")
+      (insert (concat (format-time-string "+ [%Y-%m-%d] ")))))
 
 (defun org-capture-template-selector ()
   "Select your choice"

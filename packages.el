@@ -9,6 +9,7 @@
 (package! deadgrep)
 (package! org-web-tools)
 (package! company-org-roam)
+(package! chocolate-theme)
 ;; Optional
 ;(package! org-board)
 ;(package! org-mind-map)
