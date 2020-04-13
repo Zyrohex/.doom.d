@@ -10,6 +10,10 @@
 (package! org-web-tools)
 (package! company-org-roam)
 (package! chocolate-theme)
+(package! bookmark+
+  :recipe (:host github :repo "emacsmirror/bookmark-plus"))
+(package! doct
+  :recipe (:host github :repo "progfolio/doct"))
 ;; Optional
 ;(package! org-board)
 ;(package! org-mind-map)

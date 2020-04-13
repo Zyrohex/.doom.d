@@ -1,16 +1,9 @@
-(setq doom-font (font-spec :family "InputMono" :size 16)
+(setq doom-font (font-spec :family "InputMono" :size 18)
       doom-variable-pitch-font (font-spec :family "InputMono" :height 120)
-      doom-unicode-font (font-spec :family "DejaVu Sans")
+      doom-unicode-font (font-spec :family "all-the-icons")
       doom-big-font (font-spec :family "InputMono" :size 20))
 
 (setq doom-theme 'chocolate)
-                                        ;(setq org-emphasis-alist
-                                        ;      '(("*" (bold :foreground "MediumPurple"))
-                                        ;        ("/" (italic :foreground "VioletRed"))
-                                        ;        ("_" underline)
-                                        ;        ("=" (:foreground "PaleTurquoise"))
-                                        ;        ("~" (:foreground "PaleTurquoise"))
-                                        ;        ("+" (:strike-through t))))
 (custom-theme-set-faces
  'user
  '(org-ellipsis ((t (:foreground "SpringGreen")))))
@@ -37,6 +30,14 @@
 
 (setq user-full-name "Nicholas Martin"
       user-mail-address "nmartin84.com")
+(display-time-mode 1)
+(setq display-time-day-and-date t)
+
+(load-library "find-lisp")
+(defvar org-gtd-tasks-file "~/.org/workload/tasks.org")
+(defvar org-gtd-archive-file "~/.org/workload/archive.org")
+(defvar org-gtd-files (find-lisp-find-files "~/.org/" "\.org$"))
+(defvar org-gtd-notes-files (find-lisp-find-files "~/.org/notes/" "\.org$"))
 
 (map! :after org
       :map org-mode-map
@@ -53,6 +54,7 @@
       "q" #'orgql-search)
 
 (map! :leader
+      :desc "Set Bookmark" "!" #'my/goto-bookmark-location
       :prefix ("s" . "search")
       :desc "Deadgrep Directory" "d" #'deadgrep
       :desc "Swiper All" "@" #'swiper-all
@@ -68,10 +70,16 @@
 (after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*Ledger Report*" :side 'right :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*xwidget" :side 'right :size .50 :select t :vslot 5 :ttl 3))
-;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 
 (global-auto-revert-mode t)
+
+(setq display-line-numbers-type 'relative)
+
+(custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
+
+(require 'bookmark+)
 
 (setq deft-directory "~/.org/notes/")
 (setq deft-current-sort-method 'title)
@@ -79,12 +87,12 @@
 (setq rmh-elfeed-org-files "~/.elfeed/elfeed.org")
 
 (after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
-;(after! org (setq org-super-agenda-groups
-;                  '((:auto-category t))))
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t
                   org-agenda-use-time-grid t
                   org-agenda-hide-tags-regexp ":\\w+:"
+                  org-agenda-compact-blocks t
+                  org-agenda-block-separator nil
 ;                  org-agenda-prefix-format " %(my-agenda-prefix) "
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
@@ -95,24 +103,28 @@
 (after! org (setq org-agenda-files
                   (find-lisp-find-files "~/.org/" "\.org$")))
 
-(after! org (setq org-capture-templates
-                  '(("a" "Append")
-                    ("c" "Captures"))))
+;(after! org (setq org-capture-templates
+;                  '(("a" "Append")
+;                    ("c" "Captures"))))
 
 (after! org (add-to-list 'org-capture-templates
-             '("d" "Dynamic" entry (file+function buffer-name org-capture-template-dynamic)
-"%?")))
+                         '("h" "Append Headline" entry (file+function org-capture-file-selector org-capture-templates-append-headline)
+                           "%(format \"%s\" org-capture-templates-dynamic-opt1)%?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("ct" "Task" entry (file+headline "~/.org/workload/tasks.org" "INBOX")
-               "* TODO %^{taskname} %^{CATEGORY}p
+                         '("l" "Append List" plain (file+function org-capture-file-selector org-capture-templates-append-notes)
+                           "%(format \"%s\" org-capture-templates-dynamic-opt2)%?")))
+
+(after! org (add-to-list 'org-capture-templates
+             '("t" "Task" entry (file+headline org-gtd-tasks-file "INBOX")
+               "* TODO %^{taskname}%? %^{CATEGORY}p
 :PROPERTIES:
 :CREATED: %U
 :END:
 ")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("cr" "Reference" entry (file "~/.org/workload/references.org")
+             '("r" "Reference" entry (file "~/.org/workload/references.org")
 "* TODO %u %^{reference}%?")))
 
 (defun my/generate-org-note-name ()
@@ -120,7 +132,7 @@
   (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
 
 (after! org (add-to-list 'org-capture-templates
-                         '("cn" "Note" plain (file my/generate-org-note-name)
+                         '("n" "New Note" plain (file my/generate-org-note-name)
                            "%(format \"#+TITLE: %s\n\" my-org-note--name)
 %?")))
 
@@ -156,11 +168,11 @@
 %?")))
 
 (after! org (add-to-list 'org-capture-templates
-                         '("cd" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
+                         '("d" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
                            "- [ ] %t %?")))
 
 (after! org (add-to-list 'org-capture-templates
-             '("cx" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
+             '("x" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
                "* [%\\1] %\\7 for %\\5
 :PROPERTIES:
 :CASENUMBER: %^{Case or SVCTAG}
@@ -175,18 +187,6 @@
 :LOGBOOK:
 :END:
 %?" :tree-type week :clock-in t :clock-resume t)))
-
-(after! org (add-to-list 'org-capture-templates
-             '("at" "Task" entry (file+function buffer-name org-back-to-heading-or-point-min)
-"* TODO %^{task}%?")))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("ai" "Add List to Headline" plain (file+function buffer-name org-end-of-subtree)
-                         "- %?")))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("af" "Add List to Find Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
-                         "+ %?")))
 
 (after! org (setq org-directory "~/.org/"
                   org-image-actual-width nil
@@ -232,6 +232,9 @@
                   org-bullets-bullet-list '("◉" "⚫" "○")
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
+
+(setq org-use-property-inheritance t ; We like to inhert properties from their parents
+      org-catch-invisible-edits 'smart) ; Catch invisible edits
 
 (after! org (setq org-publish-project-alist
                   '(("attachments"
@@ -395,14 +398,6 @@
 (push 'company-org-roam company-backends)
 
 (org-super-agenda-mode t)
-
-(defun find-org-files (dir)
-  "Simple function that'll scan a folder and return all ORG files"
-  (interactive "p")
-  (load-library "find-lisp")
-  (setq org-agenda-files
-        (find-lisp-find-files dir "\.org$")))
-
 (setq org-agenda-custom-commands
       '(("k" "Tasks"
          ((agenda ""
@@ -423,7 +418,7 @@
                  (org-super-agenda-groups
                   '((:name "Priority Items"
                            :priority>= "B")
-                    (:auto-category t)))))
+                    (:auto-parent t)))))
           (todo ""
                 ((org-agenda-overriding-header "Delegated Tasks")
                  (org-agenda-files '("~/.org/workload/tasks.org"))
@@ -461,12 +456,15 @@
                  (org-agenda-files '("~/.org/workload/tasks.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
-
-(defun +org/insert-item-below-w-timestamp (count)
-  "Inserts a new item below with inactive timestamp asserted."
-  (interactive "p")
-  (dotimes (_ count) (+org--insert-item 'below) (org-end-of-line) (insert (org-format-time-string "[%Y-%m-%d %a]") " ")))
-(map! :n "S-<return>" #'+org/insert-item-below-w-timestamp)
+(defun my/org-capture-note-file ()
+  "Select a capture note file."
+  (interactive)
+  (let ((file (read-file-name "Note file: "
+                              (expand-file-name "notes/" org-directory))))
+    (if (or (file-exists-p file)
+            (string-suffix-p ".org" file))
+        file
+      (concat file ".org"))))
 
 (defun my--browse-url (url &optional _new-window)
   ;; new-window ignored
@@ -490,15 +488,75 @@
               str (concat str "──")))
       (concat str "►"))))
 
-(defvar my-archive-dir "~/.org/archives/" "My Archive Directory")
+;;; my-goto.el --- go to things quickly -*- lexical-binding: t; -*-
 
-(defun my/org-archive-task ()
-  "Moves the current buffer to the archived folder"
-  (interactive)
-  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
-        (dir (read-directory-name "Move to: " my-archive-dir)))
-    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
-    (delete-file old)))
+;; This is free and unencumbered software released into the public domain.
+
+;; Author: Bas Alberts <bas@anti.computer>
+;; URL: https://github.com/anticomputer/my-goto.el
+
+;; Version: 0.1
+;; Package-Requires: ((emacs "25") (cl-lib "0.5"))
+
+;; Keywords: bookmark
+
+;;; Commentary:
+
+;;; This lets you define custom dispatch bookmarks
+;;; You can think of it as a lightweight `bookmark+'
+
+;;; Code:
+(require 'bookmark)
+(require 'cl-lib)
+
+;; add any custom classes to this list
+(defvar my/goto-classes '(:uri :file))
+
+;; define a generic (xristos-fu)
+(cl-defgeneric my/goto-dispatch (class goto)
+  "Visit GOTO based on CLASS.")
+
+;; specialize the generic for the cases we want to handle
+(cl-defmethod my/goto-dispatch ((class (eql :uri)) goto)
+  "Visit GOTO based on CLASS."
+  (browse-url goto))
+
+(cl-defmethod my/goto-dispatch ((class (eql :file)) goto)
+  "Visit GOTO based on CLASS."
+  (find-file goto))
+
+;; fall-through method
+(cl-defmethod my/goto-dispatch (class goto)
+  "Visit GOTO based on CLASS."
+  (message "goto: no handler for %s" class))
+
+(defun my/goto-bookmark-handler (bookmark)
+  "Handle goto BOOKMARK through goto dispatchers."
+  (let* ((v (read (cdr (assq 'filename bookmark))))
+         (class (car v))
+         (goto (cadr v)))
+    (my/goto-dispatch class goto)))
+
+;;;###autoload
+(defun my/goto-bookmark-location (class location &optional label)
+  "Bookmark LOCATION of CLASS under optional LABEL."
+  (interactive
+   (let* ((class (read (completing-read "class: " my/goto-classes)))
+          (location (if (eq class :file)
+                        (read-file-name "location: ")
+                      (read-string "location: ")))
+          (label (read-string "label: " nil nil location)))
+     (list class location label)))
+  (unless (equal label "")
+    (let ((label (or label location)))
+      (bookmark-store
+       label
+       `((filename . ,(format "%S" `(,class ,location)))
+         (handler . my/goto-bookmark-handler))
+       nil))))
+
+(provide 'my-goto)
+;;; my-goto.el ends here
 
 (defvar org-archive-directory "~/.org/archives/")
 (defun org-archive-file ()
@@ -510,11 +568,70 @@
     (delete-file old)))
 (provide 'org-archive-file)
 
+(defun org-capture-templates-append-headline ()
+  "A guided walk-through to capturing"
+  (interactive)
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a faile" (buffer-name (current-buffer)))
+      (counsel-org-agenda-headlines)))
+  (org-back-to-heading-or-point-min)
+  (if (eq (count-lines (point-min) (point-max)) (count-lines (point-min) (point)))
+      (newline-and-indent))
+  (let ((var1 '("TODO" "Headline"))
+        (var2 '("None" "Active" "In-Active")))
+    (let ((selection (ivy-completing-read "Choose an option: " option1))
+          (date1 (ivy-completing-read "Choose 2nd option: " option2)))
+      (setq org-capture-templates-dynamic-opt1 (concat
+                                                (or
+                                                 (if (equal selection (nth 0 var11))
+                                                     (concat "* TODO "))
+                                                 (if (equal selection (nth 1 var1))
+                                                     (concat "* ")))
+                                                (or
+                                                 (if (equal date1 (nth 0 var2))
+                                                     (concat ""))
+                                                 (if (equal date1 (nth 1 var2))
+                                                     (concat (format-time-string "<%Y-%m-%d %a>")))
+                                                 (if (equal date1 (nth 2 var2))
+                                                     (concat (format-time-string "[%Y-%m-%d %a]")))))))))
+
+(defun org-capture-templates-append-notes ()
+  "A guided walk-through to capturing"
+  (interactive)
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a faile" (buffer-name (current-buffer)))
+      (counsel-org-agenda-headlines)))
+  (next-line)
+  (org-end-of-subtree)
+  (if (eq (count-lines (point-min) (point-max)) (count-lines (point-min) (point)))
+      (newline-and-indent))
+  (let ((var1 '("Checklist" "List" "None"))
+        (var2 '("None" "Inactive" "Active")))
+    (let
+        ((selection (ivy-completing-read "Choose Line: " var1))
+         (date1 (ivy-completing-read "Choose timestamp: " var2)))
+      (setq org-capture-templates-dynamic-opt2 (concat
+                                                (or
+                                                 (if (equal selection (nth 0 var1))
+                                                     (concat "- [ ] "))
+                                                 (if (equal selection (nth 1 var1))
+                                                     (concat "- "))
+                                                 (if (equal selection (nth 2 var1))
+                                                     (concat "")))
+                                                (or
+                                                 (if (equal date1 (nth 0 var2))
+                                                     (concat ""))
+                                                 (if (equal date1 (nth 1 var2))
+                                                     (concat (format-time-string "[%Y-%m-%d %a]")))
+                                                 (if (equal date1 (nth 2 var2))
+                                                     (concat (format-time-string "<%Y-%m-%d %a>")))))))))
+
 (defun org-capture-file-selector ()
   "test file selector"
   (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
+  (concat (read-file-name "Select file: " org-directory)))
 
 (defun org-capture-headline-finder (&optional arg)
   "Like `org-todo-list', but using only the current buffer's file."
@@ -524,51 +641,6 @@
         (error "%s is not visiting a file" (buffer-name (current-buffer)))
       (counsel-org-agenda-headlines)))
   (goto-char (org-end-of-subtree)))
-
-(defun org-capture-template-select (checkitem)
-  "Concat results to function"
-  (end-of-line)
-  (newline-and-indent)
-  (if (equal checkitem "Checklist")
-      (insert (concat "+ [ ] ")))
-  (if (equal checkitem "Unordered List")
-      (insert (concat (format-time-string "+ [%Y-%m-%d] ")))))
-
-(defun org-capture-template-selector ()
-  "Select your choice"
-  (interactive)
-  (let ((choice '("Checklist" "Unordered List")))
-    (org-capture-template-select (org-completing-read "Pick option: " choice))))
-
-(defun org-find-task-headline ()
-  "Find headline in Task Files"
-  (interactive)
-  (setq org-agenda-files '("~/.org/workload/tasks.org"))
-  (counsel-org-agenda-headlines))
-
-(defun org-new-task ()
-  "Creates a new task below current header"
-  (interactive)
-  (setq task-name (read-string "Task name: "))
-  (setq task-category (read-string "Category: "))
-  (setq task-case (read-string "Case Number: "))
-  (+org--insert-item 'below) (org-end-of-subtree)
-  (insert
-   (format "TODO %s" task-name))
-  (insert
-   (format"\n:PROPERTIES:\n:CATEGORY: %s" task-category))
-  (if task-case
-      (insert (format "\n:CASENUMBER: %s" task-case)))
-  (insert
-   (format"\n:END:")))
-
-(defun org-task-item-option ()
-  "Simple function to select if you want a item or checklist inserted"
-  (interactive)
-  (let (choices ("Item" "Checklist")))
-  (if (equal (choices "Item"))
-      (concat "+ %u %?")
-    (concat "+ [ ] %u %?")))
 
 (defun org-update-cookies-after-save()
   (interactive)
