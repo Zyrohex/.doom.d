@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Babel-Grep-Shell
+# key: Babel Grep Shell
+# --
+#+BEGIN_SRC shell :exports results :results verbatim
+grep -i '$1' .attachments/grep_output.log
+#+END_SRC

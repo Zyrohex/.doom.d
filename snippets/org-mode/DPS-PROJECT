@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: DPS-PROJECT
+# key: DPS PROJECT
+# --
+:PROPERTIES:
+:TAG:      $1
+:SVCDATE:  $2
+:COMPONENT: $3
+:CHGREQ:   $4
+:GRIDLOCATION: $5
+:TICKET:   $6
+:END:
