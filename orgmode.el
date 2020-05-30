@@ -29,18 +29,24 @@
          (file+headline "~/.org/gtd/articles.org" "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("n" "Note" entry
-         (file+headline "~/.org/gtd/notes.org" "Notes")
-         "* %U %?\n%i" :prepend t)))
+         (file+datetree "~/.org/diary.org")
+         "* %U %?%^{TAG}p%^{CUSTOMER}p
+:PROPERTIES:
+:CREATED: %u
+:END:" :prepend t)))
 
-(defun zyro/org-journal-capture-headline (time)
-  "Capture headline"
-  (if (and (or (functionp org-journal-file-header)
-               (and (stringp org-journal-file-header)
-                    (not (string-empty-p org-journal-file-header))))
-           (= (buffer-size) 0))
-      (insert (if (functionp org-journal-file-header)
-                  (funcall org-journal-file-header time)
-                (format-time-string org-journal-file-header time)))))
+(defun zyro/capture-diary-headline ()
+  "Create headline for capture"
+  (interactive)
+  (let ((dateformat (format "* %s" (format-time-string "%Y-%b"))))
+    (if (nil (search-forward dateformat) dateformat)
+        (lambda ()
+          (interactive)
+          (goto-char (point-max))
+          (newline)
+          (insert dateformat)
+          (concat dateformat))
+      (concat dateformat))))
 
 ;;------ Directories
 (after! org (setq org-directory "~/.org/"

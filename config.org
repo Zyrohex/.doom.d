@@ -1,3 +1,6 @@
+:PROPERTIES:
+:ID:       69aae43a-1916-43d6-9b2f-23b282036c70
+:END:
 #+EXPORT_FILE_NAME: README
 
 * Getting started
