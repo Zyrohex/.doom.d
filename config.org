@@ -1,6 +1,3 @@
-:PROPERTIES:
-:ID:       69aae43a-1916-43d6-9b2f-23b282036c70
-:END:
 #+EXPORT_FILE_NAME: README
 
 * Getting started
@@ -343,9 +340,11 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 (defun zyro/loader-theme ()
   "Load theme on startup"
   (interactive)
-  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights"))))
+  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights" "doom-ephemeral"))))
     (if (equal selection '"doom-gruvbox")
         (setq doom-theme 'doom-gruvbox))
+    (if (equal selection '"doom-ephemeral")
+        (setq doom-theme 'doom-ephemeral))
     (if (equal selection '"doom-gruvbox-light")
         (setq doom-theme 'doom-gruvbox-light))
     (if (equal selection '"doom-monokai-pro")
