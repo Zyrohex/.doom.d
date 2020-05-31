@@ -26,7 +26,7 @@
       `(("j" "Diary [w/clock]" entry
          (file+headline "~/.org/diary.org"
                         ,(format "%s" (format-time-string "%b %Y")))
-         "* %<[%a %H:%M]> %^{Title}\n:PROPERTIES:\n:END:\n:LOGBOOK:\n:END:\n%?" :clock-in :clock-resume)
+         "* %<[%m-%d %H:%M]> %^{TAG}p%^{CUSTOMER}p%^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n:LOGBOOK:\n:END:\n%?" :clock-in :clock-resume)
         ("c" "Capture" entry
          (file "~/.org/gtd/inbox.org")
          "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:" :prepend t)
