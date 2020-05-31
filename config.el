@@ -237,25 +237,26 @@
                  (org-agenda-span '1)))
            (todo ""
                  ((org-agenda-overriding-header "Not Scheduled")
-                  (org-agenda-files (list (concat (doom-project-root) "gtd/next.org")))
+                  (org-agenda-files (list "~/.org/gtd/next.org"))
                   (org-agenda-skip-function
                    '(or
-                     (org-agenda-skip-if 'nil '(scheduled deadline))))))))
-        ("e" "Evil Plans"
-         ((todo ""
-                ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "evil-plans.org")))))))
+                     (org-agenda-skip-if 'nil '(scheduled deadline))))))
+           (todo ""
+                 ((org-agenda-overriding-header "Follow-ups")
+                  (org-agenda-files (list "~/.org/diary.org"))
+                  (org-super-agenda-groups
+                   '((:auto-parent t)))))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/inbox.org")))
+                 (org-agenda-files (list "~/.org/gtd/inbox.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-ts t)))))))
         ("x" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/someday.org")))
+                 (org-agenda-files (list "~/.org/gtd/someday.org"))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
