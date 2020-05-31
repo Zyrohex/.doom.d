@@ -232,7 +232,6 @@
       '(("k" "Next Tasks"
           ((agenda ""
                 ((org-agenda-overriding-header "Agenda")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/next.org") (concat (doom-project-root) "gtd/tasks.org") (concat (doom-project-root) "gtd/tickler.org")))
                  (org-agenda-include-diary t)
                  (org-agenda-start-day (org-today))
                  (org-agenda-span '1)))
@@ -269,9 +268,11 @@
 (defun zyro/loader-theme ()
   "Load theme on startup"
   (interactive)
-  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights"))))
+  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights" "doom-ephemeral"))))
     (if (equal selection '"doom-gruvbox")
         (setq doom-theme 'doom-gruvbox))
+    (if (equal selection '"doom-ephemeral")
+        (setq doom-theme 'doom-ephemeral))
     (if (equal selection '"doom-gruvbox-light")
         (setq doom-theme 'doom-gruvbox-light))
     (if (equal selection '"doom-monokai-pro")

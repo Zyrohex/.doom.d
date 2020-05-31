@@ -57,7 +57,7 @@
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
 
 ;;------ Extras
-(require 'org-id)
+;(require 'org-id)
 ;(setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 (setq org-link-file-path-type 'relative)
 (setq org-passwords-file "~/.org/gtd/passwords.org")

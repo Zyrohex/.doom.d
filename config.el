@@ -232,7 +232,6 @@
       '(("k" "Next Tasks"
           ((agenda ""
                 ((org-agenda-overriding-header "Agenda")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/next.org") (concat (doom-project-root) "gtd/tasks.org") (concat (doom-project-root) "gtd/tickler.org")))
                  (org-agenda-include-diary t)
                  (org-agenda-start-day (org-today))
                  (org-agenda-span '1)))
