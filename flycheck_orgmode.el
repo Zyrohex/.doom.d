@@ -25,7 +25,7 @@
 (setq org-capture-templates
       `(("j" "Diary [w/clock]" entry
          (file+headline "~/.org/diary.org"
-                        ,(format "%s" (format-time-string "%a, %b %d %Y")))
+                        ,(format "%s" (format-time-string "%a, %b-%d")))
          "* %U %^{Title}\n:PROPERTIES:\n:END:\n:LOGBOOK:\n:END:\n%?" :clock-in :clock-resume)
         ("c" "Capture" entry
          (file "~/.org/gtd/inbox.org")
