@@ -12,7 +12,7 @@
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Input Mono" :size 20)
+(setq doom-font (font-spec :family "Input Mono" :size 20481d1f82a038580d37b7bb50f20d09f1d08db9af)
       doom-big-font (font-spec :family "Input Mono" :size 24))
 #+END_SRC
 ** Bullets and more
@@ -359,9 +359,11 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 (defun zyro/loader-theme ()
   "Load theme on startup"
   (interactive)
-  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights" "doom-ephemeral"))))
+  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights" "doom-ephemeral" "doom-solarized-light"))))
     (if (equal selection '"doom-gruvbox")
         (setq doom-theme 'doom-gruvbox))
+    (if (equal selection '"doom-solarized-light")
+        (setq doom-theme 'doom-solarized-light))
     (if (equal selection '"doom-ephemeral")
         (setq doom-theme 'doom-ephemeral))
     (if (equal selection '"doom-gruvbox-light")
