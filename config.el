@@ -119,6 +119,22 @@
 (elfeed-org)
 (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
+(load! "my-deft-title.el")
+(use-package deft
+  :bind (("<f8>" . deft))
+  :commands (deft deft-open-file deft-new-file-named)
+  :config
+  (setq deft-directory "~/.org/notes/"
+        deft-auto-save-interval 0
+        deft-recursive t
+        deft-extensions '("md" "txt" "org")
+        deft-use-filter-string-for-filename t
+        deft-use-filename-as-title nil
+        deft-markdown-mode-title-level 1
+        deft-file-naming-rules '((nospace . "-"))))
+(require 'my-deft-title)
+(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
+
 (use-package helm-org-rifle
   :after (helm org)
   :preface
