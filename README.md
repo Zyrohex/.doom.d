@@ -1,55 +1,57 @@
 
 # Table of Contents
 
-1.  [Getting started](#org2b68e71)
-    1.  [New Changes](#org109cfe3)
-2.  [Pretty](#org75d5bda)
-    1.  [Fonts](#orgd125fd7)
-    2.  [Bullets and more](#orge8db3b6)
-3.  [Environment](#orge9482d4)
-    1.  [User Information](#orge5c549b)
-    2.  [Default folder(s) and file(s)](#orga9f21b0)
-    3.  [Misc Settings](#org19fd37f)
-    4.  [Key Bindings](#org8221ba2)
-4.  [Behavior](#orgc1a2e2b)
-    1.  [Popup Rules](#org9527414)
-    2.  [Buffer Settings](#orgd30f4dd)
-    3.  [Misc Settings](#orgff15c1d)
-5.  [Module Settings](#org249434a)
-    1.  [Misc Modules [Bookmarks, PDF Tools]](#org3a09e20)
-    2.  [Graphs and Chart Modules](#org098df4b)
-    3.  [Elfeed](#org48b9f0c)
-    4.  [DEFT](#orga7104f1)
-    5.  [Org-Rifle](#org6070593)
-    6.  [Org-Super-Links](#orgbaecd4e)
-    7.  [Reveal [HTML Presentations]](#orgdfd43f7)
-    8.  [Super Agenda Settings](#orgb3ef7cf)
-6.  [Load Extras](#org8b2979a)
-    1.  [Theme Settings](#org0e861bf)
+1.  [Getting started](#org2be9072)
+    1.  [New Changes](#orgd27f67b)
+2.  [Pretty](#orgd926269)
+    1.  [Fonts](#org5eaab44)
+    2.  [Bullets and more](#orgf4e65b9)
+3.  [Environment](#orgff9902f)
+    1.  [User Information](#orgfc68145)
+    2.  [Default folder(s) and file(s)](#org713efb2)
+    3.  [Misc Settings](#orgdf56881)
+    4.  [Key Bindings](#org10839f2)
+4.  [Behavior](#org72d9a2e)
+    1.  [Popup Rules](#org312e52f)
+    2.  [Buffer Settings](#org285ed24)
+    3.  [Misc Settings](#org44f1d06)
+5.  [Module Settings](#org224e2b1)
+    1.  [Misc Modules [Bookmarks, PDF Tools]](#org76391c5)
+    2.  [Graphs and Chart Modules](#org0055c51)
+    3.  [Elfeed](#orgde1a9a6)
+    4.  [DEFT](#org24b264b)
+    5.  [Org-Rifle](#orgf8210fa)
+    6.  [Org-Super-Links](#org774def5)
+    7.  [Reveal [HTML Presentations]](#org9fe390a)
+    8.  [Super Agenda Settings](#orgcd17ea9)
+6.  [Load Extras](#org666a78c)
+    1.  [Theme Settings](#orgc0c0ad7)
 
 
 
-<a id="org2b68e71"></a>
+<a id="org2be9072"></a>
 
 # Getting started
 
 
-<a id="org109cfe3"></a>
+<a id="orgd27f67b"></a>
 
 ## New Changes
 
 1.  Search and narrow&#x2026; Bound to `SPC ^`, this provides a function to pick a headline from the current buffer and narrow to it.
-2.  GTD Inbox Processing &#x2026; Credit to Jethro for his function for agenda bulk action processing. Function is bound to `jethro/org-inbox-process`
-3.  Super-Links for back-links support added that provides backlinks support, many thanks to [toshism&rsquo;s](https://github.com/toshism/org-super-links) for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it&rsquo;ll search your existing projects directory when searching. Check `sl-store-link`, `sl-insert-link`. Key bindings are configured under Module Settings.
-4.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
+2.  Agenda-Hook to narrow on current subtree
+3.  Deft mode with custom title maker (thanks to [jingsi&rsquo;s space](https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/))
+4.  GTD Inbox Processing &#x2026; Credit to Jethro for his function for agenda bulk action processing. Function is bound to `jethro/org-inbox-process`
+5.  Super-Links for back-links support added that provides backlinks support, many thanks to [toshism&rsquo;s](https://github.com/toshism/org-super-links) for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it&rsquo;ll search your existing projects directory when searching. Check `sl-store-link`, `sl-insert-link`. Key bindings are configured under Module Settings.
+6.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
 
 
-<a id="org75d5bda"></a>
+<a id="orgd926269"></a>
 
 # Pretty
 
 
-<a id="orgd125fd7"></a>
+<a id="org5eaab44"></a>
 
 ## Fonts
 
@@ -59,7 +61,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-big-font (font-spec :family "Input Mono" :size 24))
 
 
-<a id="orge8db3b6"></a>
+<a id="orgf4e65b9"></a>
 
 ## Bullets and more
 
@@ -68,12 +70,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (setq org-ellipsis "▼")
 
 
-<a id="orge9482d4"></a>
+<a id="orgff9902f"></a>
 
 # Environment
 
 
-<a id="orge5c549b"></a>
+<a id="orgfc68145"></a>
 
 ## User Information
 
@@ -84,7 +86,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="orga9f21b0"></a>
+<a id="org713efb2"></a>
 
 ## Default folder(s) and file(s)
 
@@ -99,7 +101,7 @@ Then we will define some default files. I&rsquo;m probably going to use default 
     (defvar +org-gtd-refs-project '"~/.org/refs/")
 
 
-<a id="org19fd37f"></a>
+<a id="orgdf56881"></a>
 
 ## Misc Settings
 
@@ -110,7 +112,7 @@ Now we load some default settings for EMACS.
     (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-<a id="org8221ba2"></a>
+<a id="org10839f2"></a>
 
 ## Key Bindings
 
@@ -149,12 +151,12 @@ From here we load some extra key bindings that I use often
           :desc "Deft" "w" #'deft)
 
 
-<a id="orgc1a2e2b"></a>
+<a id="org72d9a2e"></a>
 
 # Behavior
 
 
-<a id="org9527414"></a>
+<a id="org312e52f"></a>
 
 ## Popup Rules
 
@@ -166,7 +168,7 @@ From here we load some extra key bindings that I use often
     ;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
 
-<a id="orgd30f4dd"></a>
+<a id="org285ed24"></a>
 
 ## Buffer Settings
 
@@ -179,7 +181,7 @@ From here we load some extra key bindings that I use often
     (setq initial-buffer-choice "~/.org/gtd/next.org")
 
 
-<a id="orgff15c1d"></a>
+<a id="org44f1d06"></a>
 
 ## Misc Settings
 
@@ -192,12 +194,12 @@ From here we load some extra key bindings that I use often
      x-stretch-cursor t)
 
 
-<a id="org249434a"></a>
+<a id="org224e2b1"></a>
 
 # Module Settings
 
 
-<a id="org3a09e20"></a>
+<a id="org76391c5"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -209,7 +211,7 @@ Configuring PDF support and ORG-NOTER for note taking
       :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org098df4b"></a>
+<a id="org0055c51"></a>
 
 ## Graphs and Chart Modules
 
@@ -251,7 +253,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org48b9f0c"></a>
+<a id="orgde1a9a6"></a>
 
 ## Elfeed
 
@@ -260,7 +262,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orga7104f1"></a>
+<a id="org24b264b"></a>
 
 ## DEFT
 
@@ -281,7 +283,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org6070593"></a>
+<a id="orgf8210fa"></a>
 
 ## Org-Rifle
 
@@ -385,7 +387,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgbaecd4e"></a>
+<a id="org774def5"></a>
 
 ## Org-Super-Links
 
@@ -395,7 +397,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
              ("C-c s C-l" . sl-insert-link)))
 
 
-<a id="orgdfd43f7"></a>
+<a id="org9fe390a"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -404,7 +406,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="orgb3ef7cf"></a>
+<a id="orgcd17ea9"></a>
 
 ## Super Agenda Settings
 
@@ -443,7 +445,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       '((:auto-parent t)))))))))
 
 
-<a id="org8b2979a"></a>
+<a id="org666a78c"></a>
 
 # Load Extras
 
@@ -452,7 +454,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (load! "customs.el")
 
 
-<a id="org0e861bf"></a>
+<a id="orgc0c0ad7"></a>
 
 ## Theme Settings
 
