@@ -244,11 +244,6 @@
 
 (provide 'setup-helm-org-rifle)
 
-(use-package org-super-links
-  :bind (("C-c s s" . sl-link)
-         ("C-c s l" . sl-store-link)
-         ("C-c s C-l" . sl-insert-link)))
-
 (setq org-roam-directory "~/.org/")
 
 (defun my/org-roam--backlinks-list-with-content (file)
@@ -323,8 +318,8 @@
                   '((:auto-parent t)))))))))
 
 ;(load! "superlinks.el")
-;(load! "orgmode.el")
-;(load! "customs.el")
+(load! "orgmode.el")
+(load! "customs.el")
 
 (toggle-frame-maximized)
 (defun zyro/loader-theme ()

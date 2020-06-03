@@ -7,8 +7,7 @@
 3. Agenda-Hook to narrow on current subtree
 4. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
 5. GTD Inbox Processing ... Credit to Jethro for his function for agenda bulk action processing. Function is bound to =jethro/org-inbox-process=
-6. Super-Links for back-links support added that provides backlinks support, many thanks to [[https://github.com/toshism/org-super-links][toshism's]] for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it'll search your existing projects directory when searching. Check =sl-store-link=, =sl-insert-link=. Key bindings are configured under Module Settings.
-7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
+6. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
 * Pretty
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
@@ -305,13 +304,6 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 (provide 'setup-helm-org-rifle)
 #+END_SRC
 
-** Org-Super-Links
-#+BEGIN_SRC emacs-lisp
-(use-package org-super-links
-  :bind (("C-c s s" . sl-link)
-         ("C-c s l" . sl-store-link)
-         ("C-c s C-l" . sl-insert-link)))
-#+END_SRC
 ** ROAM
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-directory "~/.org/")
@@ -399,8 +391,8 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 * Load Extras
 #+BEGIN_SRC emacs-lisp
 ;(load! "superlinks.el")
-;(load! "orgmode.el")
-;(load! "customs.el")
+(load! "orgmode.el")
+(load! "customs.el")
 #+END_SRC
 
 ** Theme Settings
