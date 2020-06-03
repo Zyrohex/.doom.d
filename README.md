@@ -1,42 +1,41 @@
 
 # Table of Contents
 
-1.  [Getting started](#org0d65502)
-    1.  [New Changes](#orgdfb58ba)
-2.  [Pretty](#orge987366)
-    1.  [Fonts](#org22cf366)
-    2.  [Bullets and more](#org66d6a84)
-3.  [Environment](#org287e757)
-    1.  [User Information](#org05db1c3)
-    2.  [Default folder(s) and file(s)](#orgeeeac98)
-    3.  [Misc Settings](#org3d86466)
-    4.  [Key Bindings](#orge0fdc90)
-4.  [Behavior](#orgd654bc6)
-    1.  [Popup Rules](#org48317e9)
-    2.  [Buffer Settings](#org109a28b)
-    3.  [Misc Settings](#orgc86fb40)
-5.  [Module Settings](#orgd977610)
-    1.  [Misc Modules [Bookmarks, PDF Tools]](#org64d0bff)
-    2.  [Graphs and Chart Modules](#org4c7c90d)
-    3.  [Elfeed](#orgc3ef43d)
-    4.  [DEFT](#org6cf0e97)
-    5.  [Org-Rifle](#orgc5f2520)
-    6.  [Org-Super-Links](#org1e71bec)
-    7.  [ROAM](#org9cd2a92)
-    8.  [ROAM Export Backlinks + Content](#org16b22dc)
-    9.  [Reveal [HTML Presentations]](#org38907bb)
-    10. [Super Agenda Settings](#orgd3038d1)
-6.  [Load Extras](#orga8c6dcc)
-    1.  [Theme Settings](#orgb3c56a6)
+-   [Getting started](#org7d13e77)
+    -   [New Changes](#org88d385f)
+-   [Pretty](#orgc83aa4f)
+    -   [Fonts](#org1053fe6)
+    -   [Bullets and more](#org75c69d0)
+-   [Environment](#org1503ea2)
+    -   [User Information](#org9083e8d)
+    -   [Default folder(s) and file(s)](#orge7fab47)
+    -   [Misc Settings](#org8a83939)
+    -   [Key Bindings](#org1e54953)
+-   [Behavior](#orga2d83ca)
+    -   [Popup Rules](#org7ad589e)
+    -   [Buffer Settings](#org2c434fc)
+    -   [Misc Settings](#org082baf4)
+-   [Module Settings](#org35e7c43)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#org54dc9db)
+    -   [Graphs and Chart Modules](#org385ab02)
+    -   [Elfeed](#orgccbd5cb)
+    -   [DEFT](#org9041530)
+    -   [Org-Rifle](#org4f01c82)
+    -   [ROAM](#orga2f6cb1)
+    -   [ROAM Export Backlinks + Content](#org81bca10)
+    -   [Reveal [HTML Presentations]](#org3b756a3)
+    -   [Super Agenda Settings](#org9923f1a)
+-   [Load Extras](#orgb6b3b25)
+    -   [Theme Settings](#orgc580f97)
 
 
 
-<a id="org0d65502"></a>
+<a id="org7d13e77"></a>
 
 # Getting started
 
 
-<a id="orgdfb58ba"></a>
+<a id="org88d385f"></a>
 
 ## New Changes
 
@@ -44,17 +43,16 @@
 2.  Search and narrow&#x2026; Bound to `SPC ^`, this provides a function to pick a headline from the current buffer and narrow to it.
 3.  Agenda-Hook to narrow on current subtree
 4.  Deft mode with custom title maker (thanks to [jingsi&rsquo;s space](https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/))
-5.  GTD Inbox Processing &#x2026; Credit to Jethro for his function for agenda bulk action processing. Function is bound to `jethro/org-inbox-process`
-6.  Super-Links for back-links support added that provides backlinks support, many thanks to [toshism&rsquo;s](https://github.com/toshism/org-super-links) for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it&rsquo;ll search your existing projects directory when searching. Check `sl-store-link`, `sl-insert-link`. Key bindings are configured under Module Settings.
-7.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
+5.  GTD Inbox Processing &#x2026; Credit to Jethro for his function. Function is bound to `jethro/org-inbox-process`
+6.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
 
 
-<a id="orge987366"></a>
+<a id="orgc83aa4f"></a>
 
 # Pretty
 
 
-<a id="org22cf366"></a>
+<a id="org1053fe6"></a>
 
 ## Fonts
 
@@ -64,7 +62,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-big-font (font-spec :family "Input Mono" :size 22))
 
 
-<a id="org66d6a84"></a>
+<a id="org75c69d0"></a>
 
 ## Bullets and more
 
@@ -73,12 +71,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (setq org-ellipsis "▼")
 
 
-<a id="org287e757"></a>
+<a id="org1503ea2"></a>
 
 # Environment
 
 
-<a id="org05db1c3"></a>
+<a id="org9083e8d"></a>
 
 ## User Information
 
@@ -89,7 +87,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="orgeeeac98"></a>
+<a id="orge7fab47"></a>
 
 ## Default folder(s) and file(s)
 
@@ -104,7 +102,7 @@ Then we will define some default files. I&rsquo;m probably going to use default 
     (defvar +org-gtd-refs-project '"~/.org/refs/")
 
 
-<a id="org3d86466"></a>
+<a id="org8a83939"></a>
 
 ## Misc Settings
 
@@ -115,7 +113,7 @@ Now we load some default settings for EMACS.
     (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-<a id="orge0fdc90"></a>
+<a id="org1e54953"></a>
 
 ## Key Bindings
 
@@ -162,12 +160,12 @@ From here we load some extra key bindings that I use often
           :desc "Deft" "w" #'deft)
 
 
-<a id="orgd654bc6"></a>
+<a id="orga2d83ca"></a>
 
 # Behavior
 
 
-<a id="org48317e9"></a>
+<a id="org7ad589e"></a>
 
 ## Popup Rules
 
@@ -180,7 +178,7 @@ From here we load some extra key bindings that I use often
     ;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
 
-<a id="org109a28b"></a>
+<a id="org2c434fc"></a>
 
 ## Buffer Settings
 
@@ -193,7 +191,7 @@ From here we load some extra key bindings that I use often
     (setq initial-buffer-choice "~/.org/gtd/next.org")
 
 
-<a id="orgc86fb40"></a>
+<a id="org082baf4"></a>
 
 ## Misc Settings
 
@@ -206,12 +204,12 @@ From here we load some extra key bindings that I use often
      x-stretch-cursor t)
 
 
-<a id="orgd977610"></a>
+<a id="org35e7c43"></a>
 
 # Module Settings
 
 
-<a id="org64d0bff"></a>
+<a id="org54dc9db"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -223,7 +221,7 @@ Configuring PDF support and ORG-NOTER for note taking
       :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org4c7c90d"></a>
+<a id="org385ab02"></a>
 
 ## Graphs and Chart Modules
 
@@ -265,7 +263,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="orgc3ef43d"></a>
+<a id="orgccbd5cb"></a>
 
 ## Elfeed
 
@@ -274,7 +272,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org6cf0e97"></a>
+<a id="org9041530"></a>
 
 ## DEFT
 
@@ -296,7 +294,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orgc5f2520"></a>
+<a id="org4f01c82"></a>
 
 ## Org-Rifle
 
@@ -400,24 +398,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org1e71bec"></a>
-
-## Org-Super-Links
-
-    (use-package org-super-links
-      :bind (("C-c s s" . sl-link)
-             ("C-c s l" . sl-store-link)
-             ("C-c s C-l" . sl-insert-link)))
-
-
-<a id="org9cd2a92"></a>
+<a id="orga2f6cb1"></a>
 
 ## ROAM
 
     (setq org-roam-directory "~/.org/")
 
 
-<a id="org16b22dc"></a>
+<a id="org81bca10"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -450,7 +438,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org38907bb"></a>
+<a id="org3b756a3"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -459,7 +447,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="orgd3038d1"></a>
+<a id="org9923f1a"></a>
 
 ## Super Agenda Settings
 
@@ -503,16 +491,16 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       '((:auto-parent t)))))))))
 
 
-<a id="orga8c6dcc"></a>
+<a id="orgb6b3b25"></a>
 
 # Load Extras
 
     ;(load! "superlinks.el")
-    ;(load! "orgmode.el")
-    ;(load! "customs.el")
+    (load! "orgmode.el")
+    (load! "customs.el")
 
 
-<a id="orgb3c56a6"></a>
+<a id="orgc580f97"></a>
 
 ## Theme Settings
 

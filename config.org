@@ -6,7 +6,7 @@
 2. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
 3. Agenda-Hook to narrow on current subtree
 4. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-5. GTD Inbox Processing ... Credit to Jethro for his function for agenda bulk action processing. Function is bound to =jethro/org-inbox-process=
+5. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
 6. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
 * Pretty
 ** Fonts
