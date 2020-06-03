@@ -1,4 +1,0 @@
-* Welcome to the battle
-- [ ] Tasks need to be completed
-* Settings
-#+TITLE: %^{Title}

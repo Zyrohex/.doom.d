@@ -34,8 +34,9 @@
         ("r" "Reference" entry
          (file "~/.org/gtd/refs.org")
          "* NOTE %^{Title} %^G\n%?")
-        ("f" "File" entry (file zyro/capture-file-name)
-         (file ,(concat (doom-dir) "/templates/test.txt")))
+        ("t" "Templates")
+        ("tc" "Daily Checklist" entry (file+function zyro/capture-file-name counsel-org-agenda-headlines)
+         (file ,(concat (doom-dir) "/templates/task.org")))
         ("a" "Article" plain
          (file+headline "~/.org/gtd/articles.org" "Inbox")
          "%(call-interactively #'org-cliplink-capture)")))
@@ -43,8 +44,13 @@
 (defun zyro/capture-file-name ()
   "Capture file name at call"
   (interactive)
-  (let ((filename (read-file-name "Select file: " (concat (doom-project-root) "notes/"))))
-    (expand-file-name (format "%s.org" filename))))
+  (let ((filename (counsel-find-file (concat (doom-project-root)))))
+    (expand-file-name (format "%s" filename))))
+(defun zyro/capture-template-selector ()
+  "Prompt to select template"
+  (interactive)
+  (let ((filename (counsel-find-file (concat (doom-dir) "/templates/"))))
+    (expand-file-name (format "%s" (counsel-find-file (concat (doom-dir) "/templates/"))))))
 
 ;;------ Directories
 (after! org (setq org-directory "~/.org/"
