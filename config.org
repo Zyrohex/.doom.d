@@ -2,12 +2,13 @@
 
 * Getting started
 ** New Changes
-1. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
-2. Agenda-Hook to narrow on current subtree
-3. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-4. GTD Inbox Processing ... Credit to Jethro for his function for agenda bulk action processing. Function is bound to =jethro/org-inbox-process=
-5. Super-Links for back-links support added that provides backlinks support, many thanks to [[https://github.com/toshism/org-super-links][toshism's]] for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it'll search your existing projects directory when searching. Check =sl-store-link=, =sl-insert-link=. Key bindings are configured under Module Settings.
-6. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
+1. Added =org-roam=
+2. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
+3. Agenda-Hook to narrow on current subtree
+4. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
+5. GTD Inbox Processing ... Credit to Jethro for his function for agenda bulk action processing. Function is bound to =jethro/org-inbox-process=
+6. Super-Links for back-links support added that provides backlinks support, many thanks to [[https://github.com/toshism/org-super-links][toshism's]] for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it'll search your existing projects directory when searching. Check =sl-store-link=, =sl-insert-link=. Key bindings are configured under Module Settings.
+7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
 * Pretty
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]

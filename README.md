@@ -1,59 +1,60 @@
 
 # Table of Contents
 
-1.  [Getting started](#orga90f4b4)
-    1.  [New Changes](#org2866d7c)
-2.  [Pretty](#org3e9f66f)
-    1.  [Fonts](#org2f24950)
-    2.  [Bullets and more](#org6aaf37c)
-3.  [Environment](#org36e3e62)
-    1.  [User Information](#orgffbf7da)
-    2.  [Default folder(s) and file(s)](#org8f3fdd9)
-    3.  [Misc Settings](#orgb186ae3)
-    4.  [Key Bindings](#orga0930df)
-4.  [Behavior](#org6d201ef)
-    1.  [Popup Rules](#orgcbc5f85)
-    2.  [Buffer Settings](#orgf8e14f4)
-    3.  [Misc Settings](#orga2544e2)
-5.  [Module Settings](#org3345e72)
-    1.  [Misc Modules [Bookmarks, PDF Tools]](#orgabc9709)
-    2.  [Graphs and Chart Modules](#org158366f)
-    3.  [Elfeed](#org50a7655)
-    4.  [DEFT](#orgedb1088)
-    5.  [Org-Rifle](#org56eec82)
-    6.  [Org-Super-Links](#org2235562)
-    7.  [ROAM](#org8186620)
-    8.  [ROAM Export Backlinks + Content](#orgcebb1bf)
-    9.  [Reveal [HTML Presentations]](#orgca027cc)
-    10. [Super Agenda Settings](#org0aa000b)
-6.  [Load Extras](#orge54a97e)
-    1.  [Theme Settings](#org3db376a)
+1.  [Getting started](#org0d65502)
+    1.  [New Changes](#orgdfb58ba)
+2.  [Pretty](#orge987366)
+    1.  [Fonts](#org22cf366)
+    2.  [Bullets and more](#org66d6a84)
+3.  [Environment](#org287e757)
+    1.  [User Information](#org05db1c3)
+    2.  [Default folder(s) and file(s)](#orgeeeac98)
+    3.  [Misc Settings](#org3d86466)
+    4.  [Key Bindings](#orge0fdc90)
+4.  [Behavior](#orgd654bc6)
+    1.  [Popup Rules](#org48317e9)
+    2.  [Buffer Settings](#org109a28b)
+    3.  [Misc Settings](#orgc86fb40)
+5.  [Module Settings](#orgd977610)
+    1.  [Misc Modules [Bookmarks, PDF Tools]](#org64d0bff)
+    2.  [Graphs and Chart Modules](#org4c7c90d)
+    3.  [Elfeed](#orgc3ef43d)
+    4.  [DEFT](#org6cf0e97)
+    5.  [Org-Rifle](#orgc5f2520)
+    6.  [Org-Super-Links](#org1e71bec)
+    7.  [ROAM](#org9cd2a92)
+    8.  [ROAM Export Backlinks + Content](#org16b22dc)
+    9.  [Reveal [HTML Presentations]](#org38907bb)
+    10. [Super Agenda Settings](#orgd3038d1)
+6.  [Load Extras](#orga8c6dcc)
+    1.  [Theme Settings](#orgb3c56a6)
 
 
 
-<a id="orga90f4b4"></a>
+<a id="org0d65502"></a>
 
 # Getting started
 
 
-<a id="org2866d7c"></a>
+<a id="orgdfb58ba"></a>
 
 ## New Changes
 
-1.  Search and narrow&#x2026; Bound to `SPC ^`, this provides a function to pick a headline from the current buffer and narrow to it.
-2.  Agenda-Hook to narrow on current subtree
-3.  Deft mode with custom title maker (thanks to [jingsi&rsquo;s space](https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/))
-4.  GTD Inbox Processing &#x2026; Credit to Jethro for his function for agenda bulk action processing. Function is bound to `jethro/org-inbox-process`
-5.  Super-Links for back-links support added that provides backlinks support, many thanks to [toshism&rsquo;s](https://github.com/toshism/org-super-links) for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it&rsquo;ll search your existing projects directory when searching. Check `sl-store-link`, `sl-insert-link`. Key bindings are configured under Module Settings.
-6.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
+1.  Added `org-roam`
+2.  Search and narrow&#x2026; Bound to `SPC ^`, this provides a function to pick a headline from the current buffer and narrow to it.
+3.  Agenda-Hook to narrow on current subtree
+4.  Deft mode with custom title maker (thanks to [jingsi&rsquo;s space](https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/))
+5.  GTD Inbox Processing &#x2026; Credit to Jethro for his function for agenda bulk action processing. Function is bound to `jethro/org-inbox-process`
+6.  Super-Links for back-links support added that provides backlinks support, many thanks to [toshism&rsquo;s](https://github.com/toshism/org-super-links) for this package, I only made minor tweaks to it. The biggest change are to rifle actions so it&rsquo;ll search your existing projects directory when searching. Check `sl-store-link`, `sl-insert-link`. Key bindings are configured under Module Settings.
+7.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
 
 
-<a id="org3e9f66f"></a>
+<a id="orge987366"></a>
 
 # Pretty
 
 
-<a id="org2f24950"></a>
+<a id="org22cf366"></a>
 
 ## Fonts
 
@@ -63,7 +64,7 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
           doom-big-font (font-spec :family "Input Mono" :size 22))
 
 
-<a id="org6aaf37c"></a>
+<a id="org66d6a84"></a>
 
 ## Bullets and more
 
@@ -72,12 +73,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (setq org-ellipsis "▼")
 
 
-<a id="org36e3e62"></a>
+<a id="org287e757"></a>
 
 # Environment
 
 
-<a id="orgffbf7da"></a>
+<a id="org05db1c3"></a>
 
 ## User Information
 
@@ -88,7 +89,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="org8f3fdd9"></a>
+<a id="orgeeeac98"></a>
 
 ## Default folder(s) and file(s)
 
@@ -103,7 +104,7 @@ Then we will define some default files. I&rsquo;m probably going to use default 
     (defvar +org-gtd-refs-project '"~/.org/refs/")
 
 
-<a id="orgb186ae3"></a>
+<a id="org3d86466"></a>
 
 ## Misc Settings
 
@@ -114,7 +115,7 @@ Now we load some default settings for EMACS.
     (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-<a id="orga0930df"></a>
+<a id="orge0fdc90"></a>
 
 ## Key Bindings
 
@@ -161,12 +162,12 @@ From here we load some extra key bindings that I use often
           :desc "Deft" "w" #'deft)
 
 
-<a id="org6d201ef"></a>
+<a id="orgd654bc6"></a>
 
 # Behavior
 
 
-<a id="orgcbc5f85"></a>
+<a id="org48317e9"></a>
 
 ## Popup Rules
 
@@ -179,7 +180,7 @@ From here we load some extra key bindings that I use often
     ;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
 
-<a id="orgf8e14f4"></a>
+<a id="org109a28b"></a>
 
 ## Buffer Settings
 
@@ -192,7 +193,7 @@ From here we load some extra key bindings that I use often
     (setq initial-buffer-choice "~/.org/gtd/next.org")
 
 
-<a id="orga2544e2"></a>
+<a id="orgc86fb40"></a>
 
 ## Misc Settings
 
@@ -205,12 +206,12 @@ From here we load some extra key bindings that I use often
      x-stretch-cursor t)
 
 
-<a id="org3345e72"></a>
+<a id="orgd977610"></a>
 
 # Module Settings
 
 
-<a id="orgabc9709"></a>
+<a id="org64d0bff"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -222,7 +223,7 @@ Configuring PDF support and ORG-NOTER for note taking
       :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org158366f"></a>
+<a id="org4c7c90d"></a>
 
 ## Graphs and Chart Modules
 
@@ -264,7 +265,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org50a7655"></a>
+<a id="orgc3ef43d"></a>
 
 ## Elfeed
 
@@ -273,7 +274,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orgedb1088"></a>
+<a id="org6cf0e97"></a>
 
 ## DEFT
 
@@ -295,7 +296,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org56eec82"></a>
+<a id="orgc5f2520"></a>
 
 ## Org-Rifle
 
@@ -399,7 +400,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org2235562"></a>
+<a id="org1e71bec"></a>
 
 ## Org-Super-Links
 
@@ -409,14 +410,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
              ("C-c s C-l" . sl-insert-link)))
 
 
-<a id="org8186620"></a>
+<a id="org9cd2a92"></a>
 
 ## ROAM
 
     (setq org-roam-directory "~/.org/")
 
 
-<a id="orgcebb1bf"></a>
+<a id="org16b22dc"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -449,7 +450,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="orgca027cc"></a>
+<a id="org38907bb"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -458,7 +459,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="org0aa000b"></a>
+<a id="orgd3038d1"></a>
 
 ## Super Agenda Settings
 
@@ -502,7 +503,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       '((:auto-parent t)))))))))
 
 
-<a id="orge54a97e"></a>
+<a id="orga8c6dcc"></a>
 
 # Load Extras
 
@@ -511,7 +512,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     ;(load! "customs.el")
 
 
-<a id="org3db376a"></a>
+<a id="orgb3c56a6"></a>
 
 ## Theme Settings
 
