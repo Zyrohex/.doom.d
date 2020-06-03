@@ -1,60 +1,58 @@
-(setq doom-font (font-spec :family "InputMono" :size 18)
-      doom-variable-pitch-font (font-spec :family "InputMono" :height 120)
-      doom-unicode-font (font-spec :family "all-the-icons")
-      doom-big-font (font-spec :family "InputMono" :size 20))
+(setq doom-font (font-spec :family "Input Mono" :size 16)
+      doom-big-font (font-spec :family "Input Mono" :size 22))
 
-(setq doom-theme 'chocolate)
-(custom-theme-set-faces
- 'user
- '(org-ellipsis ((t (:foreground "SpringGreen")))))
-(if (equal doom-theme 'chocolate)
-     (custom-theme-set-faces
-      'user
-      '(org-list-dt ((t (:foreground "cadet blue"))))
-      '(org-ellipsis ((t (:foreground "gold"))))))
-(if (equal doom-theme 'chocolate)
-     (setq org-emphasis-alist
-           '(("*" (bold :foreground "MediumPurple"))
-             ("/" (italic :foreground "VioletRed"))
-             ("_" underline)
-             ("=" (:foreground "cadet blue"))
-             ("~" (:foreground "cadet blue"))
-             ("+" (:foreground "slate grey" :strike-through t)))))
-     (if (equal doom-theme 'doom-snazzy)
-         (custom-theme-set-faces
-          'user
-          '(org-block ((t (:background "#20222b"))))
-          '(org-block-begin-line ((t (:background "#282A36"))))
-          '(org-ellipsis ((t (:foreground "SpringGreen"))))
-          '(org-headline-done ((t (:strike-through t))))))
+(setq org-tags-column 0)
+(setq org-superstar-headline-bullets-list '("●" "○"))
+(setq org-ellipsis "▼")
 
 (setq user-full-name "Nicholas Martin"
-      user-mail-address "nmartin84.com")
+      user-mail-address "nmartin84@gmail.com")
+
+(defvar +org-gtd-project-folder "~/.org/gtd/")
+(defvar +org-gtd-tasks-file (concat +org-gtd-project-folder '"next.org"))
+(defvar +org-gtd-inbox-file (concat +org-gtd-project-folder '"inbox.org"))
+(defvar +org-gtd-someday-file (concat +org-gtd-project-folder '"someday.org"))
+(defvar +org-gtd-references-file (concat +org-gtd-project-folder '"references.org"))
+(defvar +org-gtd-notes-file (concat +org-gtd-project-folder '"notes.org"))
+(defvar +org-gtd-refs-project '"~/.org/refs/")
+
 (display-time-mode 1)
 (setq display-time-day-and-date t)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(load-library "find-lisp")
-(defvar org-gtd-tasks-file "~/.org/workload/tasks.org")
-(defvar org-gtd-archive-file "~/.org/workload/archive.org")
-(defvar org-gtd-files (find-lisp-find-files "~/.org/" "\.org$"))
-(defvar org-gtd-notes-files (find-lisp-find-files "~/.org/notes/" "\.org$"))
-
+(bind-key "<f5>" #'org-cycle-hide-all-drawers)
+(bind-key "C-M-<up>" #'evil-window-up)
+(bind-key "C-M-<down>" #'evil-window-down)
+(bind-key "C-M-<left>" #'evil-window-left)
+(bind-key "C-M-<right>" #'evil-window-right)
 (map! :after org
       :map org-mode-map
-      :localleader
+      :leader
+      :desc "Move up window" "<up>" #'evil-window-up
+      :desc "Move down window" "<down>" #'evil-window-down
+      :desc "Move left window" "<left>" #'evil-window-left
+      :desc "Move right window" "<right>" #'evil-window-right
       :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
-      :prefix ("R" . "Rifle")
-      "b" #'helm-org-rifle-current-buffer
-      "a" #'helm-org-rifle-agenda-files
-      "o" #'helm-org-rifle-org-directory
-      "d" #'helm-org-rifle-directories
+      :desc "Find and Narrow" "^" #'+org-find-headline-narrow
+      :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
+      :prefix ("s" . "+search")
+      :desc "Counsel Narrow" "n" #'counsel-narrow
+      :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
+      :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
+      :desc "Deadgrep" "d" #'deadgrep
+      :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
+      :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
-      :prefix ("g" . "+goto")
-      "q" #'orgql-search)
+      "g" #'eos/org-add-ids-to-headlines-in-file
+      :prefix ("G" . "gtd")
+       :desc "Next" "n" #'+org-gtd-next-tasks
+       :desc "Inbox" "i" #'+org-gtd-inbox
+       :desc "Someday" "s" #'+org-gtd-someday
+       :desc "References" "r" #'+org-gtd-references)
 
 (map! :leader
-      :desc "Set Bookmark" "!" #'my/goto-bookmark-location
+      :desc "Set Bookmark" "`" #'my/goto-bookmark-location
       :prefix ("s" . "search")
       :desc "Deadgrep Directory" "d" #'deadgrep
       :desc "Swiper All" "@" #'swiper-all
@@ -62,246 +60,103 @@
       :desc "Elfeed" "e" #'elfeed
       :desc "Deft" "w" #'deft)
 
-(after! org (set-popup-rule! "^Capture.*\\.org$" :side 'right :size .50 :select t :vslot 2 :ttl 3))
-(after! org (set-popup-rule! "Dictionary" :side 'bottom :size .30 :select t :vslot 3 :ttl 3))
-(after! org (set-popup-rule! "*helm*" :side 'bottom :size .30 :select t :vslot 5 :ttl 3))
-(after! org (set-popup-rule! "*eww*" :side 'right :size .30 :slect t :vslot 5 :ttl 3))
-(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-(after! org (set-popup-rule! "*Ledger Report*" :side 'right :size .30 :select t :vslot 4 :ttl 3))
-(after! org (set-popup-rule! "*xwidget" :side 'right :size .50 :select t :vslot 5 :ttl 3))
-(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
-(after! org (set-popup-rule! "*Org ql" :side 'right :size .50 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
+;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
+;(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
+;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
+;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
+;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
-(global-auto-revert-mode t)
+(global-auto-revert-mode 1)
+(setq undo-limit 80000000
+      evil-want-fine-undo t
+      auto-save-default t
+      inhibit-compacting-font-caches t)
+(whitespace-mode -1)
+(setq initial-buffer-choice "~/.org/gtd/next.org")
 
-(setq display-line-numbers-type 'relative)
-
-(custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
+(setq display-line-numbers-type t)
+(setq-default
+ delete-by-moving-to-trash t
+ tab-width 4
+ uniquify-buffer-name-style 'forward
+ window-combination-resize t
+ x-stretch-cursor t)
 
 (require 'bookmark+)
 
-(setq deft-directory "~/.org/notes/")
-(setq deft-current-sort-method 'title)
+(use-package org-pdftools
+  :hook (org-load . org-pdftools-setup-link))
 
-(setq rmh-elfeed-org-files "~/.elfeed/elfeed.org")
+(after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
-(after! org (setq org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/references.org")))
-(after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-dim-blocked-tasks t
-                  org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp ":\\w+:"
-                  org-agenda-compact-blocks t
-                  org-agenda-block-separator nil
-;                  org-agenda-prefix-format " %(my-agenda-prefix) "
-                  org-agenda-skip-scheduled-if-done t
-                  org-agenda-skip-deadline-if-done t
-                  org-enforce-todo-checkbox-dependencies nil
-                  org-habit-show-habits t))
+; GNUPLOT
+(use-package gnuplot
+  :config
+  (setq gnuplot-program "gnuplot"))
 
-(load-library "find-lisp")
-(after! org (setq org-agenda-files
-                  (find-lisp-find-files "~/.org/" "\.org$")))
+; MERMAID
+(setq mermaid-mmdc-location "~/node_modules/.bin/mmdc"
+      ob-mermaid-cli-path "~/node_modules/.bin/mmdc")
 
-;(after! org (setq org-capture-templates
-;                  '(("a" "Append")
-;                    ("c" "Captures"))))
+; ORG-MIND-MAP
+(use-package org-mind-map
+  :init
+  (require 'ox-org)
+  ;; Uncomment the below if 'ensure-system-packages` is installed
+  ;;:ensure-system-package (gvgen . graphviz)
+  :config
+  ;;(setq org-mind-map-engine "dot")       ; Default. Directed Graph
+   (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
+  ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
+  ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
+  ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
+  ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
+  ;; (setq org-mind-map-engine "circo")  ; Circular Layout
+  )
 
-(after! org (add-to-list 'org-capture-templates
-                         '("h" "Append Headline" entry (file+function org-capture-file-selector org-capture-templates-append-headline)
-                           "%(format \"%s\" org-capture-templates-dynamic-opt1)%?")))
+; PLANTUML
+(use-package ob-plantuml
+  :ensure nil
+  :commands
+  (org-babel-execute:plantuml)
+  :config
+  (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
-(after! org (add-to-list 'org-capture-templates
-                         '("l" "Append List" plain (file+function org-capture-file-selector org-capture-templates-append-notes)
-                           "%(format \"%s\" org-capture-templates-dynamic-opt2)%?")))
+(require 'elfeed-org)
+(elfeed-org)
+(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
-(after! org (add-to-list 'org-capture-templates
-             '("t" "Task" entry (file+headline org-gtd-tasks-file "INBOX")
-               "* TODO %^{taskname}%? %^{CATEGORY}p
-:PROPERTIES:
-:CREATED: %U
-:END:
-")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("r" "Reference" entry (file "~/.org/workload/references.org")
-"* TODO %u %^{reference}%?")))
-
-(defun my/generate-org-note-name ()
-  (setq my-org-note--name (read-string "Name: "))
-  (expand-file-name (format "%s.org" my-org-note--name) "~/.org/notes/"))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("n" "New Note" plain (file my/generate-org-note-name)
-                           "%(format \"#+TITLE: %s\n\" my-org-note--name)
-%?")))
-
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
-(after! org (add-to-list 'org-capture-templates
-                         '("fnh" "New Headline to Note" entry (file org-capture-file-selector)
-                           "* %?")))
-
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (setq org-notes-directory "~/.org/notes/")
-  (concat (read-file-name "Select file: " org-notes-directory)))
-(after! org (add-to-list 'org-capture-templates
-                         '("fni" "New Item to Headline" plain (file+function org-capture-file-selector org-capture-headline-finder)
-                           "+ %u %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("fti" "+Task Item" plain (file+function "~/.org/workload/tasks.org" org-capture-headline-finder)
-"+ %u %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("ftc" "Child Task" entry (file+function "~/.org/workload/tasks.org" org-find-task-headline)
-"* TODO %u %^{task}%? %^G")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("bt" "Task" entry (file+function buffer-name org-find-task-headline)
-"* TODO %u %^{task} %^G
-%?")))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("d" "Daily Task" plain (file+headline "~/.org/workload/tasks.org" "Daily Items")
-                           "- [ ] %t %?")))
-
-(after! org (add-to-list 'org-capture-templates
-             '("x" "Time Tracker" entry (file+olp+datetree "~/.org/workload/timetracking.org")
-               "* [%\\1] %\\7 for %\\5
-:PROPERTIES:
-:CASENUMBER: %^{Case or SVCTAG}
-:ACCOUNT:  %^{account}
-:AUDIENCE: %^{audience}
-:SOURCE:   %^{source|Phone|Email|IM|Computer|Onsite|OOO|Meeting}
-:PERSON:   %^{Whose asking for help?}
-:TASK:     %^{task}
-:DESCRIPTION: %^{description}
-:CREATED:  %u
-:END:
-:LOGBOOK:
-:END:
-%?" :tree-type week :clock-in t :clock-resume t)))
-
-(after! org (setq org-directory "~/.org/"
-                  org-image-actual-width nil
-                  +org-export-directory "~/.export/"
-                  org-archive-location "~/.org/workload/archive.org::datetree/"
-                  org-default-notes-file "~/.org/workload/inbox.org"
-                  projectile-project-search-path '("~/.org/")))
-
-(after! org (setq org-html-head-include-scripts t
-                  org-export-with-toc t
-                  org-export-with-author t
-                  org-export-headline-levels 5
-                  org-export-with-drawers nil
-                  org-export-with-email t
-                  org-export-with-footnotes t
-                  org-export-with-sub-superscripts nil
-                  org-export-with-latex t
-                  org-export-with-section-numbers nil
-                  org-export-with-properties t
-                  org-export-with-smart-quotes t
-                  org-export-backends '(pdf ascii html latex odt md pandoc)))
-
-(after! org (setq org-todo-keyword-faces
-      '(("TODO" :foreground "OrangeRed" :weight bold)
-        ("NEXT" :foreground "SteelBlue" :weight bold)
-        ("SOMEDAY" :foreground "gold" :weight bold)
-        ("ACTIVE" :foreground "DeepPink" :weight bold)
-        ("NEXT" :foreground "spring green" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold :strike-through t))))
-
-(after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n!)" "SOMEDAY(s!)" "HOLDING(h!)" "DELEGATED(e!)" "|" "DONE(d!)"))))
-
-(after! org (setq org-log-state-notes-insert-after-drawers nil
-                  org-log-into-drawer t
-                  org-log-done 'time
-                  org-log-repeat 'time
-                  org-log-redeadline 'note
-                  org-log-reschedule 'note))
-
-;(after! org (setq org-bullets-bullet-list '("•" "◦")
-(after! org (setq org-hide-emphasis-markers nil
-                  org-bullets-bullet-list '("◉" "⚫" "○")
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
-                  org-ellipsis "▼"))
-
-(setq org-use-property-inheritance t ; We like to inhert properties from their parents
-      org-catch-invisible-edits 'smart) ; Catch invisible edits
-
-(after! org (setq org-publish-project-alist
-                  '(("attachments"
-                     :base-directory "~/.org/notes/attachments/"
-                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html/images/"
-                     :publishing-function org-publish-attachment)
-                    ("notes"
-                     :base-directory "~/.org/"
-                     :publishing-directory "~/publish_html"
-                     :base-extension "org"
-                     :with-drawers t
-                     :recursive t
-                     :auto-sitemap t
-                     :sitemap-filename "index.html"
-                     :publishing-function org-html-publish-to-html
-                     :section-numbers nil
-                     :html-head "<link rel=\"stylesheet\"
-                     href=\"http://dakrone.github.io/org.css\"
-                     type=\"text/css\"/>"
-                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
-                     :with-email t
-                     :html-link-up ".."
-                     :auto-preamble t
-                     :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes")))))
-
-(after! org (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-                  org-outline-path-complete-in-steps nil
-                  org-refile-allow-creating-parent-nodes 'confirm))
-
-(after! org (setq org-startup-indented t
-                  org-src-tab-acts-natively t))
-;(add-hook 'org-mode-hook (lambda () (org-autolist-mode)))
-(add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-
-(after! org (setq org-tags-column -80))
+(load! "my-deft-title.el")
+(use-package deft
+  :bind (("<f8>" . deft))
+  :commands (deft deft-open-file deft-new-file-named)
+  :config
+  (setq deft-directory "~/.org/notes/"
+        deft-auto-save-interval 0
+        deft-recursive t
+        deft-current-sort-method 'title
+        deft-extensions '("md" "txt" "org")
+        deft-use-filter-string-for-filename t
+        deft-use-filename-as-title nil
+        deft-markdown-mode-title-level 1
+        deft-file-naming-rules '((nospace . "-"))))
+(require 'my-deft-title)
+(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 (use-package helm-org-rifle
   :after (helm org)
   :preface
   (autoload 'helm-org-rifle-wiki "helm-org-rifle")
   :config
-  ;; Define Helm actions to insert a link.
-  ;; Note that these actions are effective only in org-mode and its
-  ;; derived modes.
-  (add-to-list 'helm-org-rifle-actions
-               '("Insert link"
-                 . helm-org-rifle--insert-link)
-               t)
-  (add-to-list 'helm-org-rifle-actions
-               '("Insert link with custom ID"
-                 . helm-org-rifle--insert-link-with-custom-id)
-               t)
-  (add-to-list 'helm-org-rifle-actions
-               '("Store link"
-                 . helm-org-rifle--store-link)
-               t)
-  (add-to-list 'helm-org-rifle-actions
-               '("Store link with custom ID"
-                 . helm-org-rifle--store-link-with-custom-id)
-               t)
-  (add-to-list 'helm-org-rifle-actions
-               '("Add org-edna dependency on this entry (with ID)"
-                 . akirak/helm-org-rifle-add-edna-blocker-with-id)
-               t)
+;  (add-to-list 'helm-org-rifle-actions '("Super Link" . sl-insert-link-rifle-action) t)
+  (add-to-list 'helm-org-rifle-actions '("Insert link" . helm-org-rifle--insert-link) t)
+;  (add-to-list 'helm-org-rifle-actions '("Insert link with custom ID" . helm-org-rifle--insert-link-with-custom-id) t)
+  (add-to-list 'helm-org-rifle-actions '("Store link" . helm-org-rifle--store-link) t)
+;  (add-to-list 'helm-org-rifle-actions '("Store link with custom ID" . helm-org-rifle--store-link-with-custom-id) t)
+;  (add-to-list 'helm-org-rifle-actions '("Add org-edna dependency on this entry (with ID)" . akirak/helm-org-rifle-add-edna-blocker-with-id) t)
+  (add-to-list 'helm-org-rifle-actions '("Go-to Entry and Narrow" . helm-org-rifle--narrow))
   (defun helm-org-rifle--store-link (candidate &optional use-custom-id)
     "Store a link to CANDIDATE."
     (-let (((buffer . pos) candidate))
@@ -318,9 +173,16 @@
                                           (helm-org-rifle--make-default-custom-id
                                            (nth 4 (org-heading-components))))))
          (call-interactively 'org-store-link)))))
+
+  (defun helm-org-rifle--narrow (candidate)
+    "Go-to and then Narrow Selection"
+    (helm-org-rifle-show-entry candidate)
+    (org-narrow-to-subtree))
+
   (defun helm-org-rifle--store-link-with-custom-id (candidate)
     "Store a link to CANDIDATE with a custom ID.."
     (helm-org-rifle--store-link candidate 'use-custom-id))
+
   (defun helm-org-rifle--insert-link (candidate &optional use-custom-id)
     "Insert a link to CANDIDATE."
     (unless (derived-mode-p 'org-mode)
@@ -331,12 +193,14 @@
         (org-goto-marker-or-bmk orig-marker)
         (org-insert-link nil dest label)
         (message "Inserted a link to %s" dest))))
+
   (defun helm-org-rifle--make-default-custom-id (title)
     (downcase (replace-regexp-in-string "[[:space:]]" "-" title)))
+
   (defun helm-org-rifle--insert-link-with-custom-id (candidate)
     "Insert a link to CANDIDATE with a custom ID."
     (helm-org-rifle--insert-link candidate t))
-  ;; Based on the definition of helm-org-rifle-files in helm-org-rifle.el
+
   (helm-org-rifle-define-command
    "wiki" ()
    "Search in \"~/lib/notes/writing\" and `plain-org-wiki-directory' or create a new wiki entry"
@@ -372,289 +236,118 @@
                                       (kill-buffer (helm-attr 'buffer source))))))))))
   :general
   (:keymaps 'org-mode-map
-            "M-s r" #'helm-org-rifle-current-buffer)
+   "M-s r" #'helm-org-rifle-current-buffer)
   :custom
-  (helm-org-rifle-directories-recursive nil)
+  (helm-org-rifle-directories-recursive t)
   (helm-org-rifle-show-path t)
   (helm-org-rifle-test-against-path t))
 
 (provide 'setup-helm-org-rifle)
 
-(use-package! org-roam
-  :commands (org-roam-insert org-roam-find-file org-roam)
-  :init
-  (setq org-roam-directory "~/.org/notes/")
-  (setq org-roam-graph-viewer "/usr/bin/open")
-  :bind (:map org-roam-mode-map
-          (("C-c n l" . org-roam)
-           ("C-c n f" . org-roam-find-file)
-           ("C-c n b" . org-roam-switch-to-buffer)
-           ("C-c n g" . org-roam-graph-show))
-          :map org-mode-map
-          (("C-c n i" . org-roam-insert)))
-  :config
-  (org-roam-mode +1))
-(require 'company-org-roam)
-(push 'company-org-roam company-backends)
+(use-package org-super-links
+  :bind (("C-c s s" . sl-link)
+         ("C-c s l" . sl-store-link)
+         ("C-c s C-l" . sl-insert-link)))
+
+(setq org-roam-directory "~/.org/")
+
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          (insert (format "\n\n* %d Backlinks\n"
+                          (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "** [[file:%s][%s]]\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
+
+  (defun my/org-export-preprocessor (backend)
+    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+      (unless (string= links "")
+        (save-excursion
+          (goto-char (point-max))
+          (insert (concat "\n* Backlinks\n") links)))))
+
+  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+
+(require 'ox-reveal)
+(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+(setq org-reveal-title-slide nil)
 
 (org-super-agenda-mode t)
 (setq org-agenda-custom-commands
-      '(("k" "Tasks"
-         ((agenda ""
-                  ((org-agenda-overriding-header "Agenda")
-                   (org-agenda-span 'day)
-                   (org-agenda-start-day (org-today))
-                   (org-agenda-files '("~/.org/workload/tasks.org" "~/.org/workload/tickler.org"))))
-          (todo ""
-                ((org-agenda-overriding-header "Tasks")
-                 (org-agenda-skip-function
-                  '(or
-                    (and
-                     (org-agenda-skip-entry-if 'notregexp "#[A-C]")
-                     (org-agenda-skip-entry-if 'notregexp ":@\\w+"))
-                    (org-agenda-skip-if nil '(scheduled deadline))
-                    (org-agenda-skip-if 'todo '("SOMEDAY"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
-                 (org-super-agenda-groups
-                  '((:name "Priority Items"
-                           :priority>= "B")
-                    (:auto-parent t)))))
-          (todo ""
-                ((org-agenda-overriding-header "Delegated Tasks")
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
-                 (org-tags-match-list-sublevels t)
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-subtree-if 'nottodo '("DELEGATED"))))
-                 (org-super-agenda-groups
-                  '((:auto-property "WHO")))))))
-        ("n" "Notes"
-         ((todo ""
-                ((org-agenda-overriding-header "Note Actions")
-                 (org-agenda-files '("~/.org/notes/"))
-                 (org-super-agenda-groups
-                  '((:auto-category t)))))))
+      '(("k" "Next Tasks"
+          ((agenda ""
+                ((org-agenda-overriding-header "Agenda")
+                 (org-agenda-files (list (concat (doom-project-root) "gtd/")))
+                 (org-agenda-time-grid nil)
+                 (org-agenda-include-diary t)
+                 (org-agenda-start-day (org-today))
+                 (org-agenda-span '1)))
+           (todo ""
+                 ((org-agenda-overriding-header "Not Scheduled")
+                  (org-agenda-files (list (concat (doom-project-root) "gtd/next.org")))
+                  (org-agenda-skip-function
+                   '(or
+                     (org-agenda-skip-if 'nil '(scheduled deadline))))))
+           (todo ""
+                 ((org-agenda-overriding-header "References")
+                  (org-agenda-files (list (concat (doom-project-root) "gtd/refs.org")))))
+           (todo ""
+                 ((org-agenda-overriding-header "Follow-ups")
+                  (org-agenda-files (list (concat (doom-project-root) "diary.org")))
+                  (org-super-agenda-groups
+                   '((:auto-parent t)))))))
         ("i" "Inbox"
          ((todo ""
-                ((org-agenda-overriding-header "Inbox")
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-entry-if 'regexp ":@\\w+")
-                    (org-agenda-skip-entry-if 'regexp "\[#[A-E]\]")
-                    (org-agenda-skip-if 'nil '(scheduled deadline))
-                    (org-agenda-skip-entry-if 'todo '("SOMEDAY"))
-                    (org-agenda-skip-entry-if 'todo '("DELEGATED"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                ((org-agenda-overriding-header "")
+                 (org-agenda-files (list (concat (doom-project-root) "gtd/inbox.org")))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-ts t)))))))
-        ("s" "Someday"
+        ("x" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday")
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-entry-if 'nottodo '("SOMEDAY"))))
-                 (org-agenda-files '("~/.org/workload/tasks.org"))
+                 (org-agenda-files (list (concat (doom-project-root) "gtd/someday.org")))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
-(defun my/org-capture-note-file ()
-  "Select a capture note file."
+
+;(load! "superlinks.el")
+;(load! "orgmode.el")
+;(load! "customs.el")
+
+(toggle-frame-maximized)
+(defun zyro/loader-theme ()
+  "Load theme on startup"
   (interactive)
-  (let ((file (read-file-name "Note file: "
-                              (expand-file-name "notes/" org-directory))))
-    (if (or (file-exists-p file)
-            (string-suffix-p ".org" file))
-        file
-      (concat file ".org"))))
-
-(defun my--browse-url (url &optional _new-window)
-  ;; new-window ignored
-  "Opens link via powershell.exe"
-  (interactive (browse-url-interactive-arg "URL: "))
-  (let ((quotedUrl (format "start '%s'" url)))
-    (apply 'call-process "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" nil
-           0 nil
-           (list "-Command" quotedUrl))))
-(setq-default browse-url-browser-function 'my--browse-url)
-
-(defun my-agenda-prefix ()
-  (format "%s" (my-agenda-indent-string (org-current-level))))
-
-(defun my-agenda-indent-string (level)
-  (if (= level 1)
-      ""
-    (let ((str ""))
-      (while (> level 2)
-        (setq level (1- level)
-              str (concat str "──")))
-      (concat str "►"))))
-
-;;; my-goto.el --- go to things quickly -*- lexical-binding: t; -*-
-
-;; This is free and unencumbered software released into the public domain.
-
-;; Author: Bas Alberts <bas@anti.computer>
-;; URL: https://github.com/anticomputer/my-goto.el
-
-;; Version: 0.1
-;; Package-Requires: ((emacs "25") (cl-lib "0.5"))
-
-;; Keywords: bookmark
-
-;;; Commentary:
-
-;;; This lets you define custom dispatch bookmarks
-;;; You can think of it as a lightweight `bookmark+'
-
-;;; Code:
-(require 'bookmark)
-(require 'cl-lib)
-
-;; add any custom classes to this list
-(defvar my/goto-classes '(:uri :file))
-
-;; define a generic (xristos-fu)
-(cl-defgeneric my/goto-dispatch (class goto)
-  "Visit GOTO based on CLASS.")
-
-;; specialize the generic for the cases we want to handle
-(cl-defmethod my/goto-dispatch ((class (eql :uri)) goto)
-  "Visit GOTO based on CLASS."
-  (browse-url goto))
-
-(cl-defmethod my/goto-dispatch ((class (eql :file)) goto)
-  "Visit GOTO based on CLASS."
-  (find-file goto))
-
-;; fall-through method
-(cl-defmethod my/goto-dispatch (class goto)
-  "Visit GOTO based on CLASS."
-  (message "goto: no handler for %s" class))
-
-(defun my/goto-bookmark-handler (bookmark)
-  "Handle goto BOOKMARK through goto dispatchers."
-  (let* ((v (read (cdr (assq 'filename bookmark))))
-         (class (car v))
-         (goto (cadr v)))
-    (my/goto-dispatch class goto)))
-
-;;;###autoload
-(defun my/goto-bookmark-location (class location &optional label)
-  "Bookmark LOCATION of CLASS under optional LABEL."
-  (interactive
-   (let* ((class (read (completing-read "class: " my/goto-classes)))
-          (location (if (eq class :file)
-                        (read-file-name "location: ")
-                      (read-string "location: ")))
-          (label (read-string "label: " nil nil location)))
-     (list class location label)))
-  (unless (equal label "")
-    (let ((label (or label location)))
-      (bookmark-store
-       label
-       `((filename . ,(format "%S" `(,class ,location)))
-         (handler . my/goto-bookmark-handler))
-       nil))))
-
-(provide 'my-goto)
-;;; my-goto.el ends here
-
-(defvar org-archive-directory "~/.org/archives/")
-(defun org-archive-file ()
-  "Moves the current buffer to the archived folder"
-  (interactive)
-  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
-        (dir (read-directory-name "Move to: " org-archive-directory)))
-    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
-    (delete-file old)))
-(provide 'org-archive-file)
-
-(defun org-capture-templates-append-headline ()
-  "A guided walk-through to capturing"
-  (interactive)
-  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
-    (if (null (car org-agenda-files))
-        (error "%s is not visiting a faile" (buffer-name (current-buffer)))
-      (counsel-org-agenda-headlines)))
-  (org-back-to-heading-or-point-min)
-  (if (eq (count-lines (point-min) (point-max)) (count-lines (point-min) (point)))
-      (newline-and-indent))
-  (let ((var1 '("TODO" "Headline"))
-        (var2 '("None" "Active" "In-Active")))
-    (let ((selection (ivy-completing-read "Choose an option: " option1))
-          (date1 (ivy-completing-read "Choose 2nd option: " option2)))
-      (setq org-capture-templates-dynamic-opt1 (concat
-                                                (or
-                                                 (if (equal selection (nth 0 var11))
-                                                     (concat "* TODO "))
-                                                 (if (equal selection (nth 1 var1))
-                                                     (concat "* ")))
-                                                (or
-                                                 (if (equal date1 (nth 0 var2))
-                                                     (concat ""))
-                                                 (if (equal date1 (nth 1 var2))
-                                                     (concat (format-time-string "<%Y-%m-%d %a>")))
-                                                 (if (equal date1 (nth 2 var2))
-                                                     (concat (format-time-string "[%Y-%m-%d %a]")))))))))
-
-(defun org-capture-templates-append-notes ()
-  "A guided walk-through to capturing"
-  (interactive)
-  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
-    (if (null (car org-agenda-files))
-        (error "%s is not visiting a faile" (buffer-name (current-buffer)))
-      (counsel-org-agenda-headlines)))
-  (next-line)
-  (org-end-of-subtree)
-  (if (eq (count-lines (point-min) (point-max)) (count-lines (point-min) (point)))
-      (newline-and-indent))
-  (let ((var1 '("Checklist" "List" "None"))
-        (var2 '("None" "Inactive" "Active")))
-    (let
-        ((selection (ivy-completing-read "Choose Line: " var1))
-         (date1 (ivy-completing-read "Choose timestamp: " var2)))
-      (setq org-capture-templates-dynamic-opt2 (concat
-                                                (or
-                                                 (if (equal selection (nth 0 var1))
-                                                     (concat "- [ ] "))
-                                                 (if (equal selection (nth 1 var1))
-                                                     (concat "- "))
-                                                 (if (equal selection (nth 2 var1))
-                                                     (concat "")))
-                                                (or
-                                                 (if (equal date1 (nth 0 var2))
-                                                     (concat ""))
-                                                 (if (equal date1 (nth 1 var2))
-                                                     (concat (format-time-string "[%Y-%m-%d %a]")))
-                                                 (if (equal date1 (nth 2 var2))
-                                                     (concat (format-time-string "<%Y-%m-%d %a>")))))))))
-
-(defun org-capture-file-selector ()
-  "test file selector"
-  (interactive)
-  (concat (read-file-name "Select file: " org-directory)))
-
-(defun org-capture-headline-finder (&optional arg)
-  "Like `org-todo-list', but using only the current buffer's file."
-  (interactive "P")
-  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
-    (if (null (car org-agenda-files))
-        (error "%s is not visiting a file" (buffer-name (current-buffer)))
-      (counsel-org-agenda-headlines)))
-  (goto-char (org-end-of-subtree)))
-
-(defun org-update-cookies-after-save()
-  (interactive)
-  (let ((current-prefix-arg '(4)))
-    (org-update-statistics-cookies "ALL")))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook 'org-update-cookies-after-save nil 'make-it-local)))
-(provide 'org-update-cookies-after-save)
-
-(setq-default truncate-lines t)
-
-(defun jethro/truncate-lines-hook ()
-  (setq truncate-lines nil))
-
-(add-hook 'text-mode-hook 'jethro/truncate-lines-hook)
+  (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights" "doom-ephemeral" "doom-solarized-light" "doom-horizon"))))
+    (if (equal selection '"doom-gruvbox")
+        (setq doom-theme 'doom-gruvbox))
+    (if (equal selection '"doom-horizon")
+        (setq doom-theme 'doom-horizon))
+    (if (equal selection '"doom-solarized-light")
+        (setq doom-theme 'doom-solarized-light))
+    (if (equal selection '"doom-ephemeral")
+        (setq doom-theme 'doom-ephemeral))
+    (if (equal selection '"doom-gruvbox-light")
+        (setq doom-theme 'doom-gruvbox-light))
+    (if (equal selection '"doom-monokai-pro")
+        (setq doom-theme 'doom-monokai-pro))
+    (if (equal selection '"doom-snazzy")
+        (setq doom-theme 'doom-snazzy))
+    (if (equal selection '"doom-city-lights")
+        (setq doom-theme 'doom-city-lights))
+    (if (equal selection '"doom-henna")
+        (setq doom-theme 'doom-henna))))
+(after! org (if (y-or-n-p "Load? ")
+    (call-interactively 'zyro/loader-theme)))

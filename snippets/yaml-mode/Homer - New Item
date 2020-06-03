@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: Homer - New Item
-# key: Home - New Item
-# --
-- name: "$1"
-  subtitle: "$2"
-  logo: "$3"
-  url: "https://www.$4.com"
-  target: '_blank'

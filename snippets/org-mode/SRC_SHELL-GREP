@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: SRC_SHELL-GREP
-# key: SRC SHELL GREP
-# --
-#+name: grep output
-#+BEGIN_SRC bash :results output code :exports results
-grep -i '$1' /$2
-#+END_SRC

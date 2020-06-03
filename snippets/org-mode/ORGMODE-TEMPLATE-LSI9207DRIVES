@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: ORGMODE-TEMPLATE-LSI9207DRIVES
+# key: Template 9207 Drivesi
+# --
+Device on =dev/sd$1= shows failed. Device appears to be =sg$2=. Slot number is =$3= and the serial number is =$4=.
+
+#+caption: dmesg output
+#+BEGIN_EXAMPLE
+$5
+#+END
+
+#+caption: HWInfo.log
+#+BEGIN_EXAMPLE
+$6
+#+END

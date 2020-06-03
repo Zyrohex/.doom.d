@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: ESCALATION
+# key: ESCALATION
+# --
++ ESCALATION:
+  - Problem Statement:
+  - Business Impact:
+  - Number of systems:
+  - Severity:
+  - Supported?

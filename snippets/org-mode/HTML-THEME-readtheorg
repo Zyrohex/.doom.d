@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: HTML-THEME-readtheorg
+# key: HTML Theme Readtheorg
+# --
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup

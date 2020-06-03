@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: SRC_GREPBYTAG
+# key: SRC GREPBYTAG
+# --
+#+name: log parsing
+#+BEGIN_SRC bash :results output example :exports results
+grep -iR '$1' ~/.logs/*_$2.csv
+#+END_SRC
