@@ -35,11 +35,22 @@
          (file "~/.org/gtd/refs.org")
          "* NOTE %^{Title} %^G\n%?")
         ("t" "Templates")
-        ("tc" "Daily Checklist" entry (file+function zyro/capture-file-name counsel-org-agenda-headlines)
-         (file ,(concat (doom-dir) "/templates/task.org")))
+        ("tc" "Capture" entry (file "~/.org/gtd/inbox.org")
+         (file ,(concat (doom-dir) "/templates/capture.org")))
+        ("tb" "Breakfix" entry (file "~/.org/gtd/inbox.org")
+         (file ,(concat (doom-dir) "/templates/breakfix.org")))
+        ("tm" "Meeting Notes" entry (file "~/.org/diary.org")
+         (file ,(concat (doom-dir) "/templates/meeting-notes.org")))
         ("a" "Article" plain
          (file+headline "~/.org/gtd/articles.org" "Inbox")
          "%(call-interactively #'org-cliplink-capture)")))
+
+(defun zyro/capture-pick-headline ()
+  "Pick headline from Inbox"
+  (interactive)
+  (let ((org-agenda-files "~/.org/gtd/inbox.org"))
+    (counsel-org-agenda-headlines)))
+
 
 (defun zyro/capture-file-name ()
   "Capture file name at call"

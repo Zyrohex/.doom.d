@@ -1,4 +1,0 @@
-* Daily Items
-:PROPERTIES:
-:CATEGORY: Daily Checklist
-:END:

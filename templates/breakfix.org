@@ -1,0 +1,13 @@
+* TODO %^{PRIORITY|[#A]|[#B]|[#C]} %^{Task} %^G
+:PROPERTIES:
+:CREATED:  %U
+:SERIAL:   %^{SERIAL}
+:CASE:     %^{CASE}
+:COMPONENT: %^{COMPONENT}
+:PLATFORM: %^{PLATFORM}
+:WHO:      %^{WHO}
+:END:
+:LOGBOOK:
+:END:
+
+*Overview:* %?
