@@ -21,26 +21,23 @@
 ;;------ Captures
 
 (setq org-capture-templates
-      `(("d" "Diary [w/clock]" entry
-         (file+headline "~/.org/diary.org"
-                        ,(format "%s" (format-time-string "%b %Y")))
-         "* %<[%m-%d %H:%M]> %^{TAG}p%^{CUSTOMER}p%^{Title} %^G\n:PROPERTIES:\n:CREATED: %U\n:END:\n:LOGBOOK:\n:END:\n%?" :clock-in :clock-resume)
-        ("c" "Capture" entry
-         (file "~/.org/gtd/inbox.org")
-         "* TODO %?%^{TAG}p%^{CUSTOMER}p%^{COMPONENT}p\n:PROPERTIES:\n:CREATED: %U\n:END:" :prepend t)
-        ("b" "Breakfix" entry
-         (file "~/.org/gtd/inbox.org")
-         "* TODO %^{CUSTOMER}p%^{COMPONENT}p%^{CASE}p%^{SERIAL}p%^{PLATFORM}p\n:PROPERTIES:\n:CREATED: %U\n:END:\n:LOGBOOK:\n:END:\n%?")
+      `(("d" "Diary [w/clock]" entry (file+headline diary-file ,(format "%s" (format-time-string "%b %Y")))
+        (file ,(concat (doom-dir) "/templates/diary.org")) :clock-in :clock-resume)
+        ("m" "Meeting Notes" entry (file "~/.org/diary.org")
+         (file ,(concat (doom-dir) "/templates/meeting-notes.org")))
+        ("c" "Capture" entry (file "~/.org/gtd/inbox.org")
+         (file ,(concat (doom-dir) "/templates/capture.org")))
+        ("b" "Breakfix" entry (file "~/.org/gtd/inbox.org")
+         (file ,(concat (doom-dir) "/templates/breakfix.org")))
         ("r" "Reference" entry
          (file "~/.org/gtd/refs.org")
          "* NOTE %^{Title} %^G\n%?")
-        ("t" "Templates")
-        ("tc" "Capture" entry (file "~/.org/gtd/inbox.org")
-         (file ,(concat (doom-dir) "/templates/capture.org")))
-        ("tb" "Breakfix" entry (file "~/.org/gtd/inbox.org")
-         (file ,(concat (doom-dir) "/templates/breakfix.org")))
-        ("tm" "Meeting Notes" entry (file "~/.org/diary.org")
-         (file ,(concat (doom-dir) "/templates/meeting-notes.org")))
+        ("m" "Metrics Tracker" plain
+         (file+headline diary-file "Metrics Tracker")
+         (file ,(concat (doom-dir) "/templates/metrics.org")) :immediate-finish t)
+        ("h" "Habits Tracker" plain
+         (file+olp+datetree diary-file "Metrics Tracker")
+         (file ,(concat (doom-dir) "/templates/habitstracker.org")) :immediate-finish t)
         ("a" "Article" plain
          (file+headline "~/.org/gtd/articles.org" "Inbox")
          "%(call-interactively #'org-cliplink-capture)")))

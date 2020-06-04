@@ -2,13 +2,18 @@
 
 * Getting started
 ** New Changes
-1. Added =org-roam=
-2. Added agenda schdules faces (thanks to )
-3. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
-4. Agenda-Hook to narrow on current subtree
-5. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-6. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
-7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
+1. [2020-06-21 Sun]
+   1. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
+   2. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
+   3. added org-roam-server
+2. [2020-06-02 Tue]
+   1. Added =org-roam=
+   2. Added agenda schdules faces (thanks to )
+   3. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
+   4. Agenda-Hook to narrow on current subtree
+   5. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
+   6. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
+   7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
 * Pretty
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]

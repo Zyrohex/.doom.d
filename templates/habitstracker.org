@@ -1,0 +1,8 @@
+%(format "%s" (format-time-string "%Y-%m-%d")) walking %^{walked}
+%(format "%s" (format-time-string "%Y-%m-%d")) boxing %^{boxed}
+%(format "%s" (format-time-string "%Y-%m-%d")) running %^{ran}
+%(format "%s" (format-time-string "%Y-%m-%d")) water(oz) %^{water consumed}
+%(format "%s" (format-time-string "%Y-%m-%d")) coffee %^{cups of coffee}
+%(format "%s" (format-time-string "%Y-%m-%d")) energydrinks %^{energy drinks}
+%(format "%s" (format-time-string "%Y-%m-%d")) sleep %^{hours of sleep}
+%(format "%s" (format-time-string "%Y-%m-%d")) hours worked %^{hours worked}

@@ -1,0 +1,9 @@
+* %U %^{Diary Name} %^{TAG}p%^{CUSTOMER}p%^G
+:PROPERTIES:
+:END:
+:LOGBOOK:
+:END:
+
+- RELATED ::
+
+%?
