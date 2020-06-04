@@ -8,6 +8,7 @@
 (setq user-full-name "Nicholas Martin"
       user-mail-address "nmartin84@gmail.com")
 
+(setq diary-file "~/.org/diary.org")
 (defvar +org-gtd-project-folder "~/.org/gtd/")
 (defvar +org-gtd-tasks-file (concat +org-gtd-project-folder '"next.org"))
 (defvar +org-gtd-inbox-file (concat +org-gtd-project-folder '"inbox.org"))

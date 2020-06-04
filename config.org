@@ -39,6 +39,7 @@ Environment settings, which are specific to the user and system. First up are us
 ** Default folder(s) and file(s)
 Then we will define some default files. I'm probably going to use default task files for inbox/someday/todo at some point so expect this to change. Also note, all customer functions will start with a =+= to distinguish from major symbols.
 #+BEGIN_SRC emacs-lisp
+(setq diary-file "~/.org/diary.org")
 (defvar +org-gtd-project-folder "~/.org/gtd/")
 (defvar +org-gtd-tasks-file (concat +org-gtd-project-folder '"next.org"))
 (defvar +org-gtd-inbox-file (concat +org-gtd-project-folder '"inbox.org"))
