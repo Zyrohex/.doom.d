@@ -40,7 +40,20 @@
          (file ,(concat (doom-dir) "/templates/habitstracker.org")) :immediate-finish t)
         ("a" "Article" plain
          (file+headline "~/.org/gtd/articles.org" "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")))
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+         "* %^{description}%?
+:PROPERTIES:
+:CUSTOMER: %^{CUSTOMER}
+:TAG: %^{TAG}
+:DATE: %<%m-%d-%Y %H:%M:%S>
+:MONTH: %<%b>
+:WEEK: FW%<%V>
+:CREATED:  %u
+:END:
+:LOGBOOK:
+:END:" :clock-in t :clock-resume t :immediate-finish t)))
+
 
 (defun zyro/capture-pick-headline ()
   "Pick headline from Inbox"
