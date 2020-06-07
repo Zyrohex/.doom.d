@@ -18,7 +18,7 @@
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Input Mono" :size 16)
+(setq doom-font (font-spec :family "Input Mono" :size 18)
       doom-big-font (font-spec :family "Input Mono" :size 22))
 #+END_SRC
 ** Bullets and more

@@ -1,4 +1,4 @@
-(setq doom-font (font-spec :family "Input Mono" :size 16)
+(setq doom-font (font-spec :family "Input Mono" :size 18)
       doom-big-font (font-spec :family "Input Mono" :size 22))
 
 (setq org-tags-column 0)
