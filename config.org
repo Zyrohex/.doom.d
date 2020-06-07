@@ -18,8 +18,14 @@
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Input Mono" :size 18)
-      doom-big-font (font-spec :family "Input Mono" :size 22))
+(defun zyro/adjust-font-on-display ()
+  "Adjust font size to display"
+  (if (equal (display-pixel-width) 5120)
+      (setq doom-font (font-spec :family "Input Mono" :size 18)
+            doom-big-font (font-spec :family "Input Mono" :size 24))
+    (setq doom-font (font-spec :family "Input Mono" :size 16)
+          doom-big-font (font-spec :family "Input Mono" :size 22))))
+(zyro/adjust-font-on-display)
 #+END_SRC
 ** Bullets and more
 #+BEGIN_SRC emacs-lisp

@@ -1,5 +1,11 @@
-(setq doom-font (font-spec :family "Input Mono" :size 18)
-      doom-big-font (font-spec :family "Input Mono" :size 22))
+(defun zyro/adjust-font-on-display ()
+  "Adjust font size to display"
+  (if (equal (display-pixel-width) 5120)
+      (setq doom-font (font-spec :family "Input Mono" :size 18)
+            doom-big-font (font-spec :family "Input Mono" :size 24))
+    (setq doom-font (font-spec :family "Input Mono" :size 16)
+          doom-big-font (font-spec :family "Input Mono" :size 22))))
+(zyro/adjust-font-on-display)
 
 (setq org-tags-column 0)
 (setq org-superstar-headline-bullets-list '("●" "○"))
