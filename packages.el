@@ -1,5 +1,6 @@
 (package! helm-org-rifle)
 (package! metrics-tracker)
+(package! visual-fill-column)
 (package! literate-calc-mode)
 (package! org-ql)
 (package! org-super-agenda)
