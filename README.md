@@ -1,41 +1,42 @@
 
 # Table of Contents
 
--   [Getting started](#orgdf12d04)
-    -   [New Changes](#orgd860063)
--   [Pretty](#org5178446)
-    -   [Fonts](#org469c7b3)
-    -   [Bullets and more](#org84406a1)
--   [Environment](#orgffb0e4f)
-    -   [User Information](#orgf8d5ecb)
-    -   [Default folder(s) and file(s)](#org372fab2)
-    -   [Misc Settings](#org179bd76)
-    -   [Key Bindings](#org4b6979b)
--   [Behavior](#orgf64d843)
-    -   [Popup Rules](#orgc419da0)
-    -   [Buffer Settings](#orgc3a6eac)
-    -   [Misc Settings](#org6a1557e)
--   [Module Settings](#org8cfff0c)
-    -   [Misc Modules [Bookmarks, PDF Tools]](#orga2ef1d8)
-    -   [Graphs and Chart Modules](#org493d7de)
-    -   [Elfeed](#org7a4084d)
-    -   [DEFT](#org270d7cf)
-    -   [Org-Rifle](#org9b45157)
-    -   [ROAM](#org7f6898f)
-    -   [ROAM Export Backlinks + Content](#org3504db6)
-    -   [Reveal [HTML Presentations]](#orgec71c77)
-    -   [Super Agenda Settings](#orgc347010)
--   [Load Extras](#orga6f4c39)
-    -   [Theme Settings](#org059f83e)
+-   [Getting started](#org36cb03a)
+    -   [New Changes](#org3681dc9)
+-   [Pretty](#org80b775d)
+    -   [Fonts](#org86f430b)
+    -   [Bullets and more](#org442f5ed)
+-   [Environment](#orgaff8689)
+    -   [User Information](#org3e21e99)
+    -   [Default folder(s) and file(s)](#orgac5a228)
+    -   [Misc Settings](#org314e561)
+    -   [Key Bindings](#org4eb6b4f)
+    -   [Terminal Mode](#orgd0c19a2)
+-   [Behavior](#org4aef802)
+    -   [Popup Rules](#org4e1bee9)
+    -   [Buffer Settings](#org59267f6)
+    -   [Misc Settings](#org0b22868)
+-   [Module Settings](#orgb1463c6)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#org8db1b21)
+    -   [Graphs and Chart Modules](#orge86d7cb)
+    -   [Elfeed](#org86201d7)
+    -   [DEFT](#orged734a9)
+    -   [Org-Rifle](#orge2eb1fa)
+    -   [ROAM](#orgcda57f7)
+    -   [ROAM Export Backlinks + Content](#org43599ae)
+    -   [Reveal [HTML Presentations]](#orgb3ca7c6)
+    -   [Super Agenda Settings](#org906ee72)
+-   [Load Extras](#orgcd9f17a)
+    -   [Theme Settings](#org792db13)
 
 
 
-<a id="orgdf12d04"></a>
+<a id="org36cb03a"></a>
 
 # Getting started
 
 
-<a id="orgd860063"></a>
+<a id="org3681dc9"></a>
 
 ## New Changes
 
@@ -53,22 +54,28 @@
     7.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
 
 
-<a id="org5178446"></a>
+<a id="org80b775d"></a>
 
 # Pretty
 
 
-<a id="org469c7b3"></a>
+<a id="org86f430b"></a>
 
 ## Fonts
 
 For fonts please download [Input](https://input.fontbureau.com/download/) and [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2)
 
-    (setq doom-font (font-spec :family "Input Mono" :size 16)
-          doom-big-font (font-spec :family "Input Mono" :size 22))
+    (defun zyro/adjust-font-on-display ()
+      "Adjust font size to display"
+      (if (equal (display-pixel-width) 5120)
+          (setq doom-font (font-spec :family "Input Mono" :size 18)
+                doom-big-font (font-spec :family "Input Mono" :size 24))
+        (setq doom-font (font-spec :family "Input Mono" :size 16)
+              doom-big-font (font-spec :family "Input Mono" :size 22))))
+    (zyro/adjust-font-on-display)
 
 
-<a id="org84406a1"></a>
+<a id="org442f5ed"></a>
 
 ## Bullets and more
 
@@ -77,12 +84,12 @@ For fonts please download [Input](https://input.fontbureau.com/download/) and [D
     (setq org-ellipsis "▼")
 
 
-<a id="orgffb0e4f"></a>
+<a id="orgaff8689"></a>
 
 # Environment
 
 
-<a id="orgf8d5ecb"></a>
+<a id="org3e21e99"></a>
 
 ## User Information
 
@@ -93,12 +100,13 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="org372fab2"></a>
+<a id="orgac5a228"></a>
 
 ## Default folder(s) and file(s)
 
 Then we will define some default files. I&rsquo;m probably going to use default task files for inbox/someday/todo at some point so expect this to change. Also note, all customer functions will start with a `+` to distinguish from major symbols.
 
+    (setq diary-file "~/.org/diary.org")
     (defvar +org-gtd-project-folder "~/.org/gtd/")
     (defvar +org-gtd-tasks-file (concat +org-gtd-project-folder '"next.org"))
     (defvar +org-gtd-inbox-file (concat +org-gtd-project-folder '"inbox.org"))
@@ -108,7 +116,7 @@ Then we will define some default files. I&rsquo;m probably going to use default 
     (defvar +org-gtd-refs-project '"~/.org/refs/")
 
 
-<a id="org179bd76"></a>
+<a id="org314e561"></a>
 
 ## Misc Settings
 
@@ -119,7 +127,7 @@ Now we load some default settings for EMACS.
     (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-<a id="org4b6979b"></a>
+<a id="org4eb6b4f"></a>
 
 ## Key Bindings
 
@@ -166,12 +174,25 @@ From here we load some extra key bindings that I use often
           :desc "Deft" "w" #'deft)
 
 
-<a id="orgf64d843"></a>
+<a id="orgd0c19a2"></a>
+
+## Terminal Mode
+
+Set a few settings if we detect terminal mode
+
+    (when (equal (window-system) nil)
+      (and
+       (bind-key "C-<down>" #'+org/insert-item-below)
+       (setq doom-font (font-spec :family "Input Mono" :size 20))
+       (setq doom-theme 'doom-dracula)))
+
+
+<a id="org4aef802"></a>
 
 # Behavior
 
 
-<a id="orgc419da0"></a>
+<a id="org4e1bee9"></a>
 
 ## Popup Rules
 
@@ -184,7 +205,7 @@ From here we load some extra key bindings that I use often
     ;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
 
 
-<a id="orgc3a6eac"></a>
+<a id="org59267f6"></a>
 
 ## Buffer Settings
 
@@ -197,7 +218,7 @@ From here we load some extra key bindings that I use often
     (setq initial-buffer-choice "~/.org/gtd/next.org")
 
 
-<a id="org6a1557e"></a>
+<a id="org0b22868"></a>
 
 ## Misc Settings
 
@@ -210,12 +231,12 @@ From here we load some extra key bindings that I use often
      x-stretch-cursor t)
 
 
-<a id="org8cfff0c"></a>
+<a id="orgb1463c6"></a>
 
 # Module Settings
 
 
-<a id="orga2ef1d8"></a>
+<a id="org8db1b21"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -227,7 +248,7 @@ Configuring PDF support and ORG-NOTER for note taking
       :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org493d7de"></a>
+<a id="orge86d7cb"></a>
 
 ## Graphs and Chart Modules
 
@@ -269,7 +290,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org7a4084d"></a>
+<a id="org86201d7"></a>
 
 ## Elfeed
 
@@ -278,7 +299,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org270d7cf"></a>
+<a id="orged734a9"></a>
 
 ## DEFT
 
@@ -300,7 +321,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org9b45157"></a>
+<a id="orge2eb1fa"></a>
 
 ## Org-Rifle
 
@@ -404,14 +425,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org7f6898f"></a>
+<a id="orgcda57f7"></a>
 
 ## ROAM
 
     (setq org-roam-directory "~/.org/")
 
 
-<a id="org3504db6"></a>
+<a id="org43599ae"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -444,7 +465,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="orgec71c77"></a>
+<a id="orgb3ca7c6"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -453,7 +474,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="orgc347010"></a>
+<a id="org906ee72"></a>
 
 ## Super Agenda Settings
 
@@ -464,7 +485,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                     ((org-agenda-overriding-header "Agenda")
                      (org-agenda-files (list (concat (doom-project-root) "gtd/")))
                      (org-agenda-time-grid nil)
-                     (org-agenda-include-diary t)
+                     (org-agenda-include-diary nil)
                      (org-agenda-start-day (org-today))
                      (org-agenda-span '1)))
                (todo ""
@@ -497,7 +518,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       '((:auto-parent t)))))))))
 
 
-<a id="orga6f4c39"></a>
+<a id="orgcd9f17a"></a>
 
 # Load Extras
 
@@ -506,33 +527,11 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (load! "customs.el")
 
 
-<a id="org059f83e"></a>
+<a id="org792db13"></a>
 
 ## Theme Settings
 
     (toggle-frame-maximized)
-    (defun zyro/loader-theme ()
-      "Load theme on startup"
-      (interactive)
-      (let ((selection (ivy-completing-read "Pick theme: " '("doom-gruvbox" "doom-gruvbox-light" "doom-monokai-pro" "doom-snazzy" "doom-henna" "doom-city-lights" "doom-ephemeral" "doom-solarized-light" "doom-horizon"))))
-        (if (equal selection '"doom-gruvbox")
-            (setq doom-theme 'doom-gruvbox))
-        (if (equal selection '"doom-horizon")
-            (setq doom-theme 'doom-horizon))
-        (if (equal selection '"doom-solarized-light")
-            (setq doom-theme 'doom-solarized-light))
-        (if (equal selection '"doom-ephemeral")
-            (setq doom-theme 'doom-ephemeral))
-        (if (equal selection '"doom-gruvbox-light")
-            (setq doom-theme 'doom-gruvbox-light))
-        (if (equal selection '"doom-monokai-pro")
-            (setq doom-theme 'doom-monokai-pro))
-        (if (equal selection '"doom-snazzy")
-            (setq doom-theme 'doom-snazzy))
-        (if (equal selection '"doom-city-lights")
-            (setq doom-theme 'doom-city-lights))
-        (if (equal selection '"doom-henna")
-            (setq doom-theme 'doom-henna))))
-    (after! org (if (y-or-n-p "Load? ")
-        (call-interactively 'zyro/loader-theme)))
+    (after! org (if (y-or-n-p "Load different theme? ")
+                    (call-interactively 'counsel-load-theme)))
 
