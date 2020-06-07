@@ -106,6 +106,15 @@ From here we load some extra key bindings that I use often
       :desc "Elfeed" "e" #'elfeed
       :desc "Deft" "w" #'deft)
 #+END_SRC
+** Terminal Mode
+Set a few settings if we detect terminal mode
+#+BEGIN_SRC emacs-lisp
+(when (equal (window-system) nil)
+  (and
+   (bind-key "C-<down>" #'+org/insert-item-below)
+   (setq doom-font (font-spec :family "Input Mono" :size 20))
+   (setq doom-theme 'doom-dracula)))
+#+END_SRC
 * Behavior
 ** Popup Rules
 #+BEGIN_SRC emacs-lisp
@@ -139,7 +148,6 @@ From here we load some extra key bindings that I use often
  window-combination-resize t
  x-stretch-cursor t)
 #+END_SRC
-
 * Module Settings
 ** Misc Modules [Bookmarks, PDF Tools]
 #+BEGIN_SRC emacs-lisp

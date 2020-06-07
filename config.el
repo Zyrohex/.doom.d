@@ -67,6 +67,12 @@
       :desc "Elfeed" "e" #'elfeed
       :desc "Deft" "w" #'deft)
 
+(when (equal (window-system) nil)
+  (and
+   (bind-key "C-<down>" #'+org/insert-item-below)
+   (setq doom-font (font-spec :family "Input Mono" :size 20))
+   (setq doom-theme 'doom-dracula)))
+
 (after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
