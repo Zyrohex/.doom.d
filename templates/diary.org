@@ -1,9 +1,9 @@
-* %U %^{Diary Name} %^{TAG}p%^{CUSTOMER}p%^G
+#+TITLE: %^{TITLE}
+
+* Notes %^{TAG}p%^{CUSTOMER}p
 :PROPERTIES:
 :END:
 :LOGBOOK:
 :END:
-
-- RELATED ::
 
 %?

@@ -1,5 +1,1 @@
-* %U %^{Title} %^G
-
-- ATTENDEES :: %^{ATTENDEES}
-- TOPIC :: %^{TOPIC}
-- LINKS :: %(org-roam-insert)
+* Notes
