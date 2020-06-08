@@ -24,7 +24,7 @@
       `(("n" "Notes")
         ("nd" "Diary [w/clock]" plain (file zyro/capture-file-name)
         (file ,(concat (doom-dir) "/templates/diary.org")) :clock-in :clock-resume)
-        ("nm" "Meeting Notes" plain (file zyro/capture-file-name)
+        ("nm" "Meeting Notes" entry (file zyro/capture-file-name)
          (file ,(concat (doom-dir) "/templates/meeting-notes.org")))
         ("c" "Capture" entry (file "~/.org/gtd/inbox.org")
          (file ,(concat (doom-dir) "/templates/capture.org")))
