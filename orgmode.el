@@ -21,9 +21,10 @@
 ;;------ Captures
 
 (setq org-capture-templates
-      `(("d" "Diary [w/clock]" entry (file+headline diary-file ,(format "%s" (format-time-string "%b %Y")))
+      `(("n" "Notes")
+        ("nd" "Diary [w/clock]" plain (file zyro/capture-file-name)
         (file ,(concat (doom-dir) "/templates/diary.org")) :clock-in :clock-resume)
-        ("m" "Meeting Notes" entry (file "~/.org/diary.org")
+        ("nm" "Meeting Notes" entry (file zyro/capture-file-name)
          (file ,(concat (doom-dir) "/templates/meeting-notes.org")))
         ("c" "Capture" entry (file "~/.org/gtd/inbox.org")
          (file ,(concat (doom-dir) "/templates/capture.org")))
@@ -54,6 +55,9 @@
 :LOGBOOK:
 :END:" :clock-in t :clock-resume t :immediate-finish t)))
 
+(defun zyro/capture-file-name ()
+  "Generate filename at time of capture"
+  (expand-file-name (concat "~/.org/diary/" (format "%s(%s).org" (read-string "Diary name: ") (format-time-string "%b-%d-%Y")))))
 
 (defun zyro/capture-pick-headline ()
   "Pick headline from Inbox"
@@ -61,12 +65,6 @@
   (let ((org-agenda-files "~/.org/gtd/inbox.org"))
     (counsel-org-agenda-headlines)))
 
-
-(defun zyro/capture-file-name ()
-  "Capture file name at call"
-  (interactive)
-  (let ((filename (counsel-find-file (concat (doom-project-root)))))
-    (expand-file-name (format "%s" filename))))
 (defun zyro/capture-template-selector ()
   "Prompt to select template"
   (interactive)
