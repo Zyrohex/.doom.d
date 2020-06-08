@@ -21,11 +21,8 @@
 ;;------ Captures
 
 (setq org-capture-templates
-      `(("n" "Notes")
-        ("nd" "Diary [w/clock]" plain (file zyro/capture-file-name)
-        (file ,(concat (doom-dir) "/templates/diary.org")) :clock-in :clock-resume)
-        ("nm" "Meeting Notes" plain (file zyro/capture-file-name)
-         (file ,(concat (doom-dir) "/templates/meeting-notes.org")))
+      `(("d" "Diary" plain (file zyro/capture-file-name)
+        (file ,(concat (doom-dir) "/templates/diary.org")))
         ("c" "Capture" entry (file "~/.org/gtd/inbox.org")
          (file ,(concat (doom-dir) "/templates/capture.org")))
         ("b" "Breakfix" entry (file "~/.org/gtd/inbox.org")
@@ -57,7 +54,9 @@
 
 (defun zyro/capture-file-name ()
   "Generate filename at time of capture"
-  (expand-file-name (concat "~/.org/diary/" (format "%s(%s).org" (read-string "Diary name: ") (format-time-string "%b-%d-%Y")))))
+  (setq zyro/capture-headline (read-string "Document Title: "))
+  (expand-file-name (concat "~/.org/diary/"
+                            (format "%s(%s).org" zyro/capture-headline (format-time-string "%b-%d-%Y")))))
 
 (defun zyro/capture-pick-headline ()
   "Pick headline from Inbox"
