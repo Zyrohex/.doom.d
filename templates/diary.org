@@ -1,9 +1,3 @@
 #+TITLE: %^{TITLE}
 
-* Notes %^{TAG}p%^{CUSTOMER}p
-:PROPERTIES:
-:END:
-:LOGBOOK:
-:END:
-
 %?
