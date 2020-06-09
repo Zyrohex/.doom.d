@@ -56,7 +56,7 @@
   "Generate filename at time of capture"
   (setq zyro/capture-headline (read-string "Document Title: "))
   (expand-file-name (concat "~/.org/diary/"
-                            (format "%s(%s).org" zyro/capture-headline (format-time-string "%b-%d-%Y")))))
+                            (format "(%s)%s.org" (format-time-string "%b-%d-%Y") zyro/capture-headline))))
 
 (defun zyro/capture-pick-headline ()
   "Pick headline from Inbox"

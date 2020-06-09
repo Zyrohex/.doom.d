@@ -70,8 +70,13 @@
 (when (equal (window-system) nil)
   (and
    (bind-key "C-<down>" #'+org/insert-item-below)
-   (setq doom-font (font-spec :family "Input Mono" :size 20))
-   (setq doom-theme 'doom-dracula)))
+   (setq doom-theme 'doom-monokai-pro)
+   (setq doom-font (font-spec :family "Input Mono" :size 20))))
+
+(when (equal (window-system) 'x)
+  (and
+   (after! org (if (y-or-n-p "Load different theme? ")
+                   (call-interactively 'counsel-load-theme)))))
 
 (after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
 (after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
@@ -296,20 +301,20 @@
       '(("k" "Next Tasks"
           ((agenda ""
                 ((org-agenda-overriding-header "Agenda")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/")))
+                 (org-agenda-files (list (concat (doom-project-root))))
                  (org-agenda-time-grid nil)
                  (org-agenda-include-diary nil)
                  (org-agenda-start-day (org-today))
                  (org-agenda-span '1)))
            (todo ""
                  ((org-agenda-overriding-header "Not Scheduled")
-                  (org-agenda-files (list (concat (doom-project-root) "gtd/next.org")))
+                  (org-agenda-files (list (concat (doom-project-root) "next.org")))
                   (org-agenda-skip-function
                    '(or
                      (org-agenda-skip-if 'nil '(scheduled deadline))))))
            (todo ""
                  ((org-agenda-overriding-header "References")
-                  (org-agenda-files (list (concat (doom-project-root) "gtd/refs.org")))))
+                  (org-agenda-files (list (concat (doom-project-root) "refs.org")))))
            (todo ""
                  ((org-agenda-overriding-header "Follow-ups")
                   (org-agenda-files (list (concat (doom-project-root) "diary.org")))
@@ -318,14 +323,14 @@
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/inbox.org")))
+                 (org-agenda-files (list (concat (doom-project-root) "inbox.org")))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-ts t)))))))
         ("x" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday")
-                 (org-agenda-files (list (concat (doom-project-root) "gtd/someday.org")))
+                 (org-agenda-files (list (concat (doom-project-root) "someday.org")))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
@@ -335,5 +340,5 @@
 (load! "customs.el")
 
 (toggle-frame-maximized)
-(after! org (if (y-or-n-p "Load different theme? ")
-                (call-interactively 'counsel-load-theme)))
+;(after! org (if (y-or-n-p "Load different theme? ")
+;                (call-interactively 'counsel-load-theme)))
