@@ -7,7 +7,5 @@
 :PLATFORM: %^{PLATFORM}
 :WHO:      %^{WHO}
 :END:
-:LOGBOOK:
-:END:
-
-*Overview:* %?
+- [ ] %U %^{What are we trying to fix?} \\
+  %?

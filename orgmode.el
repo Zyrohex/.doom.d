@@ -1,7 +1,7 @@
 ;;------ Agenda Settings
-(after! org (setq org-agenda-files (directory-files-recursively "~/.org/" "\.org$")))
+(after! org (setq org-agenda-files (directory-files-recursively "~/.org/gtd/" "\.org$")))
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-window-setup 'other-window
+                  org-agenda-window-setup 'reorganize-frame
                   org-agenda-dim-blocked-tasks t
                   org-agenda-use-time-grid t
                   org-agenda-hide-tags-regexp ":\\w+:"
@@ -74,7 +74,7 @@
 (after! org (setq org-directory "~/.org/"
                   org-image-actual-width nil
                   +org-export-directory "~/.export/"
-                  org-archive-location "archive.org::datetree/"
+                  org-archive-location "::* ARCHIVES"
                   projectile-project-search-path '("~/.org/")))
 
 ;;------ Export Settings
@@ -95,12 +95,12 @@
 ;;------ Extras
 (require 'org-id)
 ;(setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
-(setq org-link-file-path-type 'relative)
+(setq org-link-file-path-type 'adaptive)
 (setq org-passwords-file "~/.org/gtd/passwords.org")
 
 ;;------ TODO Keywords
 (setq org-todo-keywords
-      '((sequence "TODO(t!)" "INPROGRESS(i!)" "|" "DONE(d!)")))
+      '((sequence "REFILE(r!)" "TODO(t!)" "SOMEDAY(s!)" "INPROGRESS(i!)" "|" "DONE(d!)")))
 
 ;;------ Logging & Drawers
 (after! org (setq org-log-state-notes-insert-after-drawers nil
@@ -122,13 +122,13 @@
 ;;------ Publishing
 (after! org (setq org-publish-project-alist
                   '(("attachments"
-                     :base-directory "~/.org/notes/"
+                     :base-directory "~/.org/"
                      :recursive t
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
                     ("notes"
-                     :base-directory "~/.org/notes/test/"
+                     :base-directory "~/.org/"
                      :publishing-directory "~/publish_html"
                      :section-numbers nil
                      :base-extension "org"

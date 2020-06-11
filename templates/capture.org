@@ -1,10 +1,3 @@
 * TODO %^{Task Name} %^G
-:PROPERTIES:
-:CATEGORY: %^{CATEGORY}
-:END:
-Templates are a great way to provide initial content, or check-lists for your issues.
-
-** [#A] MUST COMPLETE
-- [ ] Read this file
-- [ ] Complete all tasks
-- [ ] Write your own capture templates
+- [ ] %U %^{What needs to be completed?} \\
+  %?

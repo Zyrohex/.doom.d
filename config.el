@@ -15,13 +15,6 @@
       user-mail-address "nmartin84@gmail.com")
 
 (setq diary-file "~/.org/diary.org")
-(defvar +org-gtd-project-folder "~/.org/gtd/")
-(defvar +org-gtd-tasks-file (concat +org-gtd-project-folder '"next.org"))
-(defvar +org-gtd-inbox-file (concat +org-gtd-project-folder '"inbox.org"))
-(defvar +org-gtd-someday-file (concat +org-gtd-project-folder '"someday.org"))
-(defvar +org-gtd-references-file (concat +org-gtd-project-folder '"references.org"))
-(defvar +org-gtd-notes-file (concat +org-gtd-project-folder '"notes.org"))
-(defvar +org-gtd-refs-project '"~/.org/refs/")
 
 (display-time-mode 1)
 (setq display-time-day-and-date t)
@@ -73,13 +66,8 @@
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
-(when (equal (window-system) 'x)
-  (and
-   (after! org (if (y-or-n-p "Load different theme? ")
-                   (call-interactively 'counsel-load-theme)))))
-
-(after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
-(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
+;(after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
+;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
 ;(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
 ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
@@ -92,7 +80,6 @@
       auto-save-default t
       inhibit-compacting-font-caches t)
 (whitespace-mode -1)
-(setq initial-buffer-choice "~/.org/gtd/next.org")
 
 (setq display-line-numbers-type t)
 (setq-default
@@ -298,28 +285,32 @@
 
 (org-super-agenda-mode t)
 (setq org-agenda-custom-commands
-      '(("k" "Next Tasks"
-          ((agenda ""
-                ((org-agenda-overriding-header "Agenda")
-                 (org-agenda-files (list (concat (doom-project-root))))
-                 (org-agenda-time-grid nil)
-                 (org-agenda-include-diary nil)
-                 (org-agenda-start-day (org-today))
-                 (org-agenda-span '1)))
-           (todo ""
-                 ((org-agenda-overriding-header "Not Scheduled")
-                  (org-agenda-files (list (concat (doom-project-root) "next.org")))
-                  (org-agenda-skip-function
-                   '(or
-                     (org-agenda-skip-if 'nil '(scheduled deadline))))))
-           (todo ""
-                 ((org-agenda-overriding-header "References")
-                  (org-agenda-files (list (concat (doom-project-root) "refs.org")))))
-           (todo ""
-                 ((org-agenda-overriding-header "Follow-ups")
-                  (org-agenda-files (list (concat (doom-project-root) "diary.org")))
-                  (org-super-agenda-groups
-                   '((:auto-parent t)))))))
+      '(("k" "New Tasks"
+         ((agenda ""
+                  ((org-agenda-overriding-header "Agenda")
+                   (org-agenda-files (list (concat (doom-project-root) "tasks/")))
+                   (org-agenda-time-grid nil)
+                   (org-agenda-include-diary nil)
+                   (org-agenda-start-day (org-today))
+                   (org-agenda-span '1)))
+          (todo "TODO|INPROGRESS"
+                ((org-agenda-overriding-header "Not Scheduled")
+                 (org-agenda-files (list (concat (doom-project-root) "tasks/")))
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-if 'nil '(scheduled deadline))))
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))
+          (todo ""
+                ((org-agenda-overriding-header "References")
+                 (org-agenda-files (list (concat (doom-project-root) "refs.org")))))))
+        ("q" "All Tasks"
+         ((todo ""
+                ((org-agenda-overriding-header "")
+                 (org-agenda-files (list (concat (doom-project-root) "tasks/")))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
@@ -340,5 +331,4 @@
 (load! "customs.el")
 
 (toggle-frame-maximized)
-;(after! org (if (y-or-n-p "Load different theme? ")
-;                (call-interactively 'counsel-load-theme)))
+(setq doom-theme 'doom-monokai-pro)
