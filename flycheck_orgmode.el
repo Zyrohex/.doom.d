@@ -66,6 +66,11 @@
   (let ((org-agenda-files "~/.org/gtd/inbox.org"))
     (counsel-org-agenda-headlines)))
 
+(defun zyro/capture-template-selector1 ()
+  "Prompt for template"
+  (interactive)
+  (read-file-name "Select template: " (concat (doom-dir) "/templates/")))
+
 (defun zyro/capture-template-selector ()
   "Prompt to select template"
   (interactive)
@@ -97,7 +102,7 @@
 ;;------ Extras
 (require 'org-id)
 ;(setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
-(setq org-link-file-path-type 'relative)
+(setq org-link-file-path-type 'absolute)
 (setq org-passwords-file "~/.org/gtd/passwords.org")
 
 ;;------ TODO Keywords

@@ -1,4 +1,5 @@
 (package! helm-org-rifle)
+(package! org-roam)
 (package! metrics-tracker)
 (package! visual-fill-column)
 (package! literate-calc-mode)

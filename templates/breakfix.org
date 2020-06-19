@@ -1,4 +1,4 @@
-* TODO %^{PRIORITY|[#A]|[#B]|[#C]} %^{Task} %^G
+* REFILE %^{PRIORITY|[#A]|[#B]|[#C]} %(read-string "Task name: ") [0/1] %^G
 :PROPERTIES:
 :CREATED:  %U
 :SERIAL:   %^{SERIAL}
@@ -7,5 +7,5 @@
 :PLATFORM: %^{PLATFORM}
 :WHO:      %^{WHO}
 :END:
-- [ ] %U %^{What are we trying to fix?} \\
+- [ ] %(format "[%s]" (format-time-string "%Y-%m-%d \%a")) %(read-string "What is the next action? ") \\
   %?

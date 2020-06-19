@@ -1,11 +1,18 @@
 (defun zyro/adjust-font-on-display ()
   "Adjust font size to display"
   (if (equal (display-pixel-width) 5120)
-      (setq doom-font (font-spec :family "Input Mono" :size 18)
+      (setq doom-font (font-spec :family "Input Mono" :size 20)
             doom-big-font (font-spec :family "Input Mono" :size 24))
     (setq doom-font (font-spec :family "Input Mono" :size 16)
-          doom-big-font (font-spec :family "Input Mono" :size 22))))
+          doom-big-font (font-spec :family "Input Mono" :size 20))))
 (zyro/adjust-font-on-display)
+
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "●"))))))
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([+]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "○"))))))
 
 (setq org-tags-column 0)
 (setq org-superstar-headline-bullets-list '("●" "○"))
@@ -284,6 +291,7 @@
 (setq org-reveal-title-slide nil)
 
 (org-super-agenda-mode t)
+
 (setq org-agenda-custom-commands
       '(("k" "New Tasks"
          ((agenda ""
@@ -292,9 +300,12 @@
                    (org-agenda-time-grid nil)
                    (org-agenda-include-diary nil)
                    (org-agenda-start-day (org-today))
-                   (org-agenda-span '1)))
-          (todo "TODO|INPROGRESS"
+                   (org-agenda-span '1)
+                   (org-agenda-super-groups
+                    '((:auto-parent t)))))
+          (todo "NEXT|INPROGRESS"
                 ((org-agenda-overriding-header "Not Scheduled")
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-agenda-files (list (concat (doom-project-root) "tasks/")))
                  (org-agenda-skip-function
                   '(or
@@ -304,13 +315,6 @@
           (todo ""
                 ((org-agenda-overriding-header "References")
                  (org-agenda-files (list (concat (doom-project-root) "refs.org")))))))
-        ("q" "All Tasks"
-         ((todo ""
-                ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "tasks/")))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-super-agenda-groups
-                  '((:auto-category t)))))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
@@ -331,4 +335,6 @@
 (load! "customs.el")
 
 (toggle-frame-maximized)
-(setq doom-theme 'doom-monokai-pro)
+(after! org (if (y-or-n-p "Load theme? ")
+                (counsel-load-theme)
+              (setq doom-theme 'doom-one)))

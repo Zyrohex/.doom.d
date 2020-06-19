@@ -1,0 +1,10 @@
+* %(read-string "Entry name: ")
+:PROPERTIES:
+:CUSTOMER: %^{CUSTOMER}
+:TAG: %^{TAG}
+:CREATED: %U
+:MONTH: %(insert (format-time-string "%b"))
+:WEEK: FW-%(insert (format-time-string "%V"))
+:END:
+:LOGBOOK:
+:END:
