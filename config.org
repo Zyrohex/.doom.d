@@ -25,21 +25,24 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
             doom-big-font (font-spec :family "Input Mono" :size 24))
     (setq doom-font (font-spec :family "Input Mono" :size 16)
           doom-big-font (font-spec :family "Input Mono" :size 20))))
-(zyro/adjust-font-on-display)
+(when (equal (display-pixel-width) 3440)
+  (setq doom-font (font-spec :family "Input Mono" :size 22)
+        doom-big-font (font-spec :family "Input Mono" :size 26)))
+;(zyro/adjust-font-on-display)
 
 #+END_SRC
 ** Bullets and more
 #+BEGIN_SRC emacs-lisp
 
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "●"))))))
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([+]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "○"))))))
+;(font-lock-add-keywords 'org-mode
+;                        '(("^ *\\([-]\\) "
+;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◈"))))))
+;(font-lock-add-keywords 'org-mode
+;                        '(("^ *\\([+]\\) "
+;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⟡"))))))
 
 (setq org-tags-column 0)
-(setq org-superstar-headline-bullets-list '("●" "○"))
+;(setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
 #+END_SRC
 * Environment
@@ -384,13 +387,13 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
                    (org-agenda-span '1)
                    (org-agenda-super-groups
                     '((:auto-parent t)))))
-          (todo "NEXT|INPROGRESS"
+          (todo "NEXT|INPROGRESS|TODO"
                 ((org-agenda-overriding-header "Not Scheduled")
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-agenda-files (list (concat (doom-project-root) "tasks/")))
                  (org-agenda-skip-function
                   '(or
-                    (org-agenda-skip-if 'nil '(scheduled deadline))))
+                    (org-agenda-skip-if 'nil '(timestamp))))
                  (org-super-agenda-groups
                   '((:auto-category t)))))
           (todo ""
