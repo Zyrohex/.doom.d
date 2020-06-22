@@ -18,28 +18,23 @@
 ** Fonts
 For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
 #+BEGIN_SRC emacs-lisp
-(defun zyro/adjust-font-on-display ()
-  "Adjust font size to display"
-  (if (equal (display-pixel-width) 5120)
-      (setq doom-font (font-spec :family "Input Mono" :size 20)
-            doom-big-font (font-spec :family "Input Mono" :size 24))
-    (setq doom-font (font-spec :family "Input Mono" :size 16)
-          doom-big-font (font-spec :family "Input Mono" :size 20))))
-(when (equal (display-pixel-width) 3440)
+(when (> (display-pixel-height) 1200)
   (setq doom-font (font-spec :family "Input Mono" :size 22)
         doom-big-font (font-spec :family "Input Mono" :size 26)))
-;(zyro/adjust-font-on-display)
 
+(when (< (display-pixel-height) 1200)
+  (setq doom-font (font-spec :family "Input Mono" :size 16)
+        doom-big-font (font-spec :family "Input Mono" :size 20)))
 #+END_SRC
 ** Bullets and more
 #+BEGIN_SRC emacs-lisp
 
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([-]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◈"))))))
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([+]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⟡"))))))
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([+]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⮕"))))))
 
 (setq org-tags-column 0)
 ;(setq org-superstar-headline-bullets-list '("●" "○"))
@@ -372,52 +367,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 #+END_SRC
 
 ** Super Agenda Settings
-
 #+BEGIN_SRC emacs-lisp
 (org-super-agenda-mode t)
-
-(setq org-agenda-custom-commands
-      '(("k" "New Tasks"
-         ((agenda ""
-                  ((org-agenda-overriding-header "Agenda")
-                   (org-agenda-files (list (concat (doom-project-root) "tasks/")))
-                   (org-agenda-time-grid nil)
-                   (org-agenda-include-diary nil)
-                   (org-agenda-start-day (org-today))
-                   (org-agenda-span '1)
-                   (org-agenda-super-groups
-                    '((:auto-parent t)))))
-          (todo "NEXT|INPROGRESS|TODO"
-                ((org-agenda-overriding-header "Not Scheduled")
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-agenda-files (list (concat (doom-project-root) "tasks/")))
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-if 'nil '(timestamp))))
-                 (org-super-agenda-groups
-                  '((:auto-category t)))))
-          (todo ""
-                ((org-agenda-overriding-header "References")
-                 (org-agenda-files (list (concat (doom-project-root) "refs.org")))))))
-        ("i" "Inbox"
-         ((todo ""
-                ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "inbox.org")))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-super-agenda-groups
-                  '((:auto-ts t)))))))
-        ("x" "Someday"
-         ((todo ""
-                ((org-agenda-overriding-header "Someday")
-                 (org-agenda-files (list (concat (doom-project-root) "someday.org")))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))))))
 #+END_SRC
 * Load Extras
 #+BEGIN_SRC emacs-lisp
 ;(load! "superlinks.el")
 (load! "orgmode.el")
+(load! "personal.el")
 (load! "customs.el")
 #+END_SRC
 

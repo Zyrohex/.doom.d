@@ -1,21 +1,17 @@
-(defun zyro/adjust-font-on-display ()
-  "Adjust font size to display"
-  (if (equal (display-pixel-width) 5120)
-      (setq doom-font (font-spec :family "Input Mono" :size 20)
-            doom-big-font (font-spec :family "Input Mono" :size 24))
-    (setq doom-font (font-spec :family "Input Mono" :size 16)
-          doom-big-font (font-spec :family "Input Mono" :size 20))))
-(when (equal (display-pixel-width) 3440)
+(when (> (display-pixel-height) 1200)
   (setq doom-font (font-spec :family "Input Mono" :size 22)
         doom-big-font (font-spec :family "Input Mono" :size 26)))
-;(zyro/adjust-font-on-display)
 
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([-]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◈"))))))
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([+]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⟡"))))))
+(when (< (display-pixel-height) 1200)
+  (setq doom-font (font-spec :family "Input Mono" :size 16)
+        doom-big-font (font-spec :family "Input Mono" :size 20)))
+
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([+]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⮕"))))))
 
 (setq org-tags-column 0)
 ;(setq org-superstar-headline-bullets-list '("●" "○"))
@@ -295,63 +291,12 @@
 
 (org-super-agenda-mode t)
 
-(setq org-agenda-custom-commands
-      '(("k" "New Tasks"
-         ((agenda ""
-                  ((org-agenda-overriding-header "Agenda")
-                   (org-agenda-files (list (concat (doom-project-root) "tasks/")))
-                   (org-agenda-time-grid nil)
-                   (org-agenda-include-diary nil)
-                   (org-agenda-start-day (org-today))
-                   (org-agenda-span '1)
-                   (org-agenda-super-groups
-                    '((:auto-parent t)))))
-          (todo "NEXT|INPROGRESS|TODO"
-                ((org-agenda-overriding-header "Not Scheduled")
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-agenda-files (list (concat (doom-project-root) "tasks/")))
-                 (org-agenda-skip-function
-                  '(or
-                    (org-agenda-skip-if 'nil '(timestamp))))
-                 (org-super-agenda-groups
-                  '((:auto-category t)))))
-          (todo ""
-                ((org-agenda-overriding-header "References")
-                 (org-agenda-files (list (concat (doom-project-root) "refs.org")))))))
-        ("i" "Inbox"
-         ((todo ""
-                ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "inbox.org")))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-super-agenda-groups
-                  '((:auto-ts t)))))))
-        ("x" "Someday"
-         ((todo ""
-                ((org-agenda-overriding-header "Someday")
-                 (org-agenda-files (list (concat (doom-project-root) "someday.org")))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))))))
-
 ;(load! "superlinks.el")
 (load! "orgmode.el")
+(load! "personal.el")
 (load! "customs.el")
 
 (toggle-frame-maximized)
 (after! org (if (y-or-n-p "Load theme? ")
                 (counsel-load-theme)
               (setq doom-theme 'doom-one)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.local/etc/bookmarks")
- '(org-agenda-files
-   '("~/.org/gtd/tasks/aexp.org" "~/.org/gtd/tasks/4hr-delivery.org" "~/.org/gtd/tasks/bios.org" "~/.org/gtd/tasks/boot.org" "~/.org/gtd/tasks/commands.org" "~/.org/gtd/tasks/cpu.org" "~/.org/gtd/tasks/customer.org" "~/.org/gtd/tasks/damage.org" "~/.org/gtd/tasks/devices.org" "~/.org/gtd/tasks/documenting.org" "~/.org/gtd/tasks/dps-projects.org" "~/.org/gtd/tasks/firmware.org" "~/.org/gtd/tasks/gpus.org" "~/.org/gtd/tasks/idrac.org" "~/.org/gtd/tasks/linux.org" "~/.org/gtd/tasks/mechanical.org" "~/.org/gtd/tasks/memory.org" "~/.org/gtd/tasks/misses.org" "~/.org/gtd/tasks/networking.org" "~/.org/gtd/tasks/oem.org" "~/.org/gtd/tasks/oment.org" "~/.org/gtd/tasks/performance-issues.org" "~/.org/gtd/tasks/power.org" "~/.org/gtd/tasks/security-vulnerabilities.org" "~/.org/gtd/tasks/storage.org" "~/.org/gtd/tasks/support-assist-enterprise.org" "~/.org/gtd/tasks/support.org" "~/.org/gtd/tasks/sysman.org" "~/.org/gtd/tasks/system-crashes.org" "~/.org/gtd/tasks/systemic-analysis.org" "~/.org/gtd/tasks/thermals.org" "~/.org/gtd/tasks/todos.org" "~/.org/gtd/tasks/tools.org" "~/.org/gtd/inbox.org" "~/.org/gtd/next.org" "~/.org/gtd/refs.org" "~/.org/gtd/someday.org" "~/.org/gtd/tickler.org")))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

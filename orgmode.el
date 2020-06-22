@@ -12,7 +12,7 @@
                   org-enforce-todo-checkbox-dependencies t
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
-(setq org-agenda-sorting-strategy '(category-up priority-up))
+;(setq org-agenda-sorting-strategy '(category-up priority-up))
 ;;------ Agenda Hook
 ;(defun org-mode-switch-to-narrow-hook ()
 ;  (org-narrow-to-subtree))
@@ -24,35 +24,25 @@
 (setq org-capture-templates
       '(("c" "Captures")
         ("d" "Diary" plain (file zyro/capture-file-name)
-         (file ,(concat (doom-dir) "/templates/diary.org")))
+         (file "~/.doom.d/templates/diary.org"))
         ("cc" "Capture" entry (file "~/.org/gtd/inbox.org")
-         (file ,(concat (doom-dir) "/templates/capture.org")))
+         (file "~/.doom.d/templates/capture.org"))
         ("cb" "Breakfix" entry (file "~/.org/gtd/inbox.org")
-         (file ,(concat (doom-dir) "/templates/breakfix.org")))
+         (file "~/.doom.d/templates/breakfix.org"))
         ("cr" "Reference" entry
          (file "~/.org/gtd/refs.org")
          "* NOTE %^{Title} %^G\n%?")
         ("m" "Metrics Tracker" plain
          (file+olp+datetree diary-file "Metrics Tracker")
-         (file ,(concat (doom-dir) "/templates/metrics.org")) :immediate-finish t)
+         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
         ("h" "Habits Tracker" entry
          (file+olp+datetree diary-file "Metrics Tracker")
-         (file ,(concat (doom-dir) "/templates/habitstracker.org")) :immediate-finish t)
+         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
         ("a" "Article" plain
          (file+headline "~/.org/gtd/articles.org" "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
-         "* %^{description}%?
-:PROPERTIES:
-:CUSTOMER: %^{CUSTOMER}
-:TAG: %^{TAG}
-:DATE: %<%m-%d-%Y %H:%M:%S>
-:MONTH: %<%b>
-:WEEK: FW%<%V>
-:CREATED:  %u
-:END:
-:LOGBOOK:
-:END:" :clock-in t :clock-resume t :immediate-finish t)))
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
 
 (defun zyro/capture-file-name ()
   "Generate filename at time of capture"
