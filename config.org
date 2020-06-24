@@ -34,7 +34,7 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 (font-lock-add-keywords 'org-mode
                         '(("^ *\\([+]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⮕"))))))
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
 
 (setq org-tags-column 0)
 ;(setq org-superstar-headline-bullets-list '("●" "○"))
