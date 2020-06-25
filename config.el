@@ -13,8 +13,9 @@
                         '(("^ *\\([+]\\) "
                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
 
+; "✖"
 (setq org-tags-column 0)
-;(setq org-superstar-headline-bullets-list '("●" "○"))
+(setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
 
 (setq user-full-name "Nicholas Martin"
@@ -291,6 +292,51 @@
 
 (org-super-agenda-mode t)
 
+(setq org-agenda-custom-commands
+      '(("w" "Master Agenda"
+         ((agenda ""
+                  ((org-agenda-overriding-header "Master Agenda")
+                   (org-agenda-time-grid nil)
+                   (org-agenda-start-day (org-today))
+                   (org-agenda-span '1)
+                   (org-super-agenda-groups
+                    '((:habit t)
+                      (:name "Meetings" :category "Meetings")
+                      (:name "Tasks" :file-path "tasks/")))))
+          (todo ""
+                ((org-agenda-overriding-header "Master List")
+                 (org-agenda-skip-function
+                  '(or
+                    (org-agenda-skip-entry-if 'todo '("SOMEDAY" "REFILE"))))
+                 (org-super-agenda-groups
+                  '((:deadline t)
+                    (:discard (:scheduled today))
+                    (:name "Scheduled in future items"
+                     :and (:scheduled future
+                           :not (:todo "NEXT")))
+                    (:name "Priority A Items"
+                     :and (:priority "A"
+                           :not (:todo "NEXT")))
+                    (:name "Priority B Items"
+                     :and (:priority "B"
+                           :not (:todo "NEXT")))
+                    (:todo "NEXT")
+                    (:category "Reference")))))))
+        ("i" "Inbox"
+         ((todo ""
+                ((org-agenda-overriding-header "")
+                 (org-agenda-files (list (concat (doom-project-root) "inbox.org")))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-super-agenda-groups
+                  '((:auto-ts t)))))))
+        ("x" "Someday"
+         ((todo ""
+                ((org-agenda-overriding-header "Someday")
+                 (org-agenda-files (list (concat (doom-project-root) "someday.org")))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-super-agenda-groups
+                  '((:auto-parent t)))))))))
+
 ;(load! "superlinks.el")
 (load! "orgmode.el")
 (load! "personal.el")
@@ -300,15 +346,3 @@
 (after! org (if (y-or-n-p "Load theme? ")
                 (counsel-load-theme)
               (setq doom-theme 'doom-one)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.local/etc/bookmarks"))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
