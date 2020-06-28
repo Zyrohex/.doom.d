@@ -79,7 +79,7 @@
 ;(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
 ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
 ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t :vslot 2 :ttl 3))
 
 (global-auto-revert-mode 1)
 (setq undo-limit 80000000
@@ -302,26 +302,28 @@
                    (org-super-agenda-groups
                     '((:habit t)
                       (:name "Meetings" :category "Meetings")
-                      (:name "Tasks" :file-path "tasks/")))))
-          (todo ""
-                ((org-agenda-overriding-header "Master List")
-                 (org-agenda-skip-function
+                      (:name "Tasks" :file-path "next")))))
+          (todo "INPROGRESS"
+                ((org-agenda-skip-function
                   '(or
                     (org-agenda-skip-entry-if 'todo '("SOMEDAY" "REFILE"))))
-                 (org-super-agenda-groups
-                  '((:deadline t)
-                    (:discard (:scheduled today))
-                    (:name "Scheduled in future items"
-                     :and (:scheduled future
-                           :not (:todo "NEXT")))
-                    (:name "Priority A Items"
-                     :and (:priority "A"
-                           :not (:todo "NEXT")))
-                    (:name "Priority B Items"
-                     :and (:priority "B"
-                           :not (:todo "NEXT")))
-                    (:todo "NEXT")
-                    (:category "Reference")))))))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))))
+          (todo "SERVICE"
+                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
+          (todo "ANALYZE"
+                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
+          (todo "ESCALATED"
+                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
+          (todo "NEXT"
+                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
+          (todo "TODO"
+                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
@@ -329,6 +331,12 @@
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-ts t)))))))
+        ("T" "TEST"
+         ((todo ""
+                ((org-agenda-overriding-header "Outline")
+                 (org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
+                 (org-super-agenda-groups
+                  '((:auto-outline-path t)))))))
         ("x" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday")
@@ -339,10 +347,7 @@
 
 ;(load! "superlinks.el")
 (load! "orgmode.el")
-(load! "personal.el")
 (load! "customs.el")
 
 (toggle-frame-maximized)
-(after! org (if (y-or-n-p "Load theme? ")
-                (counsel-load-theme)
-              (setq doom-theme 'doom-one)))
+(setq doom-theme 'doom-dracula)
