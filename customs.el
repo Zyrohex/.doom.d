@@ -78,33 +78,33 @@
   "Capture a task in agenda mode."
   (org-capture nil "i"))
 
-;(defun counsel-narrow ()
-;  "Narrow with counsel"
-;  (interactive)
-;  (counsel-imenu)
-;  (org-narrow-to-subtree))
+(defun counsel-narrow ()
+  "Narrow with counsel"
+  (interactive)
+  (counsel-imenu)
+  (org-narrow-to-subtree))
 
-;(defun +org-move-next-headline-and-narrow ()
-;  "Move to NEXT headline on same level and narrow"
-;  (interactive)
-;  (widen)
-;  (outline-forward-same-level 1)
-;  (org-narrow-to-subtree))
+(defun +org-move-next-headline-and-narrow ()
+  "Move to NEXT headline on same level and narrow"
+  (interactive)
+  (widen)
+  (outline-forward-same-level 1)
+  (org-narrow-to-subtree))
 
-;(defun +org-gtd-tasks ()
-;  "Open projects task file"
-;  (interactive)
-;  (find-file (concat (doom-project-root) '"next.org")))
+(defun +org-gtd-tasks ()
+  "Open projects task file"
+  (interactive)
+  (find-file (concat (doom-project-root) '"next.org")))
 
-;(defun +org-gtd-references ()
-;  "GTD References file"
-;  (interactive)
-;  (find-file (read-file-name "Choose: " +org-gtd-refs-project)))
+(defun +org-gtd-references ()
+  "GTD References file"
+  (interactive)
+  (find-file (read-file-name "Choose: " +org-gtd-refs-project)))
 
-;(defun helm-org-rifle-project-files ()
-;  "Rifle projects files"
-;  (interactive)
-;  (helm-org-rifle-directories (doom-project-root)))
+(defun helm-org-rifle-project-files ()
+  "Rifle projects files"
+  (interactive)
+  (helm-org-rifle-directories (doom-project-root)))
 
 (defun my-agenda-prefix ()
   (format "%s" (my-agenda-indent-string (org-current-level))))
@@ -118,34 +118,34 @@
               str (concat str "──")))
       (concat str "►"))))
 
-;(defvar org-archive-directory "~/.org/archives/")
+(defvar org-archive-directory "~/.org/archives/")
 
-;(defun org-archive-file ()
-;  "Moves the current buffer to the archived folder"
-;  (interactive)
-;  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
-;        (dir (read-directory-name "Move to: " org-archive-directory)))
-;    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
-;    (delete-file old)))
-;(provide 'org-archive-file)
+(defun org-archive-file ()
+  "Moves the current buffer to the archived folder"
+  (interactive)
+  (let ((old (or (buffer-file-name) (user-error "Not visiting a file")))
+        (dir (read-directory-name "Move to: " org-archive-directory)))
+    (write-file (expand-file-name (file-name-nondirectory old) dir) t)
+    (delete-file old)))
+(provide 'org-archive-file)
 
-;(defun org-capture-headline-finder (&optional arg)
-;  "Like `org-todo-list', but using only the current buffer's file."
-;  (interactive "P")
-;  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
-;    (if (null (car org-agenda-files))
-;        (error "%s is not visiting a file" (buffer-name (current-buffer)))
-;      (counsel-org-agenda-headlines)))
-;  (goto-char (org-end-of-subtree)))
-;(defun +org-find-headline-narrow ()
-;  "Find a headline and narrow to it"
-;  (interactive)
-;  (widen)
-;  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
-;    (if (null (car org-agenda-files))
-;        (error "%s is not visiting a file" (buffer-name (current-buffer)))
-;      (counsel-org-agenda-headlines)))
-;  (org-narrow-to-subtree))
+(defun org-capture-headline-finder (&optional arg)
+  "Like `org-todo-list', but using only the current buffer's file."
+  (interactive "P")
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a file" (buffer-name (current-buffer)))
+      (counsel-org-agenda-headlines)))
+  (goto-char (org-end-of-subtree)))
+(defun +org-find-headline-narrow ()
+  "Find a headline and narrow to it"
+  (interactive)
+  (widen)
+  (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+    (if (null (car org-agenda-files))
+        (error "%s is not visiting a file" (buffer-name (current-buffer)))
+      (counsel-org-agenda-headlines)))
+  (org-narrow-to-subtree))
 ;(defun org-capture-refile-hook ()
 ;  "Refile before finalizing capture to project TOOD file"
 ;  (interactive)
