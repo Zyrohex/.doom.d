@@ -4,7 +4,7 @@
                   org-agenda-window-setup 'only-window
                   org-agenda-dim-blocked-tasks t
                   org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp ":\\w+:"
+                  org-agenda-hide-tags-regexp "\\w+"
                   org-agenda-compact-blocks nil
                   org-agenda-block-separator 61
                   org-agenda-skip-scheduled-if-done t
@@ -29,6 +29,8 @@
          (file "~/.doom.d/templates/capture.org"))
         ("cb" "Breakfix" entry (file "~/.org/gtd/inbox.org")
          (file "~/.doom.d/templates/breakfix.org"))
+        ("ce" "Emails" entry (file+headline "~/.org/gtd/next.org" "Emails")
+         (file "~/.doom.d/templates/email.org"))
         ("cr" "Reference" entry
          (file "~/.org/gtd/refs.org")
          "* NOTE %^{Title} %^G\n%?")
