@@ -10,6 +10,15 @@
   (org-agenda-bulk-mark-regexp "inbox:")
   (jethro/bulk-process-entries))
 
+(defun zyro/create-new-task ()
+  "Add task in buffer"
+  (interactive)
+  (+org/insert-item-below 1)
+  (org-metaright)
+  (insert (format "TODO %s" (read-string "Task name: ")))
+  (newline)
+  (insert (format "[[%s][Link to case]]" (read-string "URL: "))))
+
 (defvar jethro/org-current-effort "1:00"
   "Current effort for agenda items.")
 
