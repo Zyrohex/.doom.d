@@ -1,0 +1,4 @@
+* TODO %(read-string "Case or Subject Line: ")
+:PROPERTIES:
+:CASE:     %^{CASE}
+:END:
