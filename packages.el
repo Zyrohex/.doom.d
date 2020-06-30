@@ -17,5 +17,4 @@
 (package! graphviz-dot-mode)
 (package! org-mru-clock)
 (package! org-time-budgets)
-(package! org-clock-today)
 (package! org-analyzer)
