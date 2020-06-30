@@ -1,4 +1,4 @@
-* REFILE %^{PRIORITY|[#A]|[#B]|[#C]} %(read-string "Task name: ") [0/1] %^G
+* TODO %^{PRIORITY|[#A]|[#B]|[#C]} %(read-string "Task name: ") [0/1] %^G
 :PROPERTIES:
 :CREATED:  %U
 :SERIAL:   %^{SERIAL}

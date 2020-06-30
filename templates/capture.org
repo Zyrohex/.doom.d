@@ -1,3 +1,2 @@
-* REFILE %(read-string "Task Name: ") [0/1] %^G
-- [ ] %(format "[%s]" (format-time-string "%Y-%m-%d \%a")) %(read-string "What needs to be done? ") \\
-  %?
+* TODO %(read-string "Task Name: ") [0/1] %^G
+- [ ] %(format "[%s]" (format-time-string "%Y-%m-%d \%a")) %(read-string "What needs to be done? ")%? \\

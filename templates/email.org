@@ -1,5 +1,6 @@
-* TODO %(read-string "Task: ")
+* TODO %(read-string "Task: ")%?
 :PROPERTIES:
+:TAG:      Email
+:AUDIENCE: %(ivy-completing-read "Audience: " (list "TSM" "ACCOUNT TEAM" "CUSTOMER"))
 :EMAILSUBJ: %(read-string "Email subject line: ")
 :END:
-[[elisp:(org-todo "DONE")][Close]] / [[elisp:(org-refile)][Refile]]
