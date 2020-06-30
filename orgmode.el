@@ -25,12 +25,14 @@
       '(("c" "Captures")
         ("d" "Diary" plain (file zyro/capture-file-name)
          (file "~/.doom.d/templates/diary.org"))
-        ("cc" "Capture" entry (file "~/.org/gtd/inbox.org")
+        ("cc" "Capture" entry (file+headline "~/.org/gtd/next.org" "INBOX")
          (file "~/.doom.d/templates/capture.org"))
-        ("cb" "Breakfix" entry (file "~/.org/gtd/inbox.org")
+        ("cb" "Breakfix" entry (file+headline "~/.org/gtd/next.org" "INBOX")
          (file "~/.doom.d/templates/breakfix.org"))
-        ("ce" "Emails" entry (file+headline "~/.org/gtd/next.org" "Emails")
-         (file "~/.doom.d/templates/email.org"))
+        ("ce" "Email" entry (file+headline "~/.org/gtd/next.org" "EMAILS")
+         (file "~/.doom.d/templates/email.org") :immediate-finish t)
+        ("cx" "Case Review" entry (file+headline "~/.org/gtd/next.org" "CASES")
+         (file "~/.doom.d/templates/case.org") :immediate-finish t)
         ("cr" "Reference" entry
          (file "~/.org/gtd/refs.org")
          "* NOTE %^{Title} %^G\n%?")
@@ -40,7 +42,7 @@
         ("h" "Habits Tracker" entry
          (file+olp+datetree diary-file "Metrics Tracker")
          (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
-        ("a" "Article" plain
+        ("ca" "Article" plain
          (file+headline "~/.org/gtd/articles.org" "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
@@ -68,7 +70,7 @@
 (after! org (setq org-directory "~/.org/"
                   org-image-actual-width nil
                   +org-export-directory "~/.export/"
-                  org-archive-location "::* ARCHIVES"
+                  org-archive-location "archives.org::* %s"
                   projectile-project-search-path '("~/.org/")))
 
 ;;------ Export Settings
