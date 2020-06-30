@@ -1,17 +1,17 @@
 (when (> (display-pixel-height) 1200)
-  (setq doom-font (font-spec :family "Input Mono" :size 22)
-        doom-big-font (font-spec :family "Input Mono" :size 26)))
-
-(when (< (display-pixel-height) 1200)
-  (setq doom-font (font-spec :family "Input Mono" :size 16)
+  (setq doom-font (font-spec :family "Input Mono" :size 18)
         doom-big-font (font-spec :family "Input Mono" :size 20)))
 
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([+]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
+(when (< (display-pixel-height) 1200)
+  (setq doom-font (font-spec :family "Input Mono" :size 14)
+        doom-big-font (font-spec :family "Input Mono" :size 16)))
+
+;(font-lock-add-keywords 'org-mode
+;                        '(("^ *\\([-]\\) "
+;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+;(font-lock-add-keywords 'org-mode
+;                        '(("^ *\\([+]\\) "
+;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
 
 ; "✖"
 (setq org-tags-column 0)
@@ -28,6 +28,7 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (bind-key "<f5>" #'org-cycle-hide-all-drawers)
+(bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "C-M-<up>" #'evil-window-up)
 (bind-key "C-M-<down>" #'evil-window-down)
 (bind-key "C-M-<left>" #'evil-window-left)
@@ -73,10 +74,10 @@
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
-;(after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
+(after! org (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3))
 ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
 ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
-;(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
+(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
 ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
 ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
 (after! org (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t :vslot 2 :ttl 3))
@@ -96,8 +97,6 @@
  window-combination-resize t
  x-stretch-cursor t)
 
-(require 'bookmark+)
-
 (use-package org-pdftools
   :hook (org-load . org-pdftools-setup-link))
 
@@ -111,22 +110,6 @@
 ; MERMAID
 (setq mermaid-mmdc-location "~/node_modules/.bin/mmdc"
       ob-mermaid-cli-path "~/node_modules/.bin/mmdc")
-
-; ORG-MIND-MAP
-(use-package org-mind-map
-  :init
-  (require 'ox-org)
-  ;; Uncomment the below if 'ensure-system-packages` is installed
-  ;;:ensure-system-package (gvgen . graphviz)
-  :config
-  ;;(setq org-mind-map-engine "dot")       ; Default. Directed Graph
-   (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
-  ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
-  ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
-  ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
-  ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
-  ;; (setq org-mind-map-engine "circo")  ; Circular Layout
-  )
 
 ; PLANTUML
 (use-package ob-plantuml
@@ -302,35 +285,25 @@
                    (org-super-agenda-groups
                     '((:habit t)
                       (:name "Meetings" :category "Meetings")
-                      (:name "Tasks" :file-path "next")))))
-          (todo "INPROGRESS"
-                ((org-agenda-skip-function
+                      (:name "Tasks" :file-path "next")
+                      (:name "Update" :category "Update")))))
+          (todo ""
+                ((org-agenda-files (list "~/.org/gtd/tasks/"))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-agenda-skip-function
                   '(or
-                    (org-agenda-skip-entry-if 'todo '("SOMEDAY" "REFILE"))))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
-                 (org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))))
-          (todo "SERVICE"
-                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
-          (todo "ANALYZE"
-                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
-          (todo "ESCALATED"
-                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
-          (todo "NEXT"
-                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))
-          (todo "TODO"
-                ((org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")))))
-        ("i" "Inbox"
-         ((todo ""
-                ((org-agenda-overriding-header "")
-                 (org-agenda-files (list (concat (doom-project-root) "inbox.org")))
-                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                    (org-agenda-skip-entry-if 'nil '("scheduled"))
+                    (org-agenda-skip-entry-if 'nil '("deadline"))))
                  (org-super-agenda-groups
-                  '((:auto-ts t)))))))
+                  '((:auto-category t)))))))
+        ("i" "Inbox"
+          ((todo ""
+                ((org-agenda-overriding-header "")
+                 (org-agenda-files (list "~/.org/gtd/inbox.org" "~/.org/gtd/next.org"))
+                 (org-super-agenda-groups
+                  '((:category "Cases")
+                    (:category "Emails")
+                    (:category "Inbox")))))))
         ("T" "TEST"
          ((todo ""
                 ((org-agenda-overriding-header "Outline")
@@ -350,4 +323,4 @@
 (load! "customs.el")
 
 (toggle-frame-maximized)
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-monokai-pro)
