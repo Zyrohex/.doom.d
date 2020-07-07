@@ -8,4 +8,3 @@
 #+REVEAL_PLUGINS: (highlight)
 #+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
 #+reveal_overview: t
-#+EMAIL: nmartin84@gmail.com
