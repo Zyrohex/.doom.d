@@ -1,3 +1,4 @@
+(package! org-roam-server)
 (package! helm-org-rifle)
 (package! metrics-tracker)
 (package! literate-calc-mode)
