@@ -10,6 +10,47 @@
   (org-agenda-bulk-mark-regexp "inbox:")
   (jethro/bulk-process-entries))
 
+(defun zyro/capture-file-name ()
+  "Generate filename at time of capture"
+  (setq zyro/capture-headline (read-string "Document Title: "))
+  (expand-file-name (concat (doom-project-root) "diary/" (format "(%s)%s.org" (format-time-string "%b-%d-%Y") zyro/capture-headline))))
+
+;(defun zyro/capture-file-name ()
+;  "Generate filename at time of capture"
+;  (setq zyro/capture-headline (read-string "Document Title: "))
+;  (let ((dirname (read-directory-name "Pick directory: " (concat (doom-project-root) "notes/")))
+;        (zyro/capture-headline (read-string "Document Title: ")))
+;    (expand-file-name (concat dirname
+;                              (format "(%s)%s.org" (format-time-string "%b-%d-%Y") zyro/capture-headline)))))
+
+;(defun zyro/diary--capture-to-folder ()
+;  "Diary capture captured to destination folder"
+;  (interactive)
+;  (let ((dirname (directory-files (concat (doom-project-root) "notes/") nil "^\\w+$"))
+;        (dirfold (concat (doom-project-root) "notes/")))
+;    (defvar zyro/capture-headline (read-string "Document Title: "))
+;    (expand-file-name (concat dirfold (completing-read "Select directory: " dirname) "/" (format "(%s)%s.org" (format-time-string "%b-%d-%Y") zyro/capture-headline)))))
+
+(defun zyro/select-task-type ()
+  "Select task file from a list defined by '+org-capture-task-files'"
+  (list (format "%stasks/%s" (doom-project-root) (ivy-completing-read "Select task file: " +org-capture-task-files))))
+
+(defun zyro/capture--existing-file ()
+  "Test"
+  (interactive)
+  (let ((filecandid (read-file-name "Select directory: " (concat (doom-project-root) "tasks/"))))
+    (let ((org-agenda-files (list filecandid)))
+      (if (null (car org-agenda-files))
+          (error "%s is not visiting a file" (buffer-name (current-buffer)))
+        (counsel-org-agenda-headlines)
+        (org-next-visible-heading 1)
+        (next-line -1)))))
+
+(defvar +org-capture-next-file "next.org")
+(defvar +org-capture-refs-file "refs.org")
+(defvar +org-capture-someday-file "someday.org")
+(defvar +org-capture-task-files '("breakfix.org" "sustaining.org" "coding.org" "inquiries.org" "escalations.org" "defects.org"))
+
 (defun zyro/create-new-task ()
   "Add task in buffer"
   (interactive)
@@ -99,11 +140,6 @@
   (widen)
   (outline-forward-same-level 1)
   (org-narrow-to-subtree))
-
-(defun +org-gtd-tasks ()
-  "Open projects task file"
-  (interactive)
-  (find-file (concat (doom-project-root) '"next.org")))
 
 (defun +org-gtd-references ()
   "GTD References file"
@@ -256,21 +292,21 @@
 (defface busy-9  '((t :foreground "white" :background "#37474f")) "")
 (defface busy-10 '((t :foreground "white" :background "#263238")) "")
 
-(defadvice calendar-generate-month
-  (after highlight-weekend-days (month year indent) activate)
-  "Highlight weekend days"
-  (dotimes (i 31)
-    (let ((date (list month (1+ i) year))
-          (count (length (org-agenda-get-day-entries
-                          "~/.org/gtd/next.org" (list month (1+ i) year)))))
-      (cond ((= count 0) ())
-            ((= count 1) (calendar-mark-visible-date date 'busy-1))
-            ((= count 2) (calendar-mark-visible-date date 'busy-2))
-            ((= count 3) (calendar-mark-visible-date date 'busy-3))
-            ((= count 4) (calendar-mark-visible-date date 'busy-4))
-            ((= count 5) (calendar-mark-visible-date date 'busy-5))
-            ((= count 6) (calendar-mark-visible-date date 'busy-6))
-            ((= count 7) (calendar-mark-visible-date date 'busy-7))
-            ((= count 8) (calendar-mark-visible-date date 'busy-8))
-            ((= count 9) (calendar-mark-visible-date date 'busy-9))
-            (t  (calendar-mark-visible-date date 'busy-10))))))
+;(defadvice calendar-generate-month
+;  (after highlight-weekend-days (month year indent) activate)
+;  "Highlight weekend days"
+;  (dotimes (i 31)
+;    (let ((date (list month (1+ i) year))
+;          (count (length (org-agenda-get-day-entries
+;                          (list (org-agenda-files)) (list month (1+ i) year)))))
+;      (cond ((= count 0) ())
+;            ((= count 1) (calendar-mark-visible-date date 'busy-1))
+;            ((= count 2) (calendar-mark-visible-date date 'busy-2))
+;            ((= count 3) (calendar-mark-visible-date date 'busy-3))
+;            ((= count 4) (calendar-mark-visible-date date 'busy-4))
+;            ((= count 5) (calendar-mark-visible-date date 'busy-5))
+;            ((= count 6) (calendar-mark-visible-date date 'busy-6))
+;            ((= count 7) (calendar-mark-visible-date date 'busy-7))
+;            ((= count 8) (calendar-mark-visible-date date 'busy-8))
+;            ((= count 9) (calendar-mark-visible-date date 'busy-9))
+;            (t  (calendar-mark-visible-date date 'busy-10))))))
