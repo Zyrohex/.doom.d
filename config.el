@@ -1,10 +1,10 @@
 (when (> (display-pixel-height) 1200)
   (setq doom-font (font-spec :family "Input Mono" :size 18)
-        doom-big-font (font-spec :family "Input Mono" :size 20)))
+        doom-big-font (font-spec :family "Input Mono" :size 24)))
 
 (when (< (display-pixel-height) 1200)
   (setq doom-font (font-spec :family "Input Mono" :size 14)
-        doom-big-font (font-spec :family "Input Mono" :size 16)))
+        doom-big-font (font-spec :family "Input Mono" :size 20)))
 
 ;(font-lock-add-keywords 'org-mode
 ;                        '(("^ *\\([-]\\) "
@@ -18,8 +18,7 @@
 (setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
 
-(setq user-full-name "Nicholas Martin"
-      user-mail-address "nmartin84@gmail.com")
+(setq user-full-name "Nick Martin")
 
 (setq diary-file "~/.org/diary.org")
 
@@ -74,13 +73,18 @@
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
-(after! org (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3))
-;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
-;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
-(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
-;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-(after! org (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t :vslot 2 :ttl 3))
+(when (> (display-pixel-width) '3000)
+  (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t :vslot 2 :ttl 3)
+  (set-popup-rule! "*Capture*" :side 'left :size .30 :select t :vslot 2 :ttl 3)
+  (set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3))
+(when (< (display-pixel-width) '2000)
+  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
+  (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
+  (set-popup-rule! "*helm*" :side 'bottom :size .30 :select t :vslot 5 :ttl 3))
+                                        ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
+                                        ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
+                                        ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
+                                        ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
 
 (global-auto-revert-mode 1)
 (setq undo-limit 80000000
@@ -128,7 +132,7 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.org/notes/"
+  (setq deft-directory "~/.org/"
         deft-auto-save-interval 0
         deft-recursive t
         deft-current-sort-method 'title
@@ -240,6 +244,21 @@
 (provide 'setup-helm-org-rifle)
 
 (setq org-roam-directory "~/.org/")
+(setq org-roam-tag-sources '(prop all-directories))
+(setq org-roam-db-location "~/.org/roam.db")
+
+(use-package org-roam-server
+  :ensure t
+  :config
+  (setq org-roam-server-host "192.168.1.103"
+        org-roam-server-port 8070
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-network-poll nil
+        org-roam-server-network-arrows 'nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
 
 (defun my/org-roam--backlinks-list-with-content (file)
   (with-temp-buffer
@@ -276,9 +295,10 @@
 (org-super-agenda-mode t)
 
 (setq org-agenda-custom-commands
-      '(("w" "Master Agenda"
+      '(("M" "Master Agenda"
          ((agenda ""
                   ((org-agenda-overriding-header "Master Agenda")
+                   (org-agenda-files (append (file-expand-wildcards "~/.org/*/tasks/*.org") (file-expand-wildcards "~/.org/*/tickler.org")))
                    (org-agenda-time-grid nil)
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)
@@ -288,7 +308,8 @@
                       (:name "Tasks" :file-path "next")
                       (:name "Update" :category "Update")))))
           (todo ""
-                ((org-agenda-files (list "~/.org/gtd/tasks/"))
+                ((org-agenda-files (append (file-expand-wildcards "~/.org/*/tasks/*.org")))
+                 (org-agenda-overriding-header (doom-project-root))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-agenda-skip-function
                   '(or
@@ -296,24 +317,36 @@
                     (org-agenda-skip-entry-if 'nil '("deadline"))))
                  (org-super-agenda-groups
                   '((:auto-category t)))))))
+        ("w" "Master Work"
+         ((agenda ""
+                  ((org-agenda-overriding-header (format "Master Agenda for ALL " (counsel-directory-name (doom-project-root))))
+                   (org-agenda-files (append (file-expand-wildcards "~/.org/work*/tasks/*.org") (file-expand-wildcards "~/.org/work*/*.org")))
+                   (org-agenda-time-grid nil)
+                   (org-agenda-start-day (org-today))
+                   (org-agenda-span '1)
+                   (org-super-agenda-groups
+                    '((:habit t)
+                      (:name "Meetings" :category "Meetings")
+                      (:name "Tasks" :file-path "next")
+                      (:name "Update" :category "Update")))))
+          (todo ""
+                ((org-agenda-overriding-header (format "Master Task List for ALL" (counsel-directory-name (doom-project-root))))
+                 (org-agenda-files (append (file-expand-wildcards "~/.org/work*/tasks/*.org")))
+                 (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))))
         ("i" "Inbox"
-          ((todo ""
+         ((todo ""
                 ((org-agenda-overriding-header "")
-                 (org-agenda-files (list "~/.org/gtd/inbox.org" "~/.org/gtd/next.org"))
+                 (org-agenda-files (list "~/.org/next.org" "~/.org/inbox.org"))
                  (org-super-agenda-groups
                   '((:category "Cases")
                     (:category "Emails")
                     (:category "Inbox")))))))
-        ("T" "TEST"
-         ((todo ""
-                ((org-agenda-overriding-header "Outline")
-                 (org-agenda-files (list "~/.org/gtd/next.org" "~/.org/gtd/tasks/"))
-                 (org-super-agenda-groups
-                  '((:auto-outline-path t)))))))
         ("x" "Someday"
          ((todo ""
                 ((org-agenda-overriding-header "Someday")
-                 (org-agenda-files (list (concat (doom-project-root) "someday.org")))
+                 (org-agenda-files (list (concat (doom-project-root) "gtd/someday.org")))
                  (org-agenda-prefix-format " %(my-agenda-prefix) ")
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
