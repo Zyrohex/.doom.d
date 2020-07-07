@@ -1,5 +1,6 @@
 ;;------ Agenda Settings
-(after! org (setq org-agenda-files (directory-files-recursively "~/.org/gtd/" "\.org$")))
+;(after! org (setq org-agenda-files (directory-files-recursively "~/.org/" "\.org$")))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/*/tasks/*.org") (file-expand-wildcards "~/.org/*/*.org"))))
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-window-setup 'only-window
                   org-agenda-dim-blocked-tasks t
@@ -25,46 +26,29 @@
       '(("c" "Captures")
         ("d" "Diary" plain (file zyro/capture-file-name)
          (file "~/.doom.d/templates/diary.org"))
-        ("cc" "Capture" entry (file+headline "~/.org/gtd/next.org" "INBOX")
+        ("cc" "Capture" entry (file+headline "~/.org/next.org" "INBOX")
          (file "~/.doom.d/templates/capture.org"))
-        ("cb" "Breakfix" entry (file+headline "~/.org/gtd/next.org" "INBOX")
+        ("cb" "Breakfix" entry (file+headline "~/.org/next.org" "INBOX")
          (file "~/.doom.d/templates/breakfix.org"))
-        ("ce" "Email" entry (file+headline "~/.org/gtd/next.org" "EMAILS")
+        ("ce" "Email" entry (file+headline "~/.org/next.org" "EMAILS")
          (file "~/.doom.d/templates/email.org") :immediate-finish t)
-        ("cx" "Case Review" entry (file+headline "~/.org/gtd/next.org" "CASES")
+        ("cx" "Case Review" entry (file+headline "~/.org/next.org" "CASES")
          (file "~/.doom.d/templates/case.org") :immediate-finish t)
-        ("cr" "Reference" entry
-         (file "~/.org/gtd/refs.org")
-         "* NOTE %^{Title} %^G\n%?")
-        ("m" "Metrics Tracker" plain
-         (file+olp+datetree diary-file "Metrics Tracker")
+        ("cr" "Reference" entry (function +org-capture-central-project-todo-file))
+        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
          (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
-        ("h" "Habits Tracker" entry
-         (file+olp+datetree diary-file "Metrics Tracker")
+        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
          (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
-        ("ca" "Article" plain
-         (file+headline "~/.org/gtd/articles.org" "Inbox")
+        ("ca" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
          (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
 
-(defun zyro/capture-file-name ()
-  "Generate filename at time of capture"
-  (setq zyro/capture-headline (read-string "Document Title: "))
-  (expand-file-name (concat "~/.org/diary/"
-                            (format "(%s)%s.org" (format-time-string "%b-%d-%Y") zyro/capture-headline))))
-
-(defun zyro/capture-pick-headline ()
-  "Pick headline from Inbox"
-  (interactive)
-  (let ((org-agenda-files "~/.org/gtd/inbox.org"))
-    (counsel-org-agenda-headlines)))
 
 (defun zyro/capture-template-selector ()
   "Prompt to select template"
   (interactive)
-  (let ((filename (counsel-find-file (concat (doom-dir) "/templates/"))))
-    (expand-file-name (format "%s" (counsel-find-file (concat (doom-dir) "/templates/"))))))
+  (read-file-name "Select file: " (concat (doom-project-root) "templates/")))
 
 ;;------ Directories
 (after! org (setq org-directory "~/.org/"
@@ -92,11 +76,11 @@
 (require 'org-id)
 ;(setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 (setq org-link-file-path-type 'relative)
-(setq org-passwords-file "~/.org/gtd/passwords.org")
+(setq org-passwords-file "~/.org/passwords.org")
 
 ;;------ TODO Keywords
 (setq org-todo-keywords
-      '((sequence "REFILE(r!)" "SOMEDAY(s!)" "TODO(t!)" "NEXT(n!)" "INPROGRESS(i!)" "|" "DONE(d!)")))
+      '((sequence "TODO(t!)" "REFILE(r!)" "SOMEDAY(s!)" "NEXT(n!)" "INPROGRESS(i!)" "|" "DONE(d!)")))
 
 ;;------ Logging & Drawers
 (after! org (setq org-log-state-notes-insert-after-drawers nil
@@ -148,6 +132,7 @@
 ;;----- Refiling
 (after! org (setq org-refile-targets '((nil :maxlevel . 9)
                                        (org-agenda-files :maxlevel . 4))
+                  org-refile-use-outline-path 'buffer-name
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm))
 
