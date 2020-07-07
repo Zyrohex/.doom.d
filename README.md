@@ -1,42 +1,43 @@
 
 # Table of Contents
 
--   [Getting started](#orge82a5b9)
-    -   [New Changes](#orgd0fba6f)
--   [Pretty](#orgc8d5215)
-    -   [Fonts](#orgde0e853)
-    -   [Bullets and more](#org42740d8)
--   [Environment](#org5790dc3)
-    -   [User Information](#orgf16d772)
-    -   [Default folder(s) and file(s)](#org7369c98)
-    -   [Misc Settings](#orgc1d14f5)
-    -   [Key Bindings](#orgb09f938)
-    -   [Terminal Mode](#org52f570d)
--   [Behavior](#org58bf2eb)
-    -   [Popup Rules](#org9e34e57)
-    -   [Buffer Settings](#orgb8a418d)
-    -   [Misc Settings](#org3ee6585)
--   [Module Settings](#org819e570)
-    -   [Misc Modules [Bookmarks, PDF Tools]](#orge1ab5a4)
-    -   [Graphs and Chart Modules](#org6b1809c)
-    -   [Elfeed](#orgfc50521)
-    -   [DEFT](#orgdb339f2)
-    -   [Org-Rifle](#org4927a6f)
-    -   [ROAM](#orgf4ed861)
-    -   [ROAM Export Backlinks + Content](#org5899b83)
-    -   [Reveal [HTML Presentations]](#orgb9c993a)
-    -   [Super Agenda Settings](#orgc3d339e)
--   [Load Extras](#org96077a2)
-    -   [Theme Settings](#org321c631)
+-   [Getting started](#org37d3a50)
+    -   [New Changes](#org8689fd1)
+-   [Pretty](#org5a05b92)
+    -   [Fonts](#org10aa4d7)
+    -   [Bullets and more](#orgdc773e7)
+-   [Environment](#org4ec62ed)
+    -   [User Information](#orgc2d213b)
+    -   [Default folder(s) and file(s)](#orgd0b8a14)
+    -   [Misc Settings](#orgfeffbf9)
+    -   [Key Bindings](#org5bb6539)
+    -   [Terminal Mode](#org84d7a85)
+-   [Behavior](#org2b24b40)
+    -   [Popup Rules](#orgfdbf44f)
+    -   [Buffer Settings](#org1d2124f)
+    -   [Misc Settings](#org3a42cf9)
+-   [Module Settings](#org14f8c8b)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#orgaac4995)
+    -   [Graphs and Chart Modules](#org3e63907)
+    -   [Elfeed](#orgd93f1b1)
+    -   [DEFT](#org797387a)
+    -   [Org-Rifle](#orgdae78a3)
+    -   [ROAM](#org10707ba)
+    -   [ROAM Server](#org3cee284)
+    -   [ROAM Export Backlinks + Content](#org3249127)
+    -   [Reveal [HTML Presentations]](#org17861db)
+    -   [Super Agenda Settings](#org819e44a)
+-   [Load Extras](#org41406f6)
+    -   [Theme Settings](#org3fa2ce3)
 
 
 
-<a id="orge82a5b9"></a>
+<a id="org37d3a50"></a>
 
 # Getting started
 
 
-<a id="orgd0fba6f"></a>
+<a id="org8689fd1"></a>
 
 ## New Changes
 
@@ -54,60 +55,59 @@
     7.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
 
 
-<a id="orgc8d5215"></a>
+<a id="org5a05b92"></a>
 
 # Pretty
 
 
-<a id="orgde0e853"></a>
+<a id="org10aa4d7"></a>
 
 ## Fonts
 
 For fonts please download [Input](https://input.fontbureau.com/download/) and [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2)
 
     (when (> (display-pixel-height) 1200)
-      (setq doom-font (font-spec :family "Input Mono" :size 22)
-            doom-big-font (font-spec :family "Input Mono" :size 26)))
+      (setq doom-font (font-spec :family "Input Mono" :size 18)
+            doom-big-font (font-spec :family "Input Mono" :size 24)))
     
     (when (< (display-pixel-height) 1200)
-      (setq doom-font (font-spec :family "Input Mono" :size 16)
+      (setq doom-font (font-spec :family "Input Mono" :size 14)
             doom-big-font (font-spec :family "Input Mono" :size 20)))
 
 
-<a id="org42740d8"></a>
+<a id="orgdc773e7"></a>
 
 ## Bullets and more
 
+    ;(font-lock-add-keywords 'org-mode
+    ;                        '(("^ *\\([-]\\) "
+    ;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    ;(font-lock-add-keywords 'org-mode
+    ;                        '(("^ *\\([+]\\) "
+    ;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
     
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([+]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
-    
+    ; "✖"
     (setq org-tags-column 0)
-    ;(setq org-superstar-headline-bullets-list '("●" "○"))
+    (setq org-superstar-headline-bullets-list '("●" "○"))
     (setq org-ellipsis "▼")
 
 
-<a id="org5790dc3"></a>
+<a id="org4ec62ed"></a>
 
 # Environment
 
 
-<a id="orgf16d772"></a>
+<a id="orgc2d213b"></a>
 
 ## User Information
 
 Load ORG Files
 Environment settings, which are specific to the user and system. First up are user settings.
 
-    (setq user-full-name "Nicholas Martin"
-          user-mail-address "nmartin84@gmail.com")
+    (setq user-full-name "Nick Martin")
 
 
-<a id="org7369c98"></a>
+<a id="orgd0b8a14"></a>
 
 ## Default folder(s) and file(s)
 
@@ -116,7 +116,7 @@ Then we will define some default files. I&rsquo;m probably going to use default 
     (setq diary-file "~/.org/diary.org")
 
 
-<a id="orgc1d14f5"></a>
+<a id="orgfeffbf9"></a>
 
 ## Misc Settings
 
@@ -127,13 +127,14 @@ Now we load some default settings for EMACS.
     (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-<a id="orgb09f938"></a>
+<a id="org5bb6539"></a>
 
 ## Key Bindings
 
 From here we load some extra key bindings that I use often
 
     (bind-key "<f5>" #'org-cycle-hide-all-drawers)
+    (bind-key "<f6>" #'link-hint-copy-link)
     (bind-key "C-M-<up>" #'evil-window-up)
     (bind-key "C-M-<down>" #'evil-window-down)
     (bind-key "C-M-<left>" #'evil-window-left)
@@ -174,7 +175,7 @@ From here we load some extra key bindings that I use often
           :desc "Deft" "w" #'deft)
 
 
-<a id="org52f570d"></a>
+<a id="org84d7a85"></a>
 
 ## Terminal Mode
 
@@ -187,25 +188,30 @@ Set a few settings if we detect terminal mode
        (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 
-<a id="org58bf2eb"></a>
+<a id="org2b24b40"></a>
 
 # Behavior
 
 
-<a id="org9e34e57"></a>
+<a id="orgfdbf44f"></a>
 
 ## Popup Rules
 
-    ;(after! org (set-popup-rule! "CAPTURE*" :side 'bottom :size .40 :select t :vslot 2 :ttl 3))
-    ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
-    ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
-    ;(after! org (set-popup-rule! "*helm*" :side 'bottom :size .50 :select t :vslot 5 :ttl 3))
-    ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-    ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-    ;(after! org (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t :vslot 2 :ttl 3))
+    (when (> (display-pixel-width) '3000)
+      (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t :vslot 2 :ttl 3)
+      (set-popup-rule! "*Capture*" :side 'left :size .30 :select t :vslot 2 :ttl 3)
+      (set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3))
+    (when (< (display-pixel-width) '2000)
+      (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
+      (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
+      (set-popup-rule! "*helm*" :side 'bottom :size .30 :select t :vslot 5 :ttl 3))
+                                            ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
+                                            ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
+                                            ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
+                                            ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
 
 
-<a id="orgb8a418d"></a>
+<a id="org1d2124f"></a>
 
 ## Buffer Settings
 
@@ -217,7 +223,7 @@ Set a few settings if we detect terminal mode
     (whitespace-mode -1)
 
 
-<a id="org3ee6585"></a>
+<a id="org3a42cf9"></a>
 
 ## Misc Settings
 
@@ -230,16 +236,14 @@ Set a few settings if we detect terminal mode
      x-stretch-cursor t)
 
 
-<a id="org819e570"></a>
+<a id="org14f8c8b"></a>
 
 # Module Settings
 
 
-<a id="orge1ab5a4"></a>
+<a id="orgaac4995"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
-
-    (require 'bookmark+)
 
 Configuring PDF support and ORG-NOTER for note taking
 
@@ -247,7 +251,7 @@ Configuring PDF support and ORG-NOTER for note taking
       :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org6b1809c"></a>
+<a id="org3e63907"></a>
 
 ## Graphs and Chart Modules
 
@@ -264,22 +268,6 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq mermaid-mmdc-location "~/node_modules/.bin/mmdc"
           ob-mermaid-cli-path "~/node_modules/.bin/mmdc")
     
-    ; ORG-MIND-MAP
-    (use-package org-mind-map
-      :init
-      (require 'ox-org)
-      ;; Uncomment the below if 'ensure-system-packages` is installed
-      ;;:ensure-system-package (gvgen . graphviz)
-      :config
-      ;;(setq org-mind-map-engine "dot")       ; Default. Directed Graph
-       (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
-      ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
-      ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
-      ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
-      ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
-      ;; (setq org-mind-map-engine "circo")  ; Circular Layout
-      )
-    
     ; PLANTUML
     (use-package ob-plantuml
       :ensure nil
@@ -289,7 +277,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="orgfc50521"></a>
+<a id="orgd93f1b1"></a>
 
 ## Elfeed
 
@@ -298,7 +286,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orgdb339f2"></a>
+<a id="org797387a"></a>
 
 ## DEFT
 
@@ -307,7 +295,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       :bind (("<f8>" . deft))
       :commands (deft deft-open-file deft-new-file-named)
       :config
-      (setq deft-directory "~/.org/notes/"
+      (setq deft-directory "~/.org/"
             deft-auto-save-interval 0
             deft-recursive t
             deft-current-sort-method 'title
@@ -320,7 +308,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org4927a6f"></a>
+<a id="orgdae78a3"></a>
 
 ## Org-Rifle
 
@@ -424,14 +412,34 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgf4ed861"></a>
+<a id="org10707ba"></a>
 
 ## ROAM
 
     (setq org-roam-directory "~/.org/")
+    (setq org-roam-tag-sources '(prop all-directories))
+    (setq org-roam-db-location "~/.org/roam.db")
 
 
-<a id="org5899b83"></a>
+<a id="org3cee284"></a>
+
+## ROAM Server
+
+    (use-package org-roam-server
+      :ensure t
+      :config
+      (setq org-roam-server-host "192.168.1.103"
+            org-roam-server-port 8070
+            org-roam-server-export-inline-images t
+            org-roam-server-authenticate nil
+            org-roam-server-network-poll nil
+            org-roam-server-network-arrows 'nil
+            org-roam-server-network-label-truncate t
+            org-roam-server-network-label-truncate-length 60
+            org-roam-server-network-label-wrap-length 20))
+
+
+<a id="org3249127"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -464,7 +472,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="orgb9c993a"></a>
+<a id="org17861db"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -473,29 +481,83 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="orgc3d339e"></a>
+<a id="org819e44a"></a>
 
 ## Super Agenda Settings
 
     (org-super-agenda-mode t)
+    
+    (setq org-agenda-custom-commands
+          '(("M" "Master Agenda"
+             ((agenda ""
+                      ((org-agenda-overriding-header "Master Agenda")
+                       (org-agenda-files (append (file-expand-wildcards "~/.org/*/tasks/*.org") (file-expand-wildcards "~/.org/*/tickler.org")))
+                       (org-agenda-time-grid nil)
+                       (org-agenda-start-day (org-today))
+                       (org-agenda-span '1)
+                       (org-super-agenda-groups
+                        '((:habit t)
+                          (:name "Meetings" :category "Meetings")
+                          (:name "Tasks" :file-path "next")
+                          (:name "Update" :category "Update")))))
+              (todo ""
+                    ((org-agenda-files (append (file-expand-wildcards "~/.org/*/tasks/*.org")))
+                     (org-agenda-overriding-header (doom-project-root))
+                     (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                     (org-agenda-skip-function
+                      '(or
+                        (org-agenda-skip-entry-if 'nil '("scheduled"))
+                        (org-agenda-skip-entry-if 'nil '("deadline"))))
+                     (org-super-agenda-groups
+                      '((:auto-category t)))))))
+            ("w" "Master Work"
+             ((agenda ""
+                      ((org-agenda-overriding-header (format "Master Agenda for ALL " (counsel-directory-name (doom-project-root))))
+                       (org-agenda-files (append (file-expand-wildcards "~/.org/work*/tasks/*.org") (file-expand-wildcards "~/.org/work*/*.org")))
+                       (org-agenda-time-grid nil)
+                       (org-agenda-start-day (org-today))
+                       (org-agenda-span '1)
+                       (org-super-agenda-groups
+                        '((:habit t)
+                          (:name "Meetings" :category "Meetings")
+                          (:name "Tasks" :file-path "next")
+                          (:name "Update" :category "Update")))))
+              (todo ""
+                    ((org-agenda-overriding-header (format "Master Task List for ALL" (counsel-directory-name (doom-project-root))))
+                     (org-agenda-files (append (file-expand-wildcards "~/.org/work*/tasks/*.org")))
+                     (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                     (org-super-agenda-groups
+                      '((:auto-category t)))))))
+            ("i" "Inbox"
+             ((todo ""
+                    ((org-agenda-overriding-header "")
+                     (org-agenda-files (list "~/.org/next.org" "~/.org/inbox.org"))
+                     (org-super-agenda-groups
+                      '((:category "Cases")
+                        (:category "Emails")
+                        (:category "Inbox")))))))
+            ("x" "Someday"
+             ((todo ""
+                    ((org-agenda-overriding-header "Someday")
+                     (org-agenda-files (list (concat (doom-project-root) "gtd/someday.org")))
+                     (org-agenda-prefix-format " %(my-agenda-prefix) ")
+                     (org-super-agenda-groups
+                      '((:auto-parent t)))))))))
 
 
-<a id="org96077a2"></a>
+<a id="org41406f6"></a>
 
 # Load Extras
 
     ;(load! "superlinks.el")
     (load! "orgmode.el")
-    (load! "personal.el")
     (load! "customs.el")
 
 
-<a id="org321c631"></a>
+<a id="org3fa2ce3"></a>
 
 ## Theme Settings
 
     (toggle-frame-maximized)
-    (after! org (if (y-or-n-p "Load theme? ")
-                    (counsel-load-theme)
-                  (setq doom-theme 'doom-one)))
+    (setq doom-theme 'doom-monokai-pro)
 
