@@ -1,8 +1,8 @@
 ;;------ Agenda Settings
 ;(after! org (setq org-agenda-files (directory-files-recursively "~/.org/" "\.org$")))
-(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/*/tasks/*.org") (file-expand-wildcards "~/.org/*/*.org"))))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/personal/tasks/*.org") (file-expand-wildcards "~/.org/personal/*.org"))))
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-window-setup 'only-window
+;                  org-agenda-window-setup 'other-frame
                   org-agenda-dim-blocked-tasks t
                   org-agenda-use-time-grid t
                   org-agenda-hide-tags-regexp "\\w+"
@@ -26,14 +26,10 @@
       '(("c" "Captures")
         ("d" "Diary" plain (file zyro/capture-file-name)
          (file "~/.doom.d/templates/diary.org"))
-        ("cc" "Capture" entry (file+headline "~/.org/next.org" "INBOX")
+        ("cc" "Capture" entry (file+headline "~/.org/inbox.org" "INBOX")
          (file "~/.doom.d/templates/capture.org"))
-        ("cb" "Breakfix" entry (file+headline "~/.org/next.org" "INBOX")
+        ("cb" "Breakfix" entry (file+headline "~/.org/inbox.org" "INBOX")
          (file "~/.doom.d/templates/breakfix.org"))
-        ("ce" "Email" entry (file+headline "~/.org/next.org" "EMAILS")
-         (file "~/.doom.d/templates/email.org") :immediate-finish t)
-        ("cx" "Case Review" entry (file+headline "~/.org/next.org" "CASES")
-         (file "~/.doom.d/templates/case.org") :immediate-finish t)
         ("cr" "Reference" entry (function +org-capture-central-project-todo-file))
         ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
          (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
@@ -42,8 +38,8 @@
         ("ca" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
          (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
-
 
 (defun zyro/capture-template-selector ()
   "Prompt to select template"
@@ -80,7 +76,10 @@
 
 ;;------ TODO Keywords
 (setq org-todo-keywords
-      '((sequence "TODO(t!)" "REFILE(r!)" "SOMEDAY(s!)" "NEXT(n!)" "INPROGRESS(i!)" "|" "DONE(d!)")))
+      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
+        (sequence "PROJ(p)" "BGN(b)" "PROB(p)" "|" "COMPL(c)" "INVLD(I)")
+        (sequence "IDEA(i)" "CLCT(C)" "|" "DONE(d)")
+        (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")))
 
 ;;------ Logging & Drawers
 (after! org (setq org-log-state-notes-insert-after-drawers nil
@@ -107,6 +106,12 @@
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
+                    ("notes-to-orgfiles"
+                     :base-directory "~/.org/personal/notes/"
+                     :publishing-directory "~/notes/"
+                     :base-extension "org"
+                     :recursive t
+                     :publishing-function org-org-publish-to-org)
                     ("notes"
                      :base-directory "~/.org/"
                      :publishing-directory "~/publish_html"
@@ -127,7 +132,7 @@
                      :html-link-up "../../index.html"
                      :auto-preamble t
                      :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes")))))
+                    ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 ;;----- Refiling
 (after! org (setq org-refile-targets '((nil :maxlevel . 9)
