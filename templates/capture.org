@@ -1,2 +1,2 @@
-* TODO %(read-string "Task Name: ") [0/1] %^G
+* TODO %(read-string "Task Name: ") [0/1] %^g
 - [ ] %(format "[%s]" (format-time-string "%Y-%m-%d \%a")) %(read-string "What needs to be done? ")%? \\
