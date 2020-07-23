@@ -4,11 +4,25 @@
 ;                              "Set tags to archived headline"
 ;                              (counsel-org-tag)))
 
-(defun jethro/org-process-inbox ()
-  "Called in org-agenda-mode, processes all inbox items."
+(defun zyro/move-line-after-meta-data ()
+  "Takes the point and moves it to the line after the Properties drawer"
   (interactive)
-  (org-agenda-bulk-mark-regexp "inbox:")
-  (jethro/bulk-process-entries))
+  (when (org-at-heading-p) (org-end-of-meta-data) (evil-insert 1) (beginning-of-line))
+  (when (looking-at "^[	 ]*:LOGBOOK:[	 ]*\n\\(?:.*\n\\)*?[	 ]*:END:[	 ]*$")
+    (re-search-forward "^[ \t]*:END:[ \t]*$" nil t) (end-of-line) (newline))
+  (when (looking-at-p "^[ 	]*:\\(\\(?:\\w\\|[-_]\\)+\\):[ 	]*$")
+    (re-search-forward "^[ \t]*:END:[ \t]*$" nil t) (end-of-line) (newline)))
+
+(defun zyro/add-note ()
+  "Add note to headline"
+  (interactive)
+  (or
+   (org-next-visible-heading 1)
+   (goto-char (point-max)))
+  (forward-line -1)
+  (when (org-at-item-p) (forward-line -1))
+  (newline)
+  (insert (format "- %s" (read-string "Task name: "))))
 
 (defun zyro/capture-file-name ()
   "Generate filename at time of capture"
@@ -59,74 +73,6 @@
   (insert (format "TODO %s" (read-string "Task name: ")))
   (newline)
   (insert (format "[[%s][Link to case]]" (read-string "URL: "))))
-
-(defvar jethro/org-current-effort "1:00"
-  "Current effort for agenda items.")
-
-(defun jethro/my-org-agenda-set-effort (effort)
-  "Set the effort property for the current headline."
-  (interactive
-   (list (read-string (format "Effort [%s]: " jethro/org-current-effort) nil nil jethro/org-current-effort)))
-  (setq jethro/org-current-effort effort)
-  (org-agenda-check-no-diary)
-  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-                       (org-agenda-error)))
-         (buffer (marker-buffer hdmarker))
-         (pos (marker-position hdmarker))
-         (inhibit-read-only t)
-         newhead)
-    (org-with-remote-undo buffer
-      (with-current-buffer buffer
-        (widen)
-        (goto-char pos)
-        (org-show-context 'agenda)
-        (funcall-interactively 'org-set-effort nil jethro/org-current-effort)
-        (end-of-line 1)
-        (setq newhead (org-get-heading)))
-      (org-agenda-change-all-lines newhead hdmarker))))
-
-(defun jethro/org-agenda-process-inbox-item ()
-  "Process a single item in the org-agenda."
-  (org-with-wide-buffer
-   (org-agenda-set-tags)
-   (org-agenda-set-property)
-   (org-agenda-priority)
-   (call-interactively 'org-agenda-schedule)
-   (call-interactively 'jethro/my-org-agenda-set-effort)
-   (org-agenda-refile nil nil t)))
-
-(defun jethro/bulk-process-entries ()
-  (if (not (null org-agenda-bulk-marked-entries))
-      (let ((entries (reverse org-agenda-bulk-marked-entries))
-            (processed 0)
-            (skipped 0))
-        (dolist (e entries)
-          (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
-            (if (not pos)
-                (progn (message "Skipping removed entry at %s" e)
-                       (cl-incf skipped))
-              (goto-char pos)
-              (let (org-loop-over-headlines-in-active-region) (funcall 'jethro/org-agenda-process-inbox-item))
-              ;; `post-command-hook' is not run yet.  We make sure any
-              ;; pending log note is processed.
-              (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
-                        (memq 'org-add-log-note post-command-hook))
-                (org-add-log-note))
-              (cl-incf processed))))
-        (org-agenda-redo)
-        (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
-        (message "Acted on %d entries%s%s"
-                 processed
-                 (if (= skipped 0)
-                     ""
-                   (format ", skipped %d (disappeared before their turn)"
-                           skipped))
-                 (if (not org-agenda-persistent-marks) "" " (kept marked)")))))
-
-(defun jethro/org-inbox-capture ()
-  (interactive)
-  "Capture a task in agenda mode."
-  (org-capture nil "i"))
 
 (defun counsel-narrow ()
   "Narrow with counsel"
@@ -310,3 +256,41 @@
 ;            ((= count 8) (calendar-mark-visible-date date 'busy-8))
 ;            ((= count 9) (calendar-mark-visible-date date 'busy-9))
 ;            (t  (calendar-mark-visible-date date 'busy-10))))))
+
+;; Set default column view headings: Task Effort Clock_Summary
+(setq org-columns-default-format "%TODO %40ITEM(Task) %40SUMMARY(Summary)")
+
+(defvar yant/last-note-taken ""
+  "Text of the last note taken.")
+
+(define-advice org-store-log-note (:before (&rest args) yant/org-store-last-note)
+  "Store the last saved note into `yant/last-note-taken'."
+  (let ((txt (buffer-string)))
+    (while (string-match "\\`# .*\n[ \t\n]*" txt)
+      (setq txt (replace-match "" t t txt)))
+    (when (string-match "\\s-+\\'" txt)
+      (setq txt (replace-match " " t t txt)))
+    (when (string-match "\n" txt)
+      (setq txt (replace-match " " t t txt)))
+    (if (not (seq-empty-p txt))
+        (setq yant/last-note-taken txt))))
+
+(defmacro org-with-point-at-org-buffer (&rest body)
+  "If in agenda, put the point into the corresponding org buffer."
+  `(cond ((eq major-mode 'org-agenda-mode)
+          (when-let ((marker (org-get-at-bol 'org-hd-marker)))
+            (org-with-point-at marker
+              ,@body)))
+         ((eq major-mode 'org-mode)
+          (org-with-wide-buffer
+           ,@body))
+         (t (display-warning :warning "Trying to call org function in non-org buffer."))))
+
+(define-advice org-store-log-note (:after (&rest args) yant/org-save-last-note-into-summary-prop)
+  "Save the last saved note into SUMMARY property."
+  (when (and (not org-note-abort) (not (seq-empty-p yant/last-note-taken)))
+    (if (eq major-mode 'org-agenda-mode)
+        (org-with-point-at-org-buffer
+         (org-set-property "SUMMARY" (or yant/last-note-taken "")))
+      (org-set-property "SUMMARY" (or yant/last-note-taken "")))
+    (setq yant/last-note-taken nil)))
