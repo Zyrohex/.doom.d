@@ -15,9 +15,9 @@
 ;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
 
 ; "✖"
-(setq org-tags-column 0)
-(setq org-superstar-headline-bullets-list '("◉" "●" "○"))
+(setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
+(add-hook 'org-mode-hook #'+org-pretty-mode)
 
 ;(customize-set-value
 ;    'org-agenda-category-icon-alist
@@ -30,6 +30,281 @@
 ;      ("Improvement" "~/.icons/improvement.svg" nil nil :ascent center)
 ;      ("Sustaining" "~/.icons/chemistry.svg" nil nil :ascent center)))
 
+(after! org (setq org-capture-templates
+      '(("d" "Diary" plain (file zyro/capture-file-name)
+         (file "~/.doom.d/templates/diary.org"))
+        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
+        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
+
+(setq org-directory "~/.org/")
+
+(defun zyro/capture-system ()
+  "Capture"
+  (interactive)
+  (let* ((org-capture-templates
+         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
+            (file "~/.doom.d/templates/capture.org")))))
+    (org-capture)))
+
+(defun zyro/capture-inbox ()
+  "Function to locate file for capture template"
+  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
+
+;; Configure ORG Directory
+(defvar org-directory "~/.org/")
+
+;; Configure Folders
+(defvar org-gtd-tasks-folder "~/.org/tasks/")
+(defvar org-projects-folder "~/.org/tasks/projects/")
+
+;; Configure files
+(defvar org-someday-file (file-truename (concat org-gtd-tasks-folder "someday.org")))
+(defvar org-inbox-file (file-truename (concat org-gtd-tasks-folder "inbox.org")))
+(defvar org-references-file (file-truename (concat org-gtd-tasks-folder "references.org")))
+(defvar org-tickler-file (file-truename (concat org-gtd-tasks-folder"tickler.org")))
+(defvar org-next-tasks-file (file-truename (concat org-gtd-tasks-folder "next.org")))
+
+(defun zyro/agenda-someday ()
+  "Open next tasks in ORGMODE AGENDA"
+  (interactive)
+  (let ((org-agenda-files (list (car org-someday-file)))
+        (org-super-agenda-groups
+                     '((:priority "A")
+                       (:priority "B")
+                       (:todo "PROJ")
+                       (:effort> "0:16")
+                       (:effort< "0:15"))))
+    (org-agenda nil "t")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "SOMEDAY" "s" #'zyro/agenda-someday
+      :prefix ("eg" . "goto")
+      :desc "Someday Items" "s" #'org-find-someday-file)
+
+(defun org-find-someday-file ()
+  "Find default INBOX file"
+  (interactive)
+  (if (f-file-p (format "%s"(car org-someday-file)))
+      (find-file (car org-someday-file))
+    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+
+(after! org (add-to-list 'org-capture-templates
+                         '("!" "Capture" entry (file+headline "~/.org/inbox.org" "INBOX")
+                           (file "~/.doom.d/templates/capture.org") :immediate-finish t)))
+
+(defun zyro/quick-capture ()
+  "Quick capture to inbox from KEY-BINDING"
+  (interactive)
+  (org-capture nil "!"))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "New Capture" "!" #'zyro/quick-capture)
+
+(defun zyro/agenda-inbox ()
+  "Configure our Inbox agenda"
+  (interactive)
+  (let ((org-agenda-files (list (car org-inbox-file)))
+        (org-super-agenda-groups
+         '((:auto-ts t))))
+    (org-agenda nil "t")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "Check Inbox" "i" #'zyro/agenda-inbox
+      :prefix ("eg" . "goto")
+      :desc "Inbox" "i" #'org-find-inbox-file)
+
+(defun org-find-inbox-file ()
+  "Find default INBOX file"
+  (interactive)
+  (if (f-file-p (format "%s"(car org-inbox-file)))
+      (find-file (car org-inbox-file))
+    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+
+(defun jethro/org-process-inbox ()
+  "Called in org-agenda-mode, processes all inbox items."
+  (interactive)
+  (org-agenda-bulk-mark-regexp "inbox:")
+  (jethro/bulk-process-entries))
+
+(defvar jethro/org-current-effort "1:00"
+  "Current effort for agenda items.")
+
+(defun jethro/my-org-agenda-set-effort (effort)
+  "Set the effort property for the current headline."
+  (interactive
+   (list (read-string (format "Effort [%s]: " jethro/org-current-effort) nil nil jethro/org-current-effort)))
+  (setq jethro/org-current-effort effort)
+  (org-agenda-check-no-diary)
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker))
+         (inhibit-read-only t)
+         newhead)
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (funcall-interactively 'org-set-effort nil jethro/org-current-effort)
+        (end-of-line 1)
+        (setq newhead (org-get-heading)))
+      (org-agenda-change-all-lines newhead hdmarker))))
+
+(defun jethro/org-agenda-process-inbox-item ()
+  "Process a single item in the org-agenda."
+  (org-with-wide-buffer
+   (org-agenda-set-tags)
+   (org-agenda-set-property)
+   (org-agenda-priority)
+   (call-interactively 'org-agenda-schedule)
+   (call-interactively 'jethro/my-org-agenda-set-effort)
+   (org-agenda-refile nil nil t)))
+
+(defun jethro/bulk-process-entries ()
+  (if (not (null org-agenda-bulk-marked-entries))
+      (let ((entries (reverse org-agenda-bulk-marked-entries))
+            (processed 0)
+            (skipped 0))
+        (dolist (e entries)
+          (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
+            (if (not pos)
+                (progn (message "Skipping removed entry at %s" e)
+                       (cl-incf skipped))
+              (goto-char pos)
+              (let (org-loop-over-headlines-in-active-region) (funcall 'jethro/org-agenda-process-inbox-item))
+              ;; `post-command-hook' is not run yet.  We make sure any
+              ;; pending log note is processed.
+              (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
+                        (memq 'org-add-log-note post-command-hook))
+                (org-add-log-note))
+              (cl-incf processed))))
+        (org-agenda-redo)
+        (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
+        (message "Acted on %d entries%s%s"
+                 processed
+                 (if (= skipped 0)
+                     ""
+                   (format ", skipped %d (disappeared before their turn)"
+                           skipped))
+                 (if (not org-agenda-persistent-marks) "" " (kept marked)")))))
+
+(defun jethro/org-inbox-capture ()
+  (interactive)
+  "Capture a task in agenda mode."
+  (org-capture nil "i"))
+
+(defvar org-someday-file "~/.org/someday.org")
+(defun zyro/refile-someday ()
+  "Refile TASK to SOMEDAY file"
+  (interactive)
+  (let ((org-refile-targets '((org-someday-file :maxlevel . 3))))
+    (org-refile)))
+(bind-key "<f5>R" #'zyro/refile-someday)
+
+(defun zyro/agenda-next-tasks ()
+  "Open next tasks in ORGMODE AGENDA"
+  (interactive)
+  (let ((org-agenda-files (list (car org-next-tasks-file)))
+        (org-super-agenda-groups
+                     '((:priority "A")
+                       (:priority "B")
+                       (:todo "PROJ")
+                       (:effort> "0:16")
+                       (:effort< "0:15"))))
+    (org-agenda nil "t")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "Check Next Tasks" "n" #'zyro/agenda-next-tasks
+      :prefix ("eg" . "goto")
+      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
+
+(defun org-find-next-tasks-file ()
+  "Default next task file"
+  (interactive)
+  (if (f-file-p (format "%s" (car org-next-tasks-file)))
+      (find-file (car org-next-tasks-file))
+      (goto-char (point-min))
+    (error (format "'%s', does not exist. Please create the file before continuing." org-next-tasks-file))))
+
+(defun zyro/agenda-references ()
+  "Open next tasks in ORGMODE AGENDA"
+  (interactive)
+  (let ((org-agenda-files (list (car org-references-file)))
+        (org-super-agenda-groups
+                     '((:auto-ts t))))
+    (org-agenda nil "s")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "Search references" "r" #'zyro/agenda-references)
+
+(defun org-find-references-file ()
+  "Find default INBOX file"
+  (interactive)
+  (if (f-file-p (format "%s"(car org-someday-file)))
+      (find-file (car org-someday-file))
+    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+
+;(defun zyro/refile-conditions ()
+;  "Condition checker when refiling from target"
+;  (when t (equal (buffer-file-name) '(or (org-inbox-file) (org-someday-file)))
+;        (org-refile-targets)))
+
+(defun zyro/agenda-projects ()
+  (interactive)
+  (let ((org-agenda-files (list org-projects-folder))
+        (org-agenda-custom-commands
+         '(("w" "Master List"
+            ((agenda ""
+                     ((org-agenda-start-day (org-today))
+                      (org-agenda-span 3)))
+             (todo ""
+                   ((org-super-agenda-groups
+                     '((:priority "A")
+                       (:effort> "0:16")
+                       (:priority "B"))))))))))
+    (org-agenda nil "w")))
+
+(setq org-tags-column 0)
+
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 4
+                  org-export-with-drawers nil
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties nil
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
+
+(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-tasks-folder "*.org"))))
+
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
 
@@ -39,7 +314,6 @@
 (setq display-time-day-and-date t)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(bind-key "<f5>" #'org-cycle-hide-all-drawers)
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "C-M-<up>" #'evil-window-up)
 (bind-key "C-M-<down>" #'evil-window-down)
@@ -65,11 +339,13 @@
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file
-      :prefix ("G" . "gtd")
-       :desc "Next" "n" #'+org-gtd-next-tasks
-       :desc "Inbox" "i" #'+org-gtd-inbox
-       :desc "Someday" "s" #'+org-gtd-someday
-       :desc "References" "r" #'+org-gtd-references)
+      :prefix ("e" . "Getting Things Done")
+      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects
+      :localleader
+      :prefix ("s" . "Tree/Subtree")
+      :desc "Refile to Someday" "R" #'zyro/refile-someday
+      :prefix ("r" . "Refile")
+      :desc "Refile to Someday" "R" #'zyro/refile-someday)
 
 (map! :leader
       :desc "Set Bookmark" "`" #'my/goto-bookmark-location
@@ -78,7 +354,8 @@
       :desc "Swiper All" "@" #'swiper-all
       :prefix ("o" . "open")
       :desc "Elfeed" "e" #'elfeed
-      :desc "Deft" "w" #'deft)
+      :desc "Deft" "w" #'deft
+      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 
 (when (equal (window-system) nil)
   (and
@@ -86,6 +363,7 @@
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
+(set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t :slot 1 :ttl 3)
 ;(when (> (display-pixel-width) '3000)
 ;(after! org (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :height 0.5 :select t :slot 1 :ttl 3))
 ;(after! org (set-popup-rule! "*Capture*" :side 'left :size .25 :height 0.5 :select t :slot 1 :ttl 3))
@@ -114,6 +392,8 @@
  window-combination-resize t
  x-stretch-cursor t)
 
+(setq company-idle-delay 0.5)
+
 ;(use-package org-pdftools
 ;  :hook (org-load . org-pdftools-setup-link))
 
@@ -138,7 +418,8 @@
 
 (require 'elfeed-org)
 (elfeed-org)
-(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
+(setq elfeed-db-directory "~/.elfeed/")
+(setq rmh-elfeed-org-files (list "~/google-drive/.elfeed/elfeed.org"))
 
 (load! "my-deft-title.el")
 (use-package deft
@@ -259,6 +540,8 @@
 (setq org-roam-directory "~/.org/")
 (setq org-roam-tag-sources '(prop all-directories))
 ;(setq org-roam-db-location "~/.org/roam.db")
+(add-to-list 'safe-local-variable-values
+'(org-roam-directory . "."))
 
 (use-package org-roam-server
   :ensure t
@@ -311,13 +594,19 @@
       '(("w" "Master Agenda"
          ((agenda ""
                   ((org-agenda-overriding-header "Master Agenda")
-                   (org-agenda-files (append (file-expand-wildcards "~/.org/personal/*.org") (file-expand-wildcards "~/.org/personal/tasks/*")))
+                   (org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org")))
                    (org-agenda-time-grid nil)
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
           (todo ""
                 ((org-agenda-overriding-header "Master TODO List")
-                 (org-agenda-files (append (file-expand-wildcards "~/.org/personal/tasks/*")))))))
+                 (org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*")))
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))
+          (todo ""
+                ((org-agenda-files (list "~/.doom.d/config.org"))
+                 (org-super-agenda-groups
+                  '((:auto-parent t)))))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
@@ -333,9 +622,8 @@
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 
-;(load! "superlinks.el")
-(load! "orgmode.el")
-(load! "customs.el")
+;(load! "orgmode.el")
+;(load! "customs.el")
 
 (toggle-frame-maximized)
-(setq doom-theme 'doom-city-lights)
+(setq doom-theme 'doom-dracula)

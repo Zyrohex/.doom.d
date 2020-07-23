@@ -1,22 +1,32 @@
 #+EXPORT_FILE_NAME: README
+#+HTML_HEAD: <link href="http://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+#+HTML_HEAD: <link href="https://codepen.io/nmartin84/pen/RwPzMPe.css" rel="stylesheet" type="text/css" />
 
 * Getting started
 ** New Changes
-1. [2020-06-21 Sun]
-   1. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
-   2. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
-   3. added org-roam-server
-2. [2020-06-02 Tue]
-   1. Added =org-roam=
-   2. Added agenda schdules faces (thanks to )
-   3. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
-   4. Agenda-Hook to narrow on current subtree
-   5. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-   6. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
-   7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
-* Pretty
-** Fonts
-For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
+*** [2020-07-22 Wed]
+1. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
+   1. Configure your variable settings in [[*Setup our intial defaults for GTD][Setup our intial defaults for GTD]]
+*** [2020-06-21 Sun]
+1. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
+2. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
+3. added org-roam-server
+*** [2020-06-02 Tue]
+1. Added =org-roam=
+2. Added agenda schdules faces (thanks to )
+3. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
+4. Agenda-Hook to narrow on current subtree
+5. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
+6. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
+7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
+** Some Requirements
+These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
+1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
+2. For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
+* Initial Settings
+These are things that we absolutely must load before anything else
+** Setting up our initial look to Emacs and Orgmode
+*** We first setup our font settings
 #+BEGIN_SRC emacs-lisp
 (setq doom-unicode-font doom-font)
 (when (> (display-pixel-height) 1200)
@@ -27,7 +37,8 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
   (setq doom-font (font-spec :family "Input Mono" :size 14)
         doom-big-font (font-spec :family "Input Mono" :size 18)))
 #+END_SRC
-** Bullets and more
+**** TODO Configure Function to profile monitor setup
+*** Prettify ORGMODE and other aspects of Emacs
 #+BEGIN_SRC emacs-lisp
 ;(font-lock-add-keywords 'org-mode
 ;                        '(("^ *\\([-]\\) "
@@ -37,11 +48,11 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 ;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
 
 ; "✖"
-(setq org-tags-column 0)
-(setq org-superstar-headline-bullets-list '("◉" "●" "○"))
+(setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
+(add-hook 'org-mode-hook #'+org-pretty-mode)
 #+END_SRC
-** Icons
+*** Configure Category Icons for ORGMODE-AGENDA
 #+BEGIN_SRC emacs-lisp
 ;(customize-set-value
 ;    'org-agenda-category-icon-alist
@@ -54,6 +65,378 @@ For fonts please download [[https://input.fontbureau.com/download/][Input]] and 
 ;      ("Improvement" "~/.icons/improvement.svg" nil nil :ascent center)
 ;      ("Sustaining" "~/.icons/chemistry.svg" nil nil :ascent center)))
 #+END_SRC
+** Configure Default Templates
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-capture-templates
+      '(("d" "Diary" plain (file zyro/capture-file-name)
+         (file "~/.doom.d/templates/diary.org"))
+        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
+        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
+#+END_SRC
+
+** Setup Default Directory and Files
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/.org/")
+#+END_SRC
+* GTD Setup
+** TODO Capture System
+#+BEGIN_SRC emacs-lisp
+(defun zyro/capture-system ()
+  "Capture"
+  (interactive)
+  (let* ((org-capture-templates
+         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
+            (file "~/.doom.d/templates/capture.org")))))
+    (org-capture)))
+
+(defun zyro/capture-inbox ()
+  "Function to locate file for capture template"
+  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
+
+#+END_SRC
+** TODO Setup our intial defaults for GTD
+#+BEGIN_SRC emacs-lisp
+
+;; Configure ORG Directory
+(defvar org-directory "~/.org/")
+
+;; Configure Folders
+(defvar org-gtd-tasks-folder "~/.org/tasks/")
+(defvar org-projects-folder "~/.org/tasks/projects/")
+
+;; Configure files
+(defvar org-someday-file (file-truename (concat org-gtd-tasks-folder "someday.org")))
+(defvar org-inbox-file (file-truename (concat org-gtd-tasks-folder "inbox.org")))
+(defvar org-references-file (file-truename (concat org-gtd-tasks-folder "references.org")))
+(defvar org-tickler-file (file-truename (concat org-gtd-tasks-folder"tickler.org")))
+(defvar org-next-tasks-file (file-truename (concat org-gtd-tasks-folder "next.org")))
+
+#+END_SRC
+** TODO Configuring =someday.org=
+
+Configure our someday file finder
+#+BEGIN_SRC emacs-lisp
+(defun zyro/agenda-someday ()
+  "Open next tasks in ORGMODE AGENDA"
+  (interactive)
+  (let ((org-agenda-files (list (car org-someday-file)))
+        (org-super-agenda-groups
+                     '((:priority "A")
+                       (:priority "B")
+                       (:todo "PROJ")
+                       (:effort> "0:16")
+                       (:effort< "0:15"))))
+    (org-agenda nil "t")))
+#+END_SRC
+
+Configure Keybindings
+#+BEGIN_SRC emacs-lisp
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "SOMEDAY" "s" #'zyro/agenda-someday
+      :prefix ("eg" . "goto")
+      :desc "Someday Items" "s" #'org-find-someday-file)
+#+END_SRC
+
+Configuring file-finder
+#+BEGIN_SRC emacs-lisp
+(defun org-find-someday-file ()
+  "Find default INBOX file"
+  (interactive)
+  (if (f-file-p (format "%s"(car org-someday-file)))
+      (find-file (car org-someday-file))
+    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+#+END_SRC
+** TODO Configuring =inbox.org=
+Because GTD focuses on capturing information quick, we want the capture template to be callable with a single key-stroke. Here we also configure our capture template. The *KEY THING* here, is we want this process to be _QUICK AND EASY_. Do not prompt and ask for anything more than we need for the capture. Capture the name of the TASK, and leave a small blurb section to jot a quick note.
+
+#+BEGIN_SRC emacs-lisp
+(after! org (add-to-list 'org-capture-templates
+                         '("!" "Capture" entry (file+headline "~/.org/inbox.org" "INBOX")
+                           (file "~/.doom.d/templates/capture.org") :immediate-finish t)))
+
+(defun zyro/quick-capture ()
+  "Quick capture to inbox from KEY-BINDING"
+  (interactive)
+  (org-capture nil "!"))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "New Capture" "!" #'zyro/quick-capture)
+#+END_SRC
+
+For the Agenda, we can focus simply by =:auto-ts t= to see when our tasks was created
+#+BEGIN_SRC emacs-lisp
+(defun zyro/agenda-inbox ()
+  "Configure our Inbox agenda"
+  (interactive)
+  (let ((org-agenda-files (list (car org-inbox-file)))
+        (org-super-agenda-groups
+         '((:auto-ts t))))
+    (org-agenda nil "t")))
+#+END_SRC
+
+Now configure default key bindings
+#+BEGIN_SRC emacs-lisp
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "Check Inbox" "i" #'zyro/agenda-inbox
+      :prefix ("eg" . "goto")
+      :desc "Inbox" "i" #'org-find-inbox-file)
+#+END_SRC
+
+Configure file finder
+#+BEGIN_SRC emacs-lisp
+(defun org-find-inbox-file ()
+  "Find default INBOX file"
+  (interactive)
+  (if (f-file-p (format "%s"(car org-inbox-file)))
+      (find-file (car org-inbox-file))
+    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+#+END_SRC
+*** TODO Refiling to =next.org=
+We use Jethro's function to process bulk agenda items...
+- [ ] Write a new function to process bulk agenda items
+#+BEGIN_SRC emacs-lisp
+(defun jethro/org-process-inbox ()
+  "Called in org-agenda-mode, processes all inbox items."
+  (interactive)
+  (org-agenda-bulk-mark-regexp "inbox:")
+  (jethro/bulk-process-entries))
+#+END_SRC
+
+Configuring default effort value
+#+BEGIN_SRC emacs-lisp
+(defvar jethro/org-current-effort "1:00"
+  "Current effort for agenda items.")
+#+END_SRC
+
+Set our effort to "..."
+#+BEGIN_SRC emacs-lisp
+(defun jethro/my-org-agenda-set-effort (effort)
+  "Set the effort property for the current headline."
+  (interactive
+   (list (read-string (format "Effort [%s]: " jethro/org-current-effort) nil nil jethro/org-current-effort)))
+  (setq jethro/org-current-effort effort)
+  (org-agenda-check-no-diary)
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker))
+         (inhibit-read-only t)
+         newhead)
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (funcall-interactively 'org-set-effort nil jethro/org-current-effort)
+        (end-of-line 1)
+        (setq newhead (org-get-heading)))
+      (org-agenda-change-all-lines newhead hdmarker))))
+#+END_SRC
+
+Function to process a single item in our inbox
+#+BEGIN_SRC emacs-lisp
+(defun jethro/org-agenda-process-inbox-item ()
+  "Process a single item in the org-agenda."
+  (org-with-wide-buffer
+   (org-agenda-set-tags)
+   (org-agenda-set-property)
+   (org-agenda-priority)
+   (call-interactively 'org-agenda-schedule)
+   (call-interactively 'jethro/my-org-agenda-set-effort)
+   (org-agenda-refile nil nil t)))
+#+END_SRC
+
+Bulk process entries
+#+BEGIN_SRC emacs-lisp
+(defun jethro/bulk-process-entries ()
+  (if (not (null org-agenda-bulk-marked-entries))
+      (let ((entries (reverse org-agenda-bulk-marked-entries))
+            (processed 0)
+            (skipped 0))
+        (dolist (e entries)
+          (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
+            (if (not pos)
+                (progn (message "Skipping removed entry at %s" e)
+                       (cl-incf skipped))
+              (goto-char pos)
+              (let (org-loop-over-headlines-in-active-region) (funcall 'jethro/org-agenda-process-inbox-item))
+              ;; `post-command-hook' is not run yet.  We make sure any
+              ;; pending log note is processed.
+              (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
+                        (memq 'org-add-log-note post-command-hook))
+                (org-add-log-note))
+              (cl-incf processed))))
+        (org-agenda-redo)
+        (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
+        (message "Acted on %d entries%s%s"
+                 processed
+                 (if (= skipped 0)
+                     ""
+                   (format ", skipped %d (disappeared before their turn)"
+                           skipped))
+                 (if (not org-agenda-persistent-marks) "" " (kept marked)")))))
+#+END_SRC
+
+Initiate capture from agenda
+#+BEGIN_SRC emacs-lisp
+(defun jethro/org-inbox-capture ()
+  (interactive)
+  "Capture a task in agenda mode."
+  (org-capture nil "i"))
+#+END_SRC
+*** TODO Refiling to =someday.org=
+#+BEGIN_SRC emacs-lisp
+(defvar org-someday-file "~/.org/someday.org")
+(defun zyro/refile-someday ()
+  "Refile TASK to SOMEDAY file"
+  (interactive)
+  (let ((org-refile-targets '((org-someday-file :maxlevel . 3))))
+    (org-refile)))
+(bind-key "<f5>R" #'zyro/refile-someday)
+#+END_SRC
+** TODO Configuring =next.org=
+#+BEGIN_SRC emacs-lisp
+(defun zyro/agenda-next-tasks ()
+  "Open next tasks in ORGMODE AGENDA"
+  (interactive)
+  (let ((org-agenda-files (list (car org-next-tasks-file)))
+        (org-super-agenda-groups
+                     '((:priority "A")
+                       (:priority "B")
+                       (:todo "PROJ")
+                       (:effort> "0:16")
+                       (:effort< "0:15"))))
+    (org-agenda nil "t")))
+#+END_SRC
+
+Configure key bindings
+#+BEGIN_SRC emacs-lisp
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "Check Next Tasks" "n" #'zyro/agenda-next-tasks
+      :prefix ("eg" . "goto")
+      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
+#+END_SRC
+
+Configure file finder
+#+BEGIN_SRC emacs-lisp
+(defun org-find-next-tasks-file ()
+  "Default next task file"
+  (interactive)
+  (if (f-file-p (format "%s" (car org-next-tasks-file)))
+      (find-file (car org-next-tasks-file))
+      (goto-char (point-min))
+    (error (format "'%s', does not exist. Please create the file before continuing." org-next-tasks-file))))
+#+END_SRC
+** TODO Setting up =references.org=
+#+BEGIN_SRC emacs-lisp
+(defun zyro/agenda-references ()
+  "Open next tasks in ORGMODE AGENDA"
+  (interactive)
+  (let ((org-agenda-files (list (car org-references-file)))
+        (org-super-agenda-groups
+                     '((:auto-ts t))))
+    (org-agenda nil "s")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("e" . "Getting Things Done")
+      :desc "Search references" "r" #'zyro/agenda-references)
+
+(defun org-find-references-file ()
+  "Find default INBOX file"
+  (interactive)
+  (if (f-file-p (format "%s"(car org-someday-file)))
+      (find-file (car org-someday-file))
+    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+#+END_SRC
+** STRT Setting up Refile Settings
+I want ORGMODE to handle refiling a little different for GTD, such as when it comes from the =inbox.org= or =someday.org= file, it'll run a hook and require additional details to be added to the task file such as:
+1. effort estimate
+2. tags
+3. scheduling/deadline
+#+BEGIN_SRC emacs-lisp
+;(defun zyro/refile-conditions ()
+;  "Condition checker when refiling from target"
+;  (when t (equal (buffer-file-name) '(or (org-inbox-file) (org-someday-file)))
+;        (org-refile-targets)))
+#+END_SRC
+** TODO Configure PROJECTS
+
+Then we setup =ORGMODE AGENDA= to monitor the health of our projects
+#+BEGIN_SRC emacs-lisp
+(defun zyro/agenda-projects ()
+  (interactive)
+  (let ((org-agenda-files (list org-projects-folder))
+        (org-agenda-custom-commands
+         '(("w" "Master List"
+            ((agenda ""
+                     ((org-agenda-start-day (org-today))
+                      (org-agenda-span 3)))
+             (todo ""
+                   ((org-super-agenda-groups
+                     '((:priority "A")
+                       (:effort> "0:16")
+                       (:priority "B"))))))))))
+    (org-agenda nil "w")))
+#+END_SRC
+** TODO Configure our KEYWORDS
+* Org-Roam with GTD
+** TODO Setting up TASKS to integrate with our REFERENCES
+* ORGMODE
+** Initial startup settings
+** Making things pretty
+** Setting up property drawers
+** Configuring TAGS
+#+BEGIN_SRC emacs-lisp
+(setq org-tags-column 0)
+#+END_SRC
+** How we want to publish projects
+** Configuring how refiling will work
+** Configuring initial defaults
+** Keeping track of our logs and history
+** Setting up Export Settings
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 4
+                  org-export-with-drawers nil
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties nil
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
+#+END_SRC
+** Telling Emacs how to treat links
+** TODO Setting up diary captures with ROAM integration
+** Setting up agenda-files on first load
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-tasks-folder "*.org"))))
+#+END_SRC
+** Keeping our work safe
 * Environment
 ** User Information
 Load ORG Files
@@ -80,7 +463,6 @@ Now we load some default settings for EMACS.
 ** Key Bindings
 From here we load some extra key bindings that I use often
 #+BEGIN_SRC emacs-lisp
-(bind-key "<f5>" #'org-cycle-hide-all-drawers)
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "C-M-<up>" #'evil-window-up)
 (bind-key "C-M-<down>" #'evil-window-down)
@@ -106,11 +488,13 @@ From here we load some extra key bindings that I use often
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file
-      :prefix ("G" . "gtd")
-       :desc "Next" "n" #'+org-gtd-next-tasks
-       :desc "Inbox" "i" #'+org-gtd-inbox
-       :desc "Someday" "s" #'+org-gtd-someday
-       :desc "References" "r" #'+org-gtd-references)
+      :prefix ("e" . "Getting Things Done")
+      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects
+      :localleader
+      :prefix ("s" . "Tree/Subtree")
+      :desc "Refile to Someday" "R" #'zyro/refile-someday
+      :prefix ("r" . "Refile")
+      :desc "Refile to Someday" "R" #'zyro/refile-someday)
 
 (map! :leader
       :desc "Set Bookmark" "`" #'my/goto-bookmark-location
@@ -119,7 +503,8 @@ From here we load some extra key bindings that I use often
       :desc "Swiper All" "@" #'swiper-all
       :prefix ("o" . "open")
       :desc "Elfeed" "e" #'elfeed
-      :desc "Deft" "w" #'deft)
+      :desc "Deft" "w" #'deft
+      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 #+END_SRC
 ** Terminal Mode
 Set a few settings if we detect terminal mode
@@ -133,6 +518,7 @@ Set a few settings if we detect terminal mode
 * Behavior
 ** Popup Rules
 #+BEGIN_SRC emacs-lisp
+(set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t :slot 1 :ttl 3)
 ;(when (> (display-pixel-width) '3000)
 ;(after! org (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :height 0.5 :select t :slot 1 :ttl 3))
 ;(after! org (set-popup-rule! "*Capture*" :side 'left :size .25 :height 0.5 :select t :slot 1 :ttl 3))
@@ -168,6 +554,10 @@ Set a few settings if we detect terminal mode
  x-stretch-cursor t)
 #+END_SRC
 * Module Settings
+** company mode
+#+BEGIN_SRC emacs-lisp
+(setq company-idle-delay 0.5)
+#+END_SRC
 ** Misc Modules [Bookmarks, PDF Tools]
 Configuring PDF support and ORG-NOTER for note taking
 #+BEGIN_SRC emacs-lisp
@@ -201,7 +591,8 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 #+BEGIN_SRC emacs-lisp
 (require 'elfeed-org)
 (elfeed-org)
-(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
+(setq elfeed-db-directory "~/.elfeed/")
+(setq rmh-elfeed-org-files (list "~/google-drive/.elfeed/elfeed.org"))
 #+END_SRC
 ** DEFT
 #+BEGIN_SRC emacs-lisp
@@ -325,10 +716,13 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 #+END_SRC
 
 ** ROAM
+These are my default ROAM settings
 #+BEGIN_SRC emacs-lisp
 (setq org-roam-directory "~/.org/")
 (setq org-roam-tag-sources '(prop all-directories))
 ;(setq org-roam-db-location "~/.org/roam.db")
+(add-to-list 'safe-local-variable-values
+'(org-roam-directory . "."))
 #+END_SRC
 ** ROAM Server
 #+BEGIN_SRC emacs-lisp
@@ -389,13 +783,19 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
       '(("w" "Master Agenda"
          ((agenda ""
                   ((org-agenda-overriding-header "Master Agenda")
-                   (org-agenda-files (append (file-expand-wildcards "~/.org/personal/*.org") (file-expand-wildcards "~/.org/personal/tasks/*")))
+                   (org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org")))
                    (org-agenda-time-grid nil)
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
           (todo ""
                 ((org-agenda-overriding-header "Master TODO List")
-                 (org-agenda-files (append (file-expand-wildcards "~/.org/personal/tasks/*")))))))
+                 (org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*")))
+                 (org-super-agenda-groups
+                  '((:auto-category t)))))
+          (todo ""
+                ((org-agenda-files (list "~/.doom.d/config.org"))
+                 (org-super-agenda-groups
+                  '((:auto-parent t)))))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
@@ -413,12 +813,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 #+END_SRC
 * Load Extras
 #+BEGIN_SRC emacs-lisp
-;(load! "superlinks.el")
-(load! "orgmode.el")
-(load! "customs.el")
+;(load! "orgmode.el")
+;(load! "customs.el")
 #+END_SRC
 ** Theme Settings
 #+BEGIN_SRC emacs-lisp
 (toggle-frame-maximized)
-(setq doom-theme 'doom-city-lights)
+(setq doom-theme 'doom-dracula)
 #+END_SRC
+* Ideas to Consider
+** GANTT Chart
+1. [[https://github.com/legalnonsense/elgantt/]]
