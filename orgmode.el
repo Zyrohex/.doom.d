@@ -1,6 +1,6 @@
 ;;------ Agenda Settings
 ;(after! org (setq org-agenda-files (directory-files-recursively "~/.org/" "\.org$")))
-(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/personal/tasks/*.org") (file-expand-wildcards "~/.org/personal/*.org"))))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org") (file-expand-wildcards "~/.org/tasks/*/*.org"))))
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
 ;                  org-agenda-window-setup 'other-frame
                   org-agenda-dim-blocked-tasks t
@@ -26,7 +26,7 @@
       '(("c" "Captures")
         ("d" "Diary" plain (file zyro/capture-file-name)
          (file "~/.doom.d/templates/diary.org"))
-        ("cc" "Capture" entry (file+headline "~/.org/inbox.org" "INBOX")
+        ("!" "Capture" entry (file+headline "~/.org/inbox.org" "INBOX")
          (file "~/.doom.d/templates/capture.org"))
         ("cb" "Breakfix" entry (file+headline "~/.org/inbox.org" "INBOX")
          (file "~/.doom.d/templates/breakfix.org"))
@@ -107,13 +107,13 @@
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
                     ("notes-to-orgfiles"
-                     :base-directory "~/.org/personal/notes/"
+                     :base-directory "~/.org/notes/"
                      :publishing-directory "~/notes/"
                      :base-extension "org"
                      :recursive t
                      :publishing-function org-org-publish-to-org)
                     ("notes"
-                     :base-directory "~/.org/"
+                     :base-directory "~/.org/notes/elisp/"
                      :publishing-directory "~/publish_html"
                      :section-numbers nil
                      :base-extension "org"
@@ -146,4 +146,5 @@
                   org-startup-folded 'content
                   org-src-tab-acts-natively t))
 (add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook #'+org-pretty-mode)
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
