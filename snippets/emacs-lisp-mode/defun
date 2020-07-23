@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: _defun
+# key: _defun
+# --
+(defun $1 ($2)
+ "$3"
+ ($4))

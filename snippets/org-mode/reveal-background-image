@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: reveal-background-image
+# key: reveal-background-image
+# --
+:reveal_background: $1

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: _inline-code
+# key: _inline-code
+# --
+~$1~

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: reveal-backcolor
+# key: revea-backcolor
+# --
+:reveal_background: #$1
