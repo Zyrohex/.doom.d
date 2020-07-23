@@ -1,5 +1,4 @@
 (package! org-roam-server)
-(package! org-roam-bibtex)
 (package! helm-org-rifle)
 (package! metrics-tracker)
 (package! literate-calc-mode)
