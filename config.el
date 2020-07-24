@@ -1,3 +1,15 @@
+(defun zyro/calculate-profile-width ()
+  "Run calcuation to determine width of display"
+  (when (and (> (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 3.5)
+            (< (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 4.2))
+    (setq zyro/monitor-profile-width '"ultra-wide"))
+  (when (and (> (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 1.5)
+            (< (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 2.9))
+    (setq zyro/monitor-profile-width '"super-wide")))
+(zyro/calculate-profile-width)
+
+(setq zyro/monitor-profile-size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100))
+
 (setq doom-unicode-font doom-font)
 (when (> (display-pixel-height) 1200)
   (setq doom-font (font-spec :family "Input Mono" :size 18)
@@ -45,18 +57,6 @@
 
 (setq org-directory "~/.org/")
 
-(defun zyro/capture-system ()
-  "Capture"
-  (interactive)
-  (let* ((org-capture-templates
-         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
-            (file "~/.doom.d/templates/capture.org")))))
-    (org-capture)))
-
-(defun zyro/capture-inbox ()
-  "Function to locate file for capture template"
-  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
-
 ;; Configure ORG Directory
 (defvar org-directory "~/.org/")
 
@@ -70,6 +70,18 @@
 (defvar org-references-file (file-truename (concat org-gtd-tasks-folder "references.org")))
 (defvar org-tickler-file (file-truename (concat org-gtd-tasks-folder"tickler.org")))
 (defvar org-next-tasks-file (file-truename (concat org-gtd-tasks-folder "next.org")))
+
+(defun zyro/capture-system ()
+  "Capture"
+  (interactive)
+  (let* ((org-capture-templates
+         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
+            (file "~/.doom.d/templates/capture.org")))))
+    (org-capture)))
+
+(defun zyro/capture-inbox ()
+  "Function to locate file for capture template"
+  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
 
 (defun zyro/agenda-someday ()
   "Open next tasks in ORGMODE AGENDA"
@@ -116,7 +128,7 @@
 (defun zyro/agenda-inbox ()
   "Configure our Inbox agenda"
   (interactive)
-  (let ((org-agenda-files (list (car org-inbox-file)))
+  (let ((org-agenda-files (list org-inbox-file))
         (org-super-agenda-groups
          '((:auto-ts t))))
     (org-agenda nil "t")))
@@ -221,7 +233,7 @@
 (defun zyro/agenda-next-tasks ()
   "Open next tasks in ORGMODE AGENDA"
   (interactive)
-  (let ((org-agenda-files (list (car org-next-tasks-file)))
+  (let ((org-agenda-files (list org-next-tasks-file))
         (org-super-agenda-groups
                      '((:priority "A")
                        (:priority "B")

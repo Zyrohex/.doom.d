@@ -26,6 +26,21 @@ These are some items that are required outside of the normal DOOM EMACS installa
 * Initial Settings
 These are things that we absolutely must load before anything else
 ** Setting up our initial look to Emacs and Orgmode
+*** Configure Function to profile monitor setup
+#+BEGIN_SRC emacs-lisp
+(defun zyro/calculate-profile-width ()
+  "Run calcuation to determine width of display"
+  (when (and (> (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 3.5)
+            (< (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 4.2))
+    (setq zyro/monitor-profile-width '"ultra-wide"))
+  (when (and (> (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 1.5)
+            (< (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 2.9))
+    (setq zyro/monitor-profile-width '"super-wide")))
+(zyro/calculate-profile-width)
+
+(setq zyro/monitor-profile-size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100))
+
+#+END_SRC
 *** We first setup our font settings
 #+BEGIN_SRC emacs-lisp
 (setq doom-unicode-font doom-font)
@@ -37,7 +52,6 @@ These are things that we absolutely must load before anything else
   (setq doom-font (font-spec :family "Input Mono" :size 14)
         doom-big-font (font-spec :family "Input Mono" :size 18)))
 #+END_SRC
-**** TODO Configure Function to profile monitor setup
 *** Prettify ORGMODE and other aspects of Emacs
 #+BEGIN_SRC emacs-lisp
 ;(font-lock-add-keywords 'org-mode
@@ -86,21 +100,6 @@ These are things that we absolutely must load before anything else
 (setq org-directory "~/.org/")
 #+END_SRC
 * GTD Setup
-** TODO Capture System
-#+BEGIN_SRC emacs-lisp
-(defun zyro/capture-system ()
-  "Capture"
-  (interactive)
-  (let* ((org-capture-templates
-         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
-            (file "~/.doom.d/templates/capture.org")))))
-    (org-capture)))
-
-(defun zyro/capture-inbox ()
-  "Function to locate file for capture template"
-  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
-
-#+END_SRC
 ** TODO Setup our intial defaults for GTD
 #+BEGIN_SRC emacs-lisp
 
@@ -117,6 +116,21 @@ These are things that we absolutely must load before anything else
 (defvar org-references-file (file-truename (concat org-gtd-tasks-folder "references.org")))
 (defvar org-tickler-file (file-truename (concat org-gtd-tasks-folder"tickler.org")))
 (defvar org-next-tasks-file (file-truename (concat org-gtd-tasks-folder "next.org")))
+
+#+END_SRC
+** TODO Capture System
+#+BEGIN_SRC emacs-lisp
+(defun zyro/capture-system ()
+  "Capture"
+  (interactive)
+  (let* ((org-capture-templates
+         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
+            (file "~/.doom.d/templates/capture.org")))))
+    (org-capture)))
+
+(defun zyro/capture-inbox ()
+  "Function to locate file for capture template"
+  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
 
 #+END_SRC
 ** TODO Configuring =someday.org=
@@ -181,7 +195,7 @@ For the Agenda, we can focus simply by =:auto-ts t= to see when our tasks was cr
 (defun zyro/agenda-inbox ()
   "Configure our Inbox agenda"
   (interactive)
-  (let ((org-agenda-files (list (car org-inbox-file)))
+  (let ((org-agenda-files (list org-inbox-file))
         (org-super-agenda-groups
          '((:auto-ts t))))
     (org-agenda nil "t")))
@@ -315,7 +329,7 @@ Initiate capture from agenda
 (defun zyro/agenda-next-tasks ()
   "Open next tasks in ORGMODE AGENDA"
   (interactive)
-  (let ((org-agenda-files (list (car org-next-tasks-file)))
+  (let ((org-agenda-files (list org-next-tasks-file))
         (org-super-agenda-groups
                      '((:priority "A")
                        (:priority "B")
