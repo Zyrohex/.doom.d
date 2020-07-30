@@ -13,15 +13,17 @@
 (defun zyro/monitor-size-profile-setup ()
   "Calcuate our monitor size and then configure element sizes accordingly"
   (let ((size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100)))
-    (when (> size 71600.0)
+    (when (>= size 71600.0)
       (setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20)))))
+            doom-big-font (font-spec :family "Input Mono" :size 20)))
+    (when (>= size 49536.0)
+      (setq doom-font (font-spec :family "Input Mono" :size 18)
+            doom-big-font (font-spec :family "Input Mono" :size 22)))))
 
 (zyro/monitor-size-profile-setup)
 
 (setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
-(setq org-hide-emphasis-markers t)
 ;(add-hook 'org-mode-hook #'+org-pretty-mode)
 
 ;(customize-set-value
