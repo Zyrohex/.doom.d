@@ -187,26 +187,31 @@ Initiate capture from agenda
       :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
 #+END_SRC
 * ORGMODE
-** Initial startup settings
-** Org Protocol
+** Agenda Settings
 #+BEGIN_SRC emacs-lisp
-(require 'org-roam-protocol)
-(setq org-protocol-default-template-key "d")
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-dim-blocked-tasks t
+                  org-agenda-use-time-grid t
+                  org-agenda-hide-tags-regexp "\\w+"
+                  org-agenda-compact-blocks nil
+                  org-agenda-block-separator 61
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-enforce-todo-checkbox-dependencies t
+                  org-enforce-todo-dependencies t
+                  org-habit-show-habits t))
 #+END_SRC
-** Making things pretty
-** Clock settings
+** Agenda Files
 #+BEGIN_SRC emacs-lisp
-(setq org-clock-continuously t)
+(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
 #+END_SRC
-** Setting up property drawers
-** Configuring TAGS
+** Auto Saving our Changes
 #+BEGIN_SRC emacs-lisp
-(setq org-tags-column 0)
+(add-hook 'auto-save-hook 'org-save-all-org-buffers)
 #+END_SRC
-** How we want to publish projects
-** Templates
+** Capture Templates
 #+BEGIN_SRC emacs-lisp
-(after! org (setq org-capture-templates
+(setq org-capture-templates
       '(("d" "Diary" plain (file zyro/capture-file-name)
          (file "~/.doom.d/templates/diary.org"))
         ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
@@ -216,13 +221,15 @@ Initiate capture from agenda
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
-;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
-         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
 #+END_SRC
-** Configuring how refiling will work
-** Configuring initial defaults
-** Keeping track of our logs and history
-** Setting up Export Settings
+** Directory settings
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-image-actual-width nil
+                  org-archive-location "archives.org::* %s"
+                  projectile-project-search-path '("~/projectile/")))
+#+END_SRC
+** Export Settings
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -238,13 +245,119 @@ Initiate capture from agenda
                   org-export-with-smart-quotes t
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
 #+END_SRC
-** Telling Emacs how to treat links
-** TODO Setting up diary captures with ROAM integration
-** Setting up agenda-files on first load
+** Misc
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+(require 'org-id)
+(setq org-link-file-path-type 'relative)
 #+END_SRC
-** Keeping our work safe
+** Keywords
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
+        (sequence "PROJ(p)" "BGN(b)" "PROB(p)" "|" "COMPL(c)" "INVLD(I)")))
+#+END_SRC
+** Logging and Drawers
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-log-state-notes-insert-after-drawers nil
+                  org-log-into-drawer t
+                  org-log-done 'time
+                  org-log-repeat 'time
+                  org-log-redeadline 'note
+                  org-log-reschedule 'note))
+#+END_SRC
+** Prettify
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-hide-emphasis-markers t
+                  org-hide-leading-stars t
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+#+END_SRC
+** Properties
+#+BEGIN_SRC emacs-lisp
+(setq org-use-property-inheritance t ; We like to inhert properties from their parents
+      org-catch-invisible-edits 'error) ; Catch invisible edits
+#+END_SRC
+** Publishing
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-publish-project-alist
+                  '(("attachments"
+                     :base-directory "~/.org/"
+                     :recursive t
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                     :publishing-directory "~/publish_html"
+                     :publishing-function org-publish-attachment)
+                    ("notes-to-orgfiles"
+                     :base-directory "~/.org/notes/"
+                     :publishing-directory "~/notes/"
+                     :base-extension "org"
+                     :recursive t
+                     :publishing-function org-org-publish-to-org)
+                    ("notes"
+                     :base-directory "~/.org/notes/elisp/"
+                     :publishing-directory "~/publish_html"
+                     :section-numbers nil
+                     :base-extension "org"
+                     :with-properties nil
+                     :with-drawers (not "LOGBOOK")
+                     :with-timestamps active
+                     :recursive t
+                     :auto-sitemap t
+                     :sitemap-filename "sitemap.html"
+                     :publishing-function org-html-publish-to-html
+                     :html-head "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\"/>"
+;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
+;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :html-link-up "../"
+                     :with-email t
+                     :html-link-up "../../index.html"
+                     :auto-preamble t
+                     :with-toc t)
+                    ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
+#+END_SRC
+** Refiling
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-refile-targets '((nil :maxlevel . 9)
+                                       (org-agenda-files :maxlevel . 4))
+                  org-refile-use-outline-path 'buffer-name
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm))
+#+END_SRC
+** Startup
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-startup-indented 'indent
+                  org-startup-folded 'content
+                  org-src-tab-acts-natively t))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+#+END_SRC
+** Org Protocol
+#+BEGIN_SRC emacs-lisp
+(require 'org-roam-protocol)
+(setq org-protocol-default-template-key "d")
+#+END_SRC
+** Clock settings
+#+BEGIN_SRC emacs-lisp
+(setq org-clock-continuously t)
+#+END_SRC
+** Tags
+#+BEGIN_SRC emacs-lisp
+(setq org-tags-column 0)
+#+END_SRC
+** Templates
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-capture-templates
+      '(("d" "Diary" plain (file zyro/capture-file-name)
+         (file "~/.doom.d/templates/diary.org"))
+        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
+        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
+#+END_SRC
 * Environment
 ** User Information
 Load ORG Files
@@ -296,12 +409,7 @@ From here we load some extra key bindings that I use often
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file
       :prefix ("e" . "Getting Things Done")
-      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects
-      :localleader
-      :prefix ("s" . "Tree/Subtree")
-      :desc "Refile to Someday" "R" #'zyro/refile-someday
-      :prefix ("r" . "Refile")
-      :desc "Refile to Someday" "R" #'zyro/refile-someday)
+      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects)
 
 (map! :leader
       :desc "Set Bookmark" "`" #'my/goto-bookmark-location

@@ -124,6 +124,121 @@
       :prefix ("n" . "notes")
       :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
 
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-dim-blocked-tasks t
+                  org-agenda-use-time-grid t
+                  org-agenda-hide-tags-regexp "\\w+"
+                  org-agenda-compact-blocks nil
+                  org-agenda-block-separator 61
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-enforce-todo-checkbox-dependencies t
+                  org-enforce-todo-dependencies t
+                  org-habit-show-habits t))
+
+(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
+
+(add-hook 'auto-save-hook 'org-save-all-org-buffers)
+
+(setq org-capture-templates
+      '(("d" "Diary" plain (file zyro/capture-file-name)
+         (file "~/.doom.d/templates/diary.org"))
+        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
+        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
+
+(after! org (setq org-image-actual-width nil
+                  org-archive-location "archives.org::* %s"
+                  projectile-project-search-path '("~/projectile/")))
+
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 4
+                  org-export-with-drawers nil
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties nil
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
+
+(require 'org-id)
+(setq org-link-file-path-type 'relative)
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
+        (sequence "PROJ(p)" "BGN(b)" "PROB(p)" "|" "COMPL(c)" "INVLD(I)")))
+
+(after! org (setq org-log-state-notes-insert-after-drawers nil
+                  org-log-into-drawer t
+                  org-log-done 'time
+                  org-log-repeat 'time
+                  org-log-redeadline 'note
+                  org-log-reschedule 'note))
+
+(after! org (setq org-hide-emphasis-markers t
+                  org-hide-leading-stars t
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+
+(setq org-use-property-inheritance t ; We like to inhert properties from their parents
+      org-catch-invisible-edits 'error) ; Catch invisible edits
+
+(after! org (setq org-publish-project-alist
+                  '(("attachments"
+                     :base-directory "~/.org/"
+                     :recursive t
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                     :publishing-directory "~/publish_html"
+                     :publishing-function org-publish-attachment)
+                    ("notes-to-orgfiles"
+                     :base-directory "~/.org/notes/"
+                     :publishing-directory "~/notes/"
+                     :base-extension "org"
+                     :recursive t
+                     :publishing-function org-org-publish-to-org)
+                    ("notes"
+                     :base-directory "~/.org/notes/elisp/"
+                     :publishing-directory "~/publish_html"
+                     :section-numbers nil
+                     :base-extension "org"
+                     :with-properties nil
+                     :with-drawers (not "LOGBOOK")
+                     :with-timestamps active
+                     :recursive t
+                     :auto-sitemap t
+                     :sitemap-filename "sitemap.html"
+                     :publishing-function org-html-publish-to-html
+                     :html-head "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\"/>"
+;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
+;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :html-link-up "../"
+                     :with-email t
+                     :html-link-up "../../index.html"
+                     :auto-preamble t
+                     :with-toc t)
+                    ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
+
+(after! org (setq org-refile-targets '((nil :maxlevel . 9)
+                                       (org-agenda-files :maxlevel . 4))
+                  org-refile-use-outline-path 'buffer-name
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm))
+
+(after! org (setq org-startup-indented 'indent
+                  org-startup-folded 'content
+                  org-src-tab-acts-natively t))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+
 (require 'org-roam-protocol)
 (setq org-protocol-default-template-key "d")
 
@@ -143,22 +258,6 @@
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
 ;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
          (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
-
-(after! org (setq org-html-head-include-scripts t
-                  org-export-with-toc t
-                  org-export-with-author t
-                  org-export-headline-levels 4
-                  org-export-with-drawers nil
-                  org-export-with-email t
-                  org-export-with-footnotes t
-                  org-export-with-sub-superscripts nil
-                  org-export-with-latex t
-                  org-export-with-section-numbers nil
-                  org-export-with-properties nil
-                  org-export-with-smart-quotes t
-                  org-export-backends '(pdf ascii html latex odt md pandoc)))
-
-(setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
 
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
@@ -194,12 +293,7 @@
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file
       :prefix ("e" . "Getting Things Done")
-      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects
-      :localleader
-      :prefix ("s" . "Tree/Subtree")
-      :desc "Refile to Someday" "R" #'zyro/refile-someday
-      :prefix ("r" . "Refile")
-      :desc "Refile to Someday" "R" #'zyro/refile-someday)
+      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects)
 
 (map! :leader
       :desc "Set Bookmark" "`" #'my/goto-bookmark-location
