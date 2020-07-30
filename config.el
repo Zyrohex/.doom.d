@@ -1,35 +1,28 @@
-(defun zyro/calculate-profile-width ()
-  "Run calcuation to determine width of display"
-  (when (and (> (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 3.5)
-            (< (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 4.2))
-    (setq zyro/monitor-profile-width '"ultra-wide"))
-  (when (and (> (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 1.5)
-            (< (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10) 2.9))
-    (setq zyro/monitor-profile-width '"super-wide")))
-(zyro/calculate-profile-width)
+(defun zyro/monitor-width-profile-setup ()
+  "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
+  (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
+    (when (= size 2.734375)
+      (set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t)
+      (set-popup-rule! "*helm*" :side 'left :size .30 :select t)
+      (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
+      (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+      (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 
-(setq zyro/monitor-profile-size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100))
+(zyro/monitor-width-profile-setup)
 
-(setq doom-unicode-font doom-font)
-(when (> (display-pixel-height) 1200)
-  (setq doom-font (font-spec :family "Input Mono" :size 18)
-        doom-big-font (font-spec :family "Input Mono" :size 24)))
+(defun zyro/monitor-size-profile-setup ()
+  "Calcuate our monitor size and then configure element sizes accordingly"
+  (let ((size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100)))
+    (when (> size 71600.0)
+      (setq doom-font (font-spec :family "Input Mono" :size 16)
+            doom-big-font (font-spec :family "Input Mono" :size 20)))))
 
-(when (< (display-pixel-height) 1200)
-  (setq doom-font (font-spec :family "Input Mono" :size 14)
-        doom-big-font (font-spec :family "Input Mono" :size 18)))
+(zyro/monitor-size-profile-setup)
 
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([-]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-;(font-lock-add-keywords 'org-mode
-;                        '(("^ *\\([+]\\) "
-;                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "▪"))))))
-
-; "✖"
 (setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
-(add-hook 'org-mode-hook #'+org-pretty-mode)
+(setq org-hide-emphasis-markers t)
+;(add-hook 'org-mode-hook #'+org-pretty-mode)
 
 ;(customize-set-value
 ;    'org-agenda-category-icon-alist
@@ -42,111 +35,9 @@
 ;      ("Improvement" "~/.icons/improvement.svg" nil nil :ascent center)
 ;      ("Sustaining" "~/.icons/chemistry.svg" nil nil :ascent center)))
 
-(after! org (setq org-capture-templates
-      '(("d" "Diary" plain (file zyro/capture-file-name)
-         (file "~/.doom.d/templates/diary.org"))
-        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
-         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
-        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
-         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
-        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")
-        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
-;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
-         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
-
 (setq org-directory "~/.org/")
-
-;; Configure ORG Directory
-(defvar org-directory "~/.org/")
-
-;; Configure Folders
-(defvar org-gtd-tasks-folder "~/.org/tasks/")
-(defvar org-projects-folder "~/.org/tasks/projects/")
-
-;; Configure files
-(defvar org-someday-file (file-truename (concat org-gtd-tasks-folder "someday.org")))
-(defvar org-inbox-file (file-truename (concat org-gtd-tasks-folder "inbox.org")))
-(defvar org-references-file (file-truename (concat org-gtd-tasks-folder "references.org")))
-(defvar org-tickler-file (file-truename (concat org-gtd-tasks-folder"tickler.org")))
-(defvar org-next-tasks-file (file-truename (concat org-gtd-tasks-folder "next.org")))
-
-(defun zyro/capture-system ()
-  "Capture"
-  (interactive)
-  (let* ((org-capture-templates
-         '(("!" "Quick Capture" plain (function zyro/capture-inbox)
-            (file "~/.doom.d/templates/capture.org")))))
-    (org-capture)))
-
-(defun zyro/capture-inbox ()
-  "Function to locate file for capture template"
-  (expand-file-name (format "%s" (file-name-nondirectory (car org-inbox-file))) org-gtd-tasks-folder))
-
-(defun zyro/agenda-someday ()
-  "Open next tasks in ORGMODE AGENDA"
-  (interactive)
-  (let ((org-agenda-files (list (car org-someday-file)))
-        (org-super-agenda-groups
-                     '((:priority "A")
-                       (:priority "B")
-                       (:todo "PROJ")
-                       (:effort> "0:16")
-                       (:effort< "0:15"))))
-    (org-agenda nil "t")))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("e" . "Getting Things Done")
-      :desc "SOMEDAY" "s" #'zyro/agenda-someday
-      :prefix ("eg" . "goto")
-      :desc "Someday Items" "s" #'org-find-someday-file)
-
-(defun org-find-someday-file ()
-  "Find default INBOX file"
-  (interactive)
-  (if (f-file-p (format "%s"(car org-someday-file)))
-      (find-file (car org-someday-file))
-    (error (format "'%s' does not exist, please check and make sure the file exist."))))
-
-(after! org (add-to-list 'org-capture-templates
-                         '("!" "Capture" entry (file+headline "~/.org/inbox.org" "INBOX")
-                           (file "~/.doom.d/templates/capture.org") :immediate-finish t)))
-
-(defun zyro/quick-capture ()
-  "Quick capture to inbox from KEY-BINDING"
-  (interactive)
-  (org-capture nil "!"))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("e" . "Getting Things Done")
-      :desc "New Capture" "!" #'zyro/quick-capture)
-
-(defun zyro/agenda-inbox ()
-  "Configure our Inbox agenda"
-  (interactive)
-  (let ((org-agenda-files (list org-inbox-file))
-        (org-super-agenda-groups
-         '((:auto-ts t))))
-    (org-agenda nil "t")))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("e" . "Getting Things Done")
-      :desc "Check Inbox" "i" #'zyro/agenda-inbox
-      :prefix ("eg" . "goto")
-      :desc "Inbox" "i" #'org-find-inbox-file)
-
-(defun org-find-inbox-file ()
-  "Find default INBOX file"
-  (interactive)
-  (if (f-file-p (format "%s"(car org-inbox-file)))
-      (find-file (car org-inbox-file))
-    (error (format "'%s' does not exist, please check and make sure the file exist."))))
+(load! "gtd.el")
+(setq org-gtd-task-files '("next.org" "personal.org" "work.org" "study.org"))
 
 (defun jethro/org-process-inbox ()
   "Called in org-agenda-mode, processes all inbox items."
@@ -222,84 +113,36 @@
   "Capture a task in agenda mode."
   (org-capture nil "i"))
 
-(defvar org-someday-file "~/.org/someday.org")
-(defun zyro/refile-someday ()
-  "Refile TASK to SOMEDAY file"
+(defun zyro/rifle-roam ()
+  "Rifle through your ROAM directory"
   (interactive)
-  (let ((org-refile-targets '((org-someday-file :maxlevel . 3))))
-    (org-refile)))
-(bind-key "<f5>R" #'zyro/refile-someday)
-
-(defun zyro/agenda-next-tasks ()
-  "Open next tasks in ORGMODE AGENDA"
-  (interactive)
-  (let ((org-agenda-files (list org-next-tasks-file))
-        (org-super-agenda-groups
-                     '((:priority "A")
-                       (:priority "B")
-                       (:todo "PROJ")
-                       (:effort> "0:16")
-                       (:effort< "0:15"))))
-    (org-agenda nil "t")))
+  (helm-org-rifle-directories org-roam-directory))
 
 (map! :after org
       :map org-mode-map
       :leader
-      :prefix ("e" . "Getting Things Done")
-      :desc "Check Next Tasks" "n" #'zyro/agenda-next-tasks
-      :prefix ("eg" . "goto")
-      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
+      :prefix ("n" . "notes")
+      :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
 
-(defun org-find-next-tasks-file ()
-  "Default next task file"
-  (interactive)
-  (if (f-file-p (format "%s" (car org-next-tasks-file)))
-      (find-file (car org-next-tasks-file))
-      (goto-char (point-min))
-    (error (format "'%s', does not exist. Please create the file before continuing." org-next-tasks-file))))
+(require 'org-roam-protocol)
+(setq org-protocol-default-template-key "d")
 
-(defun zyro/agenda-references ()
-  "Open next tasks in ORGMODE AGENDA"
-  (interactive)
-  (let ((org-agenda-files (list (car org-references-file)))
-        (org-super-agenda-groups
-                     '((:auto-ts t))))
-    (org-agenda nil "s")))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("e" . "Getting Things Done")
-      :desc "Search references" "r" #'zyro/agenda-references)
-
-(defun org-find-references-file ()
-  "Find default INBOX file"
-  (interactive)
-  (if (f-file-p (format "%s"(car org-someday-file)))
-      (find-file (car org-someday-file))
-    (error (format "'%s' does not exist, please check and make sure the file exist."))))
-
-;(defun zyro/refile-conditions ()
-;  "Condition checker when refiling from target"
-;  (when t (equal (buffer-file-name) '(or (org-inbox-file) (org-someday-file)))
-;        (org-refile-targets)))
-
-(defun zyro/agenda-projects ()
-  (interactive)
-  (let ((org-agenda-files (list org-projects-folder))
-        (org-agenda-custom-commands
-         '(("w" "Master List"
-            ((agenda ""
-                     ((org-agenda-start-day (org-today))
-                      (org-agenda-span 3)))
-             (todo ""
-                   ((org-super-agenda-groups
-                     '((:priority "A")
-                       (:effort> "0:16")
-                       (:priority "B"))))))))))
-    (org-agenda nil "w")))
+(setq org-clock-continuously t)
 
 (setq org-tags-column 0)
+
+(after! org (setq org-capture-templates
+      '(("d" "Diary" plain (file zyro/capture-file-name)
+         (file "~/.doom.d/templates/diary.org"))
+        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
+        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
+         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -315,7 +158,7 @@
                   org-export-with-smart-quotes t
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
 
-(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-tasks-folder "*.org"))))
+(setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
 
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
@@ -324,7 +167,6 @@
 
 (display-time-mode 1)
 (setq display-time-day-and-date t)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "C-M-<up>" #'evil-window-up)
@@ -375,15 +217,9 @@
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
-(set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t :slot 1 :ttl 3)
-;(when (> (display-pixel-width) '3000)
-;(after! org (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :height 0.5 :select t :slot 1 :ttl 3))
-;(after! org (set-popup-rule! "*Capture*" :side 'left :size .25 :height 0.5 :select t :slot 1 :ttl 3))
-;  (set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3))
-;(when (< (display-pixel-width) '2000)
 ;  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
 ;  (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-;  (set-popup-rule! "*helm*" :side 'bottom :size .30 :select t :vslot 5 :ttl 3))
+(set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3)
                                         ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
                                         ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
                                         ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
@@ -455,13 +291,8 @@
   :preface
   (autoload 'helm-org-rifle-wiki "helm-org-rifle")
   :config
-;  (add-to-list 'helm-org-rifle-actions '("Super Link" . sl-insert-link-rifle-action) t)
   (add-to-list 'helm-org-rifle-actions '("Insert link" . helm-org-rifle--insert-link) t)
-;  (add-to-list 'helm-org-rifle-actions '("Insert link with custom ID" . helm-org-rifle--insert-link-with-custom-id) t)
   (add-to-list 'helm-org-rifle-actions '("Store link" . helm-org-rifle--store-link) t)
-;  (add-to-list 'helm-org-rifle-actions '("Store link with custom ID" . helm-org-rifle--store-link-with-custom-id) t)
-;  (add-to-list 'helm-org-rifle-actions '("Add org-edna dependency on this entry (with ID)" . akirak/helm-org-rifle-add-edna-blocker-with-id) t)
-  (add-to-list 'helm-org-rifle-actions '("Go-to Entry and Narrow" . helm-org-rifle--narrow))
   (defun helm-org-rifle--store-link (candidate &optional use-custom-id)
     "Store a link to CANDIDATE."
     (-let (((buffer . pos) candidate))
@@ -479,10 +310,10 @@
                                            (nth 4 (org-heading-components))))))
          (call-interactively 'org-store-link)))))
 
-  (defun helm-org-rifle--narrow (candidate)
-    "Go-to and then Narrow Selection"
-    (helm-org-rifle-show-entry candidate)
-    (org-narrow-to-subtree))
+  ;; (defun helm-org-rifle--narrow (candidate)
+  ;;   "Go-to and then Narrow Selection"
+  ;;   (helm-org-rifle-show-entry candidate)
+  ;;   (org-narrow-to-subtree))
 
   (defun helm-org-rifle--store-link-with-custom-id (candidate)
     "Store a link to CANDIDATE with a custom ID.."
@@ -549,9 +380,9 @@
 
 (provide 'setup-helm-org-rifle)
 
-(setq org-roam-directory "~/.org/")
+(setq org-roam-directory "~/.org/notes/")
 (setq org-roam-tag-sources '(prop all-directories))
-;(setq org-roam-db-location "~/.org/roam.db")
+(setq org-roam-db-location "~/.org/roam.db")
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
 
@@ -568,33 +399,33 @@
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          (insert (format "\n\n* %d Backlinks\n"
-                          (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "** [[file:%s][%s]]\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
+;; (defun my/org-roam--backlinks-list-with-content (file)
+;;   (with-temp-buffer
+;;     (if-let* ((backlinks (org-roam--get-backlinks file))
+;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+;;         (progn
+;;           (insert (format "\n\n* %d Backlinks\n"
+;;                           (length backlinks)))
+;;           (dolist (group grouped-backlinks)
+;;             (let ((file-from (car group))
+;;                   (bls (cdr group)))
+;;               (insert (format "** [[file:%s][%s]]\n"
+;;                               file-from
+;;                               (org-roam--get-title-or-slug file-from)))
+;;               (dolist (backlink bls)
+;;                 (pcase-let ((`(,file-from _ ,props) backlink))
+;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+;;                   (insert "\n\n")))))))
+;;     (buffer-string)))
 
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
+;;   (defun my/org-export-preprocessor (backend)
+;;     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+;;       (unless (string= links "")
+;;         (save-excursion
+;;           (goto-char (point-max))
+;;           (insert (concat "\n* Backlinks\n") links)))))
 
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+;;   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
@@ -638,4 +469,4 @@
 ;(load! "customs.el")
 
 (toggle-frame-maximized)
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-one)

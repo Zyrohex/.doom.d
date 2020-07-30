@@ -1,5 +1,4 @@
-* TODO %(read-string "Task Name: ") [0/0]
+* TODO %(read-string "Task Name: ")
 :PROPERTIES:
 :CREATED: %U
 :END:
-%(read-string "Small blurb of details: ")%?
