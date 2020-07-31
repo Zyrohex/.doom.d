@@ -28,6 +28,7 @@
       :desc "Search references" "r" #'zyro/agenda-references
       :desc "Refile to next tasks" "R" #'zyro/refile
       :desc "Next Tasks" "n" #'zyro/agenda-next-tasks
+      :desc "Projects" "p" #'org-gtd-agenda-projects
       :desc "Find File" "f" #'org-gtd-find-file)
 
 ;;; Capture System for GTD
@@ -84,7 +85,7 @@
                        (:effort< "0:15"))))
     (org-agenda nil "t")))
 
-(defun zyro/agenda-projects ()
+(defun org-gtd-agenda-projects ()
   "Call agenda for GTD projects folder."
   (interactive)
   (let ((org-agenda-files (list org-projects-folder))

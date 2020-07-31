@@ -293,9 +293,7 @@
       :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
-      "g" #'eos/org-add-ids-to-headlines-in-file
-      :prefix ("e" . "Getting Things Done")
-      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects)
+      "g" #'eos/org-add-ids-to-headlines-in-file)
 
 (map! :leader
       :desc "Set Bookmark" "`" #'my/goto-bookmark-location

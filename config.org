@@ -171,7 +171,6 @@ Initiate capture from agenda
   "Capture a task in agenda mode."
   (org-capture nil "i"))
 #+END_SRC
-** TODO Configure our KEYWORDS
 * Org-Roam with GTD
 ** TODO Setting up TASKS to integrate with our REFERENCES
 ** TODO Search functions
@@ -409,9 +408,7 @@ From here we load some extra key bindings that I use often
       :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
-      "g" #'eos/org-add-ids-to-headlines-in-file
-      :prefix ("e" . "Getting Things Done")
-      :desc "Project Tasks [Agenda]" "P" #'zyro/agenda-projects)
+      "g" #'eos/org-add-ids-to-headlines-in-file)
 
 (map! :leader
       :desc "Set Bookmark" "`" #'my/goto-bookmark-location
