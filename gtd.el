@@ -25,6 +25,7 @@
       :prefix ("d" . "Getting Things Done")
       :desc "Capture" "!" #'org-gtd-quick-capture
       :desc "Check Inbox" "i" #'zyro/agenda-inbox
+      :desc "Clarify" "c" #'zyro/refile-set-properties
       :desc "Search references" "r" #'zyro/agenda-references
       :desc "Refile to next tasks" "R" #'zyro/refile
       :desc "Next Tasks" "n" #'zyro/agenda-next-tasks
@@ -51,13 +52,12 @@
 (defun zyro/refile-set-properties ()
   "Set properties when refiling."
   (interactive)
-  (when (and major-mode (= '"org-mode") (equal buffer-file-name (or (expand-file-name org-gtd-inbox-file) (expand-file-name org-gtd-someday-file))))
+  (when major-mode (= '"org-mode")
     (mapcar (lambda (arg) (org-set-property arg (read-string (concat arg ": "))))
           org-gtd-refile-properties)
-;    (org-set-property "CATEGORY" (read-string "Category: "))
     (call-interactively #'org-schedule)
     (org-set-effort nil (ivy-completing-read "Estimate: " '("0:15" "0:30" "0:45" "1:00" "1:30" "2:00" "2:30" "3:00" "4:00")))
-    (call-interactively #'counsel-org-tag)))
+    (call-interactively #'org-set-tags-command)))
 
 (defun zyro/refile ()
   "Refile current headline to NEXT tasks."
@@ -122,14 +122,91 @@
   (interactive)
   (setq org-next-task-files (mapcar (lambda (file) (expand-file-name file org-gtd-folder))
                                     org-gtd-task-files))
-  (let* ((org-agenda-files org-next-task-files)
-         (org-super-agenda-groups
-          '((:priority "A")
-            (:priority "B")
-            (:todo "PROJ")
-            (:effort> "0:16")
-            (:effort< "0:15"))))
-    (org-agenda nil "t")))
+  (let ((org-agenda-custom-commands
+        '(("w" "Master Agenda"
+           ((agenda ""
+                    ((org-agenda-overriding-header "Master Agenda")
+                     (org-agenda-files org-next-task-files)
+                     (org-agenda-time-grid nil)
+                     (org-agenda-start-day (org-today))
+                     (org-agenda-span '5)))
+            (tags-todo "@home"
+                       ((org-agenda-overriding-header "Home Tasks")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@computer"
+                       ((org-agenda-overriding-header "Computer")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@place"
+                       ((org-agenda-overriding-header "Visit")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@planning"
+                       ((org-agenda-overriding-header "Planning")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@brainstorm"
+                       ((org-agenda-overriding-header "Brainstorm")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@read"
+                       ((org-agenda-overriding-header "Read")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@order"
+                       ((org-agenda-overriding-header "Purchase Items")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@labor"
+                       ((org-agenda-overriding-header "Physical Work")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "@bills"
+                       ((org-agenda-overriding-header "Bills")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))
+            (tags-todo "-@place-@brainstorm-@bills-@labor-@order-@work-@computer-@home"
+                       ((org-agenda-overriding-header "Everything else")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                        (org-agenda-files org-next-task-files)))))
+          ("h" . "Tasks")
+          ("hh" tags-todo "@home"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("hp" tags-todo "@place"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("ha" tags-todo "@planning"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("hb" tags-todo "@brainstorm"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("hr" tags-todo "@read"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("ho" tags-todo "@order"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("hl" tags-todo "@labor"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("hc" tags-todo "@computer"
+           ((org-agenda-files org-next-task-files)
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-super-agenda-groups '((:auto-parent t)))))
+          ("x" . "Stuck Projects")
+          ("xh" todo "WAIT|HOLD")
+          ("xs" todo "SMDY"))))
+  (org-agenda)))
 
 ;; Configure template picker
 ;;(find-file (expand-file-name (ivy-completing-read "select: " (directory-files "~/.doom.d/templates/" nil "[\\^.]org")) org-gtd-folder))
