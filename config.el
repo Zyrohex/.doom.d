@@ -18,7 +18,10 @@
             doom-big-font (font-spec :family "Input Mono" :size 20)))
     (when (>= size 49536.0)
       (setq doom-font (font-spec :family "Input Mono" :size 18)
-            doom-big-font (font-spec :family "Input Mono" :size 22)))))
+            doom-big-font (font-spec :family "Input Mono" :size 22)))
+    (when (>= size 39936.0)
+      (setq doom-font (font-spec :family "Input Mono" :size 16)
+            doom-big-font (font-spec :family "Input Mono" :size 20)))))
 
 (zyro/monitor-size-profile-setup)
 
@@ -39,7 +42,9 @@
 
 (setq org-directory "~/.org/")
 (load! "gtd.el")
-(setq org-gtd-task-files '("next.org" "personal.org" "work.org" "study.org"))
+(setq org-gtd-directory '"~/.org/gtd/")
+(setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
+(setq org-gtd-refile-properties '("CATEGORY"))
 
 (defun jethro/org-process-inbox ()
   "Called in org-agenda-mode, processes all inbox items."
@@ -140,15 +145,13 @@
 
 (setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
 
-(add-hook 'auto-save-hook 'org-save-all-org-buffers)
+;(add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 (setq org-capture-templates
       '(("d" "Diary" plain (file zyro/capture-file-name)
          (file "~/.doom.d/templates/diary.org"))
-        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
-         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
-        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
-         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+        ("c" "Capture" plain (file "~/.org/gtd/inbox.org")
+         (file "~/.doom.d/templates/capture.org"))
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
@@ -176,8 +179,7 @@
 (setq org-link-file-path-type 'relative)
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
-        (sequence "PROJ(p)" "BGN(b)" "PROB(p)" "|" "COMPL(c)" "INVLD(I)")))
+      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 
 (after! org (setq org-log-state-notes-insert-after-drawers nil
                   org-log-into-drawer t
@@ -247,6 +249,36 @@
 (setq org-clock-continuously t)
 
 (setq org-tags-column 0)
+(setq org-tag-alist '((:startgrouptag)
+                      ("Context")
+                      (:grouptags)
+                      ("@home" . ?h)
+                      ("@computer")
+                      ("@work")
+                      ("@place")
+                      ("@bills")
+                      ("@order")
+                      ("@labor")
+                      ("@read")
+                      ("@brainstorm")
+                      ("@planning")
+                      (:endgrouptag)
+                      (:startgrouptag)
+                      ("Categories")
+                      (:grouptags)
+                      ("vehicles")
+                      ("health")
+                      ("house")
+                      ("hobby")
+                      ("coding")
+                      ("material")
+                      ("goal")
+                      (:endgrouptag)
+                      (:startgrouptag)
+                      ("Section")
+                      (:grouptags)
+                      ("#coding")
+                      ("#research")))
 
 (after! org (setq org-capture-templates
       '(("d" "Diary" plain (file zyro/capture-file-name)
@@ -333,6 +365,12 @@
  uniquify-buffer-name-style 'forward
  window-combination-resize t
  x-stretch-cursor t)
+
+(use-package! counsel
+  :defer t
+  :init
+  (define-key!
+    [remap counsel-org-tag] #'org-set-tags-command))
 
 (setq company-idle-delay 0.5)
 
@@ -559,8 +597,6 @@
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 
-;(load! "orgmode.el")
-;(load! "customs.el")
-
-(toggle-frame-maximized)
-(setq doom-theme 'doom-one)
+;(toggle-frame-maximized)
+(toggle-frame-fullscreen)
+(setq doom-theme 'chocolate)
