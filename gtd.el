@@ -1,14 +1,34 @@
 ;;; package --- Summary
 ;;; Commentary:
 ;;; Code:
-(defvar org-gtd-folder (expand-file-name "gtd/" org-directory))
-(defvar org-projects-folder (file-name-directory "~/.org/gtd/projects/"))
-(defvar org-gtd-task-files '("next.org"))
-(defvar org-gtd-someday-file (expand-file-name "someday.org" org-gtd-folder))
-(defvar org-gtd-inbox-file (expand-file-name "inbox.org" org-gtd-folder))
-(defvar org-gtd-references-file (expand-file-name "references.org" org-gtd-folder))
-(defvar org-gtd-tickler-file (expand-file-name "tickler.org" org-gtd-folder))
-(defvar org-gtd-refile-properties nil)
+(defcustom org-gtd-folder "~/.org/gtd/"
+  "Root folder where all GTD files will reside."
+  :type 'directory)
+(defcustom org-projects-folder "~/.org/gtd/proejcts"
+  "Folder that holds all special projects managed by GTD."
+  :type 'directory)
+(defcustom org-gtd-task-files nil
+  "List of NEXT ACTION files that reside in your GTD folder."
+  :type '(choice
+          (repeat :tag "List of files and directories" string)
+          (file :tag "Store list in a file\n" :value "~/.gtd_nextaction_files")))
+(defcustom org-gtd-someday-file "~/.org/gtd/someday.org"
+  "The name of your INCUBATE file."
+  :type 'file)
+(defcustom org-gtd-inbox-file "~/.org/gtd/inbox.org"
+  "The name of your INBOX file."
+  :type 'file)
+(defcustom org-gtd-references-file "~/.org/gtd/references.org"
+  "The name of your REFERENCES file."
+  :type 'file)
+(defcustom org-gtd-tickler-file "~/.org/gtd/tickler.org"
+  "The name of your TICKLER file."
+  :type 'file)
+(defcustom org-gtd-refile-properties nil
+  "List of PROPERTY names when you Clarify or Refile."
+  :type '(choice
+          (repeat :tag "List of PROPERTY names" string)))
+
 (defvar org-next-task-files nil)
 
 ;; Configure our next task file and map them to our folder directory
@@ -131,40 +151,28 @@
                      (org-agenda-start-day (org-today))
                      (org-agenda-span '5)))
             (tags-todo "@home"
-                       ((org-agenda-overriding-header "Home Tasks")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@computer"
-                       ((org-agenda-overriding-header "Computer")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@place"
-                       ((org-agenda-overriding-header "Visit")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                        (org-agenda-files org-next-task-files)))
-            (tags-todo "@planning"
-                       ((org-agenda-overriding-header "Planning")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@brainstorm"
-                       ((org-agenda-overriding-header "Brainstorm")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@read"
-                       ((org-agenda-overriding-header "Read")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@order"
-                       ((org-agenda-overriding-header "Purchase Items")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@labor"
-                       ((org-agenda-overriding-header "Physical Work")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "@bills"
-                       ((org-agenda-overriding-header "Bills")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                         (org-agenda-files org-next-task-files)))
             (tags-todo "-@place-@brainstorm-@bills-@labor-@order-@work-@computer-@home"
                        ((org-agenda-overriding-header "Everything else")
@@ -176,10 +184,6 @@
             (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
             (org-super-agenda-groups '((:auto-parent t)))))
           ("hp" tags-todo "@place"
-           ((org-agenda-files org-next-task-files)
-            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-            (org-super-agenda-groups '((:auto-parent t)))))
-          ("ha" tags-todo "@planning"
            ((org-agenda-files org-next-task-files)
             (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
             (org-super-agenda-groups '((:auto-parent t)))))
