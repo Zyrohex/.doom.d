@@ -1,4 +1,3 @@
-#+EXPORT_FILE_NAME: README
 #+HTML_HEAD: <link href="http://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
 #+HTML_HEAD: <link href="https://codepen.io/nmartin84/pen/RwPzMPe.css" rel="stylesheet" type="text/css" />
 
@@ -24,10 +23,8 @@
 These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
 2. For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
-* Initial Settings
-These are things that we absolutely must load before anything else
-** Configure look and feel
-*** Setup Layout by Monitor Profile
+* Configure look and feel
+** Setup Layout by Monitor Profile
 #+BEGIN_SRC emacs-lisp
 (defun zyro/monitor-width-profile-setup ()
   "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
@@ -38,8 +35,6 @@ These are things that we absolutely must load before anything else
       (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
       (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
       (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
-
-(zyro/monitor-width-profile-setup)
 
 (defun zyro/monitor-size-profile-setup ()
   "Calcuate our monitor size and then configure element sizes accordingly"
@@ -53,16 +48,14 @@ These are things that we absolutely must load before anything else
     (when (>= size 39936.0)
       (setq doom-font (font-spec :family "Input Mono" :size 16)
             doom-big-font (font-spec :family "Input Mono" :size 20)))))
-
-(zyro/monitor-size-profile-setup)
 #+END_SRC
-*** Prettify
+** Prettify
 #+BEGIN_SRC emacs-lisp
 (setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
 ;(add-hook 'org-mode-hook #'+org-pretty-mode)
 #+END_SRC
-*** Category Icons
+** Category Icons
 #+BEGIN_SRC emacs-lisp
 ;(customize-set-value
 ;    'org-agenda-category-icon-alist
@@ -78,11 +71,14 @@ These are things that we absolutely must load before anything else
 * GTD Setup
 ** Setup our intial defaults for GTD
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/.org/")
 (load! "gtd.el")
-(setq org-gtd-directory '"~/.org/gtd/")
-(setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
-(setq org-gtd-refile-properties '("CATEGORY"))
+(use-package org-gtd
+  :config
+
+  (setq org-gtd-directory '"~/.org/gtd/")
+  (setq org-projects-folder '"~/.org/gtd/projects/")
+  (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
+  (setq org-gtd-refile-properties '("CATEGORY")))
 #+END_SRC
 *** TODO Refiling to =next.org=
 We use Jethro's function to process bulk agenda items...
@@ -433,9 +429,9 @@ From here we load some extra key bindings that I use often
       :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
       :prefix ("s" . "+search")
       :desc "Counsel Narrow" "n" #'counsel-narrow
+      :desc "Ripgrep Directory" "d" #'counsel-rg
       :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
       :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
-      :desc "Deadgrep" "d" #'deadgrep
       :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
       :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
       :prefix ("l" . "+links")
@@ -462,23 +458,12 @@ Set a few settings if we detect terminal mode
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 #+END_SRC
 * Behavior
-** Popup Rules
-#+BEGIN_SRC emacs-lisp
-;  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-;  (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-(set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3)
-                                        ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
-                                        ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
-                                        ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-                                        ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-#+END_SRC
-
 ** Buffer Settings
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode 1)
 (setq undo-limit 80000000
       evil-want-fine-undo t
-      auto-save-default t
+;      auto-save-default t
       inhibit-compacting-font-caches t)
 (whitespace-mode -1)
 #+END_SRC
@@ -540,7 +525,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 (require 'elfeed-org)
 (elfeed-org)
 (setq elfeed-db-directory "~/.elfeed/")
-(setq rmh-elfeed-org-files (list "~/google-drive/.elfeed/elfeed.org"))
+(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 #+END_SRC
 ** DEFT
 #+BEGIN_SRC emacs-lisp
@@ -754,12 +739,13 @@ These are my default ROAM settings
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 #+END_SRC
-* Load Extras
-** Theme Settings
+* Theme Settings
 #+BEGIN_SRC emacs-lisp
 ;(toggle-frame-maximized)
 (toggle-frame-fullscreen)
 (setq doom-theme 'chocolate)
+(zyro/monitor-width-profile-setup)
+(zyro/monitor-size-profile-setup)
 #+END_SRC
 * Ideas to Consider
 ** GANTT Chart

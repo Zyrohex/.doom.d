@@ -8,8 +8,6 @@
       (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
       (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 
-(zyro/monitor-width-profile-setup)
-
 (defun zyro/monitor-size-profile-setup ()
   "Calcuate our monitor size and then configure element sizes accordingly"
   (let ((size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100)))
@@ -22,8 +20,6 @@
     (when (>= size 39936.0)
       (setq doom-font (font-spec :family "Input Mono" :size 16)
             doom-big-font (font-spec :family "Input Mono" :size 20)))))
-
-(zyro/monitor-size-profile-setup)
 
 (setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
@@ -40,11 +36,14 @@
 ;      ("Improvement" "~/.icons/improvement.svg" nil nil :ascent center)
 ;      ("Sustaining" "~/.icons/chemistry.svg" nil nil :ascent center)))
 
-(setq org-directory "~/.org/")
 (load! "gtd.el")
-(setq org-gtd-directory '"~/.org/gtd/")
-(setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
-(setq org-gtd-refile-properties '("CATEGORY"))
+(use-package org-gtd
+  :config
+
+  (setq org-gtd-directory '"~/.org/gtd/")
+  (setq org-projects-folder '"~/.org/gtd/projects/")
+  (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
+  (setq org-gtd-refile-properties '("CATEGORY")))
 
 (defun jethro/org-process-inbox ()
   "Called in org-agenda-mode, processes all inbox items."
@@ -318,9 +317,9 @@
       :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
       :prefix ("s" . "+search")
       :desc "Counsel Narrow" "n" #'counsel-narrow
+      :desc "Ripgrep Directory" "d" #'counsel-rg
       :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
       :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
-      :desc "Deadgrep" "d" #'deadgrep
       :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
       :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
       :prefix ("l" . "+links")
@@ -343,18 +342,10 @@
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
-;  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-;  (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-(set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3)
-                                        ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
-                                        ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
-                                        ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-                                        ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-
 (global-auto-revert-mode 1)
 (setq undo-limit 80000000
       evil-want-fine-undo t
-      auto-save-default t
+;      auto-save-default t
       inhibit-compacting-font-caches t)
 (whitespace-mode -1)
 
@@ -399,7 +390,7 @@
 (require 'elfeed-org)
 (elfeed-org)
 (setq elfeed-db-directory "~/.elfeed/")
-(setq rmh-elfeed-org-files (list "~/google-drive/.elfeed/elfeed.org"))
+(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 (load! "my-deft-title.el")
 (use-package deft
@@ -600,3 +591,5 @@
 ;(toggle-frame-maximized)
 (toggle-frame-fullscreen)
 (setq doom-theme 'chocolate)
+(zyro/monitor-width-profile-setup)
+(zyro/monitor-size-profile-setup)
