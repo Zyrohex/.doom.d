@@ -480,14 +480,6 @@ Set a few settings if we detect terminal mode
  x-stretch-cursor t)
 #+END_SRC
 * Module Settings
-** Remap Functions
-#+BEGIN_SRC emacs-lisp
-(use-package! counsel
-  :defer t
-  :init
-  (define-key!
-    [remap counsel-org-tag] #'org-set-tags-command))
-#+END_SRC
 ** company mode
 #+BEGIN_SRC emacs-lisp
 (setq company-idle-delay 0.5)
@@ -748,11 +740,3 @@ These are my default ROAM settings
 (zyro/monitor-width-profile-setup)
 (zyro/monitor-size-profile-setup)
 #+END_SRC
-* Ideas to Consider
-** GANTT Chart
-:PROPERTIES:
-:TAG:      Something
-:END:
-- [X] [[https://github.com/legalnonsense/elgantt/]]
-- [X] =org-pretty-mode=
-  + found it to be buggy

@@ -357,12 +357,6 @@
  window-combination-resize t
  x-stretch-cursor t)
 
-(use-package! counsel
-  :defer t
-  :init
-  (define-key!
-    [remap counsel-org-tag] #'org-set-tags-command))
-
 (setq company-idle-delay 0.5)
 
 ;(use-package org-pdftools
