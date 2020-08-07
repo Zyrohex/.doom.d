@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: note_timestamped
+# key: note_timestamped
+# --
+`(format-time-string "[%Y-%m-%d %b %H:%M]")` $0
