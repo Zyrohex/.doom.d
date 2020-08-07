@@ -1,91 +1,89 @@
 
 # Table of Contents
 
--   [Getting started](#orga296281)
-    -   [New Changes](#org9e31fcf)
-        -   [<span class="timestamp-wrapper"><span class="timestamp">[2020-07-22 Wed]</span></span>](#orge78a69d)
-        -   [<span class="timestamp-wrapper"><span class="timestamp">[2020-06-21 Sun]</span></span>](#org568cec1)
-        -   [<span class="timestamp-wrapper"><span class="timestamp">[2020-06-02 Tue]</span></span>](#org121854c)
-    -   [Some Requirements](#orgb0754a6)
--   [Initial Settings](#orgbfa5674)
-    -   [Configure look and feel](#orgab6a797)
-        -   [Setup Layout by Monitor Profile](#org5984c5b)
-        -   [Prettify](#orgb759059)
-        -   [Category Icons](#orgd54a140)
--   [GTD Setup](#org88b644f)
-    -   [Setup our intial defaults for GTD](#org40d25d0)
-        -   [Refiling to `next.org`](#orgf177729)
--   [Org-Roam with GTD](#orga807263)
-    -   [Setting up TASKS to integrate with our REFERENCES](#org67cd8dc)
-    -   [Search functions](#org7733701)
--   [ORGMODE](#org1ec332c)
-    -   [Agenda Settings](#org1ff00bf)
-    -   [Agenda Files](#org6a5967c)
-    -   [Auto Saving our Changes](#org0d355d4)
-    -   [Capture Templates](#orgf025f10)
-    -   [Directory settings](#orged7e7b1)
-    -   [Export Settings](#org7c4bf05)
-    -   [Misc](#org77b9a68)
-    -   [Keywords](#orgab68d05)
-    -   [Logging and Drawers](#orga87182b)
-    -   [Prettify](#orgf079073)
-    -   [Properties](#org4f2c663)
-    -   [Publishing](#org4fa4250)
-    -   [Refiling](#org826a689)
-    -   [Startup](#org009bdf7)
-    -   [Org Protocol](#orgcbdd638)
-    -   [Clock settings](#org544ee16)
-    -   [Tags](#orge5e57f6)
-    -   [Templates](#orge6254ca)
--   [Environment](#org6e788c9)
-    -   [User Information](#orge5ba4f3)
-    -   [Default folder(s) and file(s)](#orgbc27425)
-    -   [Misc Settings](#org99ee4cb)
-    -   [Key Bindings](#org80a6e6c)
-    -   [Terminal Mode](#orgd49e113)
--   [Behavior](#orgc6d1039)
-    -   [Popup Rules](#org0fe64bf)
-    -   [Buffer Settings](#orge6d7a88)
-    -   [Misc Settings](#orgb01f945)
--   [Module Settings](#orgb6205e6)
-    -   [company mode](#org5614098)
-    -   [Misc Modules [Bookmarks, PDF Tools]](#org1bff100)
-    -   [Graphs and Chart Modules](#orgbf58c67)
-    -   [Elfeed](#org584392f)
-    -   [DEFT](#org45ffe30)
-    -   [Org-Rifle](#orga3e3385)
-    -   [ROAM](#org68bd437)
-    -   [ROAM Server](#org2600fb7)
-    -   [ROAM Export Backlinks + Content](#org6b5b19a)
-    -   [Reveal [HTML Presentations]](#org86a3398)
-    -   [Super Agenda Settings](#org82daa04)
--   [Load Extras](#orgbccef75)
-    -   [Theme Settings](#org386c138)
--   [Ideas to Consider](#org680f674)
-    -   [GANTT Chart](#org66fb218)
+-   [Getting started](#orge7be380)
+    -   [New Changes](#org0bf9721)
+        -   [<span class="timestamp-wrapper"><span class="timestamp">[2020-07-22 Wed]</span></span>](#org23db98f)
+        -   [<span class="timestamp-wrapper"><span class="timestamp">[2020-06-21 Sun]</span></span>](#orgb426c4d)
+        -   [<span class="timestamp-wrapper"><span class="timestamp">[2020-06-02 Tue]</span></span>](#org306090d)
+    -   [Some Requirements](#orgc6aadf5)
+-   [Configure look and feel](#orgc0cb706)
+    -   [Setup Layout by Monitor Profile](#org094f097)
+    -   [Prettify](#org452dd01)
+    -   [Category Icons](#orgf2c688d)
+-   [GTD Setup](#orgd52005b)
+    -   [Setup our intial defaults for GTD](#org78adb89)
+        -   [Refiling to `next.org`](#orga235bd0)
+-   [Org-Roam with GTD](#org7dc2a1b)
+    -   [Setting up TASKS to integrate with our REFERENCES](#org089c63b)
+    -   [Search functions](#orgb9712e9)
+-   [ORGMODE](#org09dd753)
+    -   [Agenda Settings](#orgd43f6cf)
+    -   [Agenda Files](#orge2b08a8)
+    -   [Auto Saving our Changes](#org76f32fc)
+    -   [Capture Templates](#org119dad6)
+    -   [Directory settings](#org21f1d6c)
+    -   [Export Settings](#org2dc9f9a)
+    -   [Misc](#org7670050)
+    -   [Keywords](#org0b59867)
+    -   [Logging and Drawers](#org6193f58)
+    -   [Prettify](#orgd14bc6e)
+    -   [Properties](#orgeacf5ba)
+    -   [Publishing](#org58b5a52)
+    -   [Refiling](#org0750ec2)
+    -   [Startup](#orgc17fc55)
+    -   [Org Protocol](#org6a70fce)
+    -   [Clock settings](#org36da30c)
+    -   [Tags](#orgedb4aee)
+    -   [Templates](#orgf634c1c)
+-   [Environment](#org7d03b45)
+    -   [User Information](#org0bae2ec)
+    -   [Default folder(s) and file(s)](#org0684f6a)
+    -   [Misc Settings](#org6a167f9)
+    -   [Key Bindings](#org5cc3d1c)
+    -   [Terminal Mode](#orgb44940b)
+-   [Behavior](#orgce9567d)
+    -   [Buffer Settings](#orgeda7a6e)
+    -   [Misc Settings](#orgf406d12)
+-   [Module Settings](#org9de2b6c)
+    -   [Remap Functions](#orgcf44566)
+    -   [company mode](#org20d6256)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#org2f985a9)
+    -   [Graphs and Chart Modules](#orgeef2eaa)
+    -   [Elfeed](#org5f36ced)
+    -   [DEFT](#org658228f)
+    -   [Org-Rifle](#orgace1ac1)
+    -   [ROAM](#org21c9f31)
+    -   [ROAM Server](#orgb2656ca)
+    -   [ROAM Export Backlinks + Content](#org179b9c1)
+    -   [Reveal [HTML Presentations]](#orgb24a88b)
+    -   [Super Agenda Settings](#org6a70dda)
+-   [Theme Settings](#org2d0c7ba)
+-   [Ideas to Consider](#orgd27e73e)
+    -   [GANTT Chart](#orgc48b86a)
 
 
 
-<a id="orga296281"></a>
+<a id="orge7be380"></a>
 
 # Getting started
 
 
-<a id="org9e31fcf"></a>
+<a id="org0bf9721"></a>
 
 ## New Changes
 
 
-<a id="orge78a69d"></a>
+<a id="org23db98f"></a>
 
 ### <span class="timestamp-wrapper"><span class="timestamp">[2020-07-22 Wed]</span></span>
 
 1.  Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
     1.  Moved GTD Module to <gtd.el>
-    2.  Configure your variable settings in [Setup our intial defaults for GTD](#org40d25d0)
+    2.  Configure your variable settings in [Setup our intial defaults for GTD](#org78adb89)
 
 
-<a id="org568cec1"></a>
+<a id="orgb426c4d"></a>
 
 ### <span class="timestamp-wrapper"><span class="timestamp">[2020-06-21 Sun]</span></span>
 
@@ -94,7 +92,7 @@
 3.  added org-roam-server
 
 
-<a id="org121854c"></a>
+<a id="org306090d"></a>
 
 ### <span class="timestamp-wrapper"><span class="timestamp">[2020-06-02 Tue]</span></span>
 
@@ -107,7 +105,7 @@
 7.  [Org-Web-Tools](https://github.com/alphapapa/org-web-tools), thanks Alphapapa for the awesome package.
 
 
-<a id="orgb0754a6"></a>
+<a id="orgc6aadf5"></a>
 
 ## Some Requirements
 
@@ -117,21 +115,14 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2.  For fonts please download [Input](https://input.fontbureau.com/download/) and [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2)
 
 
-<a id="orgbfa5674"></a>
+<a id="orgc0cb706"></a>
 
-# Initial Settings
-
-These are things that we absolutely must load before anything else
+# Configure look and feel
 
 
-<a id="orgab6a797"></a>
+<a id="org094f097"></a>
 
-## Configure look and feel
-
-
-<a id="org5984c5b"></a>
-
-### Setup Layout by Monitor Profile
+## Setup Layout by Monitor Profile
 
     (defun zyro/monitor-width-profile-setup ()
       "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
@@ -143,8 +134,6 @@ These are things that we absolutely must load before anything else
           (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
           (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
     
-    (zyro/monitor-width-profile-setup)
-    
     (defun zyro/monitor-size-profile-setup ()
       "Calcuate our monitor size and then configure element sizes accordingly"
       (let ((size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100)))
@@ -153,23 +142,24 @@ These are things that we absolutely must load before anything else
                 doom-big-font (font-spec :family "Input Mono" :size 20)))
         (when (>= size 49536.0)
           (setq doom-font (font-spec :family "Input Mono" :size 18)
-                doom-big-font (font-spec :family "Input Mono" :size 22)))))
-    
-    (zyro/monitor-size-profile-setup)
+                doom-big-font (font-spec :family "Input Mono" :size 22)))
+        (when (>= size 39936.0)
+          (setq doom-font (font-spec :family "Input Mono" :size 16)
+                doom-big-font (font-spec :family "Input Mono" :size 20)))))
 
 
-<a id="orgb759059"></a>
+<a id="org452dd01"></a>
 
-### Prettify
+## Prettify
 
     (setq org-superstar-headline-bullets-list '("●" "○"))
     (setq org-ellipsis "▼")
     ;(add-hook 'org-mode-hook #'+org-pretty-mode)
 
 
-<a id="orgd54a140"></a>
+<a id="orgf2c688d"></a>
 
-### Category Icons
+## Category Icons
 
     ;(customize-set-value
     ;    'org-agenda-category-icon-alist
@@ -183,21 +173,26 @@ These are things that we absolutely must load before anything else
     ;      ("Sustaining" "~/.icons/chemistry.svg" nil nil :ascent center)))
 
 
-<a id="org88b644f"></a>
+<a id="orgd52005b"></a>
 
 # GTD Setup
 
 
-<a id="org40d25d0"></a>
+<a id="org78adb89"></a>
 
 ## Setup our intial defaults for GTD
 
-    (setq org-directory "~/.org/")
     (load! "gtd.el")
-    (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "study.org"))
+    (use-package org-gtd
+      :config
+    
+      (setq org-gtd-directory '"~/.org/gtd/")
+      (setq org-projects-folder '"~/.org/gtd/projects/")
+      (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
+      (setq org-gtd-refile-properties '("CATEGORY")))
 
 
-<a id="orgf177729"></a>
+<a id="orga235bd0"></a>
 
 ### TODO Refiling to `next.org`
 
@@ -288,17 +283,17 @@ Initiate capture from agenda
       (org-capture nil "i"))
 
 
-<a id="orga807263"></a>
+<a id="org7dc2a1b"></a>
 
 # Org-Roam with GTD
 
 
-<a id="org67cd8dc"></a>
+<a id="org089c63b"></a>
 
 ## TODO Setting up TASKS to integrate with our REFERENCES
 
 
-<a id="org7733701"></a>
+<a id="orgb9712e9"></a>
 
 ## TODO Search functions
 
@@ -315,12 +310,12 @@ Initiate capture from agenda
           :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
 
 
-<a id="org1ec332c"></a>
+<a id="org09dd753"></a>
 
 # ORGMODE
 
 
-<a id="org1ff00bf"></a>
+<a id="orgd43f6cf"></a>
 
 ## Agenda Settings
 
@@ -337,38 +332,36 @@ Initiate capture from agenda
                       org-habit-show-habits t))
 
 
-<a id="org6a5967c"></a>
+<a id="orge2b08a8"></a>
 
 ## Agenda Files
 
     (setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
 
 
-<a id="org0d355d4"></a>
+<a id="org76f32fc"></a>
 
 ## Auto Saving our Changes
 
-    (add-hook 'auto-save-hook 'org-save-all-org-buffers)
+    ;(add-hook 'auto-save-hook 'org-save-all-org-buffers)
 
 
-<a id="orgf025f10"></a>
+<a id="org119dad6"></a>
 
 ## Capture Templates
 
     (setq org-capture-templates
           '(("d" "Diary" plain (file zyro/capture-file-name)
              (file "~/.doom.d/templates/diary.org"))
-            ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
-             (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
-            ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
-             (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
+            ("c" "Capture" plain (file "~/.org/gtd/inbox.org")
+             (file "~/.doom.d/templates/capture.org"))
             ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
              "%(call-interactively #'org-cliplink-capture)")
             ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
              (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
 
 
-<a id="orged7e7b1"></a>
+<a id="org21f1d6c"></a>
 
 ## Directory settings
 
@@ -377,7 +370,7 @@ Initiate capture from agenda
                       projectile-project-search-path '("~/projectile/")))
 
 
-<a id="org7c4bf05"></a>
+<a id="org2dc9f9a"></a>
 
 ## Export Settings
 
@@ -396,7 +389,7 @@ Initiate capture from agenda
                       org-export-backends '(pdf ascii html latex odt md pandoc)))
 
 
-<a id="org77b9a68"></a>
+<a id="org7670050"></a>
 
 ## Misc
 
@@ -404,16 +397,15 @@ Initiate capture from agenda
     (setq org-link-file-path-type 'relative)
 
 
-<a id="orgab68d05"></a>
+<a id="org0b59867"></a>
 
 ## Keywords
 
     (setq org-todo-keywords
-          '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
-            (sequence "PROJ(p)" "BGN(b)" "PROB(p)" "|" "COMPL(c)" "INVLD(I)")))
+          '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 
 
-<a id="orga87182b"></a>
+<a id="org6193f58"></a>
 
 ## Logging and Drawers
 
@@ -425,7 +417,7 @@ Initiate capture from agenda
                       org-log-reschedule 'note))
 
 
-<a id="orgf079073"></a>
+<a id="orgd14bc6e"></a>
 
 ## Prettify
 
@@ -434,7 +426,7 @@ Initiate capture from agenda
                       org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
 
 
-<a id="org4f2c663"></a>
+<a id="orgeacf5ba"></a>
 
 ## Properties
 
@@ -442,7 +434,7 @@ Initiate capture from agenda
           org-catch-invisible-edits 'error) ; Catch invisible edits
 
 
-<a id="org4fa4250"></a>
+<a id="org58b5a52"></a>
 
 ## Publishing
 
@@ -482,7 +474,7 @@ Initiate capture from agenda
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org826a689"></a>
+<a id="org0750ec2"></a>
 
 ## Refiling
 
@@ -493,7 +485,7 @@ Initiate capture from agenda
                       org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="org009bdf7"></a>
+<a id="orgc17fc55"></a>
 
 ## Startup
 
@@ -505,7 +497,7 @@ Initiate capture from agenda
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="orgcbdd638"></a>
+<a id="org6a70fce"></a>
 
 ## Org Protocol
 
@@ -513,21 +505,51 @@ Initiate capture from agenda
     (setq org-protocol-default-template-key "d")
 
 
-<a id="org544ee16"></a>
+<a id="org36da30c"></a>
 
 ## Clock settings
 
     (setq org-clock-continuously t)
 
 
-<a id="orge5e57f6"></a>
+<a id="orgedb4aee"></a>
 
 ## Tags
 
     (setq org-tags-column 0)
+    (setq org-tag-alist '((:startgrouptag)
+                          ("Context")
+                          (:grouptags)
+                          ("@home" . ?h)
+                          ("@computer")
+                          ("@work")
+                          ("@place")
+                          ("@bills")
+                          ("@order")
+                          ("@labor")
+                          ("@read")
+                          ("@brainstorm")
+                          ("@planning")
+                          (:endgrouptag)
+                          (:startgrouptag)
+                          ("Categories")
+                          (:grouptags)
+                          ("vehicles")
+                          ("health")
+                          ("house")
+                          ("hobby")
+                          ("coding")
+                          ("material")
+                          ("goal")
+                          (:endgrouptag)
+                          (:startgrouptag)
+                          ("Section")
+                          (:grouptags)
+                          ("#coding")
+                          ("#research")))
 
 
-<a id="orge6254ca"></a>
+<a id="orgf634c1c"></a>
 
 ## Templates
 
@@ -545,12 +567,12 @@ Initiate capture from agenda
              (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
 
 
-<a id="org6e788c9"></a>
+<a id="org7d03b45"></a>
 
 # Environment
 
 
-<a id="orge5ba4f3"></a>
+<a id="org0bae2ec"></a>
 
 ## User Information
 
@@ -561,7 +583,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="orgbc27425"></a>
+<a id="org0684f6a"></a>
 
 ## Default folder(s) and file(s)
 
@@ -570,7 +592,7 @@ Then we will define some default files. I&rsquo;m probably going to use default 
     (setq diary-file "~/.org/diary.org")
 
 
-<a id="org99ee4cb"></a>
+<a id="org6a167f9"></a>
 
 ## Misc Settings
 
@@ -580,7 +602,7 @@ Now we load some default settings for EMACS.
     (setq display-time-day-and-date t)
 
 
-<a id="org80a6e6c"></a>
+<a id="org5cc3d1c"></a>
 
 ## Key Bindings
 
@@ -603,9 +625,9 @@ From here we load some extra key bindings that I use often
           :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
           :prefix ("s" . "+search")
           :desc "Counsel Narrow" "n" #'counsel-narrow
+          :desc "Ripgrep Directory" "d" #'counsel-rg
           :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
           :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
-          :desc "Deadgrep" "d" #'deadgrep
           :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
           :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
           :prefix ("l" . "+links")
@@ -623,7 +645,7 @@ From here we load some extra key bindings that I use often
           :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 
 
-<a id="orgd49e113"></a>
+<a id="orgb44940b"></a>
 
 ## Terminal Mode
 
@@ -636,37 +658,24 @@ Set a few settings if we detect terminal mode
        (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 
-<a id="orgc6d1039"></a>
+<a id="orgce9567d"></a>
 
 # Behavior
 
 
-<a id="org0fe64bf"></a>
-
-## Popup Rules
-
-    ;  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-    ;  (set-popup-rule! "*Capture*" :side 'bottom :size .30 :select t :vslot 2 :ttl 3)
-    (set-popup-rule! "*helm*" :side 'left :size .30 :select t :vslot 5 :ttl 3)
-                                            ;(after! org (set-popup-rule! "*Deft*" :side 'right :size .50 :select t :vslot 2 :ttl 3))
-                                            ;(after! org (set-popup-rule! "*Select Link*" :side 'bottom :size .40 :select t :vslot 3 :ttl 3))
-                                            ;(after! org (set-popup-rule! "*deadgrep" :side 'bottom :height .40 :select t :vslot 4 :ttl 3))
-                                            ;(after! org (set-popup-rule! "\\Swiper" :side 'bottom :size .30 :select t :vslot 4 :ttl 3))
-
-
-<a id="orge6d7a88"></a>
+<a id="orgeda7a6e"></a>
 
 ## Buffer Settings
 
     (global-auto-revert-mode 1)
     (setq undo-limit 80000000
           evil-want-fine-undo t
-          auto-save-default t
+    ;      auto-save-default t
           inhibit-compacting-font-caches t)
     (whitespace-mode -1)
 
 
-<a id="orgb01f945"></a>
+<a id="orgf406d12"></a>
 
 ## Misc Settings
 
@@ -679,19 +688,30 @@ Set a few settings if we detect terminal mode
      x-stretch-cursor t)
 
 
-<a id="orgb6205e6"></a>
+<a id="org9de2b6c"></a>
 
 # Module Settings
 
 
-<a id="org5614098"></a>
+<a id="orgcf44566"></a>
+
+## Remap Functions
+
+    (use-package! counsel
+      :defer t
+      :init
+      (define-key!
+        [remap counsel-org-tag] #'org-set-tags-command))
+
+
+<a id="org20d6256"></a>
 
 ## company mode
 
     (setq company-idle-delay 0.5)
 
 
-<a id="org1bff100"></a>
+<a id="org2f985a9"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -701,7 +721,7 @@ Configuring PDF support and ORG-NOTER for note taking
     ;  :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="orgbf58c67"></a>
+<a id="orgeef2eaa"></a>
 
 ## Graphs and Chart Modules
 
@@ -727,17 +747,17 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org584392f"></a>
+<a id="org5f36ced"></a>
 
 ## Elfeed
 
     (require 'elfeed-org)
     (elfeed-org)
     (setq elfeed-db-directory "~/.elfeed/")
-    (setq rmh-elfeed-org-files (list "~/google-drive/.elfeed/elfeed.org"))
+    (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org45ffe30"></a>
+<a id="org658228f"></a>
 
 ## DEFT
 
@@ -759,7 +779,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orga3e3385"></a>
+<a id="orgace1ac1"></a>
 
 ## Org-Rifle
 
@@ -858,7 +878,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org68bd437"></a>
+<a id="org21c9f31"></a>
 
 ## ROAM
 
@@ -871,7 +891,7 @@ These are my default ROAM settings
     '(org-roam-directory . "."))
 
 
-<a id="org2600fb7"></a>
+<a id="orgb2656ca"></a>
 
 ## ROAM Server
 
@@ -889,7 +909,7 @@ These are my default ROAM settings
             org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org6b5b19a"></a>
+<a id="org179b9c1"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -922,7 +942,7 @@ These are my default ROAM settings
     ;;   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org86a3398"></a>
+<a id="orgb24a88b"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -931,7 +951,7 @@ These are my default ROAM settings
     (setq org-reveal-title-slide nil)
 
 
-<a id="org82daa04"></a>
+<a id="org6a70dda"></a>
 
 ## Super Agenda Settings
 
@@ -970,28 +990,23 @@ These are my default ROAM settings
                       '((:auto-parent t)))))))))
 
 
-<a id="orgbccef75"></a>
+<a id="org2d0c7ba"></a>
 
-# Load Extras
+# Theme Settings
 
-    ;(load! "orgmode.el")
-    ;(load! "customs.el")
-
-
-<a id="org386c138"></a>
-
-## Theme Settings
-
-    (toggle-frame-maximized)
-    (setq doom-theme 'doom-one)
+    ;(toggle-frame-maximized)
+    (toggle-frame-fullscreen)
+    (setq doom-theme 'chocolate)
+    (zyro/monitor-width-profile-setup)
+    (zyro/monitor-size-profile-setup)
 
 
-<a id="org680f674"></a>
+<a id="orgd27e73e"></a>
 
 # Ideas to Consider
 
 
-<a id="org66fb218"></a>
+<a id="orgc48b86a"></a>
 
 ## GANTT Chart
 

@@ -98,7 +98,7 @@
   (helm-org-rifle-directories (doom-project-root)))
 
 (defun my-agenda-prefix ()
-  (format "%s" (my-agenda-indent-string (org-current-level))))
+ (format "%s" (my-agenda-indent-string (org-current-level))))
 
 (defun my-agenda-indent-string (level)
   (if (= level 1)

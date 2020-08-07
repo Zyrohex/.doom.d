@@ -63,8 +63,8 @@
   "Quick capture to inbox from KEY-BINDING."
   (interactive)
   (let* ((org-capture-templates
-          '(("!" "Quick Capture" plain (file zyro/capture-inbox)
-             "* TODO %^{task} %^g" :immediate-finish t))))
+          '(("!" "Quick Capture" entry (file zyro/capture-inbox)
+             "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:" :immediate-finish t))))
     (org-capture nil "!")))
 
 ;;; Refile System
