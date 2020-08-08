@@ -126,8 +126,8 @@ From here we load some extra key bindings that I use often
 
 Configuring PDF support and ORG-NOTER for note taking
 #+BEGIN_SRC emacs-lisp
-(use-package org-pdftools
-  :hook (org-load . org-pdftools-setup-link))
+;(use-package org-pdftools
+;  :hook (org-load . org-pdftools-setup-link))
 #+END_SRC
 ** Graphs and Chart Modules
 Eventually I would like to have org-mind-map generating charts like Sacha's [[https://pages.sachachua.com/evil-plans/][evil-plans]].

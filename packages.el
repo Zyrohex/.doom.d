@@ -18,7 +18,7 @@
 (package! org-mind-map)
 (package! ox-pandoc)
 (package! ox-twbs)
-(package! pdf-tools)
+;(package! pdf-tools)
 (package! gnuplot)
 (package! gnuplot-mode)
 (package! deadgrep)

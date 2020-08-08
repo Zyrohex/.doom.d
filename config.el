@@ -77,8 +77,8 @@
 
 (require 'bookmark+)
 
-(use-package org-pdftools
-  :hook (org-load . org-pdftools-setup-link))
+;(use-package org-pdftools
+;  :hook (org-load . org-pdftools-setup-link))
 
 (after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
