@@ -1,4 +1,4 @@
-(setq doom-font (font-spec :family "Input Mono" :size 18)
+(setq doom-font (font-spec :family "Input Mono" :size 20481d1f82a038580d37b7bb50f20d09f1d08db9af)
       doom-big-font (font-spec :family "Input Mono" :size 24))
 
 (setq org-tags-column 0)
@@ -280,6 +280,7 @@
 (load! "superlinks.el")
 (load! "orgmode.el")
 (load! "customs.el")
+(load! "personal.el")
 
 (toggle-frame-maximized)
 (defun zyro/loader-theme ()

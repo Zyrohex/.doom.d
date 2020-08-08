@@ -351,6 +351,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 (load! "superlinks.el")
 (load! "orgmode.el")
 (load! "customs.el")
+(load! "personal.el")
 #+END_SRC
 
 ** Theme Settings
