@@ -13,6 +13,11 @@
   (when (looking-at-p "^[ 	]*:\\(\\(?:\\w\\|[-_]\\)+\\):[ 	]*$")
     (re-search-forward "^[ \t]*:END:[ \t]*$" nil t) (end-of-line) (newline)))
 
+(defun zyro/capture-daily-notes ()
+  "Capture template for ORG-ROAM daily notes."
+  (interactive)
+  (expand-file-name (format "%s.org" (format-time-string "%Y-%m-%d")) org-roam-directory))
+
 (defun zyro/add-note ()
   "Add note to headline"
   (interactive)

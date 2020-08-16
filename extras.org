@@ -42,3 +42,95 @@
                     (outline-flag-region start (point-at-eol) t)
                   (user-error msg))))))))))
 #+END_SRC
+* TODO Refiling to =next.org=
+We use Jethro's function to process bulk agenda items...
+- [ ] Write a new function to process bulk agenda items
+#+BEGIN_SRC emacs-lisp
+(defun jethro/org-process-inbox ()
+  "Called in org-agenda-mode, processes all inbox items."
+  (interactive)
+  (org-agenda-bulk-mark-regexp "inbox:")
+  (jethro/bulk-process-entries))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defvar jethro/org-current-effort "1:00"
+  "Current effort for agenda items.")
+#+END_SRC
+
+Set our effort to "..."
+#+BEGIN_SRC emacs-lisp
+(defun jethro/my-org-agenda-set-effort (effort)
+  "Set the effort property for the current headline."
+  (interactive
+   (list (read-string (format "Effort [%s]: " jethro/org-current-effort) nil nil jethro/org-current-effort)))
+  (setq jethro/org-current-effort effort)
+  (org-agenda-check-no-diary)
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker))
+         (inhibit-read-only t)
+         newhead)
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (funcall-interactively 'org-set-effort nil jethro/org-current-effort)
+        (end-of-line 1)
+        (setq newhead (org-get-heading)))
+      (org-agenda-change-all-lines newhead hdmarker))))
+#+END_SRC
+
+Function to process a single item in our inbox
+#+BEGIN_SRC emacs-lisp
+(defun jethro/org-agenda-process-inbox-item ()
+  "Process a single item in the org-agenda."
+  (org-with-wide-buffer
+   (org-agenda-set-tags)
+   (org-agenda-set-property)
+   (org-agenda-priority)
+   (call-interactively 'org-agenda-schedule)
+   (call-interactively 'jethro/my-org-agenda-set-effort)
+   (org-agenda-refile nil nil t)))
+#+END_SRC
+
+Bulk process entries
+#+BEGIN_SRC emacs-lisp
+(defun jethro/bulk-process-entries ()
+  (if (not (null org-agenda-bulk-marked-entries))
+      (let ((entries (reverse org-agenda-bulk-marked-entries))
+            (processed 0)
+            (skipped 0))
+        (dolist (e entries)
+          (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
+            (if (not pos)
+                (progn (message "Skipping removed entry at %s" e)
+                       (cl-incf skipped))
+              (goto-char pos)
+              (let (org-loop-over-headlines-in-active-region) (funcall 'jethro/org-agenda-process-inbox-item))
+              ;; `post-command-hook' is not run yet.  We make sure any
+              ;; pending log note is processed.
+              (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
+                        (memq 'org-add-log-note post-command-hook))
+                (org-add-log-note))
+              (cl-incf processed))))
+        (org-agenda-redo)
+        (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
+        (message "Acted on %d entries%s%s"
+                 processed
+                 (if (= skipped 0)
+                     ""
+                   (format ", skipped %d (disappeared before their turn)"
+                           skipped))
+                 (if (not org-agenda-persistent-marks) "" " (kept marked)")))))
+#+END_SRC
+
+Initiate capture from agenda
+#+BEGIN_SRC emacs-lisp
+(defun jethro/org-inbox-capture ()
+  (interactive)
+  "Capture a task in agenda mode."
+  (org-capture nil "i"))
+#+END_SRC

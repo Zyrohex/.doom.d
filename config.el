@@ -1,3 +1,5 @@
+(setq doom-font (font-spec :family "Input Mono" :size 16)
+            doom-big-font (font-spec :family "Input Mono" :size 20))
 (defun zyro/monitor-width-profile-setup ()
   "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
   (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
@@ -21,103 +23,21 @@
       (setq doom-font (font-spec :family "Input Mono" :size 16)
             doom-big-font (font-spec :family "Input Mono" :size 20)))))
 
+(after! org (setq org-hide-emphasis-markers t
+                  org-hide-leading-stars t
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
 (setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
-;(add-hook 'org-mode-hook #'+org-pretty-mode)
-
-;(customize-set-value
-;    'org-agenda-category-icon-alist
-;    `(
-;      ("Breakfix" "~/.icons/repair.svg" nil nil :ascent center)
-;      ("Escalation" "~/.dotfiles/icons/loop.svg" nil nil :ascent center)
-;      ("Inquiry" "~/.dotfiles/icons/calendar.svg" nil nil :ascent center)
-;      ("Deployment" "~/.icons/deployment.svg" nil nil :ascent center)
-;      ("Project" "~/.icons/project-management.svg" nil nil :ascent center)
-;      ("Improvement" "~/.icons/improvement.svg" nil nil :ascent center)
-;      ("Sustaining" "~/.icons/chemistry.svg" nil nil :ascent center)))
+(setq org-superstar-item-bullet-alist nil)
 
 (load! "gtd.el")
 (use-package org-gtd
+  :defer
   :config
-
-  (setq org-gtd-directory '"~/.org/gtd/")
+  (setq org-gtd-folder '"~/.org/gtd/")
   (setq org-projects-folder '"~/.org/gtd/projects/")
   (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
   (setq org-gtd-refile-properties '("CATEGORY")))
-
-(defun jethro/org-process-inbox ()
-  "Called in org-agenda-mode, processes all inbox items."
-  (interactive)
-  (org-agenda-bulk-mark-regexp "inbox:")
-  (jethro/bulk-process-entries))
-
-(defvar jethro/org-current-effort "1:00"
-  "Current effort for agenda items.")
-
-(defun jethro/my-org-agenda-set-effort (effort)
-  "Set the effort property for the current headline."
-  (interactive
-   (list (read-string (format "Effort [%s]: " jethro/org-current-effort) nil nil jethro/org-current-effort)))
-  (setq jethro/org-current-effort effort)
-  (org-agenda-check-no-diary)
-  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
-                       (org-agenda-error)))
-         (buffer (marker-buffer hdmarker))
-         (pos (marker-position hdmarker))
-         (inhibit-read-only t)
-         newhead)
-    (org-with-remote-undo buffer
-      (with-current-buffer buffer
-        (widen)
-        (goto-char pos)
-        (org-show-context 'agenda)
-        (funcall-interactively 'org-set-effort nil jethro/org-current-effort)
-        (end-of-line 1)
-        (setq newhead (org-get-heading)))
-      (org-agenda-change-all-lines newhead hdmarker))))
-
-(defun jethro/org-agenda-process-inbox-item ()
-  "Process a single item in the org-agenda."
-  (org-with-wide-buffer
-   (org-agenda-set-tags)
-   (org-agenda-set-property)
-   (org-agenda-priority)
-   (call-interactively 'org-agenda-schedule)
-   (call-interactively 'jethro/my-org-agenda-set-effort)
-   (org-agenda-refile nil nil t)))
-
-(defun jethro/bulk-process-entries ()
-  (if (not (null org-agenda-bulk-marked-entries))
-      (let ((entries (reverse org-agenda-bulk-marked-entries))
-            (processed 0)
-            (skipped 0))
-        (dolist (e entries)
-          (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
-            (if (not pos)
-                (progn (message "Skipping removed entry at %s" e)
-                       (cl-incf skipped))
-              (goto-char pos)
-              (let (org-loop-over-headlines-in-active-region) (funcall 'jethro/org-agenda-process-inbox-item))
-              ;; `post-command-hook' is not run yet.  We make sure any
-              ;; pending log note is processed.
-              (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
-                        (memq 'org-add-log-note post-command-hook))
-                (org-add-log-note))
-              (cl-incf processed))))
-        (org-agenda-redo)
-        (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
-        (message "Acted on %d entries%s%s"
-                 processed
-                 (if (= skipped 0)
-                     ""
-                   (format ", skipped %d (disappeared before their turn)"
-                           skipped))
-                 (if (not org-agenda-persistent-marks) "" " (kept marked)")))))
-
-(defun jethro/org-inbox-capture ()
-  (interactive)
-  "Capture a task in agenda mode."
-  (org-capture nil "i"))
 
 (defun zyro/rifle-roam ()
   "Rifle through your ROAM directory"
@@ -144,11 +64,11 @@
 
 (setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
 
-;(add-hook 'auto-save-hook 'org-save-all-org-buffers)
-
 (setq org-capture-templates
-      '(("d" "Diary" plain (file zyro/capture-file-name)
-         (file "~/.doom.d/templates/diary.org"))
+      '(("n" "Daily notes" plain (file zyro/capture-daily-notes)
+         (file "~/.doom.d/templates/roam-notes.org"))
+        ("B" "Bookmark" entry (file (expand-file-name "bookmarks.org" "~/org/"))
+         "* %^{Something}")
         ("c" "Capture" plain (file "~/.org/gtd/inbox.org")
          (file "~/.doom.d/templates/capture.org"))
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
@@ -157,7 +77,7 @@
          (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
 
 (after! org (setq org-image-actual-width nil
-                  org-archive-location "archives.org::* %s"
+                  org-archive-location "archives.org::datetree"
                   projectile-project-search-path '("~/projectile/")))
 
 (after! org (setq org-html-head-include-scripts t
@@ -178,7 +98,7 @@
 (setq org-link-file-path-type 'relative)
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "WAIT(w)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
+      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 
 (after! org (setq org-log-state-notes-insert-after-drawers nil
                   org-log-into-drawer t
@@ -186,10 +106,6 @@
                   org-log-repeat 'time
                   org-log-redeadline 'note
                   org-log-reschedule 'note))
-
-(after! org (setq org-hide-emphasis-markers t
-                  org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
 
 (setq org-use-property-inheritance t ; We like to inhert properties from their parents
       org-catch-invisible-edits 'error) ; Catch invisible edits
@@ -239,7 +155,6 @@
                   org-startup-folded 'content
                   org-src-tab-acts-natively t))
 (add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook #'+org-pretty-mode)
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 (require 'org-roam-protocol)
@@ -278,19 +193,6 @@
                       (:grouptags)
                       ("#coding")
                       ("#research")))
-
-(after! org (setq org-capture-templates
-      '(("d" "Diary" plain (file zyro/capture-file-name)
-         (file "~/.doom.d/templates/diary.org"))
-        ("m" "Metrics Tracker" plain (file+olp+datetree diary-file "Metrics Tracker")
-         (file "~/.doom.d/templates/metrics.org") :immediate-finish t)
-        ("h" "Habits Tracker" entry (file+olp+datetree diary-file "Metrics Tracker")
-         (file "~/.doom.d/templates/habitstracker.org") :immediate-finish t)
-        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")
-        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
-;         "* %^{TITLE} %^{CUSTOMER}p %^{TAG}p" :clock-in t :clock-resume t)))
-         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t))))
 
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
@@ -349,6 +251,11 @@
       inhibit-compacting-font-caches t)
 (whitespace-mode -1)
 
+(defun zyro/remove-lines ()
+  "Remove lines mode."
+  (display-line-numbers-mode -1))
+(remove-hook! '(org-roam-mode-hook) #'zyro/remove-lines)
+
 (setq display-line-numbers-type t)
 (setq-default
  delete-by-moving-to-trash t
@@ -357,34 +264,56 @@
  window-combination-resize t
  x-stretch-cursor t)
 
-(setq company-idle-delay 0.5)
+(after! org
+  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam))
+  (setq company-idle-delay 0.25))
+
+(use-package define-word
+  :config
+  (map! :after org
+        :map org-mode-map
+        :leader
+        :desc "Define word at point" "@" #'define-word-at-point))
 
 ;(use-package org-pdftools
 ;  :hook (org-load . org-pdftools-setup-link))
 
 (after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
-; GNUPLOT
 (use-package gnuplot
+  :defer
   :config
   (setq gnuplot-program "gnuplot"))
 
 ; MERMAID
-(setq mermaid-mmdc-location "~/node_modules/.bin/mmdc"
-      ob-mermaid-cli-path "~/node_modules/.bin/mmdc")
+(use-package mermaid-mode
+  :defer
+  :config
+  (setq mermaid-mmdc-location "/node_modules/.bin/mmdc"
+        ob-mermaid-cli-path "/node-modules/.bin/mmdc"))
 
 ; PLANTUML
 (use-package ob-plantuml
   :ensure nil
   :commands
   (org-babel-execute:plantuml)
+  :defer
   :config
   (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
-(require 'elfeed-org)
-(elfeed-org)
-(setq elfeed-db-directory "~/.elfeed/")
-(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
+(use-package elfeed-org
+  :defer
+  :config
+  (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")))
+(use-package elfeed
+  :defer
+  :config
+  (setq elfeed-db-directory "~/.elfeed/"))
+
+;; (require 'elfeed-org)
+;; (elfeed-org)
+;; (setq elfeed-db-directory "~/.elfeed/")
+;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 (load! "my-deft-title.el")
 (use-package deft
@@ -497,7 +426,7 @@
 
 (provide 'setup-helm-org-rifle)
 
-(setq org-roam-directory "~/.org/notes/")
+(setq org-roam-directory "~/.org/")
 (setq org-roam-tag-sources '(prop all-directories))
 (setq org-roam-db-location "~/.org/roam.db")
 (add-to-list 'safe-local-variable-values
@@ -516,33 +445,33 @@
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
-;; (defun my/org-roam--backlinks-list-with-content (file)
-;;   (with-temp-buffer
-;;     (if-let* ((backlinks (org-roam--get-backlinks file))
-;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-;;         (progn
-;;           (insert (format "\n\n* %d Backlinks\n"
-;;                           (length backlinks)))
-;;           (dolist (group grouped-backlinks)
-;;             (let ((file-from (car group))
-;;                   (bls (cdr group)))
-;;               (insert (format "** [[file:%s][%s]]\n"
-;;                               file-from
-;;                               (org-roam--get-title-or-slug file-from)))
-;;               (dolist (backlink bls)
-;;                 (pcase-let ((`(,file-from _ ,props) backlink))
-;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-;;                   (insert "\n\n")))))))
-;;     (buffer-string)))
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          (insert (format "\n\n* %d Backlinks\n"
+                          (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "** [[file:%s][%s]]\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
 
-;;   (defun my/org-export-preprocessor (backend)
-;;     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-;;       (unless (string= links "")
-;;         (save-excursion
-;;           (goto-char (point-max))
-;;           (insert (concat "\n* Backlinks\n") links)))))
+  (defun my/org-export-preprocessor (backend)
+    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+      (unless (string= links "")
+        (save-excursion
+          (goto-char (point-max))
+          (insert (concat "\n* Backlinks\n") links)))))
 
-;;   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
@@ -582,8 +511,11 @@
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 
-;(toggle-frame-maximized)
-(toggle-frame-fullscreen)
-(setq doom-theme 'chocolate)
-(zyro/monitor-width-profile-setup)
-(zyro/monitor-size-profile-setup)
+(let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
+(when (file-exists-p secrets)
+  (load secrets)))
+
+(after! org (zyro/monitor-width-profile-setup)
+  (zyro/monitor-size-profile-setup)
+  (toggle-frame-fullscreen)
+  (setq doom-theme 'doom-snazzy))

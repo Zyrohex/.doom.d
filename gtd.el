@@ -116,9 +116,7 @@
                       (org-agenda-span 3)))
              (todo ""
                    ((org-super-agenda-groups
-                     '((:priority "A")
-                       (:effort> "0:16")
-                       (:priority "B"))))))))))
+                     '((:auto-parent t))))))))))
     (org-agenda nil "w")))
 
 (defun zyro/agenda-references ()
