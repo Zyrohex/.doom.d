@@ -1,14 +1,22 @@
+;; Roam Packages
 (package! org-roam-server)
 (package! company-org-roam)
 (package! org-roam)
-(package! define-word)
+;; Alphapapa packages
+(package! helm-org-rifle)
+(package! org-super-agenda)
+(package! org-ql)
+(package! org-web-tools)
+;; Themes
 (package! chocolate-theme)
 (package! gruvbox-theme)
+;; Orgmode Packages
+(package! org-analyzer)
 (package! org-edna)
-(package! helm-org-rifle)
 (package! literate-calc-mode)
-(package! org-ql)
-(package! org-super-agenda)
+;; Python
+;; Misc Packages
+(package! define-word)
 (package! elfeed)
 (package! elfeed-org)
 (package! ob-mermaid)
@@ -19,6 +27,4 @@
 (package! gnuplot)
 (package! gnuplot-mode)
 (package! deadgrep)
-(package! org-web-tools)
 (package! graphviz-dot-mode)
-(package! org-analyzer)
