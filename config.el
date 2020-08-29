@@ -1,5 +1,59 @@
-(setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20))
+(setq user-full-name "Nick Martin"
+      user-mail-address "nmartin84@gmail.com")
+
+(display-time-mode 1)
+(setq display-time-day-and-date t)
+
+(bind-key "<f6>" #'link-hint-copy-link)
+(bind-key "C-M-<up>" #'evil-window-up)
+(bind-key "C-M-<down>" #'evil-window-down)
+(bind-key "C-M-<left>" #'evil-window-left)
+(bind-key "C-M-<right>" #'evil-window-right)
+(map! :after org
+      :map org-mode-map
+      :leader
+      :desc "Move up window" "<up>" #'evil-window-up
+      :desc "Move down window" "<down>" #'evil-window-down
+      :desc "Move left window" "<left>" #'evil-window-left
+      :desc "Move right window" "<right>" #'evil-window-right
+      :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
+      :desc "Find and Narrow" "^" #'+org-find-headline-narrow
+      :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
+      :prefix ("s" . "+search")
+      :desc "Counsel Narrow" "n" #'counsel-narrow
+      :desc "Ripgrep Directory" "d" #'counsel-rg
+      :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
+      :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
+      :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
+      :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
+      :prefix ("l" . "+links")
+      "o" #'org-open-at-point
+      "g" #'eos/org-add-ids-to-headlines-in-file)
+
+(map! :leader
+      :desc "Set Bookmark" "`" #'my/goto-bookmark-location
+      :prefix ("s" . "search")
+      :desc "Deadgrep Directory" "d" #'deadgrep
+      :desc "Swiper All" "@" #'swiper-all
+      :prefix ("o" . "open")
+      :desc "Elfeed" "e" #'elfeed
+      :desc "Deft" "w" #'deft
+      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
+
+(when (equal (window-system) nil)
+  (and
+   (bind-key "C-<down>" #'+org/insert-item-below)
+   (setq doom-theme 'doom-monokai-pro)
+   (setq doom-font (font-spec :family "Input Mono" :size 20))))
+
+(setq diary-file "~/.org/diary.org")
+
+(when (equal system-type 'gnu/linux)
+  (setq doom-font (font-spec :family "Input Mono" :size 16)
+      doom-big-font (font-spec :family "Input Mono" :size 20)))
+(when (equal system-type 'windows-nt)
+  (setq doom-font (font-spec :family "InputMono" :size 16)
+        doom-big-font (font-spec :family "InputMono" :size 20)))
 (defun zyro/monitor-width-profile-setup ()
   "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
   (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
@@ -10,27 +64,29 @@
       (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
       (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 
-(defun zyro/monitor-size-profile-setup ()
-  "Calcuate our monitor size and then configure element sizes accordingly"
-  (let ((size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100)))
-    (when (>= size 71600.0)
-      (setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20)))
-    (when (>= size 49536.0)
-      (setq doom-font (font-spec :family "Input Mono" :size 18)
-            doom-big-font (font-spec :family "Input Mono" :size 22)))
-    (when (>= size 39936.0)
-      (setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20)))))
-
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-(setq org-superstar-headline-bullets-list '("●" "○"))
+(setq org-superstar-headline-bullets-list '("●" "✸" "○" "✸"))
 (setq org-ellipsis "▼")
 (setq org-superstar-item-bullet-alist nil)
 
+;; (after! org (setq org-priority-highest ?A
+;;                   org-priority-lowest ?E
+;;                   org-fancy-priorities-list
+;;                   '((?A . "[CRIT]")
+;;                     (?B . "[HIGH]")
+;;                     (?C . "[MID]")
+;;                     (?D . "[LOW]")
+;;                     (?E . "[OPTIONAL]"))))
+;; (after! org (setq org-priority-faces
+;;                   '((65 . error)
+;;                     (66 . warning)
+;;                     (67 . success))))
+;; (org-fancy-priorities-mode 0)
+
 (load! "gtd.el")
+(setq org-directory "~/.org/")
 (use-package org-gtd
   :defer
   :config
@@ -61,24 +117,23 @@
                   org-enforce-todo-checkbox-dependencies t
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
-
 (setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
 
+(setq org-clock-continuously t)
+
 (setq org-capture-templates
-      '(("n" "Daily notes" plain (file zyro/capture-daily-notes)
-         (file "~/.doom.d/templates/roam-notes.org"))
-        ("B" "Bookmark" entry (file (expand-file-name "bookmarks.org" "~/org/"))
-         "* %^{Something}")
-        ("c" "Capture" plain (file "~/.org/gtd/inbox.org")
+      '(("c" "Capture" plain (file "~/.org/gtd/inbox.org")
          (file "~/.doom.d/templates/capture.org"))
+        ("q" "Quick Note" entry (file "~/.org/gtd/references.org")
+         "* %^{Name}")
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
          "%(call-interactively #'org-cliplink-capture)")
         ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
          (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
 
 (after! org (setq org-image-actual-width nil
-                  org-archive-location "archives.org::datetree"
-                  projectile-project-search-path '("~/projectile/")))
+                  org-archive-location "~/.org/gtd/archives.org::datetree"
+                  projectile-project-search-path '("~/projects/")))
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -98,10 +153,11 @@
 (setq org-link-file-path-type 'relative)
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
+      '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "PLAN(P)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 
-(after! org (setq org-log-state-notes-insert-after-drawers nil
-                  org-log-into-drawer t
+(after! org (setq org-log-state-notes-insert-after-drawers nil))
+
+(after! org (setq org-log-into-drawer t
                   org-log-done 'time
                   org-log-repeat 'time
                   org-log-redeadline 'note
@@ -160,8 +216,6 @@
 (require 'org-roam-protocol)
 (setq org-protocol-default-template-key "d")
 
-(setq org-clock-continuously t)
-
 (setq org-tags-column 0)
 (setq org-tag-alist '((:startgrouptag)
                       ("Context")
@@ -193,56 +247,6 @@
                       (:grouptags)
                       ("#coding")
                       ("#research")))
-
-(setq user-full-name "Nick Martin"
-      user-mail-address "nmartin84@gmail.com")
-
-(setq diary-file "~/.org/diary.org")
-
-(display-time-mode 1)
-(setq display-time-day-and-date t)
-
-(bind-key "<f6>" #'link-hint-copy-link)
-(bind-key "C-M-<up>" #'evil-window-up)
-(bind-key "C-M-<down>" #'evil-window-down)
-(bind-key "C-M-<left>" #'evil-window-left)
-(bind-key "C-M-<right>" #'evil-window-right)
-(map! :after org
-      :map org-mode-map
-      :leader
-      :desc "Move up window" "<up>" #'evil-window-up
-      :desc "Move down window" "<down>" #'evil-window-down
-      :desc "Move left window" "<left>" #'evil-window-left
-      :desc "Move right window" "<right>" #'evil-window-right
-      :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
-      :desc "Find and Narrow" "^" #'+org-find-headline-narrow
-      :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
-      :prefix ("s" . "+search")
-      :desc "Counsel Narrow" "n" #'counsel-narrow
-      :desc "Ripgrep Directory" "d" #'counsel-rg
-      :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
-      :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
-      :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
-      :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
-      :prefix ("l" . "+links")
-      "o" #'org-open-at-point
-      "g" #'eos/org-add-ids-to-headlines-in-file)
-
-(map! :leader
-      :desc "Set Bookmark" "`" #'my/goto-bookmark-location
-      :prefix ("s" . "search")
-      :desc "Deadgrep Directory" "d" #'deadgrep
-      :desc "Swiper All" "@" #'swiper-all
-      :prefix ("o" . "open")
-      :desc "Elfeed" "e" #'elfeed
-      :desc "Deft" "w" #'deft
-      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
-
-(when (equal (window-system) nil)
-  (and
-   (bind-key "C-<down>" #'+org/insert-item-below)
-   (setq doom-theme 'doom-monokai-pro)
-   (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 (global-auto-revert-mode 1)
 (setq undo-limit 80000000
@@ -426,9 +430,11 @@
 
 (provide 'setup-helm-org-rifle)
 
-(setq org-roam-directory "~/.org/")
+(setq org-pandoc-options '((standalone . t) (self-contained . t)))
+
+(setq org-roam-directory "~/.org/notes/")
 (setq org-roam-tag-sources '(prop all-directories))
-(setq org-roam-db-location "~/.org/roam.db")
+(setq org-roam-db-location "~/.emacs.d/roam.db")
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
 
@@ -445,33 +451,33 @@
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          (insert (format "\n\n* %d Backlinks\n"
-                          (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "** [[file:%s][%s]]\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
+ (defun my/org-roam--backlinks-list-with-content (file)
+   (with-temp-buffer
+     (if-let* ((backlinks (org-roam--get-backlinks file))
+               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+         (progn
+           (insert (format "\n\n* %d Backlinks\n"
+                           (length backlinks)))
+           (dolist (group grouped-backlinks)
+             (let ((file-from (car group))
+                   (bls (cdr group)))
+               (insert (format "** [[file:%s][%s]]\n"
+                               file-from
+                               (org-roam--get-title-or-slug file-from)))
+               (dolist (backlink bls)
+                 (pcase-let ((`(,file-from _ ,props) backlink))
+                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                   (insert "\n\n")))))))
+     (buffer-string)))
 
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
+   (defun my/org-export-preprocessor (backend)
+     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+       (unless (string= links "")
+         (save-excursion
+           (goto-char (point-max))
+           (insert (concat "\n* Backlinks\n") links)))))
 
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
@@ -515,7 +521,20 @@
 (when (file-exists-p secrets)
   (load secrets)))
 
+(defun replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+(defun org-html--format-image (source attributes info)
+  (progn
+    (setq source (replace-in-string "%20" " " source))
+    (format "<img src=\"data:image/%s;base64,%s\"%s />"
+            (or (file-name-extension source) "")
+            (base64-encode-string
+             (with-temp-buffer
+               (insert-file-contents-literally source)
+              (buffer-string)))
+            (file-name-nondirectory source))))
+
 (after! org (zyro/monitor-width-profile-setup)
-  (zyro/monitor-size-profile-setup)
   (toggle-frame-fullscreen)
-  (setq doom-theme 'doom-snazzy))
+  (setq doom-theme 'doom-one))

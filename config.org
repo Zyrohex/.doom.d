@@ -1,292 +1,47 @@
-#+HTML_HEAD: <link href="http://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
-#+HTML_HEAD: <link href="https://codepen.io/nmartin84/pen/RwPzMPe.css" rel="stylesheet" type="text/css" />
+#+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomasf.github.io/solarized-css/org-info.min.js
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://codepen.io/nmartin84/pen/vYGyzRz.css" />
 #+EXPORT_FILE_NAME: README
 
-* Getting started
-** New Changes
-*** [2020-07-22 Wed]
-1. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
-   1. Moved GTD Module to [[file:gtd.el]]
-   2. Configure your variable settings in [[*Setup our intial defaults for GTD][Setup our intial defaults for GTD]]
-*** [2020-06-21 Sun]
-1. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
-2. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
-3. added org-roam-server
-*** [2020-06-02 Tue]
-1. Added =org-roam=
-2. Added agenda schdules faces (thanks to )
-3. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
-4. Agenda-Hook to narrow on current subtree
-5. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-6. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
-7. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
-** Requirements
+* New Changes
+1. [2020-06-02 Tue]
+   a. Added =org-roam=
+   b. Added agenda schdules faces (thanks to )
+   c. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
+   d. Agenda-Hook to narrow on current subtree
+   e. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
+   f. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
+   g. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
+2. [2020-06-21 Sun]
+   a. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
+   b. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
+   c. added org-roam-server
+3. [2020-07-22 Wed]
+   a. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
+   b. Moved GTD Module to [[file:gtd.el]]
+   c. Configure your variable settings in [[Setting up my GTD Methodology]]
+4. [2020-08-26 Wed]
+   a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
+   b. Added *FiraCode* fonts (see [[Requirements]])
+* Requirements
 These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
-2. For fonts please download [[https://input.fontbureau.com/download/][Input]] and [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]]
-* Look and feel
-** Setup Layout by Monitor Profile
-#+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20))
-(defun zyro/monitor-width-profile-setup ()
-  "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
-  (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
-    (when (= size 2.734375)
-      (set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t)
-      (set-popup-rule! "*helm*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
-
-(defun zyro/monitor-size-profile-setup ()
-  "Calcuate our monitor size and then configure element sizes accordingly"
-  (let ((size (/ (* (float (display-pixel-width)) (float (display-pixel-height))) 100)))
-    (when (>= size 71600.0)
-      (setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20)))
-    (when (>= size 49536.0)
-      (setq doom-font (font-spec :family "Input Mono" :size 18)
-            doom-big-font (font-spec :family "Input Mono" :size 22)))
-    (when (>= size 39936.0)
-      (setq doom-font (font-spec :family "Input Mono" :size 16)
-            doom-big-font (font-spec :family "Input Mono" :size 20)))))
-#+END_SRC
-** Prettify
-Disabled org-pretty-mode because of some issues it was causing with rendering... For now, we'll just hide emphasis characters.
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-hide-emphasis-markers t
-                  org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-(setq org-superstar-headline-bullets-list '("●" "○"))
-(setq org-ellipsis "▼")
-(setq org-superstar-item-bullet-alist nil)
-#+END_SRC
-* GTD Setup
-#+BEGIN_SRC emacs-lisp
-(load! "gtd.el")
-(setq org-directory "~/.org/")
-(use-package org-gtd
-  :defer
-  :config
-  (setq org-gtd-folder '"~/.org/gtd/")
-  (setq org-projects-folder '"~/.org/gtd/projects/")
-  (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
-  (setq org-gtd-refile-properties '("CATEGORY")))
-#+END_SRC
-* Org-Roam with GTD
-** Search functions
-#+BEGIN_SRC emacs-lisp
-(defun zyro/rifle-roam ()
-  "Rifle through your ROAM directory"
-  (interactive)
-  (helm-org-rifle-directories org-roam-directory))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("n" . "notes")
-      :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
-#+END_SRC
-* ORGMODE
-** Agenda Settings
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-dim-blocked-tasks t
-                  org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp "\\w+"
-                  org-agenda-compact-blocks nil
-                  org-agenda-block-separator 61
-                  org-agenda-skip-scheduled-if-done t
-                  org-agenda-skip-deadline-if-done t
-                  org-enforce-todo-checkbox-dependencies t
-                  org-enforce-todo-dependencies t
-                  org-habit-show-habits t))
-#+END_SRC
-** Agenda Files
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
-#+END_SRC
-** Capture Templates
-#+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      '(("n" "Daily notes" plain (file zyro/capture-daily-notes)
-         (file "~/.doom.d/templates/roam-notes.org"))
-        ("B" "Bookmark" entry (file (expand-file-name "bookmarks.org" "~/org/"))
-         "* %^{Something}")
-        ("c" "Capture" plain (file "~/.org/gtd/inbox.org")
-         (file "~/.doom.d/templates/capture.org"))
-        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")
-        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
-         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
-#+END_SRC
-** Directory settings
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-image-actual-width nil
-                  org-archive-location "archives.org::datetree"
-                  projectile-project-search-path '("~/projectile/")))
-#+END_SRC
-** Export Settings
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-html-head-include-scripts t
-                  org-export-with-toc t
-                  org-export-with-author t
-                  org-export-headline-levels 4
-                  org-export-with-drawers nil
-                  org-export-with-email t
-                  org-export-with-footnotes t
-                  org-export-with-sub-superscripts nil
-                  org-export-with-latex t
-                  org-export-with-section-numbers nil
-                  org-export-with-properties nil
-                  org-export-with-smart-quotes t
-                  org-export-backends '(pdf ascii html latex odt md pandoc)))
-#+END_SRC
-** Misc
-#+BEGIN_SRC emacs-lisp
-(require 'org-id)
-(setq org-link-file-path-type 'relative)
-#+END_SRC
-** Keywords
-#+BEGIN_SRC emacs-lisp
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "STRT(s)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
-#+END_SRC
-** Logging and Drawers
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-log-state-notes-insert-after-drawers nil
-                  org-log-into-drawer t
-                  org-log-done 'time
-                  org-log-repeat 'time
-                  org-log-redeadline 'note
-                  org-log-reschedule 'note))
-#+END_SRC
-** Properties
-#+BEGIN_SRC emacs-lisp
-(setq org-use-property-inheritance t ; We like to inhert properties from their parents
-      org-catch-invisible-edits 'error) ; Catch invisible edits
-#+END_SRC
-** Publishing
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-publish-project-alist
-                  '(("attachments"
-                     :base-directory "~/.org/"
-                     :recursive t
-                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html"
-                     :publishing-function org-publish-attachment)
-                    ("notes-to-orgfiles"
-                     :base-directory "~/.org/notes/"
-                     :publishing-directory "~/notes/"
-                     :base-extension "org"
-                     :recursive t
-                     :publishing-function org-org-publish-to-org)
-                    ("notes"
-                     :base-directory "~/.org/notes/elisp/"
-                     :publishing-directory "~/publish_html"
-                     :section-numbers nil
-                     :base-extension "org"
-                     :with-properties nil
-                     :with-drawers (not "LOGBOOK")
-                     :with-timestamps active
-                     :recursive t
-                     :auto-sitemap t
-                     :sitemap-filename "sitemap.html"
-                     :publishing-function org-html-publish-to-html
-                     :html-head "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\"/>"
-;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
-;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
-                     :html-link-up "../"
-                     :with-email t
-                     :html-link-up "../../index.html"
-                     :auto-preamble t
-                     :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
-#+END_SRC
-** Refiling
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-refile-targets '((nil :maxlevel . 9)
-                                       (org-agenda-files :maxlevel . 4))
-                  org-refile-use-outline-path 'buffer-name
-                  org-outline-path-complete-in-steps nil
-                  org-refile-allow-creating-parent-nodes 'confirm))
-#+END_SRC
-** Startup
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-startup-indented 'indent
-                  org-startup-folded 'content
-                  org-src-tab-acts-natively t))
-(add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-#+END_SRC
-** Org Protocol
-#+BEGIN_SRC emacs-lisp
-(require 'org-roam-protocol)
-(setq org-protocol-default-template-key "d")
-#+END_SRC
-** Clock settings
-#+BEGIN_SRC emacs-lisp
-(setq org-clock-continuously t)
-#+END_SRC
-** Tags
-#+BEGIN_SRC emacs-lisp
-(setq org-tags-column 0)
-(setq org-tag-alist '((:startgrouptag)
-                      ("Context")
-                      (:grouptags)
-                      ("@home" . ?h)
-                      ("@computer")
-                      ("@work")
-                      ("@place")
-                      ("@bills")
-                      ("@order")
-                      ("@labor")
-                      ("@read")
-                      ("@brainstorm")
-                      ("@planning")
-                      (:endgrouptag)
-                      (:startgrouptag)
-                      ("Categories")
-                      (:grouptags)
-                      ("vehicles")
-                      ("health")
-                      ("house")
-                      ("hobby")
-                      ("coding")
-                      ("material")
-                      ("goal")
-                      (:endgrouptag)
-                      (:startgrouptag)
-                      ("Section")
-                      (:grouptags)
-                      ("#coding")
-                      ("#research")))
-#+END_SRC
-* Environment
-** User Information
-Load ORG Files
+2. For fonts please download [[https://input.fontbureau.com/download/][Input]], [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]] and [[https://github.com/tonsky/FiraCode][FiraCode]]
+* User Information
 Environment settings, which are specific to the user and system. First up are user settings.
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
 #+END_SRC
-
-** Default folder(s) and file(s)
-Then we will define some default files. I'm probably going to use default task files for inbox/someday/todo at some point so expect this to change. Also note, all customer functions will start with a =+= to distinguish from major symbols.
-#+BEGIN_SRC emacs-lisp
-(setq diary-file "~/.org/diary.org")
-#+END_SRC
-
-** Misc Settings
+* Misc Settings
 Now we load some default settings for EMACS.
 #+BEGIN_SRC emacs-lisp
 (display-time-mode 1)
 (setq display-time-day-and-date t)
 #+END_SRC
-
-** Key Bindings
+* Key Bindings
 From here we load some extra key bindings that I use often
+TODO add org-agenda-mode-map key-binds for org-clock-convenience
+TODO remove un-used key-binds
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "C-M-<up>" #'evil-window-up)
@@ -324,7 +79,7 @@ From here we load some extra key bindings that I use often
       :desc "Deft" "w" #'deft
       :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 #+END_SRC
-** Terminal Mode
+* Terminal Mode
 Set a few settings if we detect terminal mode
 #+BEGIN_SRC emacs-lisp
 (when (equal (window-system) nil)
@@ -333,8 +88,266 @@ Set a few settings if we detect terminal mode
    (setq doom-theme 'doom-monokai-pro)
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 #+END_SRC
-* Behavior
-** Buffer Settings
+* Default folder(s) and file(s)
+Then we will define some default files. I'm probably going to use default task files for inbox/someday/todo at some point so expect this to change. Also note, all customer functions will start with a =+= to distinguish from major symbols.
+TODO add org-directory to this section
+#+BEGIN_SRC emacs-lisp
+(setq diary-file "~/.org/diary.org")
+#+END_SRC
+
+* Setup Layout by Monitor Profile
+TODO clean up function and simplify the process
+#+BEGIN_SRC emacs-lisp
+(when (equal system-type 'gnu/linux)
+  (setq doom-font (font-spec :family "Input Mono" :size 16)
+      doom-big-font (font-spec :family "Input Mono" :size 20)))
+(when (equal system-type 'windows-nt)
+  (setq doom-font (font-spec :family "InputMono" :size 16)
+        doom-big-font (font-spec :family "InputMono" :size 20)))
+(defun zyro/monitor-width-profile-setup ()
+  "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
+  (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
+    (when (= size 2.734375)
+      (set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t)
+      (set-popup-rule! "*helm*" :side 'left :size .30 :select t)
+      (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
+      (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+      (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
+#+END_SRC
+* Prettify Orgmode and Emacs
+Disabled org-pretty-mode because of some issues it was causing with rendering... For now, we'll just hide emphasis characters.
+TODO re-add elisp to define extra priorities
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-hide-emphasis-markers t
+                  org-hide-leading-stars t
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+(setq org-superstar-headline-bullets-list '("●" "✸" "○" "✸"))
+(setq org-ellipsis "▼")
+(setq org-superstar-item-bullet-alist nil)
+
+;; (after! org (setq org-priority-highest ?A
+;;                   org-priority-lowest ?E
+;;                   org-fancy-priorities-list
+;;                   '((?A . "[CRIT]")
+;;                     (?B . "[HIGH]")
+;;                     (?C . "[MID]")
+;;                     (?D . "[LOW]")
+;;                     (?E . "[OPTIONAL]"))))
+;; (after! org (setq org-priority-faces
+;;                   '((65 . error)
+;;                     (66 . warning)
+;;                     (67 . success))))
+;; (org-fancy-priorities-mode 0)
+#+END_SRC
+* Setting up my GTD Methodology
+#+BEGIN_SRC emacs-lisp
+(load! "gtd.el")
+(setq org-directory "~/.org/")
+(use-package org-gtd
+  :defer
+  :config
+  (setq org-gtd-folder '"~/.org/gtd/")
+  (setq org-projects-folder '"~/.org/gtd/projects/")
+  (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
+  (setq org-gtd-refile-properties '("CATEGORY")))
+#+END_SRC
+* Adding additional search functions
+#+BEGIN_SRC emacs-lisp
+(defun zyro/rifle-roam ()
+  "Rifle through your ROAM directory"
+  (interactive)
+  (helm-org-rifle-directories org-roam-directory))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("n" . "notes")
+      :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
+#+END_SRC
+* Agenda Settings
+REVIEW should we remove ~block-separator~?
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+                  org-agenda-dim-blocked-tasks t
+                  org-agenda-use-time-grid t
+                  org-agenda-hide-tags-regexp "\\w+"
+                  org-agenda-compact-blocks nil
+                  org-agenda-block-separator 61
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-enforce-todo-checkbox-dependencies t
+                  org-enforce-todo-dependencies t
+                  org-habit-show-habits t))
+(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
+#+END_SRC
+* Clock Settings
+#+BEGIN_SRC emacs-lisp
+(setq org-clock-continuously t)
+#+END_SRC
+* Capture Templates
+REVIEW clean-up capture templates
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      '(("c" "Capture" plain (file "~/.org/gtd/inbox.org")
+         (file "~/.doom.d/templates/capture.org"))
+        ("q" "Quick Note" entry (file "~/.org/gtd/references.org")
+         "* %^{Name}")
+        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
+         "%(call-interactively #'org-cliplink-capture)")
+        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
+         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
+#+END_SRC
+* Directory settings
+TODO add function to set image-width to *80%* of the window size.
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-image-actual-width nil
+                  org-archive-location "~/.org/gtd/archives.org::datetree"
+                  projectile-project-search-path '("~/projects/")))
+#+END_SRC
+* Export Settings
+TODO add the embed images code to this section
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-html-head-include-scripts t
+                  org-export-with-toc t
+                  org-export-with-author t
+                  org-export-headline-levels 4
+                  org-export-with-drawers nil
+                  org-export-with-email t
+                  org-export-with-footnotes t
+                  org-export-with-sub-superscripts nil
+                  org-export-with-latex t
+                  org-export-with-section-numbers nil
+                  org-export-with-properties nil
+                  org-export-with-smart-quotes t
+                  org-export-backends '(pdf ascii html latex odt md pandoc)))
+#+END_SRC
+* Misc Org Mode settings
+#+BEGIN_SRC emacs-lisp
+(require 'org-id)
+(setq org-link-file-path-type 'relative)
+#+END_SRC
+* Keywords
+REVIEW do we need to add any additional keywords?
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "PLAN(P)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
+#+END_SRC
+* Logging and Drawers
+For the logging drawers, we like to keep our notes and clock history *seperate* from our properties drawer...
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-log-state-notes-insert-after-drawers nil))
+#+END_SRC
+
+Next, we like to keep a history of our activity of a task so we *track* when changes occur, and we also keep our notes logged in *their own drawer*. Optionally you can also add the following in-buffer settings to override the =org-log-into-drawer= function. ~#+STARTUP: logdrawer~ or ~#+STARTUP: nologdrawer~
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-log-into-drawer t
+                  org-log-done 'time
+                  org-log-repeat 'time
+                  org-log-redeadline 'note
+                  org-log-reschedule 'note))
+#+END_SRC
+
+* Properties
+#+BEGIN_SRC emacs-lisp
+(setq org-use-property-inheritance t ; We like to inhert properties from their parents
+      org-catch-invisible-edits 'error) ; Catch invisible edits
+#+END_SRC
+* Publishing
+REVIEW do we need to re-define our publish settings for the ROAM directory?
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-publish-project-alist
+                  '(("attachments"
+                     :base-directory "~/.org/"
+                     :recursive t
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
+                     :publishing-directory "~/publish_html"
+                     :publishing-function org-publish-attachment)
+                    ("notes-to-orgfiles"
+                     :base-directory "~/.org/notes/"
+                     :publishing-directory "~/notes/"
+                     :base-extension "org"
+                     :recursive t
+                     :publishing-function org-org-publish-to-org)
+                    ("notes"
+                     :base-directory "~/.org/notes/elisp/"
+                     :publishing-directory "~/publish_html"
+                     :section-numbers nil
+                     :base-extension "org"
+                     :with-properties nil
+                     :with-drawers (not "LOGBOOK")
+                     :with-timestamps active
+                     :recursive t
+                     :auto-sitemap t
+                     :sitemap-filename "sitemap.html"
+                     :publishing-function org-html-publish-to-html
+                     :html-head "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\"/>"
+;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
+;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :html-link-up "../"
+                     :with-email t
+                     :html-link-up "../../index.html"
+                     :auto-preamble t
+                     :with-toc t)
+                    ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
+#+END_SRC
+* Refiling Defaults
+TODO tweak refiling settings to match new GTD setup
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-refile-targets '((nil :maxlevel . 9)
+                                       (org-agenda-files :maxlevel . 4))
+                  org-refile-use-outline-path 'buffer-name
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm))
+#+END_SRC
+* Orgmode Startup
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-startup-indented 'indent
+                  org-startup-folded 'content
+                  org-src-tab-acts-natively t))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+#+END_SRC
+* Org Protocol
+#+BEGIN_SRC emacs-lisp
+(require 'org-roam-protocol)
+(setq org-protocol-default-template-key "d")
+#+END_SRC
+* Default Tags
+REVIEW should we define any additional tags?
+#+BEGIN_SRC emacs-lisp
+(setq org-tags-column 0)
+(setq org-tag-alist '((:startgrouptag)
+                      ("Context")
+                      (:grouptags)
+                      ("@home" . ?h)
+                      ("@computer")
+                      ("@work")
+                      ("@place")
+                      ("@bills")
+                      ("@order")
+                      ("@labor")
+                      ("@read")
+                      ("@brainstorm")
+                      ("@planning")
+                      (:endgrouptag)
+                      (:startgrouptag)
+                      ("Categories")
+                      (:grouptags)
+                      ("vehicles")
+                      ("health")
+                      ("house")
+                      ("hobby")
+                      ("coding")
+                      ("material")
+                      ("goal")
+                      (:endgrouptag)
+                      (:startgrouptag)
+                      ("Section")
+                      (:grouptags)
+                      ("#coding")
+                      ("#research")))
+#+END_SRC
+* Buffer Settings
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode 1)
 (setq undo-limit 80000000
@@ -349,7 +362,7 @@ Set a few settings if we detect terminal mode
 (remove-hook! '(org-roam-mode-hook) #'zyro/remove-lines)
 #+END_SRC
 
-** Misc Settings
+* Misc Settings
 #+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type t)
 (setq-default
@@ -539,13 +552,16 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 
 (provide 'setup-helm-org-rifle)
 #+END_SRC
-
+** Pandoc
+#+BEGIN_SRC emacs-lisp
+(setq org-pandoc-options '((standalone . t) (self-contained . t)))
+#+END_SRC
 ** ROAM
 These are my default ROAM settings
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory "~/.org/")
+(setq org-roam-directory "~/.org/notes/")
 (setq org-roam-tag-sources '(prop all-directories))
-(setq org-roam-db-location "~/.org/roam.db")
+(setq org-roam-db-location "~/.emacs.d/roam.db")
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
 #+END_SRC
@@ -636,16 +652,32 @@ These are my default ROAM settings
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 #+END_SRC
-* Extras
+* Loading secrets
 #+BEGIN_SRC emacs-lisp
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
   (load secrets)))
 #+END_SRC
+* Hacks
+** Embed Images in HTML org-export
+#+BEGIN_SRC emacs-lisp
+(defun replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+(defun org-html--format-image (source attributes info)
+  (progn
+    (setq source (replace-in-string "%20" " " source))
+    (format "<img src=\"data:image/%s;base64,%s\"%s />"
+            (or (file-name-extension source) "")
+            (base64-encode-string
+             (with-temp-buffer
+               (insert-file-contents-literally source)
+              (buffer-string)))
+            (file-name-nondirectory source))))
+#+END_SRC
 * Theme Settings
 #+BEGIN_SRC emacs-lisp
 (after! org (zyro/monitor-width-profile-setup)
-  (zyro/monitor-size-profile-setup)
   (toggle-frame-fullscreen)
-  (setq doom-theme 'doom-snazzy))
+  (setq doom-theme 'doom-one))
 #+END_SRC
