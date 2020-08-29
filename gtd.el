@@ -33,7 +33,7 @@
 
 ;; Configure our next task file and map them to our folder directory
 (setq org-next-task-files (mapcar (lambda (file) (expand-file-name file org-gtd-folder))
-                                   org-gtd-task-files))
+                                  org-gtd-task-files))
 
 ;; (mapcar (lambda (arg) (org-set-property arg (read-string (concat arg ": "))))
 ;;           org-gtd-properties)
