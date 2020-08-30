@@ -111,7 +111,7 @@
                   org-agenda-use-time-grid t
                   org-agenda-hide-tags-regexp "\\w+"
                   org-agenda-compact-blocks nil
-                  org-agenda-block-separator 61
+                  org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
                   org-enforce-todo-checkbox-dependencies t
@@ -488,7 +488,7 @@
 (setq org-agenda-custom-commands
       '(("w" "Master Agenda"
          ((agenda ""
-                  ((org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org")))
+                  ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                    (org-agenda-time-grid nil)
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
@@ -496,24 +496,19 @@
                 ((org-agenda-files (list "~/.org/gtd/next.org"))))
           (todo "TODO"
                 ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "REVIEW"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
           (todo "PROJ"
+                ((org-agenda-files (list "~/.org/gtd/next.org"))))
+          (todo "REVIEW"
                 ((org-agenda-files (list "~/.org/gtd/next.org"))))
           (todo "HOLD"
                 ((org-agenda-files (list "~/.org/gtd/next.org"))))))
         ("i" "Inbox"
-         ((todo ""
-                ((org-agenda-overriding-header "")
-                 (org-agenda-files (list "~/.org/inbox.org"))
-                 (org-super-agenda-groups
-                  '((:category "Cases")
-                    (:category "Emails")
-                    (:category "Inbox")))))))
+         ((todo "REFILE|REVIEW"
+                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                 (org-super-agenda-groups '((:auto-ts t)))))))
         ("x" "Someday"
-         ((todo ""
-                ((org-agenda-overriding-header "Someday")
-                 (org-agenda-files (list "~/.org/someday.org"))
+         ((todo "SOMEDAY"
+                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 
