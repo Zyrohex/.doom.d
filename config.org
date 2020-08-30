@@ -99,8 +99,8 @@ TODO add org-directory to this section
 TODO clean up function and simplify the process
 #+BEGIN_SRC emacs-lisp
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Input Mono" :size 16)
-      doom-big-font (font-spec :family "Input Mono" :size 20)))
+  (setq doom-font (font-spec :family "Fira Code" :size 16)
+      doom-big-font (font-spec :family "Fira Code" :size 20)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 16)
         doom-big-font (font-spec :family "InputMono" :size 20)))
@@ -121,7 +121,7 @@ TODO re-add elisp to define extra priorities
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-(setq org-superstar-headline-bullets-list '("●" "✸" "○" "✸"))
+(setq org-superstar-headline-bullets-list '("●" "○"))
 (setq org-ellipsis "▼")
 (setq org-superstar-item-bullet-alist nil)
 
@@ -178,7 +178,7 @@ REVIEW should we remove ~block-separator~?
                   org-enforce-todo-checkbox-dependencies t
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
-(setq org-agenda-files (append (file-expand-wildcards (concat org-gtd-folder "*.org"))))
+(setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
 #+END_SRC
 * Clock Settings
 #+BEGIN_SRC emacs-lisp
@@ -188,14 +188,12 @@ REVIEW should we remove ~block-separator~?
 REVIEW clean-up capture templates
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
-      '(("c" "Capture" plain (file "~/.org/gtd/inbox.org")
-         (file "~/.doom.d/templates/capture.org"))
-        ("q" "Quick Note" entry (file "~/.org/gtd/references.org")
-         "* %^{Name}")
+      '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
+         "* REFILE %(read-string \"Task: \")" :immediate-finish t)
+        ("n" "Note" entry (file "~/.org/gtd/notes.org")
+         "* NOTE %(read-string \"Note: \")")
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")
-        ("x" "Time Tracker" entry (file+headline "~/.org/timetracking.org" "Time Tracker")
-         (file "~/.doom.d/templates/timetracker.org") :clock-in t :clock-resume t)))
+         "%(call-interactively #'org-cliplink-capture)")))
 #+END_SRC
 * Directory settings
 TODO add function to set image-width to *80%* of the window size.
@@ -230,7 +228,9 @@ TODO add the embed images code to this section
 REVIEW do we need to add any additional keywords?
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "PROJ(p)" "PLAN(P)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
+      '((sequence "TODO(t)" "NEXT(n)" "REVIEW(e)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
+        (sequence "REFILE(r)" "SOMEDAY(s)" "|" "KILL(k)")
+        (sequence "PROJ(p)" "|" "DONE(d)")))
 #+END_SRC
 * Logging and Drawers
 For the logging drawers, we like to keep our notes and clock history *seperate* from our properties drawer...
@@ -570,7 +570,7 @@ These are my default ROAM settings
 (use-package org-roam-server
   :ensure t
   :config
-  (setq org-roam-server-host "127.0.0.1"
+  (setq org-roam-server-host "192.168.1.82"
         org-roam-server-port 8070
         org-roam-server-export-inline-images t
         org-roam-server-authenticate nil
@@ -623,20 +623,20 @@ These are my default ROAM settings
 (setq org-agenda-custom-commands
       '(("w" "Master Agenda"
          ((agenda ""
-                  ((org-agenda-overriding-header "Master Agenda")
-                   (org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org")))
+                  ((org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org")))
                    (org-agenda-time-grid nil)
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
-          (todo ""
-                ((org-agenda-overriding-header "Master TODO List")
-                 (org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*")))
-                 (org-super-agenda-groups
-                  '((:auto-category t)))))
-          (todo ""
-                ((org-agenda-files (list "~/.doom.d/config.org"))
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))))
+          (todo "NEXT"
+                ((org-agenda-files (list "~/.org/gtd/next.org"))))
+          (todo "TODO"
+                ((org-agenda-files (list "~/.org/gtd/next.org"))))
+          (todo "REVIEW"
+                ((org-agenda-files (list "~/.org/gtd/next.org"))))
+          (todo "PROJ"
+                ((org-agenda-files (list "~/.org/gtd/next.org"))))
+          (todo "HOLD"
+                ((org-agenda-files (list "~/.org/gtd/next.org"))))))
         ("i" "Inbox"
          ((todo ""
                 ((org-agenda-overriding-header "")
