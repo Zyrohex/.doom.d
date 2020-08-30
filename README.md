@@ -1,55 +1,55 @@
 
 # Table of Contents
 
--   [New Changes](#orgd7ed370)
--   [Requirements](#orgabfffea)
--   [User Information](#org7954a07)
--   [Misc Settings](#org07879f3)
--   [Key Bindings](#orgcf8e5a3)
--   [Terminal Mode](#orgb560b50)
--   [Default folder(s) and file(s)](#org8b5c006)
--   [Setup Layout by Monitor Profile](#org7014941)
--   [Prettify Orgmode and Emacs](#org1555994)
--   [Setting up my GTD Methodology](#org521565a)
--   [Adding additional search functions](#org4f6b1db)
--   [Agenda Settings](#org72bc065)
--   [Clock Settings](#org0f6a73c)
--   [Capture Templates](#orgf278aac)
--   [Directory settings](#orgd36ded3)
--   [Export Settings](#org7cb0711)
--   [Misc Org Mode settings](#org2b382b6)
--   [Keywords](#org6dee433)
--   [Logging and Drawers](#org3fe5f0d)
--   [Properties](#orgf5f4966)
--   [Publishing](#org2195d20)
--   [Refiling Defaults](#org476af68)
--   [Orgmode Startup](#org22ae9ad)
--   [Org Protocol](#org0f01596)
--   [Default Tags](#org36352d1)
--   [Buffer Settings](#org7b1bb52)
--   [Misc Settings](#org13983db)
--   [Module Settings](#orgbf22f45)
-    -   [company mode](#org9319b64)
-    -   [Define Word](#orgcc81e3d)
-    -   [Misc Modules [Bookmarks, PDF Tools]](#orgc2ab0a4)
-    -   [Graphs and Chart Modules](#org6f8c89e)
-    -   [Elfeed](#org74c710f)
-    -   [DEFT](#org3f0a9ab)
-    -   [Org-Rifle](#orge962dde)
-    -   [Pandoc](#org1aac4df)
-    -   [ROAM](#orga7c4494)
-    -   [ROAM Server](#orga9d898a)
-    -   [ROAM Export Backlinks + Content](#org8a760a5)
-    -   [Reveal [HTML Presentations]](#orga3fd146)
-    -   [Super Agenda Settings](#org1598fab)
--   [Loading secrets](#orgc7d26d6)
--   [Hacks](#org78f7cae)
-    -   [Embed Images in HTML org-export](#orgf0d97aa)
--   [Theme Settings](#orgeccc99a)
+-   [New Changes](#orgc9c3c9e)
+-   [Requirements](#orgec2e040)
+-   [User Information](#org26d9111)
+-   [Misc Settings](#org626392f)
+-   [Key Bindings](#org562cfd5)
+-   [Terminal Mode](#orgf28cd14)
+-   [Default folder(s) and file(s)](#orgc26cf96)
+-   [Setup Layout by Monitor Profile](#orgce112f7)
+-   [Prettify Orgmode and Emacs](#org9d3326b)
+-   [Setting up my GTD Methodology](#orgd683f19)
+-   [Adding additional search functions](#orgea67340)
+-   [Agenda Settings](#org4bd6a30)
+-   [Clock Settings](#org7ecd17b)
+-   [Capture Templates](#orgfe53cd1)
+-   [Directory settings](#orgea74958)
+-   [Export Settings](#org4aea639)
+-   [Misc Org Mode settings](#orgca74460)
+-   [Keywords](#org6f9d519)
+-   [Logging and Drawers](#org3308129)
+-   [Properties](#orgfa01036)
+-   [Publishing](#orgdc40b05)
+-   [Refiling Defaults](#org77c4d8a)
+-   [Orgmode Startup](#org2114a56)
+-   [Org Protocol](#org7aeaddc)
+-   [Default Tags](#org16afbaa)
+-   [Buffer Settings](#orgb085885)
+-   [Misc Settings](#orge4434b6)
+-   [Module Settings](#org016ff8a)
+    -   [company mode](#org36d0b20)
+    -   [Define Word](#org34c4700)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#orga25cae8)
+    -   [Graphs and Chart Modules](#org52c1bed)
+    -   [Elfeed](#org36741c9)
+    -   [DEFT](#org9ea52a8)
+    -   [Org-Rifle](#org77e99e3)
+    -   [Pandoc](#org4f9ce87)
+    -   [ROAM](#org9a16765)
+    -   [ROAM Server](#orgdb41789)
+    -   [ROAM Export Backlinks + Content](#org1181d98)
+    -   [Reveal [HTML Presentations]](#orgeeb9acb)
+    -   [Super Agenda Settings](#orgcfa69d3)
+-   [Loading secrets](#orgf06484b)
+-   [Hacks](#org659ba7c)
+    -   [Embed Images in HTML org-export](#orge36e09f)
+-   [Theme Settings](#org61ece49)
 
 
 
-<a id="orgd7ed370"></a>
+<a id="orgc9c3c9e"></a>
 
 # New Changes
 
@@ -68,13 +68,13 @@
 3.  <span class="timestamp-wrapper"><span class="timestamp">[2020-07-22 Wed]</span></span>
     1.  Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
     2.  Moved GTD Module to <gtd.el>
-    3.  Configure your variable settings in [Setting up my GTD Methodology](#org521565a)
+    3.  Configure your variable settings in [Setting up my GTD Methodology](#orgd683f19)
 4.  <span class="timestamp-wrapper"><span class="timestamp">[2020-08-26 Wed]</span></span>
     1.  Moved `roam-db-directory` to **.emacs.d** directory FIXME address syncthing permission issue
-    2.  Added **FiraCode** fonts (see [Requirements](#orgabfffea))
+    2.  Added **FiraCode** fonts (see [Requirements](#orgec2e040))
 
 
-<a id="orgabfffea"></a>
+<a id="orgec2e040"></a>
 
 # Requirements
 
@@ -84,7 +84,7 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2.  For fonts please download [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2) and [FiraCode](https://github.com/tonsky/FiraCode)
 
 
-<a id="org7954a07"></a>
+<a id="org26d9111"></a>
 
 # User Information
 
@@ -94,7 +94,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="org07879f3"></a>
+<a id="org626392f"></a>
 
 # Misc Settings
 
@@ -104,7 +104,7 @@ Now we load some default settings for EMACS.
     (setq display-time-day-and-date t)
 
 
-<a id="orgcf8e5a3"></a>
+<a id="org562cfd5"></a>
 
 # Key Bindings
 
@@ -149,7 +149,7 @@ TODO remove un-used key-binds
           :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 
 
-<a id="orgb560b50"></a>
+<a id="orgf28cd14"></a>
 
 # Terminal Mode
 
@@ -162,7 +162,7 @@ Set a few settings if we detect terminal mode
        (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 
-<a id="org8b5c006"></a>
+<a id="orgc26cf96"></a>
 
 # Default folder(s) and file(s)
 
@@ -172,7 +172,7 @@ TODO add org-directory to this section
     (setq diary-file "~/.org/diary.org")
 
 
-<a id="org7014941"></a>
+<a id="orgce112f7"></a>
 
 # Setup Layout by Monitor Profile
 
@@ -195,7 +195,7 @@ TODO clean up function and simplify the process
           (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 
 
-<a id="org1555994"></a>
+<a id="org9d3326b"></a>
 
 # Prettify Orgmode and Emacs
 
@@ -224,7 +224,7 @@ TODO re-add elisp to define extra priorities
     ;; (org-fancy-priorities-mode 0)
 
 
-<a id="org521565a"></a>
+<a id="orgd683f19"></a>
 
 # Setting up my GTD Methodology
 
@@ -239,7 +239,7 @@ TODO re-add elisp to define extra priorities
       (setq org-gtd-refile-properties '("CATEGORY")))
 
 
-<a id="org4f6b1db"></a>
+<a id="orgea67340"></a>
 
 # Adding additional search functions
 
@@ -255,18 +255,16 @@ TODO re-add elisp to define extra priorities
           :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
 
 
-<a id="org72bc065"></a>
+<a id="org4bd6a30"></a>
 
 # Agenda Settings
-
-REVIEW should we remove `block-separator`?
 
     (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                       org-agenda-dim-blocked-tasks t
                       org-agenda-use-time-grid t
                       org-agenda-hide-tags-regexp "\\w+"
                       org-agenda-compact-blocks nil
-                      org-agenda-block-separator 61
+                      org-agenda-block-separator ""
                       org-agenda-skip-scheduled-if-done t
                       org-agenda-skip-deadline-if-done t
                       org-enforce-todo-checkbox-dependencies t
@@ -275,14 +273,14 @@ REVIEW should we remove `block-separator`?
     (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
 
 
-<a id="org0f6a73c"></a>
+<a id="org7ecd17b"></a>
 
 # Clock Settings
 
     (setq org-clock-continuously t)
 
 
-<a id="orgf278aac"></a>
+<a id="orgfe53cd1"></a>
 
 # Capture Templates
 
@@ -297,7 +295,7 @@ REVIEW clean-up capture templates
              "%(call-interactively #'org-cliplink-capture)")))
 
 
-<a id="orgd36ded3"></a>
+<a id="orgea74958"></a>
 
 # Directory settings
 
@@ -308,7 +306,7 @@ TODO add function to set image-width to **80%** of the window size.
                       projectile-project-search-path '("~/projects/")))
 
 
-<a id="org7cb0711"></a>
+<a id="org4aea639"></a>
 
 # Export Settings
 
@@ -329,7 +327,7 @@ TODO add the embed images code to this section
                       org-export-backends '(pdf ascii html latex odt md pandoc)))
 
 
-<a id="org2b382b6"></a>
+<a id="orgca74460"></a>
 
 # Misc Org Mode settings
 
@@ -337,7 +335,7 @@ TODO add the embed images code to this section
     (setq org-link-file-path-type 'relative)
 
 
-<a id="org6dee433"></a>
+<a id="org6f9d519"></a>
 
 # Keywords
 
@@ -406,7 +404,7 @@ TODO add the embed images code to this section
             (sequence "PROJ(p)" "|" "DONE(d)")))
 
 
-<a id="org3fe5f0d"></a>
+<a id="org3308129"></a>
 
 # Logging and Drawers
 
@@ -423,7 +421,7 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="orgf5f4966"></a>
+<a id="orgfa01036"></a>
 
 # Properties
 
@@ -431,7 +429,7 @@ Next, we like to keep a history of our activity of a task so we **track** when c
           org-catch-invisible-edits 'error) ; Catch invisible edits
 
 
-<a id="org2195d20"></a>
+<a id="orgdc40b05"></a>
 
 # Publishing
 
@@ -473,7 +471,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org476af68"></a>
+<a id="org77c4d8a"></a>
 
 # Refiling Defaults
 
@@ -486,7 +484,7 @@ TODO tweak refiling settings to match new GTD setup
                       org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="org22ae9ad"></a>
+<a id="org2114a56"></a>
 
 # Orgmode Startup
 
@@ -497,7 +495,7 @@ TODO tweak refiling settings to match new GTD setup
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="org0f01596"></a>
+<a id="org7aeaddc"></a>
 
 # Org Protocol
 
@@ -505,7 +503,7 @@ TODO tweak refiling settings to match new GTD setup
     (setq org-protocol-default-template-key "d")
 
 
-<a id="org36352d1"></a>
+<a id="org16afbaa"></a>
 
 # Default Tags
 
@@ -544,7 +542,7 @@ REVIEW should we define any additional tags?
                           ("#research")))
 
 
-<a id="org7b1bb52"></a>
+<a id="orgb085885"></a>
 
 # Buffer Settings
 
@@ -561,7 +559,7 @@ REVIEW should we define any additional tags?
     (remove-hook! '(org-roam-mode-hook) #'zyro/remove-lines)
 
 
-<a id="org13983db"></a>
+<a id="orge4434b6"></a>
 
 # Misc Settings
 
@@ -574,12 +572,12 @@ REVIEW should we define any additional tags?
      x-stretch-cursor t)
 
 
-<a id="orgbf22f45"></a>
+<a id="org016ff8a"></a>
 
 # Module Settings
 
 
-<a id="org9319b64"></a>
+<a id="org36d0b20"></a>
 
 ## company mode
 
@@ -588,7 +586,7 @@ REVIEW should we define any additional tags?
       (setq company-idle-delay 0.25))
 
 
-<a id="orgcc81e3d"></a>
+<a id="org34c4700"></a>
 
 ## Define Word
 
@@ -600,7 +598,7 @@ REVIEW should we define any additional tags?
             :desc "Define word at point" "@" #'define-word-at-point))
 
 
-<a id="orgc2ab0a4"></a>
+<a id="orga25cae8"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -610,7 +608,7 @@ Configuring PDF support and ORG-NOTER for note taking
     ;  :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org6f8c89e"></a>
+<a id="org52c1bed"></a>
 
 ## Graphs and Chart Modules
 
@@ -640,7 +638,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org74c710f"></a>
+<a id="org36741c9"></a>
 
 ## Elfeed
 
@@ -659,7 +657,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org3f0a9ab"></a>
+<a id="org9ea52a8"></a>
 
 ## DEFT
 
@@ -681,7 +679,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orge962dde"></a>
+<a id="org77e99e3"></a>
 
 ## Org-Rifle
 
@@ -780,14 +778,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org1aac4df"></a>
+<a id="org4f9ce87"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="orga7c4494"></a>
+<a id="org9a16765"></a>
 
 ## ROAM
 
@@ -800,7 +798,7 @@ These are my default ROAM settings
     '(org-roam-directory . "."))
 
 
-<a id="orga9d898a"></a>
+<a id="orgdb41789"></a>
 
 ## ROAM Server
 
@@ -818,7 +816,7 @@ These are my default ROAM settings
             org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org8a760a5"></a>
+<a id="org1181d98"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -851,7 +849,7 @@ These are my default ROAM settings
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="orga3fd146"></a>
+<a id="orgeeb9acb"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -860,7 +858,7 @@ These are my default ROAM settings
     (setq org-reveal-title-slide nil)
 
 
-<a id="org1598fab"></a>
+<a id="orgcfa69d3"></a>
 
 ## Super Agenda Settings
 
@@ -869,7 +867,7 @@ These are my default ROAM settings
     (setq org-agenda-custom-commands
           '(("w" "Master Agenda"
              ((agenda ""
-                      ((org-agenda-files (append (file-expand-wildcards "~/.org/tasks/*.org")))
+                      ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                        (org-agenda-time-grid nil)
                        (org-agenda-start-day (org-today))
                        (org-agenda-span '1)))
@@ -877,29 +875,24 @@ These are my default ROAM settings
                     ((org-agenda-files (list "~/.org/gtd/next.org"))))
               (todo "TODO"
                     ((org-agenda-files (list "~/.org/gtd/next.org"))))
-              (todo "REVIEW"
-                    ((org-agenda-files (list "~/.org/gtd/next.org"))))
               (todo "PROJ"
+                    ((org-agenda-files (list "~/.org/gtd/next.org"))))
+              (todo "REVIEW"
                     ((org-agenda-files (list "~/.org/gtd/next.org"))))
               (todo "HOLD"
                     ((org-agenda-files (list "~/.org/gtd/next.org"))))))
             ("i" "Inbox"
-             ((todo ""
-                    ((org-agenda-overriding-header "")
-                     (org-agenda-files (list "~/.org/inbox.org"))
-                     (org-super-agenda-groups
-                      '((:category "Cases")
-                        (:category "Emails")
-                        (:category "Inbox")))))))
+             ((todo "REFILE|REVIEW"
+                    ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                     (org-super-agenda-groups '((:auto-ts t)))))))
             ("x" "Someday"
-             ((todo ""
-                    ((org-agenda-overriding-header "Someday")
-                     (org-agenda-files (list "~/.org/someday.org"))
+             ((todo "SOMEDAY"
+                    ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                      (org-super-agenda-groups
                       '((:auto-parent t)))))))))
 
 
-<a id="orgc7d26d6"></a>
+<a id="orgf06484b"></a>
 
 # Loading secrets
 
@@ -908,12 +901,12 @@ These are my default ROAM settings
       (load secrets)))
 
 
-<a id="org78f7cae"></a>
+<a id="org659ba7c"></a>
 
 # Hacks
 
 
-<a id="orgf0d97aa"></a>
+<a id="orge36e09f"></a>
 
 ## Embed Images in HTML org-export
 
@@ -932,7 +925,7 @@ These are my default ROAM settings
                 (file-name-nondirectory source))))
 
 
-<a id="orgeccc99a"></a>
+<a id="org61ece49"></a>
 
 # Theme Settings
 
