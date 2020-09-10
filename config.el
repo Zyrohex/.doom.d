@@ -66,34 +66,11 @@
 
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-(setq org-superstar-headline-bullets-list '("●" "○"))
-(setq org-ellipsis "▼")
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
+                  org-ellipsis "▼"))
+
+(setq org-superstar-headline-bullets-list '("◉" "●" "○"))
 (setq org-superstar-item-bullet-alist nil)
-
-;; (after! org (setq org-priority-highest ?A
-;;                   org-priority-lowest ?E
-;;                   org-fancy-priorities-list
-;;                   '((?A . "[CRIT]")
-;;                     (?B . "[HIGH]")
-;;                     (?C . "[MID]")
-;;                     (?D . "[LOW]")
-;;                     (?E . "[OPTIONAL]"))))
-;; (after! org (setq org-priority-faces
-;;                   '((65 . error)
-;;                     (66 . warning)
-;;                     (67 . success))))
-;; (org-fancy-priorities-mode 0)
-
-(load! "gtd.el")
-(setq org-directory "~/.org/")
-(use-package org-gtd
-  :defer
-  :config
-  (setq org-gtd-folder '"~/.org/gtd/")
-  (setq org-projects-folder '"~/.org/gtd/projects/")
-  (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
-  (setq org-gtd-refile-properties '("CATEGORY")))
 
 (defun zyro/rifle-roam ()
   "Rifle through your ROAM directory"
@@ -114,20 +91,20 @@
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
-                  org-enforce-todo-checkbox-dependencies t
+                  org-enforce-todo-checkbox-dependencies nil
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
-(setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org"))))
 
-(setq org-clock-continuously t)
+(after! org (setq org-clock-continuously t))
 
-(setq org-capture-templates
+(after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
-         "* REFILE %(read-string \"Task: \")" :immediate-finish t)
+         "* REFILE %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED %U\n:END:")
         ("n" "Note" entry (file "~/.org/gtd/notes.org")
          "* NOTE %(read-string \"Note: \")")
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")))
+         "%(call-interactively #'org-cliplink-capture)"))))
 
 (after! org (setq org-image-actual-width nil
                   org-archive-location "~/.org/gtd/archives.org::datetree"
@@ -269,7 +246,7 @@
  x-stretch-cursor t)
 
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam))
+  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
   (setq company-idle-delay 0.25))
 
 (use-package define-word
@@ -318,6 +295,15 @@
 ;; (elfeed-org)
 ;; (setq elfeed-db-directory "~/.elfeed/")
 ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
+
+(setq deft-use-projectile-projects t)
+(defun zyro/deft-update-directory ()
+  "Updates deft directory to current projectile's project root folder and updates the deft buffer."
+  (interactive)
+  (setq deft-directory (expand-file-name (doom-project-root))))
+(when deft-use-projectile-projects
+  (add-hook 'projectile-after-switch-project-hook 'zyro/deft-update-directory)
+  (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
 
 (load! "my-deft-title.el")
 (use-package deft
@@ -438,6 +424,28 @@
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
 
+(setq org-roam-capture-templates
+        '(("a" "plain" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "${slug}"
+           :head "#+title: ${title}\n"
+           :unnarrowed t)
+          ("b" "business" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "business/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: ${tags}\n"
+           :unnarrowed t)
+          ("p" "programming" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "programming/${slug}"
+           :head "#+title: ${title}\n"
+           :unnarrowed t)
+          ("x" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private/${slug}"
+           :head "#+title: ${title}\n"
+           :unnarrowed t)))
+
 (use-package org-roam-server
   :ensure t
   :config
@@ -451,33 +459,33 @@
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          (insert (format "\n\n* %d Backlinks\n"
-                          (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "** [[file:%s][%s]]\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
+ (defun my/org-roam--backlinks-list-with-content (file)
+   (with-temp-buffer
+     (if-let* ((backlinks (org-roam--get-backlinks file))
+               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+         (progn
+           (insert (format "\n\n* %d Backlinks\n"
+                           (length backlinks)))
+           (dolist (group grouped-backlinks)
+             (let ((file-from (car group))
+                   (bls (cdr group)))
+               (insert (format "** [[file:%s][%s]]\n"
+                               file-from
+                               (org-roam--get-title-or-slug file-from)))
+               (dolist (backlink bls)
+                 (pcase-let ((`(,file-from _ ,props) backlink))
+                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                   (insert "\n\n")))))))
+     (buffer-string)))
 
-  (defun my/org-export-preprocessor (backend)
-    (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-      (unless (string= links "")
-        (save-excursion
-          (goto-char (point-max))
-          (insert (concat "\n* Backlinks\n") links)))))
+   (defun my/org-export-preprocessor (backend)
+     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+       (unless (string= links "")
+         (save-excursion
+           (goto-char (point-max))
+           (insert (concat "\n* Backlinks\n") links)))))
 
-  (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")

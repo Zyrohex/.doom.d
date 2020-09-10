@@ -114,44 +114,22 @@ TODO clean up function and simplify the process
       (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
       (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 #+END_SRC
-* Prettify Orgmode and Emacs
-Disabled org-pretty-mode because of some issues it was causing with rendering... For now, we'll just hide emphasis characters.
-TODO re-add elisp to define extra priorities
+* Org mode settings
+First I like to add some extra fancy stuff to make orgmode more appealing when i'm using =+pretty= flag.
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-(setq org-superstar-headline-bullets-list '("●" "○"))
-(setq org-ellipsis "▼")
-(setq org-superstar-item-bullet-alist nil)
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
+                  org-ellipsis "▼"))
+#+END_SRC
 
-;; (after! org (setq org-priority-highest ?A
-;;                   org-priority-lowest ?E
-;;                   org-fancy-priorities-list
-;;                   '((?A . "[CRIT]")
-;;                     (?B . "[HIGH]")
-;;                     (?C . "[MID]")
-;;                     (?D . "[LOW]")
-;;                     (?E . "[OPTIONAL]"))))
-;; (after! org (setq org-priority-faces
-;;                   '((65 . error)
-;;                     (66 . warning)
-;;                     (67 . success))))
-;; (org-fancy-priorities-mode 0)
-#+END_SRC
-* Setting up my GTD Methodology
+Add a when condition that only adjust settings when certain features are enabled... This depends on where i'm running Emacs from (eg: Terminla, X11 or native).
 #+BEGIN_SRC emacs-lisp
-(load! "gtd.el")
-(setq org-directory "~/.org/")
-(use-package org-gtd
-  :defer
-  :config
-  (setq org-gtd-folder '"~/.org/gtd/")
-  (setq org-projects-folder '"~/.org/gtd/projects/")
-  (setq org-gtd-task-files '("next.org" "personal.org" "work.org" "coding.org" "evil-plans.org"))
-  (setq org-gtd-refile-properties '("CATEGORY")))
+(setq org-superstar-headline-bullets-list '("◉" "●" "○"))
+(setq org-superstar-item-bullet-alist nil)
 #+END_SRC
-* Adding additional search functions
+
+Adding additional search functions
 #+BEGIN_SRC emacs-lisp
 (defun zyro/rifle-roam ()
   "Rifle through your ROAM directory"
@@ -164,7 +142,8 @@ TODO re-add elisp to define extra priorities
       :prefix ("n" . "notes")
       :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
 #+END_SRC
-* Agenda Settings
+
+Setting up my initial agenda settings
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t
@@ -174,25 +153,26 @@ TODO re-add elisp to define extra priorities
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
-                  org-enforce-todo-checkbox-dependencies t
+                  org-enforce-todo-checkbox-dependencies nil
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
-(setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org"))))
 #+END_SRC
-* Clock Settings
+
+Adjusting clock settings
 #+BEGIN_SRC emacs-lisp
-(setq org-clock-continuously t)
+(after! org (setq org-clock-continuously t))
 #+END_SRC
-* Capture Templates
-REVIEW clean-up capture templates
+
+Here we setup the capture templates we want for ~org-capture~.
 #+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
+(after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
-         "* REFILE %(read-string \"Task: \")" :immediate-finish t)
+         "* REFILE %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED %U\n:END:")
         ("n" "Note" entry (file "~/.org/gtd/notes.org")
          "* NOTE %(read-string \"Note: \")")
         ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)")))
+         "%(call-interactively #'org-cliplink-capture)"))))
 #+END_SRC
 * Directory settings
 TODO add function to set image-width to *80%* of the window size.
@@ -235,6 +215,7 @@ TODO add the embed images code to this section
 | NEXT    | Is ready to be worked and should be worked on soon                            |
 
 #+BEGIN_SRC emacs-lisp
+
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "REVIEW(e)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
         (sequence "REFILE(r)" "SOMEDAY(s)" "|" "KILL(k)")
@@ -384,7 +365,7 @@ REVIEW should we define any additional tags?
 ** company mode
 #+BEGIN_SRC emacs-lisp
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam))
+  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
   (setq company-idle-delay 0.25))
 #+END_SRC
 ** Define Word
@@ -446,6 +427,19 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 #+END_SRC
 ** DEFT
+When this variable is set to ~t~ your deft directory will be updated to your projectile-project root's folder when switching projects, and the deft buffer's contents will be refreshed.
+#+BEGIN_SRC emacs-lisp
+(setq deft-use-projectile-projects t)
+(defun zyro/deft-update-directory ()
+  "Updates deft directory to current projectile's project root folder and updates the deft buffer."
+  (interactive)
+  (setq deft-directory (expand-file-name (doom-project-root))))
+(when deft-use-projectile-projects
+  (add-hook 'projectile-after-switch-project-hook 'zyro/deft-update-directory)
+  (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
+#+END_SRC
+
+Configuring DEFT default settings
 #+BEGIN_SRC emacs-lisp
 (load! "my-deft-title.el")
 (use-package deft
@@ -572,6 +566,28 @@ These are my default ROAM settings
 (setq org-roam-db-location "~/.emacs.d/roam.db")
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
+
+(setq org-roam-capture-templates
+        '(("a" "plain" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "${slug}"
+           :head "#+title: ${title}\n"
+           :unnarrowed t)
+          ("b" "business" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "business/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: ${tags}\n"
+           :unnarrowed t)
+          ("p" "programming" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "programming/${slug}"
+           :head "#+title: ${title}\n"
+           :unnarrowed t)
+          ("x" "private" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "private/${slug}"
+           :head "#+title: ${title}\n"
+           :unnarrowed t)))
 #+END_SRC
 ** ROAM Server
 #+BEGIN_SRC emacs-lisp
