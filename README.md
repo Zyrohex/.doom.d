@@ -1,50 +1,50 @@
 
 # Table of Contents
 
--   [New Changes](#org8917d37)
--   [Requirements](#orga4fae2e)
--   [User Information](#org18c69ea)
--   [Misc Settings](#org61ec283)
--   [Key Bindings](#org21dbf3d)
--   [Terminal Mode](#org632cecc)
--   [Default folder(s) and file(s)](#org06560ce)
--   [Setup Layout by Monitor Profile](#org901bb35)
--   [Org mode settings](#orgc7ba669)
--   [Directory settings](#org3a67c4d)
--   [Export Settings](#org6f249a8)
--   [Misc Org Mode settings](#org1d902b0)
--   [Keywords](#orgc23c3da)
--   [Logging and Drawers](#orgd8ad5ac)
--   [Properties](#org11d4b63)
--   [Publishing](#org75083cb)
--   [Refiling Defaults](#org8b4ba05)
--   [Orgmode Startup](#orgcfe8ab1)
--   [Org Protocol](#orga3c1100)
--   [Default Tags](#org55baf1f)
--   [Buffer Settings](#org5dcbfb5)
--   [Misc Settings](#org407cc92)
--   [Module Settings](#orgfbf82fa)
-    -   [company mode](#org95e1c50)
-    -   [Define Word](#org7d89ca1)
-    -   [Misc Modules [Bookmarks, PDF Tools]](#org1dfbf23)
-    -   [Graphs and Chart Modules](#org0c51fd2)
-    -   [Elfeed](#org3558444)
-    -   [DEFT](#org44ec4f4)
-    -   [Org-Rifle](#org7835959)
-    -   [Pandoc](#orgff8a251)
-    -   [ROAM](#org9d2a2f7)
-    -   [ROAM Server](#org312005d)
-    -   [ROAM Export Backlinks + Content](#orgde61eba)
-    -   [Reveal [HTML Presentations]](#org9ee6ccf)
-    -   [Super Agenda Settings](#org9b97b2b)
--   [Loading secrets](#org6d3fffa)
--   [Hacks](#orge69b493)
-    -   [Embed Images in HTML org-export](#org265a28e)
--   [Theme Settings](#org81bc341)
+-   [New Changes](#org81f1c95)
+-   [Requirements](#org9945a04)
+-   [User Information](#org6e9bef2)
+-   [Misc Settings](#org389f2c9)
+-   [Key Bindings](#orgb67a141)
+-   [Terminal Mode](#org4e512a9)
+-   [Default folder(s) and file(s)](#org78bb28f)
+-   [Setup Layout by Monitor Profile](#orgb837976)
+-   [Org mode settings](#org0830590)
+-   [Directory settings](#org1a123a3)
+-   [Export Settings](#orgbdd03f5)
+-   [Misc Org Mode settings](#orgd1abd11)
+-   [Keywords](#org005e7bb)
+-   [Logging and Drawers](#org7d2d7d9)
+-   [Properties](#orgbe2b183)
+-   [Publishing](#org6371379)
+-   [Refiling Defaults](#org210e684)
+-   [Orgmode Startup](#org43d3792)
+-   [Org Protocol](#orgd09e684)
+-   [Default Tags](#org4522f83)
+-   [Buffer Settings](#org8ac77dd)
+-   [Misc Settings](#org45f7a23)
+-   [Module Settings](#orgf5e9c0c)
+    -   [company mode](#org9950ef1)
+    -   [Define Word](#org8fcb522)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#org8c1fe50)
+    -   [Graphs and Chart Modules](#org0133e3d)
+    -   [Elfeed](#orgf0dcab0)
+    -   [DEFT](#orgcbcbd05)
+    -   [Org-Rifle](#orgce905cb)
+    -   [Pandoc](#org17bcf0b)
+    -   [ROAM](#org84087e3)
+    -   [ROAM Server](#org1602bc4)
+    -   [ROAM Export Backlinks + Content](#orgce990cb)
+    -   [Reveal [HTML Presentations]](#org7cbabcc)
+    -   [Super Agenda Settings](#orgf7607a0)
+-   [Loading secrets](#orgfc1b1dc)
+-   [Hacks](#orgbec297d)
+    -   [Embed Images in HTML org-export](#org9007588)
+-   [Theme Settings](#org33f89aa)
 
 
 
-<a id="org8917d37"></a>
+<a id="org81f1c95"></a>
 
 # New Changes
 
@@ -66,10 +66,10 @@
     3.  Configure your variable settings in Setting up my GTD Methodology
 4.  <span class="timestamp-wrapper"><span class="timestamp">[2020-08-26 Wed]</span></span>
     1.  Moved `roam-db-directory` to **.emacs.d** directory FIXME address syncthing permission issue
-    2.  Added **FiraCode** fonts (see [Requirements](#orga4fae2e))
+    2.  Added **FiraCode** fonts (see [Requirements](#org9945a04))
 
 
-<a id="orga4fae2e"></a>
+<a id="org9945a04"></a>
 
 # Requirements
 
@@ -79,7 +79,7 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2.  For fonts please download [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2) and [FiraCode](https://github.com/tonsky/FiraCode)
 
 
-<a id="org18c69ea"></a>
+<a id="org6e9bef2"></a>
 
 # User Information
 
@@ -89,7 +89,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="org61ec283"></a>
+<a id="org389f2c9"></a>
 
 # Misc Settings
 
@@ -99,7 +99,7 @@ Now we load some default settings for EMACS.
     (setq display-time-day-and-date t)
 
 
-<a id="org21dbf3d"></a>
+<a id="orgb67a141"></a>
 
 # Key Bindings
 
@@ -144,7 +144,7 @@ TODO remove un-used key-binds
           :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 
 
-<a id="org632cecc"></a>
+<a id="org4e512a9"></a>
 
 # Terminal Mode
 
@@ -157,7 +157,7 @@ Set a few settings if we detect terminal mode
        (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 
-<a id="org06560ce"></a>
+<a id="org78bb28f"></a>
 
 # Default folder(s) and file(s)
 
@@ -167,7 +167,7 @@ TODO add org-directory to this section
     (setq diary-file "~/.org/diary.org")
 
 
-<a id="org901bb35"></a>
+<a id="orgb837976"></a>
 
 # Setup Layout by Monitor Profile
 
@@ -190,7 +190,7 @@ TODO clean up function and simplify the process
           (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 
 
-<a id="orgc7ba669"></a>
+<a id="org0830590"></a>
 
 # Org mode settings
 
@@ -249,7 +249,7 @@ Here we setup the capture templates we want for `org-capture`.
              "%(call-interactively #'org-cliplink-capture)"))))
 
 
-<a id="org3a67c4d"></a>
+<a id="org1a123a3"></a>
 
 # Directory settings
 
@@ -260,7 +260,7 @@ TODO add function to set image-width to **80%** of the window size.
                       projectile-project-search-path '("~/projects/")))
 
 
-<a id="org6f249a8"></a>
+<a id="orgbdd03f5"></a>
 
 # Export Settings
 
@@ -281,7 +281,7 @@ TODO add the embed images code to this section
                       org-export-backends '(pdf ascii html latex odt md pandoc)))
 
 
-<a id="org1d902b0"></a>
+<a id="orgd1abd11"></a>
 
 # Misc Org Mode settings
 
@@ -289,7 +289,7 @@ TODO add the embed images code to this section
     (setq org-link-file-path-type 'relative)
 
 
-<a id="orgc23c3da"></a>
+<a id="org005e7bb"></a>
 
 # Keywords
 
@@ -359,7 +359,7 @@ TODO add the embed images code to this section
             (sequence "PROJ(p)" "|" "DONE(d)")))
 
 
-<a id="orgd8ad5ac"></a>
+<a id="org7d2d7d9"></a>
 
 # Logging and Drawers
 
@@ -376,7 +376,7 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="org11d4b63"></a>
+<a id="orgbe2b183"></a>
 
 # Properties
 
@@ -384,7 +384,7 @@ Next, we like to keep a history of our activity of a task so we **track** when c
           org-catch-invisible-edits 'error) ; Catch invisible edits
 
 
-<a id="org75083cb"></a>
+<a id="org6371379"></a>
 
 # Publishing
 
@@ -426,7 +426,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org8b4ba05"></a>
+<a id="org210e684"></a>
 
 # Refiling Defaults
 
@@ -439,7 +439,7 @@ TODO tweak refiling settings to match new GTD setup
                       org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="orgcfe8ab1"></a>
+<a id="org43d3792"></a>
 
 # Orgmode Startup
 
@@ -450,7 +450,7 @@ TODO tweak refiling settings to match new GTD setup
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="orga3c1100"></a>
+<a id="orgd09e684"></a>
 
 # Org Protocol
 
@@ -458,7 +458,7 @@ TODO tweak refiling settings to match new GTD setup
     (setq org-protocol-default-template-key "d")
 
 
-<a id="org55baf1f"></a>
+<a id="org4522f83"></a>
 
 # Default Tags
 
@@ -497,7 +497,7 @@ REVIEW should we define any additional tags?
                           ("#research")))
 
 
-<a id="org5dcbfb5"></a>
+<a id="org8ac77dd"></a>
 
 # Buffer Settings
 
@@ -514,7 +514,7 @@ REVIEW should we define any additional tags?
     (remove-hook! '(org-roam-mode-hook) #'zyro/remove-lines)
 
 
-<a id="org407cc92"></a>
+<a id="org45f7a23"></a>
 
 # Misc Settings
 
@@ -527,12 +527,12 @@ REVIEW should we define any additional tags?
      x-stretch-cursor t)
 
 
-<a id="orgfbf82fa"></a>
+<a id="orgf5e9c0c"></a>
 
 # Module Settings
 
 
-<a id="org95e1c50"></a>
+<a id="org9950ef1"></a>
 
 ## company mode
 
@@ -541,7 +541,7 @@ REVIEW should we define any additional tags?
       (setq company-idle-delay 0.25))
 
 
-<a id="org7d89ca1"></a>
+<a id="org8fcb522"></a>
 
 ## Define Word
 
@@ -553,7 +553,7 @@ REVIEW should we define any additional tags?
             :desc "Define word at point" "@" #'define-word-at-point))
 
 
-<a id="org1dfbf23"></a>
+<a id="org8c1fe50"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -563,7 +563,7 @@ Configuring PDF support and ORG-NOTER for note taking
     ;  :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org0c51fd2"></a>
+<a id="org0133e3d"></a>
 
 ## Graphs and Chart Modules
 
@@ -593,7 +593,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org3558444"></a>
+<a id="orgf0dcab0"></a>
 
 ## Elfeed
 
@@ -612,7 +612,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org44ec4f4"></a>
+<a id="orgcbcbd05"></a>
 
 ## DEFT
 
@@ -622,7 +622,8 @@ When this variable is set to `t` your deft directory will be updated to your pro
     (defun zyro/deft-update-directory ()
       "Updates deft directory to current projectile's project root folder and updates the deft buffer."
       (interactive)
-      (setq deft-directory (expand-file-name (doom-project-root))))
+      (if (projectile-project-p)
+          (setq deft-directory (expand-file-name (doom-project-root)))))
     (when deft-use-projectile-projects
       (add-hook 'projectile-after-switch-project-hook 'zyro/deft-update-directory)
       (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
@@ -647,7 +648,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org7835959"></a>
+<a id="orgce905cb"></a>
 
 ## Org-Rifle
 
@@ -746,14 +747,14 @@ Configuring DEFT default settings
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgff8a251"></a>
+<a id="org17bcf0b"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org9d2a2f7"></a>
+<a id="org84087e3"></a>
 
 ## ROAM
 
@@ -788,7 +789,7 @@ These are my default ROAM settings
                :unnarrowed t)))
 
 
-<a id="org312005d"></a>
+<a id="org1602bc4"></a>
 
 ## ROAM Server
 
@@ -806,7 +807,7 @@ These are my default ROAM settings
             org-roam-server-network-label-wrap-length 20))
 
 
-<a id="orgde61eba"></a>
+<a id="orgce990cb"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -839,7 +840,7 @@ These are my default ROAM settings
       (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org9ee6ccf"></a>
+<a id="org7cbabcc"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -848,7 +849,7 @@ These are my default ROAM settings
     (setq org-reveal-title-slide nil)
 
 
-<a id="org9b97b2b"></a>
+<a id="orgf7607a0"></a>
 
 ## Super Agenda Settings
 
@@ -882,7 +883,7 @@ These are my default ROAM settings
                       '((:auto-parent t)))))))))
 
 
-<a id="org6d3fffa"></a>
+<a id="orgfc1b1dc"></a>
 
 # Loading secrets
 
@@ -891,12 +892,12 @@ These are my default ROAM settings
       (load secrets)))
 
 
-<a id="orge69b493"></a>
+<a id="orgbec297d"></a>
 
 # Hacks
 
 
-<a id="org265a28e"></a>
+<a id="org9007588"></a>
 
 ## Embed Images in HTML org-export
 
@@ -915,7 +916,7 @@ These are my default ROAM settings
                 (file-name-nondirectory source))))
 
 
-<a id="org81bc341"></a>
+<a id="org33f89aa"></a>
 
 # Theme Settings
 
