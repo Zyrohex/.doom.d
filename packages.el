@@ -9,7 +9,7 @@
 (package! org-web-tools)
 ;; Themes
 (package! chocolate-theme)
-(package! gruvbox-theme)
+(package! doom-themes :pin "d6ee47d")
 ;; Orgmode Packages
 (package! org-analyzer)
 (package! org-edna)
