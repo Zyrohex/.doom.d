@@ -125,8 +125,9 @@ First I like to add some extra fancy stuff to make orgmode more appealing when i
 
 Add a when condition that only adjust settings when certain features are enabled... This depends on where i'm running Emacs from (eg: Terminla, X11 or native).
 #+BEGIN_SRC emacs-lisp
-(setq org-superstar-headline-bullets-list '("◉" "●" "○"))
-(setq org-superstar-item-bullet-alist nil)
+(when (require 'org-superstar nil 'noerror)
+  (setq org-superstar-headline-bullets-list '("◉" "●" "○")
+        org-superstar-item-bullet-alist nil))
 #+END_SRC
 
 Adding additional search functions

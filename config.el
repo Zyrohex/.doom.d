@@ -69,8 +69,9 @@
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
                   org-ellipsis "▼"))
 
-(setq org-superstar-headline-bullets-list '("◉" "●" "○"))
-(setq org-superstar-item-bullet-alist nil)
+(when (require 'org-superstar nil 'noerror)
+  (setq org-superstar-headline-bullets-list '("◉" "●" "○")
+        org-superstar-item-bullet-alist nil))
 
 (defun zyro/rifle-roam ()
   "Rifle through your ROAM directory"
