@@ -3,4 +3,4 @@
 # key: HTML SOLARIZED
 # --
 #+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomasf.github.io/solarized-css/org-info.min.js
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://thomasf.github.io/solarized-css/solarized-light.min.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://codepen.io/nmartin84/pen/vYGyzRz.css" />
