@@ -18,7 +18,7 @@
 3. [2020-07-22 Wed]
    a. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
    b. Moved GTD Module to [[file:gtd.el]]
-   c. Configure your variable settings in [[Setting up my GTD Methodology]]
+   c. Configure your variable settings in Setting up my GTD Methodology
 4. [2020-08-26 Wed]
    a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
    b. Added *FiraCode* fonts (see [[Requirements]])
