@@ -300,7 +300,8 @@
 (defun zyro/deft-update-directory ()
   "Updates deft directory to current projectile's project root folder and updates the deft buffer."
   (interactive)
-  (setq deft-directory (expand-file-name (doom-project-root))))
+  (if (projectile-project-p)
+      (setq deft-directory (expand-file-name (doom-project-root)))))
 (when deft-use-projectile-projects
   (add-hook 'projectile-after-switch-project-hook 'zyro/deft-update-directory)
   (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
