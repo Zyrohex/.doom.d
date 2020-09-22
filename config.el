@@ -49,11 +49,11 @@
 (setq diary-file "~/.org/diary.org")
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Fira Code" :size 16)
-      doom-big-font (font-spec :family "Fira Code" :size 20)))
+  (setq doom-font (font-spec :family "Fira Code" :size 18)
+        doom-big-font (font-spec :family "Fira Code" :size 26)))
 (when (equal system-type 'windows-nt)
-  (setq doom-font (font-spec :family "InputMono" :size 16)
-        doom-big-font (font-spec :family "InputMono" :size 20)))
+  (setq doom-font (font-spec :family "InputMono" :size 18)
+        doom-big-font (font-spec :family "InputMono" :size 22)))
 (defun zyro/monitor-width-profile-setup ()
   "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
   (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
@@ -70,7 +70,7 @@
                   org-ellipsis "▼"))
 
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("◉" "●" "○")
+  (setq org-superstar-headline-bullets-list '("∴")
         org-superstar-item-bullet-alist nil))
 
 (defun zyro/rifle-roam ()
@@ -101,11 +101,13 @@
 
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
-         "* REFILE %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED %U\n:END:")
-        ("n" "Note" entry (file "~/.org/gtd/notes.org")
-         "* NOTE %(read-string \"Note: \")")
-        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)"))))
+         "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
+        ("p" "New Project" plain (file nick/org-capture-file-picker)
+         (file "~/.doom.d/templates/template-projects.org"))
+        ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
+         (file "~/.doom.d/templates/ledger-scheduled.org"))
+        ("l" "Ledger Transaction" plain (file "~/.org/gtd/finances.ledger")
+         "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
 
 (after! org (setq org-image-actual-width nil
                   org-archive-location "~/.org/gtd/archives.org::datetree"
@@ -129,9 +131,7 @@
 (setq org-link-file-path-type 'relative)
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "REVIEW(e)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
-        (sequence "REFILE(r)" "SOMEDAY(s)" "|" "KILL(k)")
-        (sequence "PROJ(p)" "|" "DONE(d)")))
+      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 
 (after! org (setq org-log-state-notes-insert-after-drawers nil))
 
@@ -158,18 +158,19 @@
                      :recursive t
                      :publishing-function org-org-publish-to-org)
                     ("notes"
-                     :base-directory "~/.org/notes/elisp/"
-                     :publishing-directory "~/publish_html"
+                     :base-directory "~/.org/notes/"
+                     :publishing-directory "~/nmartin84.github.io"
                      :section-numbers nil
                      :base-extension "org"
                      :with-properties nil
                      :with-drawers (not "LOGBOOK")
                      :with-timestamps active
                      :recursive t
+                     :exclude "journal/.*"
                      :auto-sitemap t
-                     :sitemap-filename "sitemap.html"
+                     :sitemap-filename "index.html"
                      :publishing-function org-html-publish-to-html
-                     :html-head "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\"/>"
+                     :html-head "<link rel=\"stylesheet\" href=\"https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css\" type=\"text/css\"/>"
 ;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
 ;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
                      :html-link-up "../"
@@ -420,32 +421,57 @@
 
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
-(setq org-roam-directory "~/.org/notes/")
-(setq org-roam-tag-sources '(prop all-directories))
-(setq org-roam-db-location "~/.emacs.d/roam.db")
+(setq org-roam-tag-sources '(prop last-directory))
+(setq org-roam-db-location "~/.org/roam.db")
+(setq org-roam-directory "~/.org/")
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
 
+(setq org-roam-dailies-capture-templates
+   '(("d" "daily" plain (function org-roam-capture--get-point) ""
+      :immediate-finish t
+      :file-name "journal/%<%Y-%m-%d-%a>"
+      :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+
 (setq org-roam-capture-templates
-        '(("a" "plain" plain (function org-roam--capture-get-point)
+        '(("b" "book" plain (function org-roam-capture--get-point)
+           :file-name "book/${slug}%<%Y%m%d%H%M>"
+           :head "#+TITLE: ${slug}\n#+roam_tags: %^{tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
            "%?"
-           :file-name "${slug}"
-           :head "#+title: ${title}\n"
            :unnarrowed t)
-          ("b" "business" plain (function org-roam--capture-get-point)
+          ("c" "curiousity" plain (function org-roam-capture--get-point)
+           :file-name "curious/${slug}"
+           :head "#+TITLE: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
            "%?"
-           :file-name "business/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: ${tags}\n"
            :unnarrowed t)
-          ("p" "programming" plain (function org-roam-capture--get-point)
+          ("d" "digest" plain (function org-roam-capture--get-point)
            "%?"
-           :file-name "programming/${slug}"
-           :head "#+title: ${title}\n"
+           :file-name "digest/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
            :unnarrowed t)
-          ("x" "private" plain (function org-roam-capture--get-point)
+          ("f" "fleeting" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "fleeting/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
+           :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private/${slug}"
            :head "#+title: ${title}\n"
+           :unnarrowed t)
+          ("x" "programming" plain (function org-roam-capture--get-point)
+           :file-name "%<%Y%m%d%H%M%S-${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{tags}\n- source :: [[%^{link}][%^{description}]] \\\n- metadata :: %?\n\n* Notes\n\n* Follow-up Actions"
+           :unnarrowed t)
+          ("r" "research" entry (function org-roam--capture-get-point)
+           (file "~/.doom.d/templates/org-roam-research.org")
+           :file-name "research/${slug}"
+           "%?"
+           :unnarrowed t)
+          ("t" "technical" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "technical/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
            :unnarrowed t)))
 
 (use-package org-roam-server
@@ -461,33 +487,33 @@
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
- (defun my/org-roam--backlinks-list-with-content (file)
-   (with-temp-buffer
-     (if-let* ((backlinks (org-roam--get-backlinks file))
-               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-         (progn
-           (insert (format "\n\n* %d Backlinks\n"
-                           (length backlinks)))
-           (dolist (group grouped-backlinks)
-             (let ((file-from (car group))
-                   (bls (cdr group)))
-               (insert (format "** [[file:%s][%s]]\n"
-                               file-from
-                               (org-roam--get-title-or-slug file-from)))
-               (dolist (backlink bls)
-                 (pcase-let ((`(,file-from _ ,props) backlink))
-                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                   (insert "\n\n")))))))
-     (buffer-string)))
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          (insert (format "\n\n* %d Backlinks\n"
+                          (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "** [[file:%s][%s]]\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
 
-   (defun my/org-export-preprocessor (backend)
-     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-       (unless (string= links "")
-         (save-excursion
-           (goto-char (point-max))
-           (insert (concat "\n* Backlinks\n") links)))))
+(defun my/org-export-preprocessor (backend)
+  (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+    (unless (string= links "")
+      (save-excursion
+        (goto-char (point-max))
+        (insert (concat "\n* Backlinks\n") links)))))
 
-   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+(add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
@@ -496,29 +522,35 @@
 (org-super-agenda-mode t)
 
 (setq org-agenda-custom-commands
-      '(("w" "Master Agenda"
+      '(("g" "Getting Things Done(gtd)"
          ((agenda ""
                   ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
-                   (org-agenda-time-grid nil)
+                   (org-agenda-overriding-header "Agenda")
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
-          (todo "NEXT"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "TODO"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "PROJ"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "REVIEW"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "HOLD"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))))
+          (tags-todo "-project/NEXT"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "Next")))
+          (tags-todo "-project/TODO"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "Inbox")))
+          (tags-todo "-project/HOLD"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "On Hold")))
+          (tags-todo "project/TODO|NEXT|HOLD"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "Projects")))))
+        ("l" "The List"
+         ((todo ""
+                ((org-agenda-files (list "~/.org/gtd/thelist.org"))
+                 (org-super-agenda-groups '((:auto-tags t)))))))
         ("i" "Inbox"
-         ((todo "REFILE|REVIEW"
-                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+         ((todo "TODO|HOLD"
+                ((org-agenda-files (list "~/.org/gtd/inbox.org"))
                  (org-super-agenda-groups '((:auto-ts t)))))))
         ("x" "Someday"
-         ((todo "SOMEDAY"
-                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+         ((todo ""
+                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/incubate.org")))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 
@@ -539,6 +571,21 @@
                (insert-file-contents-literally source)
               (buffer-string)))
             (file-name-nondirectory source))))
+
+(defun +nick/org-insert-timestamp ()
+  "Insert active timestamp at POS."
+  (interactive)
+  (insert (format "<%s> " (format-time-string "%Y-%m-%d %H:%M:%p"))))
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :prefix ("j" . "nicks functions")
+      :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
+
+(defun nick/org-capture-file-picker ()
+  "Select a file from the PROJECTS folder and return file-name."
+  (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
+    (expand-file-name (format "%s" file))))
 
 (after! org (zyro/monitor-width-profile-setup)
   (toggle-frame-fullscreen)
