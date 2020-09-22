@@ -9,13 +9,14 @@
 (package! org-web-tools)
 ;; Themes
 (package! chocolate-theme)
-(package! doom-themes :pin "d6ee47d")
+(unpin! doom-themes)
 ;; Orgmode Packages
 (package! org-analyzer)
 (package! org-edna)
 (package! literate-calc-mode)
 ;; Python
 ;; Misc Packages
+(package! ob-ipython)
 (package! define-word)
 (package! elfeed)
 (package! elfeed-org)
