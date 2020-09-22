@@ -221,16 +221,14 @@ TODO add the embed images code to this section
 (setq org-link-file-path-type 'relative)
 #+END_SRC
 * Keywords
-| Keyword | Description                                                                    |
-|---------+--------------------------------------------------------------------------------|
-| REFILE  | Task is captured to inbox and ready to be reviewed determine next steps.       |
-| SOMEDAY | Task that needs to be completed eventually, but not immediatley.               |
-| \TODO   | Task has actionable items defined and ready to be worked.                      |
-| PROJ    | Larger task item that has multiple tasks items.                                |
-| HOLD    | Has actionable items, but is on hold due to various reasons.                   |
-| REVIEW  | Task item which needs to be completed, but action items need to be re-defined. |
-| NEXT    | Is ready to be worked and should be worked on soon.                            |
-| REFR    | You need to make reference to something, but it's nothing to be actioned.      |
+After much feedback and discussing with other users, I decided to simplify the keyword list to make it simple. Defining a project will now focus on the tag word *:project:* so that all child task are treated as part of the project.
+| Keyword | Description                                                  |
+|---------+--------------------------------------------------------------|
+| \TODO   | Task has actionable items defined and ready to be worked.    |
+| HOLD    | Has actionable items, but is on hold due to various reasons. |
+| NEXT    | Is ready to be worked and should be worked on soon.          |
+| DONE    | Task is completed and closed.                                |
+| KILL    | Abandoned or terminated.                                     |
 
 #+BEGIN_SRC emacs-lisp
 
