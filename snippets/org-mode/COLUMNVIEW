@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: COLUMNVIEW
-# key: COLUMNVIEW
+# key: COLUMNVIEW                                                                                   
 # --
-#+BEGIN: columnview :maxlevel $1 :hlines $2 :id global :format "%20TODO(Status) %20ITEM(Title)"
+#+BEGIN: columnview :maxlevel $1 :hlines $2 :id `(ivy-completing-read "Select: " '("global" "local"))` :format "$3"
 #+END:
