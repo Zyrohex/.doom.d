@@ -1,6 +1,6 @@
-#+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomasf.github.io/solarized-css/org-info.min.js
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://codepen.io/nmartin84/pen/vYGyzRz.css" />
 #+EXPORT_FILE_NAME: README
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css" />
+#+OPTIONS: toc:2 html-scripts:nil num:nil html-postamble:nil html-style:nil ^:nil
 
 * New Changes
 1. [2020-06-02 Tue]
@@ -26,6 +26,8 @@
 These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
 2. For fonts please download [[https://input.fontbureau.com/download/][Input]], [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]] and [[https://github.com/tonsky/FiraCode][FiraCode]]
+* Default Settings
+In this section we are going to cover all the basics, and then tangle the results into =config.el=
 * User Information
 Environment settings, which are specific to the user and system. First up are user settings.
 #+BEGIN_SRC emacs-lisp
@@ -99,11 +101,11 @@ TODO add org-directory to this section
 TODO clean up function and simplify the process
 #+BEGIN_SRC emacs-lisp
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Fira Code" :size 16)
-      doom-big-font (font-spec :family "Fira Code" :size 20)))
+  (setq doom-font (font-spec :family "Fira Code" :size 18)
+        doom-big-font (font-spec :family "Fira Code" :size 26)))
 (when (equal system-type 'windows-nt)
-  (setq doom-font (font-spec :family "InputMono" :size 16)
-        doom-big-font (font-spec :family "InputMono" :size 20)))
+  (setq doom-font (font-spec :family "InputMono" :size 18)
+        doom-big-font (font-spec :family "InputMono" :size 22)))
 (defun zyro/monitor-width-profile-setup ()
   "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
   (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
@@ -123,12 +125,16 @@ First I like to add some extra fancy stuff to make orgmode more appealing when i
                   org-ellipsis "▼"))
 #+END_SRC
 
+Other options for ellipsis "▼, ↴, ⬎, ⤷,…, and ⋱."
+
 Add a when condition that only adjust settings when certain features are enabled... This depends on where i'm running Emacs from (eg: Terminla, X11 or native).
 #+BEGIN_SRC emacs-lisp
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("◉" "●" "○")
+  (setq org-superstar-headline-bullets-list '("∴")
         org-superstar-item-bullet-alist nil))
 #+END_SRC
+
+Extra options for headline-bullets-list: "◉" "●" "○"
 
 Adding additional search functions
 #+BEGIN_SRC emacs-lisp
@@ -159,22 +165,32 @@ Setting up my initial agenda settings
                   org-habit-show-habits t))
 (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org"))))
 #+END_SRC
-
 Adjusting clock settings
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-clock-continuously t))
 #+END_SRC
 
-Here we setup the capture templates we want for ~org-capture~.
+** Capture Templates
+Here we setup the capture templates we want for ~org-capture~. I use a file template that's pre-filled out with my monthly scheduled transactions.
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
-         "* REFILE %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED %U\n:END:")
-        ("n" "Note" entry (file "~/.org/gtd/notes.org")
-         "* NOTE %(read-string \"Note: \")")
-        ("a" "Article" plain (file+headline (concat (doom-project-root) "articles.org") "Inbox")
-         "%(call-interactively #'org-cliplink-capture)"))))
+         "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
+        ("p" "New Project" plain (file nick/org-capture-file-picker)
+         (file "~/.doom.d/templates/template-projects.org"))
+        ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
+         (file "~/.doom.d/templates/ledger-scheduled.org"))
+        ("l" "Ledger Transaction" plain (file "~/.org/gtd/finances.ledger")
+         "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
 #+END_SRC
+
+Example ledger template file:
+#+BEGIN_EXAMPLE
+%(format-time-string "%Y/%m")/24 * Transaction name
+    Income:Checking                           -dollar amount
+    Expenses:Insurance                         dollar amount
+#+END_EXAMPLE
+
 * Directory settings
 TODO add function to set image-width to *80%* of the window size.
 #+BEGIN_SRC emacs-lisp
@@ -205,22 +221,21 @@ TODO add the embed images code to this section
 (setq org-link-file-path-type 'relative)
 #+END_SRC
 * Keywords
-| Keyword | Description                                                                   |
-|---------+-------------------------------------------------------------------------------|
-| REFILE  | Task is captured to inbox and ready to be reviewed determine next steps       |
-| SOMEDAY | Task that needs to be completed eventually, but not immediatley               |
-| \TODO   | Task has actionable items defined and ready to be worked                      |
-| PROJ    | Larger task item that has multiple tasks items                                |
-| HOLD    | Has actionable items, but is on hold due to various reasons                   |
-| REVIEW  | Task item which needs to be completed, but action items need to be re-defined |
-| NEXT    | Is ready to be worked and should be worked on soon                            |
+| Keyword | Description                                                                    |
+|---------+--------------------------------------------------------------------------------|
+| REFILE  | Task is captured to inbox and ready to be reviewed determine next steps.       |
+| SOMEDAY | Task that needs to be completed eventually, but not immediatley.               |
+| \TODO   | Task has actionable items defined and ready to be worked.                      |
+| PROJ    | Larger task item that has multiple tasks items.                                |
+| HOLD    | Has actionable items, but is on hold due to various reasons.                   |
+| REVIEW  | Task item which needs to be completed, but action items need to be re-defined. |
+| NEXT    | Is ready to be worked and should be worked on soon.                            |
+| REFR    | You need to make reference to something, but it's nothing to be actioned.      |
 
 #+BEGIN_SRC emacs-lisp
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "REVIEW(e)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")
-        (sequence "REFILE(r)" "SOMEDAY(s)" "|" "KILL(k)")
-        (sequence "PROJ(p)" "|" "DONE(d)")))
+      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 #+END_SRC
 * Logging and Drawers
 For the logging drawers, we like to keep our notes and clock history *seperate* from our properties drawer...
@@ -259,18 +274,19 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                      :recursive t
                      :publishing-function org-org-publish-to-org)
                     ("notes"
-                     :base-directory "~/.org/notes/elisp/"
-                     :publishing-directory "~/publish_html"
+                     :base-directory "~/.org/notes/"
+                     :publishing-directory "~/nmartin84.github.io"
                      :section-numbers nil
                      :base-extension "org"
                      :with-properties nil
                      :with-drawers (not "LOGBOOK")
                      :with-timestamps active
                      :recursive t
+                     :exclude "journal/.*"
                      :auto-sitemap t
-                     :sitemap-filename "sitemap.html"
+                     :sitemap-filename "index.html"
                      :publishing-function org-html-publish-to-html
-                     :html-head "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\"/>"
+                     :html-head "<link rel=\"stylesheet\" href=\"https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css\" type=\"text/css\"/>"
 ;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
 ;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
                      :html-link-up "../"
@@ -563,32 +579,57 @@ Configuring DEFT default settings
 ** ROAM
 These are my default ROAM settings
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory "~/.org/notes/")
-(setq org-roam-tag-sources '(prop all-directories))
-(setq org-roam-db-location "~/.emacs.d/roam.db")
+(setq org-roam-tag-sources '(prop last-directory))
+(setq org-roam-db-location "~/.org/roam.db")
+(setq org-roam-directory "~/.org/")
 (add-to-list 'safe-local-variable-values
 '(org-roam-directory . "."))
 
+(setq org-roam-dailies-capture-templates
+   '(("d" "daily" plain (function org-roam-capture--get-point) ""
+      :immediate-finish t
+      :file-name "journal/%<%Y-%m-%d-%a>"
+      :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+
 (setq org-roam-capture-templates
-        '(("a" "plain" plain (function org-roam--capture-get-point)
+        '(("b" "book" plain (function org-roam-capture--get-point)
+           :file-name "book/${slug}%<%Y%m%d%H%M>"
+           :head "#+TITLE: ${slug}\n#+roam_tags: %^{tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
            "%?"
-           :file-name "${slug}"
-           :head "#+title: ${title}\n"
            :unnarrowed t)
-          ("b" "business" plain (function org-roam--capture-get-point)
+          ("c" "curiousity" plain (function org-roam-capture--get-point)
+           :file-name "curious/${slug}"
+           :head "#+TITLE: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
            "%?"
-           :file-name "business/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: ${tags}\n"
            :unnarrowed t)
-          ("p" "programming" plain (function org-roam-capture--get-point)
+          ("d" "digest" plain (function org-roam-capture--get-point)
            "%?"
-           :file-name "programming/${slug}"
-           :head "#+title: ${title}\n"
+           :file-name "digest/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
            :unnarrowed t)
-          ("x" "private" plain (function org-roam-capture--get-point)
+          ("f" "fleeting" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "fleeting/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
+           :unnarrowed t)
+          ("p" "private" plain (function org-roam-capture--get-point)
            "%?"
            :file-name "private/${slug}"
            :head "#+title: ${title}\n"
+           :unnarrowed t)
+          ("x" "programming" plain (function org-roam-capture--get-point)
+           :file-name "%<%Y%m%d%H%M%S-${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{tags}\n- source :: [[%^{link}][%^{description}]] \\\n- metadata :: %?\n\n* Notes\n\n* Follow-up Actions"
+           :unnarrowed t)
+          ("r" "research" entry (function org-roam--capture-get-point)
+           (file "~/.doom.d/templates/org-roam-research.org")
+           :file-name "research/${slug}"
+           "%?"
+           :unnarrowed t)
+          ("t" "technical" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "technical/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
            :unnarrowed t)))
 #+END_SRC
 ** ROAM Server
@@ -608,33 +649,33 @@ These are my default ROAM settings
 #+END_SRC
 ** ROAM Export Backlinks + Content
 #+BEGIN_SRC emacs-lisp
- (defun my/org-roam--backlinks-list-with-content (file)
-   (with-temp-buffer
-     (if-let* ((backlinks (org-roam--get-backlinks file))
-               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-         (progn
-           (insert (format "\n\n* %d Backlinks\n"
-                           (length backlinks)))
-           (dolist (group grouped-backlinks)
-             (let ((file-from (car group))
-                   (bls (cdr group)))
-               (insert (format "** [[file:%s][%s]]\n"
-                               file-from
-                               (org-roam--get-title-or-slug file-from)))
-               (dolist (backlink bls)
-                 (pcase-let ((`(,file-from _ ,props) backlink))
-                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                   (insert "\n\n")))))))
-     (buffer-string)))
+(defun my/org-roam--backlinks-list-with-content (file)
+  (with-temp-buffer
+    (if-let* ((backlinks (org-roam--get-backlinks file))
+              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+        (progn
+          (insert (format "\n\n* %d Backlinks\n"
+                          (length backlinks)))
+          (dolist (group grouped-backlinks)
+            (let ((file-from (car group))
+                  (bls (cdr group)))
+              (insert (format "** [[file:%s][%s]]\n"
+                              file-from
+                              (org-roam--get-title-or-slug file-from)))
+              (dolist (backlink bls)
+                (pcase-let ((`(,file-from _ ,props) backlink))
+                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                  (insert "\n\n")))))))
+    (buffer-string)))
 
-   (defun my/org-export-preprocessor (backend)
-     (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-       (unless (string= links "")
-         (save-excursion
-           (goto-char (point-max))
-           (insert (concat "\n* Backlinks\n") links)))))
+(defun my/org-export-preprocessor (backend)
+  (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+    (unless (string= links "")
+      (save-excursion
+        (goto-char (point-max))
+        (insert (concat "\n* Backlinks\n") links)))))
 
-   (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+(add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 #+END_SRC
 ** Reveal [HTML Presentations]
 #+BEGIN_SRC emacs-lisp
@@ -647,29 +688,35 @@ These are my default ROAM settings
 (org-super-agenda-mode t)
 
 (setq org-agenda-custom-commands
-      '(("w" "Master Agenda"
+      '(("g" "Getting Things Done(gtd)"
          ((agenda ""
                   ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
-                   (org-agenda-time-grid nil)
+                   (org-agenda-overriding-header "Agenda")
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
-          (todo "NEXT"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "TODO"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "PROJ"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "REVIEW"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))
-          (todo "HOLD"
-                ((org-agenda-files (list "~/.org/gtd/next.org"))))))
+          (tags-todo "-project/NEXT"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "Next")))
+          (tags-todo "-project/TODO"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "Inbox")))
+          (tags-todo "-project/HOLD"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "On Hold")))
+          (tags-todo "project/TODO|NEXT|HOLD"
+                     ((org-agenda-files (list "~/.org/gtd/next.org"))
+                      (org-agenda-overriding-header "Projects")))))
+        ("l" "The List"
+         ((todo ""
+                ((org-agenda-files (list "~/.org/gtd/thelist.org"))
+                 (org-super-agenda-groups '((:auto-tags t)))))))
         ("i" "Inbox"
-         ((todo "REFILE|REVIEW"
-                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+         ((todo "TODO|HOLD"
+                ((org-agenda-files (list "~/.org/gtd/inbox.org"))
                  (org-super-agenda-groups '((:auto-ts t)))))))
         ("x" "Someday"
-         ((todo "SOMEDAY"
-                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+         ((todo ""
+                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/incubate.org")))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 #+END_SRC
@@ -695,6 +742,28 @@ These are my default ROAM settings
                (insert-file-contents-literally source)
               (buffer-string)))
             (file-name-nondirectory source))))
+#+END_SRC
+* Custom Functions
+Ideas for functions I need:
+- [ ] Clarify task function
+** Time Stamps
+#+BEGIN_SRC emacs-lisp
+(defun +nick/org-insert-timestamp ()
+  "Insert active timestamp at POS."
+  (interactive)
+  (insert (format "<%s> " (format-time-string "%Y-%m-%d %H:%M:%p"))))
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :prefix ("j" . "nicks functions")
+      :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
+#+END_SRC
+** Capture Template File Picker
+#+BEGIN_SRC emacs-lisp
+(defun nick/org-capture-file-picker ()
+  "Select a file from the PROJECTS folder and return file-name."
+  (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
+    (expand-file-name (format "%s" file))))
 #+END_SRC
 * Theme Settings
 #+BEGIN_SRC emacs-lisp
