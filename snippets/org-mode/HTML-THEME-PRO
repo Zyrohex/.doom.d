@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: HTML-THEME_PRO
+# key: HTML-THEME_PRO                                     
+# --
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css" />
+#+OPTIONS: toc:2 html-scripts:nil num:nil html-postamble:nil html-style:nil ^:nil
