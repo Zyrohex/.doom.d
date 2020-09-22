@@ -1,0 +1,5 @@
+#+TITLE: %^{Title}
+
+* Resources
+* Notes
+* Action Items
