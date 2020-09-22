@@ -171,7 +171,7 @@ Adjusting clock settings
 #+END_SRC
 
 ** Capture Templates
-Here we setup the capture templates we want for ~org-capture~. I use a file template that's pre-filled out with my monthly scheduled transactions.
+Here we setup the capture templates we want for ~org-capture~. I use a file template that's pre-filled with my monthly scheduled transactions.
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
@@ -184,7 +184,7 @@ Here we setup the capture templates we want for ~org-capture~. I use a file temp
          "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
 #+END_SRC
 
-Example ledger template file:
+Example ledger template file: = ~/.doom.d/templates/ledger-scheduled.org~
 #+BEGIN_EXAMPLE
 %(format-time-string "%Y/%m")/24 * Transaction name
     Income:Checking                           -dollar amount
