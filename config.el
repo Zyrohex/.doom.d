@@ -16,8 +16,6 @@
       :desc "Move down window" "<down>" #'evil-window-down
       :desc "Move left window" "<left>" #'evil-window-left
       :desc "Move right window" "<right>" #'evil-window-right
-      :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
-      :desc "Find and Narrow" "^" #'+org-find-headline-narrow
       :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
       :prefix ("s" . "+search")
       :desc "Counsel Narrow" "n" #'counsel-narrow
@@ -102,7 +100,7 @@
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("p" "New Project" plain (file nick/org-capture-file-picker)
+        ("p" "New Project" plain (file +nick/org-capture-file-picker)
          (file "~/.doom.d/templates/template-projects.org"))
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -126,6 +124,20 @@
                   org-export-with-properties nil
                   org-export-with-smart-quotes t
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
+
+(defun replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+(defun org-html--format-image (source attributes info)
+  (progn
+    (setq source (replace-in-string "%20" " " source))
+    (format "<img src=\"data:image/%s;base64,%s\"%s />"
+            (or (file-name-extension source) "")
+            (base64-encode-string
+             (with-temp-buffer
+               (insert-file-contents-literally source)
+              (buffer-string)))
+            (file-name-nondirectory source))))
 
 (require 'org-id)
 (setq org-link-file-path-type 'relative)
@@ -566,20 +578,6 @@
 (when (file-exists-p secrets)
   (load secrets)))
 
-(defun replace-in-string (what with in)
-  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
-
-(defun org-html--format-image (source attributes info)
-  (progn
-    (setq source (replace-in-string "%20" " " source))
-    (format "<img src=\"data:image/%s;base64,%s\"%s />"
-            (or (file-name-extension source) "")
-            (base64-encode-string
-             (with-temp-buffer
-               (insert-file-contents-literally source)
-              (buffer-string)))
-            (file-name-nondirectory source))))
-
 (load! "customs.el")
 
 (defun +nick/org-insert-timestamp ()
@@ -592,7 +590,7 @@
       :prefix ("j" . "nicks functions")
       :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
 
-(defun nick/org-capture-file-picker ()
+(defun +nick/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))

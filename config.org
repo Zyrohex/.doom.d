@@ -44,7 +44,6 @@ Now we load some default settings for EMACS.
 #+END_SRC
 * Key Bindings
 From here we load some extra key bindings that I use often
-TODO add org-agenda-mode-map key-binds for org-clock-convenience
 TODO remove un-used key-binds
 #+BEGIN_SRC emacs-lisp
 (bind-key "<f6>" #'link-hint-copy-link)
@@ -59,8 +58,6 @@ TODO remove un-used key-binds
       :desc "Move down window" "<down>" #'evil-window-down
       :desc "Move left window" "<left>" #'evil-window-left
       :desc "Move right window" "<right>" #'evil-window-right
-      :desc "Toggle Narrowing" "!" #'org-toggle-narrow-to-subtree
-      :desc "Find and Narrow" "^" #'+org-find-headline-narrow
       :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
       :prefix ("s" . "+search")
       :desc "Counsel Narrow" "n" #'counsel-narrow
@@ -172,12 +169,12 @@ Adjusting clock settings
 #+END_SRC
 
 ** Capture Templates
-Here we setup the capture templates we want for ~org-capture~. I use a file template that's pre-filled with my monthly scheduled transactions.
+Here we setup the capture templates we want for ~org-capture~. I use a file template that's pre-filled with my monthly scheduled transactions. (TODO: Add default file-template for new projects.)
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("p" "New Project" plain (file nick/org-capture-file-picker)
+        ("p" "New Project" plain (file +nick/org-capture-file-picker)
          (file "~/.doom.d/templates/template-projects.org"))
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -200,7 +197,6 @@ TODO add function to set image-width to *80%* of the window size.
                   projectile-project-search-path '("~/projects/")))
 #+END_SRC
 * Export Settings
-TODO add the embed images code to this section
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -215,6 +211,23 @@ TODO add the embed images code to this section
                   org-export-with-properties nil
                   org-export-with-smart-quotes t
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
+#+END_SRC
+
+Embed images into the exported HTML files.
+#+BEGIN_SRC emacs-lisp
+(defun replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+(defun org-html--format-image (source attributes info)
+  (progn
+    (setq source (replace-in-string "%20" " " source))
+    (format "<img src=\"data:image/%s;base64,%s\"%s />"
+            (or (file-name-extension source) "")
+            (base64-encode-string
+             (with-temp-buffer
+               (insert-file-contents-literally source)
+              (buffer-string)))
+            (file-name-nondirectory source))))
 #+END_SRC
 * Misc Org Mode settings
 #+BEGIN_SRC emacs-lisp
@@ -734,22 +747,6 @@ These are my default ROAM settings
   (load secrets)))
 #+END_SRC
 * Hacks
-** Embed Images in HTML org-export
-#+BEGIN_SRC emacs-lisp
-(defun replace-in-string (what with in)
-  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
-
-(defun org-html--format-image (source attributes info)
-  (progn
-    (setq source (replace-in-string "%20" " " source))
-    (format "<img src=\"data:image/%s;base64,%s\"%s />"
-            (or (file-name-extension source) "")
-            (base64-encode-string
-             (with-temp-buffer
-               (insert-file-contents-literally source)
-              (buffer-string)))
-            (file-name-nondirectory source))))
-#+END_SRC
 * Custom Functions
 Ideas for functions I need:
 - [ ] Clarify task function
@@ -770,11 +767,12 @@ Ideas for functions I need:
 #+END_SRC
 ** Capture Template File Picker
 #+BEGIN_SRC emacs-lisp
-(defun nick/org-capture-file-picker ()
+(defun +nick/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))
 #+END_SRC
+** TODO Search file headlines and send tree to indirect buffer
 * Theme Settings
 #+BEGIN_SRC emacs-lisp
 (after! org (zyro/monitor-width-profile-setup)
