@@ -460,7 +460,7 @@
            :head "#+title: ${title}\n"
            :unnarrowed t)
           ("x" "programming" plain (function org-roam-capture--get-point)
-           :file-name "%<%Y%m%d%H%M%S-${slug}"
+           :file-name "%<%Y%m%d%H%M%S>-${slug}"
            :head "#+title: ${title}\n#+roam_tags: %^{tags}\n- source :: [[%^{link}][%^{description}]] \\\n- metadata :: %?\n\n* Notes\n\n* Follow-up Actions"
            :unnarrowed t)
           ("r" "research" entry (function org-roam--capture-get-point)
@@ -522,35 +522,43 @@
 (org-super-agenda-mode t)
 
 (setq org-agenda-custom-commands
-      '(("g" "Getting Things Done(gtd)"
+      '(("g" "Getting things done (GTD)"
          ((agenda ""
                   ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
-                   (org-agenda-overriding-header "Agenda")
                    (org-agenda-start-day (org-today))
                    (org-agenda-span '1)))
           (tags-todo "-project/NEXT"
-                     ((org-agenda-files (list "~/.org/gtd/next.org"))
-                      (org-agenda-overriding-header "Next")))
+                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
+                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
+                 (org-agenda-overriding-header "Next")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
+          (tags-todo "project/NEXT|TODO"
+                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
+                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
+;                 (org-agenda-prefix-format " %i %-12:c [%-5e]%l↳ ")
+                 (org-agenda-overriding-header "Projects")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
           (tags-todo "-project/TODO"
-                     ((org-agenda-files (list "~/.org/gtd/next.org"))
-                      (org-agenda-overriding-header "Inbox")))
-          (tags-todo "-project/HOLD"
-                     ((org-agenda-files (list "~/.org/gtd/next.org"))
-                      (org-agenda-overriding-header "On Hold")))
-          (tags-todo "project/TODO|NEXT|HOLD"
-                     ((org-agenda-files (list "~/.org/gtd/next.org"))
-                      (org-agenda-overriding-header "Projects")))))
-        ("l" "The List"
-         ((todo ""
-                ((org-agenda-files (list "~/.org/gtd/thelist.org"))
-                 (org-super-agenda-groups '((:auto-tags t)))))))
+                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
+                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
+                 (org-agenda-overriding-header "Inbox")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
+          (todo "HOLD"
+                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
+                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
+                 (org-agenda-overriding-header "On Hold")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
+          (tags "CLOSED>=\"<today>\""
+                ((org-agenda-overriding-header "\nCompleted today\n")
+                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
+                 (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))))))
         ("i" "Inbox"
-         ((todo "TODO|HOLD"
+         ((todo ""
                 ((org-agenda-files (list "~/.org/gtd/inbox.org"))
                  (org-super-agenda-groups '((:auto-ts t)))))))
         ("x" "Someday"
          ((todo ""
-                ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/incubate.org")))
+                ((org-agenda-files (list "~/.org/gtd/incubate.org"))
                  (org-super-agenda-groups
                   '((:auto-parent t)))))))))
 
@@ -571,6 +579,8 @@
                (insert-file-contents-literally source)
               (buffer-string)))
             (file-name-nondirectory source))))
+
+(load! "customs.el")
 
 (defun +nick/org-insert-timestamp ()
   "Insert active timestamp at POS."
