@@ -111,8 +111,8 @@
     (let ((str ""))
       (while (> level 2)
         (setq level (1- level)
-              str (concat str "──")))
-      (concat str "►"))))
+              str (concat str "─")))
+      (concat str "➤"))))
 
 (defvar org-archive-directory "~/.org/archives/")
 
