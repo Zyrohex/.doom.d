@@ -2,6 +2,8 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css" />
 #+OPTIONS: toc:2 html-scripts:nil num:nil html-postamble:nil html-style:nil ^:nil
 
+[[file:attachments/workspace.png]]
+
 * New Changes
 1. [2020-06-02 Tue]
    a. Added =org-roam=
@@ -125,7 +127,8 @@ First I like to add some extra fancy stuff to make orgmode more appealing when i
                   org-ellipsis "▼"))
 #+END_SRC
 
-Other options for ellipsis "▼, ↴, ⬎, ⤷,…, and ⋱."
+- Other options for ellipsis "▼, ↴, ⬎, ⤷,…, and ⋱."
+- Extra options for headline-bullets-list: "◉" "●" "○" "∴"
 
 Add a when condition that only adjust settings when certain features are enabled... This depends on where i'm running Emacs from (eg: Terminla, X11 or native).
 #+BEGIN_SRC emacs-lisp
@@ -133,8 +136,6 @@ Add a when condition that only adjust settings when certain features are enabled
   (setq org-superstar-headline-bullets-list '("∴")
         org-superstar-item-bullet-alist nil))
 #+END_SRC
-
-Extra options for headline-bullets-list: "◉" "●" "○"
 
 Adding additional search functions
 #+BEGIN_SRC emacs-lisp
