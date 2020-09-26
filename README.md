@@ -1,56 +1,58 @@
 
 # Table of Contents
 
--   [New Changes](#org0f86bd6)
--   [Requirements](#org0a69667)
--   [Default Settings](#org1a43a0b)
--   [User Information](#orgb55e49c)
--   [Misc Settings](#org0fbc19e)
--   [Key Bindings](#orga82f1e6)
--   [Terminal Mode](#org9c79dd1)
--   [Default folder(s) and file(s)](#org4830b48)
--   [Setup Layout by Monitor Profile](#org62d3e87)
--   [Org mode settings](#orgc97d3be)
-    -   [Capture Templates](#org380dd26)
--   [Directory settings](#orgb148d02)
--   [Export Settings](#org881ad3a)
--   [Misc Org Mode settings](#orgf9289c0)
--   [Keywords](#org4828c76)
--   [Logging and Drawers](#orgc42de7d)
--   [Properties](#orgd1c34b3)
--   [Publishing](#orgc14ab89)
--   [Refiling Defaults](#org761162e)
--   [Orgmode Startup](#orgba549f0)
--   [Org Protocol](#orgfb8c715)
--   [Default Tags](#org9a86eae)
--   [Buffer Settings](#org715df6b)
--   [Misc Settings](#orgba1e118)
--   [Module Settings](#orgf6ac245)
-    -   [company mode](#org7cb6656)
-    -   [Define Word](#org8762802)
-    -   [Misc Modules [Bookmarks, PDF Tools]](#orgfd7a47c)
-    -   [Graphs and Chart Modules](#org1ebdf57)
-    -   [Elfeed](#orgc10d01f)
-    -   [DEFT](#orgd39a0ea)
-    -   [Org-Rifle](#org30c2bbc)
-    -   [Pandoc](#org7910daa)
-    -   [ROAM](#org4c6ed31)
-    -   [ROAM Server](#orgbe8fc20)
-    -   [ROAM Export Backlinks + Content](#org23e6cec)
-    -   [Reveal [HTML Presentations]](#orgecafe76)
-    -   [Super Agenda Settings](#orge70e1ab)
--   [Loading secrets](#org6b9284f)
--   [Hacks](#orga0d61f8)
--   [Custom Functions](#org477e363)
-    -   [Time Stamps](#orgbf847b2)
-    -   [Capture Template File Picker](#org7b89740)
-    -   [Search file headlines and send tree to indirect buffer](#org3776ba6)
--   [Theme Settings](#orgbae652f)
+-   [New Changes](#org2724b76)
+-   [Requirements](#org9bc6869)
+-   [Default Settings](#org14790a3)
+-   [User Information](#orgaffd747)
+-   [Misc Settings](#org3bc98c1)
+-   [Key Bindings](#orgcb2ae27)
+-   [Terminal Mode](#org69646c1)
+-   [Default folder(s) and file(s)](#org6599295)
+-   [Setup Layout by Monitor Profile](#org7ae6bc1)
+-   [Org mode settings](#orge24c0ff)
+    -   [Capture Templates](#org0146d71)
+-   [Directory settings](#org729e3e5)
+-   [Export Settings](#org7cb08ec)
+-   [Misc Org Mode settings](#orgd9edc5f)
+-   [Keywords](#orgd0111c0)
+-   [Logging and Drawers](#orgf85794e)
+-   [Properties](#orgcedbd76)
+-   [Publishing](#org419bb6f)
+-   [Refiling Defaults](#org806aa99)
+-   [Orgmode Startup](#org05d2de2)
+-   [Org Protocol](#org304e7e7)
+-   [Default Tags](#orgf509e87)
+-   [Buffer Settings](#org0f620f3)
+-   [Misc Settings](#org00f48c4)
+-   [Module Settings](#orga44a1bf)
+    -   [company mode](#org016e735)
+    -   [Define Word](#org121ed49)
+    -   [Misc Modules [Bookmarks, PDF Tools]](#orgdbd7297)
+    -   [Graphs and Chart Modules](#org7826125)
+    -   [Elfeed](#orgb771f56)
+    -   [DEFT](#org8ab7bfd)
+    -   [Org-Rifle](#orgc44975c)
+    -   [Pandoc](#org4a304ee)
+    -   [ROAM](#org383b563)
+    -   [ROAM Server](#orgef72cf2)
+    -   [ROAM Export Backlinks + Content](#org5fee6b6)
+    -   [Reveal [HTML Presentations]](#org55a07ce)
+    -   [Super Agenda Settings](#orgaeed6ae)
+-   [Loading secrets](#org313fdf8)
+-   [Hacks](#org0a32358)
+-   [Custom Functions](#org2d0185c)
+    -   [Time Stamps](#orgad22e81)
+    -   [Capture Template File Picker](#org11e706c)
+    -   [Clarify Tasks](#org8892c86)
+    -   [Search file headlines and send tree to indirect buffer](#orged32d1f)
+    -   [Change font settings](#orgf9b8a31)
+-   [Theme Settings](#orgf0003d2)
 
 ![img](attachments/workspace.png)
 
 
-<a id="org0f86bd6"></a>
+<a id="org2724b76"></a>
 
 # New Changes
 
@@ -72,10 +74,13 @@
     3.  Configure your variable settings in Setting up my GTD Methodology
 4.  <span class="timestamp-wrapper"><span class="timestamp">[2020-08-26 Wed]</span></span>
     1.  Moved `roam-db-directory` to **.emacs.d** directory FIXME address syncthing permission issue
-    2.  Added **FiraCode** fonts (see [Requirements](#org0a69667))
+    2.  Added **FiraCode** fonts (see [Requirements](#org9bc6869))
+5.  <span class="timestamp-wrapper"><span class="timestamp">[2020-09-25 Fri]</span></span>
+    1.  Added new clarify function for task items.. You can define your property values to the variable `org-tasks-properties-metadata`, then call `+nick/org-clarify-metadata` and it will PROMPT to update for tasks that are missing a value.
+        1.  You can also define multiple lists, and pass the variable as an argument to `+nick/org-clarify-task-properties`, as such `(+nick/org-clarify-task-properties org-tasks-properties-lists2)`
 
 
-<a id="org0a69667"></a>
+<a id="org9bc6869"></a>
 
 # Requirements
 
@@ -85,14 +90,14 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2.  For fonts please download [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2) and [FiraCode](https://github.com/tonsky/FiraCode)
 
 
-<a id="org1a43a0b"></a>
+<a id="org14790a3"></a>
 
 # Default Settings
 
 In this section we are going to cover all the basics, and then tangle the results into `config.el`
 
 
-<a id="orgb55e49c"></a>
+<a id="orgaffd747"></a>
 
 # User Information
 
@@ -102,7 +107,7 @@ Environment settings, which are specific to the user and system. First up are us
           user-mail-address "nmartin84@gmail.com")
 
 
-<a id="org0fbc19e"></a>
+<a id="org3bc98c1"></a>
 
 # Misc Settings
 
@@ -112,7 +117,7 @@ Now we load some default settings for EMACS.
     (setq display-time-day-and-date t)
 
 
-<a id="orga82f1e6"></a>
+<a id="orgcb2ae27"></a>
 
 # Key Bindings
 
@@ -154,7 +159,7 @@ TODO remove un-used key-binds
           :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 
 
-<a id="org9c79dd1"></a>
+<a id="org69646c1"></a>
 
 # Terminal Mode
 
@@ -167,7 +172,7 @@ Set a few settings if we detect terminal mode
        (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 
-<a id="org4830b48"></a>
+<a id="org6599295"></a>
 
 # Default folder(s) and file(s)
 
@@ -177,7 +182,7 @@ TODO add org-directory to this section
     (setq diary-file "~/.org/diary.org")
 
 
-<a id="org62d3e87"></a>
+<a id="org7ae6bc1"></a>
 
 # Setup Layout by Monitor Profile
 
@@ -200,7 +205,7 @@ TODO clean up function and simplify the process
           (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
 
 
-<a id="orgc97d3be"></a>
+<a id="orge24c0ff"></a>
 
 # Org mode settings
 
@@ -253,7 +258,7 @@ Adjusting clock settings
     (after! org (setq org-clock-continuously t))
 
 
-<a id="org380dd26"></a>
+<a id="org0146d71"></a>
 
 ## Capture Templates
 
@@ -276,7 +281,7 @@ Example ledger template file: = `/.doom.d/templates/ledger-scheduled.org`
         Expenses:Insurance                         dollar amount
 
 
-<a id="orgb148d02"></a>
+<a id="org729e3e5"></a>
 
 # Directory settings
 
@@ -287,7 +292,7 @@ TODO add function to set image-width to **80%** of the window size.
                       projectile-project-search-path '("~/projects/")))
 
 
-<a id="org881ad3a"></a>
+<a id="org7cb08ec"></a>
 
 # Export Settings
 
@@ -322,7 +327,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgf9289c0"></a>
+<a id="orgd9edc5f"></a>
 
 # Misc Org Mode settings
 
@@ -330,7 +335,7 @@ Embed images into the exported HTML files.
     (setq org-link-file-path-type 'relative)
 
 
-<a id="org4828c76"></a>
+<a id="orgd0111c0"></a>
 
 # Keywords
 
@@ -388,7 +393,7 @@ After much feedback and discussing with other users, I decided to simplify the k
           '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
 
 
-<a id="orgc42de7d"></a>
+<a id="orgf85794e"></a>
 
 # Logging and Drawers
 
@@ -405,7 +410,7 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="orgd1c34b3"></a>
+<a id="orgcedbd76"></a>
 
 # Properties
 
@@ -413,7 +418,7 @@ Next, we like to keep a history of our activity of a task so we **track** when c
           org-catch-invisible-edits 'error) ; Catch invisible edits
 
 
-<a id="orgc14ab89"></a>
+<a id="org419bb6f"></a>
 
 # Publishing
 
@@ -456,7 +461,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org761162e"></a>
+<a id="org806aa99"></a>
 
 # Refiling Defaults
 
@@ -469,7 +474,7 @@ TODO tweak refiling settings to match new GTD setup
                       org-refile-allow-creating-parent-nodes 'confirm))
 
 
-<a id="orgba549f0"></a>
+<a id="org05d2de2"></a>
 
 # Orgmode Startup
 
@@ -480,7 +485,7 @@ TODO tweak refiling settings to match new GTD setup
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="orgfb8c715"></a>
+<a id="org304e7e7"></a>
 
 # Org Protocol
 
@@ -488,7 +493,7 @@ TODO tweak refiling settings to match new GTD setup
     (setq org-protocol-default-template-key "d")
 
 
-<a id="org9a86eae"></a>
+<a id="orgf509e87"></a>
 
 # Default Tags
 
@@ -527,7 +532,7 @@ REVIEW should we define any additional tags?
                           ("#research")))
 
 
-<a id="org715df6b"></a>
+<a id="org0f620f3"></a>
 
 # Buffer Settings
 
@@ -544,7 +549,7 @@ REVIEW should we define any additional tags?
     (remove-hook! '(org-roam-mode-hook) #'zyro/remove-lines)
 
 
-<a id="orgba1e118"></a>
+<a id="org00f48c4"></a>
 
 # Misc Settings
 
@@ -557,12 +562,12 @@ REVIEW should we define any additional tags?
      x-stretch-cursor t)
 
 
-<a id="orgf6ac245"></a>
+<a id="orga44a1bf"></a>
 
 # Module Settings
 
 
-<a id="org7cb6656"></a>
+<a id="org016e735"></a>
 
 ## company mode
 
@@ -571,7 +576,7 @@ REVIEW should we define any additional tags?
       (setq company-idle-delay 0.25))
 
 
-<a id="org8762802"></a>
+<a id="org121ed49"></a>
 
 ## Define Word
 
@@ -583,7 +588,7 @@ REVIEW should we define any additional tags?
             :desc "Define word at point" "@" #'define-word-at-point))
 
 
-<a id="orgfd7a47c"></a>
+<a id="orgdbd7297"></a>
 
 ## Misc Modules [Bookmarks, PDF Tools]
 
@@ -593,7 +598,7 @@ Configuring PDF support and ORG-NOTER for note taking
     ;  :hook (org-load . org-pdftools-setup-link))
 
 
-<a id="org1ebdf57"></a>
+<a id="org7826125"></a>
 
 ## Graphs and Chart Modules
 
@@ -623,7 +628,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="orgc10d01f"></a>
+<a id="orgb771f56"></a>
 
 ## Elfeed
 
@@ -642,7 +647,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orgd39a0ea"></a>
+<a id="org8ab7bfd"></a>
 
 ## DEFT
 
@@ -678,7 +683,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org30c2bbc"></a>
+<a id="orgc44975c"></a>
 
 ## Org-Rifle
 
@@ -777,14 +782,14 @@ Configuring DEFT default settings
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org7910daa"></a>
+<a id="org4a304ee"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org4c6ed31"></a>
+<a id="org383b563"></a>
 
 ## ROAM
 
@@ -844,7 +849,7 @@ These are my default ROAM settings
                :unnarrowed t)))
 
 
-<a id="orgbe8fc20"></a>
+<a id="orgef72cf2"></a>
 
 ## ROAM Server
 
@@ -862,7 +867,7 @@ These are my default ROAM settings
             org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org23e6cec"></a>
+<a id="org5fee6b6"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -895,7 +900,7 @@ These are my default ROAM settings
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="orgecafe76"></a>
+<a id="org55a07ce"></a>
 
 ## Reveal [HTML Presentations]
 
@@ -904,7 +909,7 @@ These are my default ROAM settings
     (setq org-reveal-title-slide nil)
 
 
-<a id="orge70e1ab"></a>
+<a id="orgaeed6ae"></a>
 
 ## Super Agenda Settings
 
@@ -921,10 +926,9 @@ These are my default ROAM settings
                      (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                      (org-agenda-overriding-header "Next")
                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-              (tags-todo "project/NEXT|TODO"
+              (tags-todo "project"
                     ((org-agenda-files (append (list "~/.org/gtd/next.org")))
                      (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-    ;                 (org-agenda-prefix-format " %i %-12:c [%-5e]%l↳ ")
                      (org-agenda-overriding-header "Projects")
                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
               (tags-todo "-project/TODO"
@@ -932,7 +936,7 @@ These are my default ROAM settings
                      (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                      (org-agenda-overriding-header "Inbox")
                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-              (todo "HOLD"
+              (todo "-project/HOLD"
                     ((org-agenda-files (append (list "~/.org/gtd/next.org")))
                      (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                      (org-agenda-overriding-header "On Hold")
@@ -952,7 +956,7 @@ These are my default ROAM settings
                       '((:auto-parent t)))))))))
 
 
-<a id="org6b9284f"></a>
+<a id="org313fdf8"></a>
 
 # Loading secrets
 
@@ -961,12 +965,12 @@ These are my default ROAM settings
       (load secrets)))
 
 
-<a id="orga0d61f8"></a>
+<a id="org0a32358"></a>
 
 # Hacks
 
 
-<a id="org477e363"></a>
+<a id="org2d0185c"></a>
 
 # Custom Functions
 
@@ -977,7 +981,7 @@ Ideas for functions I need:
     (load! "customs.el")
 
 
-<a id="orgbf847b2"></a>
+<a id="orgad22e81"></a>
 
 ## Time Stamps
 
@@ -992,7 +996,7 @@ Ideas for functions I need:
           :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
 
 
-<a id="org7b89740"></a>
+<a id="org11e706c"></a>
 
 ## Capture Template File Picker
 
@@ -1002,12 +1006,79 @@ Ideas for functions I need:
         (expand-file-name (format "%s" file))))
 
 
-<a id="org3776ba6"></a>
+<a id="org8892c86"></a>
+
+## Clarify Tasks
+
+Clarify task will take a list of property fields and pass them to `+nick/org-clarify-task-properties` to update task items which are missing those property fields.
+
+    (defun +nick/org-end-of-headline()
+      "Move to end of current headline"
+      (interactive)
+      (outline-next-heading)
+      (forward-char -1))
+    
+    (defun +nick/org-get-headline-property (arg)
+      "Extract property from headline and return results."
+      (interactive)
+      (org-entry-get nil arg t))
+    
+    (defun +nick/org-get-headline-title ()
+      "Get headline title from current headline."
+      (interactive)
+      (org-element-property :title (+nick/org-get-headline-properties)))
+    
+    (setq org-tasks-properties-metadata (list "Source" "Type"))
+    
+    (defun +nick/org-clarify-task-properties (arg)
+      "Update the metadata for a task headline."
+      (let ((props arg))
+        (while (not (eobp))
+          (outline-next-heading)
+          (org-narrow-to-subtree)
+          (when (not (null (org-entry-is-todo-p)))
+            (mapcar (lambda (props)
+                      (when (null (org-entry-get nil (upcase props) t))
+                        (org-set-property (upcase props) (org-read-property-value (upcase props))))) props)) ; TODO Add if condition to pass optional argument to SEARCH or IGNORE inherited properties.
+          (widen))))
+    
+    (defun +nick/org-clarify-task-metadata (arg)
+      "Runs through buffer and prompts to update property field if NIL."
+      ; TODO Remove this function and move this to the main function.
+      (save-excursion
+        (save-restriction
+          (goto-line 1)
+          (org-show-all)
+          (+nick/org-clarify-task-properties arg))))
+    
+    (defun +nick/org-clarify-metadata ()
+      "Runs the clarify-task-metadata function with ARG being a list of property values."
+      (interactive)
+      (+nick/org-clarify-task-metadata org-tasks-properties-metadata))
+    
+    (map! :after org
+          :map org-mode-map
+          :localleader
+          :prefix ("j" . "nicks functions")
+          :desc "Clarify properties" "c" #'+nick/org-clarify-metadata)
+    
+    (defun +nick/org-get-headline-properties ()
+      "Get headline properties for ARG."
+      (org-back-to-heading)
+      (org-element-at-point))
+
+
+<a id="orged32d1f"></a>
 
 ## TODO Search file headlines and send tree to indirect buffer
 
 
-<a id="orgbae652f"></a>
+<a id="orgf9b8a31"></a>
+
+## TODO Change font settings
+
+
+<a id="orgf0003d2"></a>
 
 # Theme Settings
 
