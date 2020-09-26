@@ -155,8 +155,6 @@
 
 (setq org-use-property-inheritance t ; We like to inhert properties from their parents
       org-catch-invisible-edits 'error) ; Catch invisible edits
-(after! org (setq org-global-properties '(("SOURCE_ALL" . "Reddit Wikipedia Google StackExchange")
-                                          ("TYPE_ALL" . "Maintenance Wellness Learning Mindfulness"))))
 
 (after! org (setq org-publish-project-alist
                   '(("attachments"
@@ -623,23 +621,28 @@
       (when (not (null (org-entry-is-todo-p)))
         (mapcar (lambda (props)
                   (when (null (org-entry-get nil (upcase props) t))
-                    (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
+                    (org-set-property (upcase props) (org-read-property-value (upcase props))))) props)) ; TODO Add if condition to pass optional argument to SEARCH or IGNORE inherited properties.
       (widen))))
 
-(defun +nick/org-clarify-task-metadata ()
+(defun +nick/org-clarify-task-metadata (arg)
   "Runs through buffer and prompts to update property field if NIL."
-  (interactive)
+  ; TODO Remove this function and move this to the main function.
   (save-excursion
     (save-restriction
       (goto-line 1)
       (org-show-all)
-      (+nick/org-clarify-task-properties org-tasks-properties-metadata))))
+      (+nick/org-clarify-task-properties arg))))
+
+(defun +nick/org-clarify-metadata ()
+  "Runs the clarify-task-metadata function with ARG being a list of property values."
+  (interactive)
+  (+nick/org-clarify-task-metadata org-tasks-properties-metadata))
 
 (map! :after org
       :map org-mode-map
       :localleader
       :prefix ("j" . "nicks functions")
-      :desc "Clarify properties" "c" #'+nick/org-clarify-task-metadata)
+      :desc "Clarify properties" "c" #'+nick/org-clarify-metadata)
 
 (defun +nick/org-get-headline-properties ()
   "Get headline properties for ARG."
