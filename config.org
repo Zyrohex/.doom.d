@@ -1,29 +1,5 @@
-#+EXPORT_FILE_NAME: README
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css" />
-#+OPTIONS: toc:2 html-scripts:nil num:nil html-postamble:nil html-style:nil ^:nil
+#+TITLE: Config
 
-[[file:attachments/workspace.png]]
-
-* New Changes
-1. [2020-06-02 Tue]
-   a. Added =org-roam=
-   b. Added agenda schdules faces (thanks to )
-   c. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
-   d. Agenda-Hook to narrow on current subtree
-   e. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-   f. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
-   g. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
-2. [2020-06-21 Sun]
-   a. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
-   b. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
-   c. added org-roam-server
-3. [2020-07-22 Wed]
-   a. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
-   b. Moved GTD Module to [[file:gtd.el]]
-   c. Configure your variable settings in Setting up my GTD Methodology
-4. [2020-08-26 Wed]
-   a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
-   b. Added *FiraCode* fonts (see [[Requirements]])
 * Requirements
 These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
@@ -268,6 +244,8 @@ Next, we like to keep a history of our activity of a task so we *track* when cha
 #+BEGIN_SRC emacs-lisp
 (setq org-use-property-inheritance t ; We like to inhert properties from their parents
       org-catch-invisible-edits 'error) ; Catch invisible edits
+(after! org (setq org-global-properties '(("SOURCE_ALL" . "Reddit Wikipedia Google StackExchange")
+                                          ("TYPE_ALL" . "Maintenance Wellness Learning Mindfulness"))))
 #+END_SRC
 * Publishing
 REVIEW do we need to re-define our publish settings for the ROAM directory?
@@ -710,10 +688,9 @@ These are my default ROAM settings
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "Next")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (tags-todo "project/NEXT|TODO"
+          (tags-todo "project"
                 ((org-agenda-files (append (list "~/.org/gtd/next.org")))
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-;                 (org-agenda-prefix-format " %i %-12:c [%-5e]%l↳ ")
                  (org-agenda-overriding-header "Projects")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
           (tags-todo "-project/TODO"
@@ -721,7 +698,7 @@ These are my default ROAM settings
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "Inbox")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (todo "HOLD"
+          (todo "-project/HOLD"
                 ((org-agenda-files (append (list "~/.org/gtd/next.org")))
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "On Hold")
@@ -772,7 +749,67 @@ Ideas for functions I need:
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))
 #+END_SRC
+** Clarify Tasks
+Clarify task will take a list of property fields and pass them to ~+nick/org-clarify-task-properties~ to update task items which are missing those property fields.
+#+BEGIN_SRC emacs-lisp
+(defun +nick/org-end-of-headline()
+  "Move to end of current headline"
+  (interactive)
+  (outline-next-heading)
+  (forward-char -1))
+
+(defun +nick/org-get-headline-property (arg)
+  "Extract property from headline and return results."
+  (interactive)
+  (org-entry-get nil arg t))
+
+(defun +nick/org-get-headline-title ()
+  "Get headline title from current headline."
+  (interactive)
+  (org-element-property :title (+nick/org-get-headline-properties)))
+
+(setq org-tasks-properties-metadata (list "Source" "Type"))
+
+(defun +nick/org-clarify-task-properties (arg)
+  "Update the metadata for a task headline."
+  (let ((props arg))
+    (while (not (eobp))
+      (outline-next-heading)
+      (org-narrow-to-subtree)
+      (when (not (null (org-entry-is-todo-p)))
+        (mapcar (lambda (props)
+                  (when (null (org-entry-get nil (upcase props) t))
+                    (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
+      (widen))))
+
+(defun +nick/org-clarify-task-metadata ()
+  "Runs through buffer and prompts to update property field if NIL."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (goto-line 1)
+      (org-show-all)
+      (+nick/org-clarify-task-properties org-tasks-properties-metadata))))
+
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :prefix ("j" . "nicks functions")
+      :desc "Clarify properties" "c" #'+nick/org-clarify-task-metadata)
+
+(defun +nick/org-get-headline-properties ()
+  "Get headline properties for ARG."
+  (org-back-to-heading)
+  (org-element-at-point))
+#+END_SRC
 ** TODO Search file headlines and send tree to indirect buffer
+:PROPERTIES:
+:Category: Emacs
+:END:
+** TODO Change font settings
+:PROPERTIES:
+:Category: Emacs
+:END:
 * Theme Settings
 #+BEGIN_SRC emacs-lisp
 (after! org (zyro/monitor-width-profile-setup)

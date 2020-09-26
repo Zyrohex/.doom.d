@@ -155,6 +155,8 @@
 
 (setq org-use-property-inheritance t ; We like to inhert properties from their parents
       org-catch-invisible-edits 'error) ; Catch invisible edits
+(after! org (setq org-global-properties '(("SOURCE_ALL" . "Reddit Wikipedia Google StackExchange")
+                                          ("TYPE_ALL" . "Maintenance Wellness Learning Mindfulness"))))
 
 (after! org (setq org-publish-project-alist
                   '(("attachments"
@@ -544,10 +546,9 @@
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "Next")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (tags-todo "project/NEXT|TODO"
+          (tags-todo "project"
                 ((org-agenda-files (append (list "~/.org/gtd/next.org")))
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-;                 (org-agenda-prefix-format " %i %-12:c [%-5e]%l↳ ")
                  (org-agenda-overriding-header "Projects")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
           (tags-todo "-project/TODO"
@@ -555,7 +556,7 @@
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "Inbox")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (todo "HOLD"
+          (todo "-project/HOLD"
                 ((org-agenda-files (append (list "~/.org/gtd/next.org")))
                  (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
                  (org-agenda-overriding-header "On Hold")
@@ -594,6 +595,56 @@
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))
+
+(defun +nick/org-end-of-headline()
+  "Move to end of current headline"
+  (interactive)
+  (outline-next-heading)
+  (forward-char -1))
+
+(defun +nick/org-get-headline-property (arg)
+  "Extract property from headline and return results."
+  (interactive)
+  (org-entry-get nil arg t))
+
+(defun +nick/org-get-headline-title ()
+  "Get headline title from current headline."
+  (interactive)
+  (org-element-property :title (+nick/org-get-headline-properties)))
+
+(setq org-tasks-properties-metadata (list "Source" "Type"))
+
+(defun +nick/org-clarify-task-properties (arg)
+  "Update the metadata for a task headline."
+  (let ((props arg))
+    (while (not (eobp))
+      (outline-next-heading)
+      (org-narrow-to-subtree)
+      (when (not (null (org-entry-is-todo-p)))
+        (mapcar (lambda (props)
+                  (when (null (org-entry-get nil (upcase props) t))
+                    (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
+      (widen))))
+
+(defun +nick/org-clarify-task-metadata ()
+  "Runs through buffer and prompts to update property field if NIL."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (goto-line 1)
+      (org-show-all)
+      (+nick/org-clarify-task-properties org-tasks-properties-metadata))))
+
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :prefix ("j" . "nicks functions")
+      :desc "Clarify properties" "c" #'+nick/org-clarify-task-metadata)
+
+(defun +nick/org-get-headline-properties ()
+  "Get headline properties for ARG."
+  (org-back-to-heading)
+  (org-element-at-point))
 
 (after! org (zyro/monitor-width-profile-setup)
   (toggle-frame-fullscreen)
