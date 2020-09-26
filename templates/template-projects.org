@@ -1,5 +1,10 @@
 #+TITLE: %^{Title}
 
-* Resources
-* Notes
-* Action Items
+PROJECT STATUS: {INITIATE|PLAN|EXECUTE|MONITOR AND CONTROL|CLOSE}
+
+* Scope
+** Deliverables
+** Work
+
+* Completed Tasks
+* Next Actions
