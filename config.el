@@ -5,10 +5,6 @@
 (setq display-time-day-and-date t)
 
 (bind-key "<f6>" #'link-hint-copy-link)
-(bind-key "C-M-<up>" #'evil-window-up)
-(bind-key "C-M-<down>" #'evil-window-down)
-(bind-key "C-M-<left>" #'evil-window-left)
-(bind-key "C-M-<right>" #'evil-window-right)
 (map! :after org
       :map org-mode-map
       :leader
@@ -16,10 +12,9 @@
       :desc "Move down window" "<down>" #'evil-window-down
       :desc "Move left window" "<left>" #'evil-window-left
       :desc "Move right window" "<right>" #'evil-window-right
-      :desc "Rifle Project Files" "P" #'helm-org-rifle-project-files
       :prefix ("s" . "+search")
-      :desc "Counsel Narrow" "n" #'counsel-narrow
-      :desc "Ripgrep Directory" "d" #'counsel-rg
+      :desc "Counsel ripgrep" "d" #'counsel-rg
+      :desc "Swiper All" "@" #'swiper-all
       :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
       :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
       :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
@@ -27,16 +22,6 @@
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file)
-
-(map! :leader
-      :desc "Set Bookmark" "`" #'my/goto-bookmark-location
-      :prefix ("s" . "search")
-      :desc "Deadgrep Directory" "d" #'deadgrep
-      :desc "Swiper All" "@" #'swiper-all
-      :prefix ("o" . "open")
-      :desc "Elfeed" "e" #'elfeed
-      :desc "Deft" "w" #'deft
-      :desc "Next Tasks" "n" #'org-find-next-tasks-file)
 
 (when (equal (window-system) nil)
   (and
@@ -614,6 +599,7 @@
 
 (defun +nick/org-clarify-task-properties (arg)
   "Update the metadata for a task headline."
+  ; TODO Add when conditions to differentiate between org-mode and org-agenda-mode.
   (let ((props arg))
     (while (not (eobp))
       (outline-next-heading)
