@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Jupyter Python code block
+# key: jblk
+# condition: t
+# --
+#+BEGIN_SRC jupyter-python
+$0
+#+END_SRC

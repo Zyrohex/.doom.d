@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: named code_block
+# key: nb
+# condition: t
+# --
+#+name:${2:name}
+#+begin_${1:lang} :noweb no-export
+$0 $2
+#+end_$1

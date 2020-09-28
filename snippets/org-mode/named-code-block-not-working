@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name:
+# key: named
+# condition: t
+# --
+#+name:${1:name}
+#+begin_src ${2:lang}
+$1 $0
+#+end_src

@@ -1,18 +1,213 @@
 #+TITLE: config
+Sync' after modifying this file!
 
 * Personal identifications
-This is personal of course need to be set.
+Some functionality uses this to identify you, e.g. GPG configuration, email
+clients, file templates and snippets.
 
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Yu Shen (Aaron)"
-      user-mail-address "yubrshen@gmail.com")
+      user-mail-address "yshen@bart.gov | yubrshen@gmail.com")
 #+END_SRC
-* dart-mode for Dart language
-#+begin_src emacs-lisp
-(use-package! dart-mode
-  :mode "\\.dart\\'")
-#+end_src
-* Org Mode Settings
+
+
+* Improve the resposiveness of shell with ssh
+
+To improve on the responsiveness of shell with ssh:
+
+#+BEGIN_SRC emacs-lisp
+(setq-hook! '(shell-mode-hook eshell-mode-hook) company-idle-delay nil)
+#+END_SRC
+Here is the Discord convesation of the problem and solution. Eventually Henrik's solution works perfectly.
+
+[6:34 PM] Aaron S: On another topic, I'm using a lot more ssh to virtual development box with Doom for ssh. But I found that with ssh, I cannot enable shell and eshell or use M-x shell or M-x eshell with ssh link to the remote, as there would be several seconds delay in the second character of a command, for example for ls, typing 'l' the response is immediate, but typing 's' the echo will be delayed by a few seconds. It works OK with M-x term, but I miss the command and file name completion with term. Can you recommend any remedy, or trade-off?
+[7:00 PM] Henrik: @Aaron S turn off automatic code completion (company) in shell/eshell buffers, for starters
+[7:00 PM] Henrik: (setq-hook! '(shell-mode-hook eshell-mode-hook) company-idle-delay nil)
+
+* Review and confirmed
+The above are the configurations that have been tested.
+
+* Setup for org-journal and related org-agenda-files for the workflow of org-journal as inbox
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files '("~/Dropbox/org/TODOs/tasks.org" "~/Dropbox/org/TODOs/projects.org"))
+
+(use-package! org-journal
+  :after org
+  :init
+  (setq org-journal-dir "~/Dropbox/org/Daily/"
+        org-journal-date-prefix "#+TITLE: "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-date-format "%A, %d %B %Y")
+  :config
+  (setq org-journal-find-file #'find-file-other-window )
+  :bind
+  ("C-c n j" . org-journal-new-entry)
+  ("C-c n s" . evil-save-modified-and-close)
+  :defer t
+  )
+
+(setq org-journal-enable-agenda-integration t)
+#+END_SRC
+
+The following was the old way to set the keybinging, no longer used, kept for example
+  (map! :map org-journal-mode-map
+        "C-c n s" #'evil-save-modified-and-close)
+       
+This is the new setup that I find it acceptable for new.
+
+Note, to develop the agenda view, what matters is the value of
+org-agenda-custom-commands computed below. Therefore, to experiement with a suitable
+view, it's matter of experiement with the value. So, it's productive to experiment with a file or a buffer of
+the value, and start agenda view SPC o A to test.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands
+      '(("z" "Zen View"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today "
+                                :time-grid t
+                                :date today
+                                :todo "TODAY"
+                                :scheduled today
+                                :order 1)
+                        ;; (:discard (:anything t))
+                        ))))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Next"
+                                 :todo "NEXT"
+                                 :order 1)
+                          (:name "Important"
+                                 :tag "Important"
+                                 :priority "A"
+                                 :order 6)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 2)
+                          (:name "Due Soon"
+                                 :deadline future
+                                 :order 8)
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 7)
+                          (:name "Church"
+                                 :tag "church"
+                                 :order 32)
+                          (:name "BART"
+                                 :tag "bart"
+                                 :order 10)
+                          (:name "Issues"
+                                 :tag "Issue"
+                                 :order 12)
+                          (:name "Projects"
+                                 :tag "Project"
+                                 :order 14)
+                          (:name "Emacs"
+                                 :tag "Emacs"
+                                 :order 13)
+                          (:name "Research"
+                                 :tag "Research"
+                                 :order 15)
+                          (:name "To read"
+                                 :tag "Read"
+                                 :order 30)
+                          (:name "Waiting"
+                                 :todo "WAITING"
+                                 :order 20)
+                          (:name "trivial"
+                                 :priority<= "C"
+                                 :tag ("Trivial" "Unimportant")
+                                 :todo ("SOMEDAY" )
+                                 :order 90)
+                          ;; (:discard ;; (:tag ("Chore" "Routine" "Daily"))
+                          ;;  (:anything t)
+                          ;;  )
+                          ))))
+          ))))
+#+END_SRC
+* Vsiual Tweaks
+
+** Fonts
+
+ Doom exposes five (optional) variables for controlling fonts in Doom. Here
+ are the three important ones:
+
+ + `doom-font'
+ + `doom-variable-pitch-font'
+ + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+   presentations or streaming.
+
+ They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+ font string. You generally only need these two:
+
+#+BEGIN_SRC emacs-lisp
+(setq doom-font (font-spec :family "Iosevka Term SS04" :size 16) ; 24
+      doom-big-font (font-spec :family "Iosevka Term SSO4" :size 36)
+            ;; doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
+            ;; doom-serif-font (font-spec :family "ETBembo" :size 24)
+            )
+
+#+END_SRC
+
+Past settings
+(setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+
+;; (setq doom-font (font-spec :family "Attribute Mono" :size 20))
+;; (unless (find-font doom-font)
+;;   (setq doom-font (font-spec :family "FuraCode Nerd Font" :size 20)))
+
+;; (setq doom-unicode-font (font-spec :name "DejaVu Sans Mono" :size 20))
+** Theme
+
+ There are two ways to load a theme. Both assume the theme is installed and
+ available. You can either set `doom-theme' or manually load a theme with the
+ `load-theme' function. This is the default:
+
+According to research, dark-mode is not more readable than white background.
+But 'doom-acario-light is not colorful enough for me for ediff.
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+
+It seems that 'doom-vibrant provides indeed much vibrant contrast for ediff. Keep use it.
+(setq doom-theme 'doom-vibrant)
+
+#+BEGIN_SRC emacs-lisp
+(setq doom-theme 'doom-gruvbox-light)
+#+END_SRC
+
+** Configuration evil mode line for modal
+Not use colored icon to indicate the modal of evil,
+better visible for the colorblind.
+#+BEGIN_SRC emacs-lisp
+(setq doom-modeline-modal-icon nil)
+#+END_SRC
+** Line Number
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type t)
+#+END_SRC
+
+* Org Setup
+
+** Directories
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/Dropbox/org/"
+      org-image-actual-width nil
+      +org-export-directory "~/.export/"
+      org-archive-location "~/Dropbox/org/archive.org::datetree/"
+      org-default-notes-file "~/Dropbox/org/inbox.org"
+      projectile-project-search-path '("~/")
+      )
+#+END_SRC
 ** Agenda
 #+BEGIN_SRC emacs-lisp
 (setq
@@ -26,7 +221,7 @@ This is personal of course need to be set.
        my/project "~/Dropbox/org/tasks.org"
        my/someday "~/Dropbox/org/someday.org"
        my/birthdays "~/Dropbox/org/birthdays.org"
-       org-agenda-files (list my/project my/inbox)
+       ;org-agenda-files (list my/project my/inbox)
       )
 #+END_SRC
 ** Captures
@@ -143,20 +338,85 @@ This is personal of course need to be set.
 \*Describe in your own words how your day was*:
 - %?")))
 #+END_SRC
-** Directories
+** org-roam for zettelkasten
+
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/Dropbox/org/"
-      org-image-actual-width nil
-      +org-export-directory "~/.export/"
-      org-archive-location "~/Dropbox/org/archive.org::datetree/"
-      org-default-notes-file "~/Dropbox/org/inbox.org"
-      projectile-project-search-path '("~/")
-
-      )
+;; (use-package! org-roam
+;;   :commands (org-roam-insert org-roam-find-file org-roam)
+;;   :init
+;;   (setq org-roam-directory "~/Dropbox/org/zettelkasten")
+;;   (map! :leader
+;;         :prefix "n"
+;;         :desc "Org-Roam-Insert" "i" #'org-roam-insert
+;;         :desc "Org-Roam-Find"   "/" #'org-roam-find-file
+;;         :desc "Org-Roam-Buffer" "r" #'org-roam)
+;;   :config
+;;   (org-roam-mode +1)
 #+END_SRC
-** Latex setup
 
-*** org-latex-classes setup
+#+RESULTS:
+
+** zetteldeft another implementation zettelkasten
+I have not yet figured out which is more suitable for me, org-roam or
+zetteldeft.
+org-roam might be better for generating link graph.
+zetteldeft might be better for add annotations in separate files to improve text
+study, such as Bible study.
+
+Use "~/Dropbox/org" as the directory for all the text to be searched by deft.
+#+BEGIN_SRC emacs-lisp
+(use-package! zetteldeft
+  :after deft
+:init
+(setq deft-directory "~/Dropbox/org"
+      ; "~"                ; ~/ didn't work. I want to try be able to search all my org files my computer
+      deft-recursive t)
+(general-define-key
+  :prefix "SPC"
+  :non-normal-prefix "C-SPC"
+  :states '(normal visual motion emacs)
+  :keymaps 'override
+  "d"  '(nil :wk "deft")
+  "dd" '(deft :wk "deft")
+  "dD" '(zetteldeft-deft-new-search :wk "new search")
+  "dR" '(deft-refresh :wk "refresh")
+  "ds" '(zetteldeft-search-at-point :wk "search at point")
+  "dc" '(zetteldeft-search-current-id :wk "search current id")
+  "df" '(zetteldeft-follow-link :wk "follow link")
+  "dF" '(zetteldeft-avy-file-search-ace-window :wk "avy file other window")
+  "dl" '(zetteldeft-avy-link-search :wk "avy link search")
+  "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
+  "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  "di" '(zetteldeft-find-file-id-insert :wk "insert id")
+  "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
+  "do" '(zetteldeft-find-file :wk "find file")
+  "dn" '(zetteldeft-new-file :wk "new file")
+  "dN" '(zetteldeft-new-file-and-link :wk "new file & link")
+  "dr" '(zetteldeft-file-rename :wk "rename")
+  "dx" '(zetteldeft-count-words :wk "count words"))
+  )
+#+END_SRC
+
+** Exports
+#+BEGIN_SRC emacs-lisp
+(setq org-html-head-include-scripts t
+      org-export-with-toc t
+      org-export-with-author t
+      org-export-headline-levels 5
+      org-export-with-drawers t
+      org-export-with-email t
+      org-export-with-footnotes t
+      org-export-with-latex t
+      org-export-with-section-numbers nil
+      org-export-with-properties t
+      org-export-with-smart-quotes t)
+
+;(after! org (add-to-list 'org-export-backends 'pandoc))
+(after! org (add-to-list 'org-export-backends 'pdf))
+#+END_SRC
+*** Latex setup
+
+**** org-latex-classes setup
 The body of the following is from tufte.el of my spacemacs org configurations.
 
 #+BEGIN_SRC emacs-lisp
@@ -179,8 +439,21 @@ The body of the following is from tufte.el of my spacemacs org configurations.
 Note, the key to make the above expression is that the package parameter
 ox-latex should not be quoted!
 
-*** Setup for Chinese text
+**** Setup for Chinese text
+The commented out is too slow. I want to try to reduce the times of compilations.
+Just using two lines of the commands, it seems still work. But however, the major time consuming
+is the regeneration of the uml diagrams. I wonder how I can avoid the regeneration of the uml diagrams.
 #+BEGIN_SRC emacs-lisp
+;; (after! ox-latex
+;;   (setq org-latex-pdf-process
+;;             '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -interaction nonstopmode -output-directory %o %f"
+;;               ;;"rm -fr %b.out %b.log %b.tex auto"
+;;               )))
 (after! ox-latex
   (setq org-latex-pdf-process
             '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
@@ -189,7 +462,7 @@ ox-latex should not be quoted!
               "xelatex -interaction nonstopmode -output-directory %o %f"
               "xelatex -interaction nonstopmode -output-directory %o %f"
               "xelatex -interaction nonstopmode -output-directory %o %f"
-              ;;"rm -fr %b.out %b.log %b.tex auto"
+              ;"rm -fr %b.out %b.log %b.tex auto"
               )))
 #+END_SRC
 Note, the value of org-latex-pdf-process should be a list of string, not a
@@ -210,7 +483,7 @@ string!
     (setq org-src-fontify-natively t)
     )
 
-**** Not used org-latex-pdf-process commands
+***** Not used org-latex-pdf-process commands
 The following is not used as it dosen't tolerate the warning of font missing.
 (setq org-latex-pdf-process
             '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
@@ -220,7 +493,7 @@ The following is not used as it dosen't tolerate the warning of font missing.
               "xelatex -interaction nonstopmode -output-directory %o %f"
               "xelatex -interaction nonstopmode -output-directory %o %f"
               "rm -fr %b.out %b.log %b.tex auto"))
-**** Not used code for LaTeX class definition
+***** Not used code for LaTeX class definition
 The following code is not needed for Chinese setup:
 (add-to-list 'org-latex-classes '("article" "\\documentclass[a4paper,11pt]{article}
 
@@ -272,24 +545,100 @@ The following code is not needed for Chinese setup:
                                         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                                         ("\\paragraph{%s}" . "\\paragraph*{%s}")
                                         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-* Exports
-#+BEGIN_SRC emacs-lisp
-(setq org-html-head-include-scripts t
-      org-export-with-toc t
-      org-export-with-author t
-      org-export-headline-levels 5
-      org-export-with-drawers t
-      org-export-with-email t
-      org-export-with-footnotes t
-      org-export-with-latex t
-      org-export-with-section-numbers nil
-      org-export-with-properties t
-      org-export-with-smart-quotes t)
 
-;(after! org (add-to-list 'org-export-backends 'pandoc))
-(after! org (add-to-list 'org-export-backends 'pdf))
+
+** Setup for emacs-jupyter
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (setq org-babel-default-header-args:jupyter-python '((:async . "yes")
+                                                       (:session . "py")
+                                                       (:kernel . "python3"))))
+(use-package! ox-ipynb
+  :after ox)
 #+END_SRC
-* TODO Faces
+
+The following is adapted from
+https://martinralbrecht.wordpress.com/2020/08/23/conda-jupyter-and-emacs/
+#+BEGIN_SRC emacs-lisp
+ (use-package conda
+  :config (progn
+            (conda-env-initialize-interactive-shells)
+            (conda-env-initialize-eshell)
+            (conda-env-autoactivate-mode t)
+            (setq conda-env-home-directory (expand-file-name "~/.conda/"))
+            (custom-set-variables '(conda-anaconda-home "/home/yubrshen/anaconda3/"))))
+#+END_SRC
+
+** emacs-reveal (org-reveal)
+
+Convert org-files to HTML slides reveal.js based
+#+BEGIN_SRC emacs-lisp
+(use-package! org-re-reveal
+  ;:custom
+  ;(setq org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
+  ;;       org-reveal-title-slide nil
+  ;      )
+)
+
+(after! org-re-reveal
+  (setq org-re-reveal-width 1900        ; I like slide as wide as possible
+        org-re-reveal-height 1200
+        org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
+        org-reveal-title-slide nil
+        )
+  )
+#+END_SRC
+
+
+
+** org-roam
+
+Based on https://www.ianjones.us/own-your-second-brain
+Added +roam in ./init.el in the clause of org
+
+You can access all of the Roam commands with spc n r. It's nice to bind your own to skip that one character so lets add some custom key mappings.
+
+Add a org-roam-ref-capture-templates in your config.el heres mine:
+The ROAM_KEY is how org-roam knows what site links to what note.
+
+#+BEGIN_SRC emacs-lisp
+;(setq org-roam-directory "~/Dropbox/org/org-roam")
+(after! org-roam
+        (setq org-roam-ref-capture-templates
+            '(("r" "ref" plain (function org-roam-capture--get-point)
+               "%?"
+               :file-name "websites/${slug}"
+               :head "#+TITLE: ${title}
+    ,#+ROAM_KEY: ${ref}
+    - source :: ${ref}"
+               :unnarrowed t))
+            org-roam-db-location
+            ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
+            "~/.emacs.d/.cache/org-roam.db"
+            org-roam-directory "~/Dropbox/org/org-roam"
+            )
+        (map! :leader
+            :prefix "n"
+            :desc "org-roam" "l" #'org-roam
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+            :desc "org-roam-find-file" "f" #'org-roam-find-file
+            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+            :desc "org-roam-capture" "c" #'org-roam-capture))
+
+
+
+#+END_SRC
+(use-package! org-journal
+      :bind
+      ("C-c n j" . org-journal-new-entry)
+      :custom
+      (org-journal-dir "~/Dropbox/org/org-roam/")
+      (org-journal-date-prefix "#+TITLE: ")
+      (org-journal-file-format "%Y-%m-%d.org")
+      (org-journal-date-format "%A, %d %B %Y"))
+    (setq org-journal-enable-agenda-integration t)
+** TODO Faces
 
 Need to add condition to adjust faces based on theme select.
 
@@ -302,36 +651,13 @@ Need to add condition to adjust faces based on theme select.
         ("NEXT" :foreground "violet red" :weight bold)
         ("DONE" :foreground "slategrey" :weight bold))))
 #+END_SRC
-** Keywords
+*** Keywords
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(d!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(D!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
 #+END_SRC
-* Load personal snippets
 
-I might have found a bug with the latest on the branch of development. For private snippets for org-mode, at ~/.doom.d/snippets/org-mode , only the last one loaded would work. I tried with two snippet definitions, it only have the last one loaded expanded, while the other one not. If you need more details, please let me know. The same problem is with earlier code, say two days ago from Feb. 5, 2020. (I loaded a snippet by visiting its definition file, and pressed C-c C-c).
-YuToday at 4:00 PM
-I suspect that my only configuration related to snippets might not be working:
-(after! yas-minor-mode
-  yas-reload-all)
-I'm going to remove it to see if the problem disappear. I confirmed that removing my above configuration has no improvement. The problem is still there.
-
-Actually, the problem is caused by having empty uuid for the snippets, which are
-considered as one snippet, instead of two. That's why only the last one loaded
-would work.
-
-The solution is to have meaningful uuid, or simply removing the line of uuid in
-the snippet.
-
-However, I could not find a way to change the snippet file template, to have no
-uuid by default. Herik's following solution didn't work for me:
-
-"There is no uuid in the file template: https://github.com/hlissner/doom-emacs/blob/develop/modules/editor/file-templates/templates/snippet-mode/__
-
-add it to ~/.doom.d/snippets/snippet-mode/__ and it'll overwrite the built-in template"
-
-Maybe, I didn't set up the file-templates right? Fri Feb  7 10:49:58 2020
-* Minimum setup for plantuml
+** Minimum setup for plantuml
 I found out that the value of plantuml-default-exec-mode and plantuml-jar-path
 must be set as follows in order to export document with plantuml code Wed Feb  5 11:49:42 2020.
 
@@ -346,8 +672,8 @@ also to have the setup of ob-plantuml to have plantuml code to generate
 diagrams.
 
 #+BEGIN_SRC emacs-lisp
-(use-package ob-plantuml
-  :ensure nil
+(use-package! ob-plantuml
+  ;:ensure nil
   :commands
   (org-babel-execute:plantuml)
   )
@@ -357,8 +683,8 @@ This is a great lesson that
 - Doom's changes very fast, may not be stable. It took me 3 hours to figure out
   the solution.
 - I might need to stick to a more stable version.
- 
-* Logging & Drawers
+
+** Logging & Drawers
 #+BEGIN_SRC emacs-lisp
 (setq org-log-state-notes-insert-after-drawers nil
       org-log-into-drawer t
@@ -367,14 +693,14 @@ This is a great lesson that
       org-log-redeadline 'note
       org-log-reschedule 'note)
 #+END_SRC
-* Refiling
+** Refiling
 #+BEGIN_SRC emacs-lisp
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
       org-hide-emphasis-markers nil
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
-* Super Agenda
+** Super Agenda
 #+name:super-zen-mode
 #+begin_src emacs-lisp
 (setq spacemacs-theme-org-agenda-height nil
@@ -388,189 +714,191 @@ This is a great lesson that
       org-agenda-start-with-log-mode nil; with org-agenda-start-with-log-mode being t, all the DONE tasks will be shownt
       org-agenda-prefix-format '((todo . "%-10b") (tags . "%-10b") (agenda . "%-10b")))
 
-(setq org-agenda-custom-commands
-      '(("z" "Super zaen view"
-         ((agenda "" ((org-agenda-span 3) ; 'day would not work, it only show the Saturday of last week
-                              (org-agenda-start-day "-1d")
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                                :time-grid t
-                                :date today
-                                :todo "TODAY"
-                                :scheduled today
-                                :order 1)))))
-          (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Next to do"
-                                 :todo "NEXT"
-                                 :order 1)
-                          (:name "Important"
-                                 :tag "Important"
-                                 :priority "A"
-                                 :order 6)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 2)
-                          (:name "Due Soon"
-                                 :deadline future
-                                 :order 8)
-                          (:name "Overdue"
-                                 :deadline past
-                                 :order 7)
-                          (:name "Assignments"
-                                 :tag "Assignment"
-                                 :order 10)
-                          (:name "Issues"
-                                 :tag "Issue"
-                                 :order 12)
-                          (:name "Projects"
-                                 :tag "Project"
-                                 :order 14)
-                          (:name "Emacs"
-                                 :tag "Emacs"
-                                 :order 13)
-                          (:name "Research"
-                                 :tag "Research"
-                                 :order 15)
-                          (:name "To read"
-                                 :tag "Read"
-                                 :order 30)
-                          (:name "Waiting"
-                                 :todo "WAITING"
-                                 :order 20)
-                          (:name "trivial"
-                                 :priority<= "C"
-                                 :tag ("Trivial" "Unimportant")
-                                 :todo ("SOMEDAY" )
-                                 :order 90)
-                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))
-   ("g" "My General Agenda"
-    (
-     (agenda ""
-             (;; (org-agenda-files (list my/inbox my/project my/birthdays))
-              (org-agenda-span 3) ; 'day would not work, it only show the Saturday of last week
-              (org-agenda-start-day "-1d"))) ; day dose not work
-     (tags "@heavy-@home+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "-@heavy-@home+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT non-heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@heavy-@home+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "-@heavy-@home+TODO=\"TODO\""
-           ((org-agenda-overriding-header "non-heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home+@heavy+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @heavy@home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home-@heavy+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home+@heavy+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@heavy@home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home-@heavy+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
 
-     (tags "TODO={.*}"
-           ((org-agenda-files (list my/inbox))
-            (org-agenda-overriding-header "Inbox")
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-sorting-strategy '(priority-down))))
-     (todo "WAITING"
-           ((org-agenda-overriding-header "Waiting")
-            (org-agenda-sorting-strategy '(priority-down))))
-     (tags "-{^@.*}+TODO={NEXT\\|TODO}"
-           (
-            (org-agenda-overriding-header "Tasks Without Context")
-            (org-agenda-skip-function #'my/org-skip-inode-and-root)
-            (org-agenda-sorting-strategy
-             '(todo-state-down priority-down))))
-     (tags "TODO=\"TODO\"+@office"
-           ((org-agenda-overriding-header "Active Work Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'nottodo '("NEXT"))))))
-     (tags "TODO=\"TODO\"+@office"
-           ((org-agenda-overriding-header "Stuck Work Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'todo '("NEXT"))))))
-     (tags "TODO=\"TODO\"-@office"
-           ((org-agenda-overriding-header "Active Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'nottodo '("NEXT"))))))
-     (tags "TODO=\"TODO\"-@office"
-           ((org-agenda-overriding-header "Stuck Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'todo '("NEXT"))))))
-     (tags "@read_watch_listen+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @read/watch/listen")
-            (org-agenda-sorting-strategy '(priority-down effort-up))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@read_watch_listen+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@read/watch/listen")
-            (org-agenda-sorting-strategy '(priority-down effort-up))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     ))
-        ))
 #+end_src
-* My past agenda views settings
+
+;; (setq org-agenda-custom-commands
+      ';; (("z" "Super zaen view"
+   ;;       ((agenda "" ((org-agenda-span 3) ; 'day would not work, it only show the Saturday of last week
+   ;;                            (org-agenda-start-day "-1d")
+   ;;                    (org-super-agenda-groups
+   ;;                     '((:name "Today"
+   ;;                              :time-grid t
+   ;;                              :date today
+   ;;                              :todo "TODAY"
+   ;;                              :scheduled today
+   ;;                              :order 1)))))
+   ;;        (alltodo "" ((org-agenda-overriding-header "")
+   ;;                     (org-super-agenda-groups
+   ;;                      '((:name "Next to do"
+   ;;                               :todo "NEXT"
+   ;;                               :order 1)
+   ;;                        (:name "Important"
+   ;;                               :tag "Important"
+   ;;                               :priority "A"
+   ;;                               :order 6)
+   ;;                        (:name "Due Today"
+   ;;                               :deadline today
+   ;;                               :order 2)
+   ;;                        (:name "Due Soon"
+   ;;                               :deadline future
+   ;;                               :order 8)
+   ;;                        (:name "Overdue"
+   ;;                               :deadline past
+   ;;                               :order 7)
+   ;;                        (:name "Assignments"
+   ;;                               :tag "Assignment"
+   ;;                               :order 10)
+   ;;                        (:name "Issues"
+   ;;                               :tag "Issue"
+   ;;                               :order 12)
+   ;;                        (:name "Projects"
+   ;;                               :tag "Project"
+   ;;                               :order 14)
+   ;;                        (:name "Emacs"
+   ;;                               :tag "Emacs"
+   ;;                               :order 13)
+   ;;                        (:name "Research"
+   ;;                               :tag "Research"
+   ;;                               :order 15)
+   ;;                        (:name "To read"
+   ;;                               :tag "Read"
+   ;;                               :order 30)
+   ;;                        (:name "Waiting"
+   ;;                               :todo "WAITING"
+   ;;                               :order 20)
+   ;;                        (:name "trivial"
+   ;;                               :priority<= "C"
+   ;;                               :tag ("Trivial" "Unimportant")
+   ;;                               :todo ("SOMEDAY" )
+   ;;                               :order 90)
+   ;;                        (:discard (:tag ("Chore" "Routine" "Daily")))))))))
+   ;; ("g" "My General Agenda"
+   ;;  (
+   ;;   (agenda ""
+   ;;           (;; (org-agenda-files (list my/inbox my/project my/birthdays))
+   ;;            (org-agenda-span 3) ; 'day would not work, it only show the Saturday of last week
+   ;;            (org-agenda-start-day "-1d"))) ; day dose not work
+   ;;   (tags "@heavy-@home+TODO=\"NEXT\""
+   ;;         ((org-agenda-overriding-header "NEXT @heavy")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "-@heavy-@home+TODO=\"NEXT\""
+   ;;         ((org-agenda-overriding-header "NEXT non-heavy")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "@heavy-@home+TODO=\"TODO\""
+   ;;         ((org-agenda-overriding-header "@heavy")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "-@heavy-@home+TODO=\"TODO\""
+   ;;         ((org-agenda-overriding-header "non-heavy")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "@home+@heavy+TODO=\"NEXT\""
+   ;;         ((org-agenda-overriding-header "NEXT @heavy@home")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "@home-@heavy+TODO=\"NEXT\""
+   ;;         ((org-agenda-overriding-header "NEXT @home")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "@home+@heavy+TODO=\"TODO\""
+   ;;         ((org-agenda-overriding-header "@heavy@home")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "@home-@heavy+TODO=\"TODO\""
+   ;;         ((org-agenda-overriding-header "@home")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+
+   ;;   (tags "TODO={.*}"
+   ;;         ((org-agenda-files (list my/inbox))
+   ;;          (org-agenda-overriding-header "Inbox")
+   ;;          (org-tags-match-list-sublevels nil)
+   ;;          (org-agenda-sorting-strategy '(priority-down))))
+   ;;   (todo "WAITING"
+   ;;         ((org-agenda-overriding-header "Waiting")
+   ;;          (org-agenda-sorting-strategy '(priority-down))))
+   ;;   (tags "-{^@.*}+TODO={NEXT\\|TODO}"
+   ;;         (
+   ;;          (org-agenda-overriding-header "Tasks Without Context")
+   ;;          (org-agenda-skip-function #'my/org-skip-inode-and-root)
+   ;;          (org-agenda-sorting-strategy
+   ;;           '(todo-state-down priority-down))))
+   ;;   (tags "TODO=\"TODO\"+@office"
+   ;;         ((org-agenda-overriding-header "Active Work Projects")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-tags-match-list-sublevels nil)
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-leaves)
+   ;;             (org-agenda-skip-subtree-if 'nottodo '("NEXT"))))))
+   ;;   (tags "TODO=\"TODO\"+@office"
+   ;;         ((org-agenda-overriding-header "Stuck Work Projects")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-tags-match-list-sublevels nil)
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-leaves)
+   ;;             (org-agenda-skip-subtree-if 'todo '("NEXT"))))))
+   ;;   (tags "TODO=\"TODO\"-@office"
+   ;;         ((org-agenda-overriding-header "Active Projects")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-tags-match-list-sublevels nil)
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-leaves)
+   ;;             (org-agenda-skip-subtree-if 'nottodo '("NEXT"))))))
+   ;;   (tags "TODO=\"TODO\"-@office"
+   ;;         ((org-agenda-overriding-header "Stuck Projects")
+   ;;          (org-agenda-sorting-strategy '(priority-down))
+   ;;          (org-tags-match-list-sublevels nil)
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-leaves)
+   ;;             (org-agenda-skip-subtree-if 'todo '("NEXT"))))))
+   ;;   (tags "@read_watch_listen+TODO=\"NEXT\""
+   ;;         ((org-agenda-overriding-header "NEXT @read/watch/listen")
+   ;;          (org-agenda-sorting-strategy '(priority-down effort-up))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   (tags "@read_watch_listen+TODO=\"TODO\""
+   ;;         ((org-agenda-overriding-header "@read/watch/listen")
+   ;;          (org-agenda-sorting-strategy '(priority-down effort-up))
+   ;;          (org-agenda-skip-function
+   ;;           '(or
+   ;;             (my/org-skip-inode-and-root)
+   ;;             (org-agenda-skip-entry-if 'scheduled)))))
+   ;;   ))
+   ;;      ))
+** My past agenda views settings
 
 This does not use super agenda.
 
@@ -669,7 +997,7 @@ otherwise, return nil"
 
 #+end_src
 
-* Examples of using org-ql with org-super-agenda
+** Examples of using org-ql with org-super-agenda
 
 ;; TODAY
 (org-ql-block
@@ -682,6 +1010,131 @@ otherwise, return nil"
  Next, need to specify what I want to have for agenda view, or translate my
  current one into a specification.
 Check out the examples in org-ql: https://github.com/alphapapa/org-ql/blob/master/examples.org#agenda-like-view
+
+* User Guide
+
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+* Chinese input inside emacs
+
+#+BEGIN_SRC emacs-lisp
+(use-package! pyim
+  :config
+  (use-package! pyim-basedict
+    :config
+    (pyim-basedict-enable)
+    )
+  (setq default-input-method "pyim"
+        pyim-default-scheme 'microsoft-shuangpin)
+
+  ;; (setq-default pyim-english-input-switch-functions
+  ;;               '(pyim-probe-dynamic-english
+  ;;                 pyim-probe-isearch-mode
+  ;;                 pyim-probe-program-mode
+  ;;                 pyim-probe-org-structure-template))
+  ;; (setq-default pyim-punctuation-half-width-functions
+  ;;                '(pyim-probe-punctuation-line-beginning
+  ;;                  pyim-probe-punctuation-after-punctuation))
+  ;; 开启拼音搜索功能
+  ;; (pyim-isearch-mode 1)
+
+  ;; 使用 popup-el 来绘制选词框, 如果用 emacs26, 建议设置
+  ;; 为 'posframe, 速度很快并且菜单不会变形，不过需要用户
+  ;; 手动安装 posframe 包。
+  (setq pyim-page-tooltip 'popup)
+
+  ;; 选词框显示5个候选词
+  (setq pyim-page-length 9)
+
+  ;; The following keybingings are used in org-mode:
+  ;; :bind
+  ;; (("M-j" . pyim-convert-string-at-point) ;与 pyim-probe-dynamic-english 配合
+  ;;  ("C-;" . pyim-delete-word-from-personal-buffer))
+  )
+#+END_SRC
+
+** Configuration of evil-mode to support input Chinese
+#+BEGIN_SRC emacs-lisp
+;; {{ make IME compatible with evil-mode
+(defun evil-toggle-input-method ()
+  "when toggle on input method, goto evil-insert-state. "
+  (interactive)
+
+  ;; load IME when needed, less memory footprint
+  ;; (unless (featurep 'chinese-pyim)
+  ;;   (require 'chinese-pyim))
+
+  (cond
+   ((and (boundp 'evil-mode) evil-mode)
+    ;; evil-mode
+    (cond
+     ((eq evil-state 'insert)
+      (toggle-input-method))
+     (t
+      (evil-insert-state)
+      (unless current-input-method
+        (toggle-input-method))
+      ))
+    (if current-input-method (message "IME on!")))
+   (t
+    ;; NOT evil-mode, some guy don't use evil-mode at all
+    (toggle-input-method))))
+
+(defadvice evil-insert-state (around evil-insert-state-hack activate)
+  ad-do-it
+  (if current-input-method (message "IME on!")))
+
+(global-set-key (kbd "C-\\") 'evil-toggle-input-method)
+;; }}
+#+END_SRC
+
+* dart-mode for Dart language
+
+It seems that the following is no longer needed:
+(use-package! dart-mode
+  :mode "\\.dart\\'")
+
+* Load personal snippets
+
+I might have found a bug with the latest on the branch of development. For private snippets for org-mode, at ~/.doom.d/snippets/org-mode , only the last one loaded would work. I tried with two snippet definitions, it only have the last one loaded expanded, while the other one not. If you need more details, please let me know. The same problem is with earlier code, say two days ago from Feb. 5, 2020. (I loaded a snippet by visiting its definition file, and pressed C-c C-c).
+YuToday at 4:00 PM
+I suspect that my only configuration related to snippets might not be working:
+(after! yas-minor-mode
+  yas-reload-all)
+I'm going to remove it to see if the problem disappear. I confirmed that removing my above configuration has no improvement. The problem is still there.
+
+Actually, the problem is caused by having empty uuid for the snippets, which are
+considered as one snippet, instead of two. That's why only the last one loaded
+would work.
+
+The solution is to have meaningful uuid, or simply removing the line of uuid in
+the snippet.
+
+However, I could not find a way to change the snippet file template, to have no
+uuid by default. Herik's following solution didn't work for me:
+
+"There is no uuid in the file template: https://github.com/hlissner/doom-emacs/blob/develop/modules/editor/file-templates/templates/snippet-mode/__
+
+add it to ~/.doom.d/snippets/snippet-mode/__ and it'll overwrite the built-in template"
+
+Maybe, I didn't set up the file-templates right? Fri Feb  7 10:49:58 2020
+* Reference
+https://rgoswami.me/dotdoom/config.html#orgc197690
 
 * Note, limitation of Doom config: literate, generated config.el should be less than 481 lines
 otherwise, the top part of the generation would be cut off!

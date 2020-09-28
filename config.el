@@ -1,8 +1,111 @@
 (setq user-full-name "Yu Shen (Aaron)"
-      user-mail-address "yubrshen@gmail.com")
+      user-mail-address "yshen@bart.gov | yubrshen@gmail.com")
 
-(use-package! dart-mode
-  :mode "\\.dart\\'")
+(setq-hook! '(shell-mode-hook eshell-mode-hook) company-idle-delay nil)
+
+(setq org-agenda-files '("~/Dropbox/org/TODOs/tasks.org" "~/Dropbox/org/TODOs/projects.org"))
+
+(use-package! org-journal
+  :after org
+  :init
+  (setq org-journal-dir "~/Dropbox/org/Daily/"
+        org-journal-date-prefix "#+TITLE: "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-date-format "%A, %d %B %Y")
+  :config
+  (setq org-journal-find-file #'find-file-other-window )
+  :bind
+  ("C-c n j" . org-journal-new-entry)
+  ("C-c n s" . evil-save-modified-and-close)
+  :defer t
+  )
+
+(setq org-journal-enable-agenda-integration t)
+
+(setq org-agenda-custom-commands
+      '(("z" "Zen View"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today "
+                                :time-grid t
+                                :date today
+                                :todo "TODAY"
+                                :scheduled today
+                                :order 1)
+                        ;; (:discard (:anything t))
+                        ))))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Next"
+                                 :todo "NEXT"
+                                 :order 1)
+                          (:name "Important"
+                                 :tag "Important"
+                                 :priority "A"
+                                 :order 6)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 2)
+                          (:name "Due Soon"
+                                 :deadline future
+                                 :order 8)
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 7)
+                          (:name "Church"
+                                 :tag "church"
+                                 :order 32)
+                          (:name "BART"
+                                 :tag "bart"
+                                 :order 10)
+                          (:name "Issues"
+                                 :tag "Issue"
+                                 :order 12)
+                          (:name "Projects"
+                                 :tag "Project"
+                                 :order 14)
+                          (:name "Emacs"
+                                 :tag "Emacs"
+                                 :order 13)
+                          (:name "Research"
+                                 :tag "Research"
+                                 :order 15)
+                          (:name "To read"
+                                 :tag "Read"
+                                 :order 30)
+                          (:name "Waiting"
+                                 :todo "WAITING"
+                                 :order 20)
+                          (:name "trivial"
+                                 :priority<= "C"
+                                 :tag ("Trivial" "Unimportant")
+                                 :todo ("SOMEDAY" )
+                                 :order 90)
+                          ;; (:discard ;; (:tag ("Chore" "Routine" "Daily"))
+                          ;;  (:anything t)
+                          ;;  )
+                          ))))
+          ))))
+
+(setq doom-font (font-spec :family "Iosevka Term SS04" :size 16) ; 24
+      doom-big-font (font-spec :family "Iosevka Term SSO4" :size 36)
+            ;; doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
+            ;; doom-serif-font (font-spec :family "ETBembo" :size 24)
+            )
+
+(setq doom-theme 'doom-gruvbox-light)
+
+(setq doom-modeline-modal-icon nil)
+
+(setq display-line-numbers-type t)
+
+(setq org-directory "~/Dropbox/org/"
+      org-image-actual-width nil
+      +org-export-directory "~/.export/"
+      org-archive-location "~/Dropbox/org/archive.org::datetree/"
+      org-default-notes-file "~/Dropbox/org/inbox.org"
+      projectile-project-search-path '("~/")
+      )
 
 (setq
       org-agenda-diary-file "~/Dropbox/org/diary.org"
@@ -15,7 +118,7 @@
        my/project "~/Dropbox/org/tasks.org"
        my/someday "~/Dropbox/org/someday.org"
        my/birthdays "~/Dropbox/org/birthdays.org"
-       org-agenda-files (list my/project my/inbox)
+       ;org-agenda-files (list my/project my/inbox)
       )
 
 (after! org (setq org-capture-templates
@@ -118,14 +221,63 @@
 \*Describe in your own words how your day was*:
 - %?")))
 
-(setq org-directory "~/Dropbox/org/"
-      org-image-actual-width nil
-      +org-export-directory "~/.export/"
-      org-archive-location "~/Dropbox/org/archive.org::datetree/"
-      org-default-notes-file "~/Dropbox/org/inbox.org"
-      projectile-project-search-path '("~/")
+;; (use-package! org-roam
+;;   :commands (org-roam-insert org-roam-find-file org-roam)
+;;   :init
+;;   (setq org-roam-directory "~/Dropbox/org/zettelkasten")
+;;   (map! :leader
+;;         :prefix "n"
+;;         :desc "Org-Roam-Insert" "i" #'org-roam-insert
+;;         :desc "Org-Roam-Find"   "/" #'org-roam-find-file
+;;         :desc "Org-Roam-Buffer" "r" #'org-roam)
+;;   :config
+;;   (org-roam-mode +1)
 
-      )
+(use-package! zetteldeft
+  :after deft
+:init
+(setq deft-directory "~/Dropbox/org"
+      ; "~"                ; ~/ didn't work. I want to try be able to search all my org files my computer
+      deft-recursive t)
+(general-define-key
+  :prefix "SPC"
+  :non-normal-prefix "C-SPC"
+  :states '(normal visual motion emacs)
+  :keymaps 'override
+  "d"  '(nil :wk "deft")
+  "dd" '(deft :wk "deft")
+  "dD" '(zetteldeft-deft-new-search :wk "new search")
+  "dR" '(deft-refresh :wk "refresh")
+  "ds" '(zetteldeft-search-at-point :wk "search at point")
+  "dc" '(zetteldeft-search-current-id :wk "search current id")
+  "df" '(zetteldeft-follow-link :wk "follow link")
+  "dF" '(zetteldeft-avy-file-search-ace-window :wk "avy file other window")
+  "dl" '(zetteldeft-avy-link-search :wk "avy link search")
+  "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
+  "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  "di" '(zetteldeft-find-file-id-insert :wk "insert id")
+  "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
+  "do" '(zetteldeft-find-file :wk "find file")
+  "dn" '(zetteldeft-new-file :wk "new file")
+  "dN" '(zetteldeft-new-file-and-link :wk "new file & link")
+  "dr" '(zetteldeft-file-rename :wk "rename")
+  "dx" '(zetteldeft-count-words :wk "count words"))
+  )
+
+(setq org-html-head-include-scripts t
+      org-export-with-toc t
+      org-export-with-author t
+      org-export-headline-levels 5
+      org-export-with-drawers t
+      org-export-with-email t
+      org-export-with-footnotes t
+      org-export-with-latex t
+      org-export-with-section-numbers nil
+      org-export-with-properties t
+      org-export-with-smart-quotes t)
+
+;(after! org (add-to-list 'org-export-backends 'pandoc))
+(after! org (add-to-list 'org-export-backends 'pdf))
 
 (after! ox-latex
   (add-to-list 'org-latex-classes
@@ -143,23 +295,80 @@
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}"))))
 
+;; (after! ox-latex
+;;   (setq org-latex-pdf-process
+;;             '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -interaction nonstopmode -output-directory %o %f"
+;;               "xelatex -interaction nonstopmode -output-directory %o %f"
+;;               ;;"rm -fr %b.out %b.log %b.tex auto"
+;;               )))
 (after! ox-latex
-  (setq org-latex-pdf-process '("xelatex \\\\nonstopmode\\\\input %f")))
+  (setq org-latex-pdf-process
+            '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "xelatex -interaction nonstopmode -output-directory %o %f"
+              "xelatex -interaction nonstopmode -output-directory %o %f"
+              "xelatex -interaction nonstopmode -output-directory %o %f"
+              ;"rm -fr %b.out %b.log %b.tex auto"
+              )))
 
-(setq org-html-head-include-scripts t
-      org-export-with-toc t
-      org-export-with-author t
-      org-export-headline-levels 5
-      org-export-with-drawers t
-      org-export-with-email t
-      org-export-with-footnotes t
-      org-export-with-latex t
-      org-export-with-section-numbers nil
-      org-export-with-properties t
-      org-export-with-smart-quotes t)
+(after! org
+  (setq org-babel-default-header-args:jupyter-python '((:async . "yes")
+                                                       (:session . "py")
+                                                       (:kernel . "python3"))))
+(use-package! ox-ipynb
+  :after ox)
 
-;(after! org (add-to-list 'org-export-backends 'pandoc))
-(after! org (add-to-list 'org-export-backends 'pdf))
+(use-package conda
+ :config (progn
+           (conda-env-initialize-interactive-shells)
+           (conda-env-initialize-eshell)
+           (conda-env-autoactivate-mode t)
+           (setq conda-env-home-directory (expand-file-name "~/.conda/"))
+           (custom-set-variables '(conda-anaconda-home "/home/yubrshen/anaconda3/"))))
+
+(use-package! org-re-reveal
+  ;:custom
+  ;(setq org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
+  ;;       org-reveal-title-slide nil
+  ;      )
+)
+
+(after! org-re-reveal
+  (setq org-re-reveal-width 1900        ; I like slide as wide as possible
+        org-re-reveal-height 1200
+        org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
+        org-reveal-title-slide nil
+        )
+  )
+
+;(setq org-roam-directory "~/Dropbox/org/org-roam")
+(after! org-roam
+        (setq org-roam-ref-capture-templates
+            '(("r" "ref" plain (function org-roam-capture--get-point)
+               "%?"
+               :file-name "websites/${slug}"
+               :head "#+TITLE: ${title}
+    #+ROAM_KEY: ${ref}
+    - source :: ${ref}"
+               :unnarrowed t))
+            org-roam-db-location
+            ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
+            "~/.emacs.d/.cache/org-roam.db"
+            org-roam-directory "~/Dropbox/org/org-roam"
+            )
+        (map! :leader
+            :prefix "n"
+            :desc "org-roam" "l" #'org-roam
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+            :desc "org-roam-find-file" "f" #'org-roam-find-file
+            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+            :desc "org-roam-capture" "c" #'org-roam-capture))
 
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)
@@ -170,14 +379,14 @@
         ("DONE" :foreground "slategrey" :weight bold))))
 
 (after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(d!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(D!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
 
 (after! plantuml-mode
   (setq plantuml-default-exec-mode 'jar
         plantuml-jar-path (expand-file-name "~/bin/plantuml.jar")))
 
-(use-package ob-plantuml
-  :ensure nil
+(use-package! ob-plantuml
+  ;:ensure nil
   :commands
   (org-babel-execute:plantuml)
   )
@@ -204,188 +413,6 @@
       org-agenda-compact-blocks t ; must be t to have the TODO'S and NEXT's
       org-agenda-start-with-log-mode nil; with org-agenda-start-with-log-mode being t, all the DONE tasks will be shownt
       org-agenda-prefix-format '((todo . "%-10b") (tags . "%-10b") (agenda . "%-10b")))
-
-(setq org-agenda-custom-commands
-      '(("z" "Super zaen view"
-         ((agenda "" ((org-agenda-span 3) ; 'day would not work, it only show the Saturday of last week
-                              (org-agenda-start-day "-1d")
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                                :time-grid t
-                                :date today
-                                :todo "TODAY"
-                                :scheduled today
-                                :order 1)))))
-          (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Next to do"
-                                 :todo "NEXT"
-                                 :order 1)
-                          (:name "Important"
-                                 :tag "Important"
-                                 :priority "A"
-                                 :order 6)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 2)
-                          (:name "Due Soon"
-                                 :deadline future
-                                 :order 8)
-                          (:name "Overdue"
-                                 :deadline past
-                                 :order 7)
-                          (:name "Assignments"
-                                 :tag "Assignment"
-                                 :order 10)
-                          (:name "Issues"
-                                 :tag "Issue"
-                                 :order 12)
-                          (:name "Projects"
-                                 :tag "Project"
-                                 :order 14)
-                          (:name "Emacs"
-                                 :tag "Emacs"
-                                 :order 13)
-                          (:name "Research"
-                                 :tag "Research"
-                                 :order 15)
-                          (:name "To read"
-                                 :tag "Read"
-                                 :order 30)
-                          (:name "Waiting"
-                                 :todo "WAITING"
-                                 :order 20)
-                          (:name "trivial"
-                                 :priority<= "C"
-                                 :tag ("Trivial" "Unimportant")
-                                 :todo ("SOMEDAY" )
-                                 :order 90)
-                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))
-   ("g" "My General Agenda"
-    (
-     (agenda ""
-             (;; (org-agenda-files (list my/inbox my/project my/birthdays))
-              (org-agenda-span 3) ; 'day would not work, it only show the Saturday of last week
-              (org-agenda-start-day "-1d"))) ; day dose not work
-     (tags "@heavy-@home+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "-@heavy-@home+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT non-heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@heavy-@home+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "-@heavy-@home+TODO=\"TODO\""
-           ((org-agenda-overriding-header "non-heavy")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home+@heavy+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @heavy@home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home-@heavy+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home+@heavy+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@heavy@home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@home-@heavy+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@home")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-
-     (tags "TODO={.*}"
-           ((org-agenda-files (list my/inbox))
-            (org-agenda-overriding-header "Inbox")
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-sorting-strategy '(priority-down))))
-     (todo "WAITING"
-           ((org-agenda-overriding-header "Waiting")
-            (org-agenda-sorting-strategy '(priority-down))))
-     (tags "-{^@.*}+TODO={NEXT\\|TODO}"
-           (
-            (org-agenda-overriding-header "Tasks Without Context")
-            (org-agenda-skip-function #'my/org-skip-inode-and-root)
-            (org-agenda-sorting-strategy
-             '(todo-state-down priority-down))))
-     (tags "TODO=\"TODO\"+@office"
-           ((org-agenda-overriding-header "Active Work Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'nottodo '("NEXT"))))))
-     (tags "TODO=\"TODO\"+@office"
-           ((org-agenda-overriding-header "Stuck Work Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'todo '("NEXT"))))))
-     (tags "TODO=\"TODO\"-@office"
-           ((org-agenda-overriding-header "Active Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'nottodo '("NEXT"))))))
-     (tags "TODO=\"TODO\"-@office"
-           ((org-agenda-overriding-header "Stuck Projects")
-            (org-agenda-sorting-strategy '(priority-down))
-            (org-tags-match-list-sublevels nil)
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-leaves)
-               (org-agenda-skip-subtree-if 'todo '("NEXT"))))))
-     (tags "@read_watch_listen+TODO=\"NEXT\""
-           ((org-agenda-overriding-header "NEXT @read/watch/listen")
-            (org-agenda-sorting-strategy '(priority-down effort-up))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     (tags "@read_watch_listen+TODO=\"TODO\""
-           ((org-agenda-overriding-header "@read/watch/listen")
-            (org-agenda-sorting-strategy '(priority-down effort-up))
-            (org-agenda-skip-function
-             '(or
-               (my/org-skip-inode-and-root)
-               (org-agenda-skip-entry-if 'scheduled)))))
-     ))
-        ))
 
 (defun my/org-skip-inode-and-root ()
   "
@@ -478,3 +505,69 @@ otherwise, return nil"
           "  :PROPERTIES:\n"
           "  :REPEAT_TO_STATE: NEXT\n"
           "  :RESET_CHECK_BOXES: t\n  :END:\n  %U\n  %a"))
+
+(use-package! pyim
+  :config
+  (use-package! pyim-basedict
+    :config
+    (pyim-basedict-enable)
+    )
+  (setq default-input-method "pyim"
+        pyim-default-scheme 'microsoft-shuangpin)
+
+  ;; (setq-default pyim-english-input-switch-functions
+  ;;               '(pyim-probe-dynamic-english
+  ;;                 pyim-probe-isearch-mode
+  ;;                 pyim-probe-program-mode
+  ;;                 pyim-probe-org-structure-template))
+  ;; (setq-default pyim-punctuation-half-width-functions
+  ;;                '(pyim-probe-punctuation-line-beginning
+  ;;                  pyim-probe-punctuation-after-punctuation))
+  ;; 开启拼音搜索功能
+  ;; (pyim-isearch-mode 1)
+
+  ;; 使用 popup-el 来绘制选词框, 如果用 emacs26, 建议设置
+  ;; 为 'posframe, 速度很快并且菜单不会变形，不过需要用户
+  ;; 手动安装 posframe 包。
+  (setq pyim-page-tooltip 'popup)
+
+  ;; 选词框显示5个候选词
+  (setq pyim-page-length 9)
+
+  ;; The following keybingings are used in org-mode:
+  ;; :bind
+  ;; (("M-j" . pyim-convert-string-at-point) ;与 pyim-probe-dynamic-english 配合
+  ;;  ("C-;" . pyim-delete-word-from-personal-buffer))
+  )
+
+;; {{ make IME compatible with evil-mode
+(defun evil-toggle-input-method ()
+  "when toggle on input method, goto evil-insert-state. "
+  (interactive)
+
+  ;; load IME when needed, less memory footprint
+  ;; (unless (featurep 'chinese-pyim)
+  ;;   (require 'chinese-pyim))
+
+  (cond
+   ((and (boundp 'evil-mode) evil-mode)
+    ;; evil-mode
+    (cond
+     ((eq evil-state 'insert)
+      (toggle-input-method))
+     (t
+      (evil-insert-state)
+      (unless current-input-method
+        (toggle-input-method))
+      ))
+    (if current-input-method (message "IME on!")))
+   (t
+    ;; NOT evil-mode, some guy don't use evil-mode at all
+    (toggle-input-method))))
+
+(defadvice evil-insert-state (around evil-insert-state-hack activate)
+  ad-do-it
+  (if current-input-method (message "IME on!")))
+
+(global-set-key (kbd "C-\\") 'evil-toggle-input-method)
+;; }}

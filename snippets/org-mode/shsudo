@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: shsudo
+# key: shsudo
+# condition: t
+# --
+#+begin_src sh :results output verbatim :dir (concat "/sudo::" (expand-file-name "."))
+$0
+#+end_src

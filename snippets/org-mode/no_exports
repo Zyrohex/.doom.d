@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: no_exports
+# key: trigger-key
+# condition: t
+# --
+ :exports none

@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Full width figure in LaTeX
+# key: ffg
+# condition: t      
+# --
+\begin{figure*}[htbp]
+  \includegraphics[width=\linewidth]{$0}%
+  \caption{$1}%
+  \label{fig:$2}%
+\end{figure*}

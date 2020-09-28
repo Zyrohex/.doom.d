@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: marginfigure_in_LaTeX
+# key: mfg
+# condition: t
+# --
+\begin{marginfigure}[htbp]
+  \includegraphics[width=\linewidth]{$0}
+  \caption{$1}
+  \label{fig:$2}
+\end{marginfigure}

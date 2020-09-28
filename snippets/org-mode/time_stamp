@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: time_stamp
+# key: ts
+# condition: t
+# --
+`(current-time-string)` $0
