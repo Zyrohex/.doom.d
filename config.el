@@ -13,6 +13,7 @@
       :desc "Move left window" "<left>" #'evil-window-left
       :desc "Move right window" "<right>" #'evil-window-right
       :prefix ("s" . "+search")
+      :desc "Outline" "o" #'counsel-outline
       :desc "Counsel ripgrep" "d" #'counsel-rg
       :desc "Swiper All" "@" #'swiper-all
       :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
@@ -23,6 +24,11 @@
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file)
 
+(map! :after org-agenda
+      :map org-agenda-mode-map
+      :localleader
+      :desc "Filter" "f" #'org-agenda-filter)
+
 (when (equal (window-system) nil)
   (and
    (bind-key "C-<down>" #'+org/insert-item-below)
@@ -30,6 +36,7 @@
    (setq doom-font (font-spec :family "Input Mono" :size 20))))
 
 (setq diary-file "~/.org/diary.org")
+(setq org-directory "~/.org/")
 
 (when (equal system-type 'gnu/linux)
   (setq doom-font (font-spec :family "Fira Code" :size 18)
@@ -37,23 +44,21 @@
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
-(defun zyro/monitor-width-profile-setup ()
-  "Calcuate or determine width of display by Dividing height BY width and then setup window configuration to adapt to monitor setup"
-  (let ((size (* (/ (float (display-pixel-height)) (float (display-pixel-width))) 10)))
-    (when (= size 2.734375)
-      (set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t)
-      (set-popup-rule! "*helm*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*Org Agenda*" :side 'left :size .25 :select t))))
+
+; TODO Re-write new function for popup profile setup.
+(after! org (set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t)
+  (set-popup-rule! "*helm*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'left :size .35 :select t))
 
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))
-                  org-ellipsis "▼"))
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+;                  org-ellipsis "▼"))
 
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("∴")
+  (setq org-superstar-headline-bullets-list '("◉" "●" "○")
         org-superstar-item-bullet-alist nil))
 
 (defun zyro/rifle-roam ()
@@ -87,6 +92,10 @@
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("p" "New Project" plain (file +nick/org-capture-file-picker)
          (file "~/.doom.d/templates/template-projects.org"))
+        ("n" "Note on headline" plain (function +nick/org-end-of-headline)
+         "%?" :empty-lines-before 1 :empty-lines-after 1)
+        ("q" "quick note to file" entry (function +nick/org-capture-weeklies)
+         "* %?" :empty-lines-before 1 :empty-lines-after 1)
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
         ("l" "Ledger Transaction" plain (file "~/.org/gtd/finances.ledger")
@@ -127,8 +136,25 @@
 (require 'org-id)
 (setq org-link-file-path-type 'relative)
 
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "HOLD(h)" "|" "DONE(d)" "KILL(k)")))
+(custom-declare-face '+org-todo-active  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
+(custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
+(custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
+(custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-keyword-face org-todo)))) "")
+
+  (setq org-todo-keywords
+        '((sequence
+           "TODO(t)"  ; A task that needs doing & is ready to do
+           "PROJ(p)"  ; Project with multiple task items.
+           "NEXT(n)"  ; Task is next to be worked on.
+           "WAIT(w)"  ; Something external is holding up this task
+           "|"
+           "DONE(d)"  ; Task successfully completed
+           "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable
+        org-todo-keyword-faces
+        '(("WAIT" . +org-todo-onhold)
+          ("PROJ" . +org-todo-project)
+          ("TODO" . +org-todo-active)
+          ("NEXT" . +org-todo-next)))
 
 (after! org (setq org-log-state-notes-insert-after-drawers nil))
 
@@ -516,55 +542,95 @@
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 
+(setq side-notes-file "notes.org")
+(setq side-notes-secondary-file "notes2.org")
+
 (org-super-agenda-mode t)
 
 (setq org-agenda-custom-commands
-      '(("g" "Getting things done (GTD)"
-         ((agenda ""
-                  ((org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
-                   (org-agenda-start-day (org-today))
-                   (org-agenda-span '1)))
-          (tags-todo "-project/NEXT"
-                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
-                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-                 (org-agenda-overriding-header "Next")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (tags-todo "project"
-                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
-                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-                 (org-agenda-overriding-header "Projects")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (tags-todo "-project/TODO"
-                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
-                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-                 (org-agenda-overriding-header "Inbox")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (todo "-project/HOLD"
-                ((org-agenda-files (append (list "~/.org/gtd/next.org")))
-                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-                 (org-agenda-overriding-header "On Hold")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-          (tags "CLOSED>=\"<today>\""
-                ((org-agenda-overriding-header "\nCompleted today\n")
-                 (org-agenda-prefix-format " %-12:c [%-5e] %(my-agenda-prefix) ")
-                 (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))))))
-        ("i" "Inbox"
-         ((todo ""
-                ((org-agenda-files (list "~/.org/gtd/inbox.org"))
-                 (org-super-agenda-groups '((:auto-ts t)))))))
-        ("x" "Someday"
-         ((todo ""
-                ((org-agenda-files (list "~/.org/gtd/incubate.org"))
-                 (org-super-agenda-groups
-                  '((:auto-parent t)))))))))
+      (quote (("N" "Notes" tags "NOTE"
+               ((org-agenda-overriding-header "Notes")
+                (org-tags-match-list-sublevels t)))
+              ("h" "Habits" tags-todo "STYLE=\"habit\""
+               ((org-agenda-overriding-header "Habits")
+                (org-agenda-sorting-strategy
+                 '(todo-state-down effort-up category-keep))))
+              ("i" "Inbox"
+               ((tags "REFILE"
+                      ((org-agenda-overriding-header "Tasks to Refile")
+                       (org-tags-match-list-sublevels nil)))))
+              ("w" "Master Agenda"
+               ((agenda ""
+                        ((org-agenda-span '1)
+                         (org-agenda-start-day (org-today))))
+                (tags-todo "-CANCELLED/!"
+                           ((org-agenda-overriding-header "Stuck Projects")
+                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-HOLD-CANCELLED/!"
+                           ((org-agenda-overriding-header "Projects")
+                            (org-agenda-skip-function 'bh/skip-non-projects)
+                            (org-tags-match-list-sublevels 'indented)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-CANCELLED/!NEXT"
+                           ((org-agenda-overriding-header (concat "Project Next Tasks"
+                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                      ""
+                                                                    " (including WAITING and SCHEDULED tasks)")))
+                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                            (org-tags-match-list-sublevels t)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-sorting-strategy
+                             '(todo-state-down effort-up category-keep))))
+                (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
+                           ((org-agenda-overriding-header (concat "Project Subtasks"
+                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                      ""
+                                                                    " (including WAITING and SCHEDULED tasks)")))
+                            (org-agenda-skip-function 'bh/skip-non-project-tasks)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-REFILE-CANCELLED-#waiting-#hold-#monitor/!"
+                           ((org-agenda-overriding-header (concat "Standalone Tasks"
+                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                      ""
+                                                                    " (including WAITING and SCHEDULED tasks)")))
+                            (org-agenda-skip-function 'bh/skip-project-tasks)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-CANCELLED+#waiting|#hold|#monitor/!"
+                           ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
+                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                      ""
+                                                                    " (including WAITING and SCHEDULED tasks)")))
+                            (org-agenda-skip-function 'bh/skip-non-tasks)
+                            (org-tags-match-list-sublevels nil)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
+                (tags "-REFILE/"
+                      ((org-agenda-overriding-header "Tasks to Archive")
+                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+                       (org-tags-match-list-sublevels nil))))
+               nil))))
 
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
   (load secrets)))
 
 (load! "customs.el")
+(load! "org-helpers.el")
 
-(defun +nick/org-insert-timestamp ()
+(defun nm/org-insert-timestamp ()
   "Insert active timestamp at POS."
   (interactive)
   (insert (format "<%s> " (format-time-string "%Y-%m-%d %H:%M:%p"))))
@@ -574,67 +640,138 @@
       :prefix ("j" . "nicks functions")
       :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
 
-(defun +nick/org-capture-file-picker ()
+(defun nm/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))
 
-(defun +nick/org-end-of-headline()
+(defun nm/org-get-headline-property (arg)
+  "Extract property from headline and return results."
+  (interactive)
+  (org-entry-get nil arg t))
+
+(defun nm/org-get-headline-properties ()
+  "Get headline properties for ARG."
+  (org-back-to-heading)
+  (org-element-at-point))
+
+(defun nm/org-get-headline-title ()
+  "Get headline title from current headline."
+  (interactive)
+  (org-element-property :title (+nick/org-get-headline-properties)))
+
+;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
+
+(defun nm/update-task-tags ()
+  "Update all child tasks in buffer that are missing a TAG value."
+  (interactive)
+  (org-show-all)
+  (while (not (eobp))
+    (progn
+      (outline-next-heading)
+      (org-narrow-to-subtree)
+      (unless (eobp)
+        (if (and (oh/is-task-p) (null (org-get-tags)))
+            (counsel-org-tag)))
+      (widen))))
+
+(setq org-tasks-properties-metadata (list "SOURCE"))
+
+(defun nm/org-clarify-task-properties (arg)
+  "Update the metadata for a task headline."
+  (unless (equal major-mode 'org-mode)
+    (error "Not visiting an org-mode buffer."))
+  (save-restriction
+    (save-excursion
+      (org-show-all)
+      (goto-char (point-min))
+      (let ((props arg))
+        (while (not (eobp))
+          (outline-next-heading)
+          (org-narrow-to-subtree)
+          (unless (eobp)
+            (when (or (and (oh/is-project-p) (oh/is-todo-p)) (and (oh/is-task-p) (null (oh/has-parent-project-p)) (null (oh/has-subtask-p))))
+              (mapcar (lambda (props)
+                        (when (null (org-entry-get nil (upcase props) t))
+                          (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
+            (when (and (oh/is-todo-p) (not (oh/is-task-p)))
+              (org-todo "PROJ"))
+            (widen)))))))
+
+(defun nm/org-assign-tasks-proj ()
+  "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword."
+  (interactive)
+  (save-excursion
+    (goto-line 1)
+    (while (not (eobp))
+      (outline-next-heading)
+      (unless (eobp)
+        (when (and (oh/is-todo-p) (not (oh/is-task-p)))
+          (org-todo "PROJ"))
+        (when (and (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
+          (org-todo "TODO"))))))
+
+(add-hook 'before-save-hook #'nm/org-assign-tasks-proj)
+
+  (defun nm/org-clarify-metadata ()
+    "Runs the clarify-task-metadata function with ARG being a list of property values."
+    (interactive)
+    (+nick/org-clarify-task-properties org-tasks-properties-metadata))
+
+  (map! :after org
+        :map org-mode-map
+        :localleader
+        :prefix ("j" . "nicks functions")
+        :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
+
+(defun nm/org-capture-system ()
+  "Capture stuff."
+  (interactive)
+  (save-restriction
+    (let ((org-capture-templates
+           '(("h" "headline capture" entry (function counsel-outline)
+              "* %?" :empty-lines-before 1 :empty-lines-after 1)
+             ("p" "plain capture" plain (function end-of-buffer)
+              "<%<%Y-%m-%d %H:%M>> %?" :empty-lines-before 1 :empty-lines-after 1))))
+      (find-file-other-window (read-file-name "file: " "~/.org/"))
+      (if (counsel-outline-candidates)
+          (org-capture nil "h"))
+      (org-capture nil "p"))))
+
+(defun nm/org-capture-to-file ()
+  "Capture stuff."
+  (interactive)
+  (save-restriction
+    (let ((org-capture-templates
+           '(("h" "headline capture" entry (function counsel-outline)
+              "* %?" :empty-lines-before 1 :empty-lines-after 1)
+             ("p" "plain capture" plain (function end-of-buffer)
+              "<%<%Y-%m-%d %H:%M>> %?" :empty-lines-before 1 :empty-lines-after 1))))
+      (org-capture nil "h"))))
+
+(bind-key "<f7>" #'nm/org-capture-to-file)
+
+(defun nm/org-capture-weeklies ()
+  "Find weeklies file and call counsel-outline."
+  (interactive)
+  (org-open-file "~/.org/gtd/weeklies.org")
+  (counsel-outline))
+
+(defun nm/org-end-of-headline()
   "Move to end of current headline"
   (interactive)
   (outline-next-heading)
   (forward-char -1))
 
-(defun +nick/org-get-headline-property (arg)
-  "Extract property from headline and return results."
+; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
+
+(defun nm/emacs-change-font ()
+  "Change font based on available font list."
   (interactive)
-  (org-entry-get nil arg t))
+  (let ((font (ivy-completing-read "font: " (font-family-list))))
+    (setq doom-font (font-spec :family font :size 18)
+          doom-big-font (font-spec :family font :size 24)))
+  (doom/reload-font))
 
-(defun +nick/org-get-headline-title ()
-  "Get headline title from current headline."
-  (interactive)
-  (org-element-property :title (+nick/org-get-headline-properties)))
-
-(setq org-tasks-properties-metadata (list "Source" "Type"))
-
-(defun +nick/org-clarify-task-properties (arg)
-  "Update the metadata for a task headline."
-  ; TODO Add when conditions to differentiate between org-mode and org-agenda-mode.
-  (let ((props arg))
-    (while (not (eobp))
-      (outline-next-heading)
-      (org-narrow-to-subtree)
-      (when (not (null (org-entry-is-todo-p)))
-        (mapcar (lambda (props)
-                  (when (null (org-entry-get nil (upcase props) t))
-                    (org-set-property (upcase props) (org-read-property-value (upcase props))))) props)) ; TODO Add if condition to pass optional argument to SEARCH or IGNORE inherited properties.
-      (widen))))
-
-(defun +nick/org-clarify-task-metadata (arg)
-  "Runs through buffer and prompts to update property field if NIL."
-  ; TODO Remove this function and move this to the main function.
-  (save-excursion
-    (save-restriction
-      (goto-line 1)
-      (org-show-all)
-      (+nick/org-clarify-task-properties arg))))
-
-(defun +nick/org-clarify-metadata ()
-  "Runs the clarify-task-metadata function with ARG being a list of property values."
-  (interactive)
-  (+nick/org-clarify-task-metadata org-tasks-properties-metadata))
-
-(map! :after org
-      :map org-mode-map
-      :localleader
-      :prefix ("j" . "nicks functions")
-      :desc "Clarify properties" "c" #'+nick/org-clarify-metadata)
-
-(defun +nick/org-get-headline-properties ()
-  "Get headline properties for ARG."
-  (org-back-to-heading)
-  (org-element-at-point))
-
-(after! org (zyro/monitor-width-profile-setup)
-  (toggle-frame-fullscreen)
+(after! org (toggle-frame-fullscreen)
   (setq doom-theme 'doom-one))
