@@ -699,7 +699,7 @@
             (widen)))))))
 
 (defun nm/org-assign-tasks-proj ()
-  "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword."
+  "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword and vice versa."
   (interactive)
   (save-excursion
     (goto-line 1)

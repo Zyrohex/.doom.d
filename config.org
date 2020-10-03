@@ -8,7 +8,7 @@
 1. [2020-09-25 Fri]
    a. Added new clarify function for task items.. You can define your property values to the variable ~org-tasks-properties-metadata~, then call ~+nick/org-clarify-metadata~ and it will PROMPT to update for tasks that are missing a value.
       a. You can also define multiple lists, and pass the variable as an argument to ~+nick/org-clarify-task-properties~, as such ~(+nick/org-clarify-task-properties org-tasks-properties-lists2)~
-   b. Added ~nm/
+   b. Added ~nm/org-assign-tasks-proj~ function to update task ~org-todo-keyword~ as PROJ when child-task exist and vice-versa. This function has been set as a ~before-save-hook~.
 2. [2020-08-26 Wed]
    a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
    b. Added *FiraCode* fonts (see [[Requirements]])
@@ -881,7 +881,7 @@ Clarify task will take a list of property fields and pass them to ~+nick/org-cla
             (widen)))))))
 
 (defun nm/org-assign-tasks-proj ()
-  "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword."
+  "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword and vice versa."
   (interactive)
   (save-excursion
     (goto-line 1)
