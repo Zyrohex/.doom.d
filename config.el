@@ -80,7 +80,7 @@
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
-                  org-agenda-window-setup 'other-window
+                  org-agenda-window-setup 'current-window
                   org-enforce-todo-checkbox-dependencies nil
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))

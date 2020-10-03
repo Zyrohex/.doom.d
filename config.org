@@ -5,30 +5,30 @@
 [[file:attachments/workspace.png]]
 
 * New Changes
-1. [2020-09-25 Fri]
-   a. Added new clarify function for task items.. You can define your property values to the variable ~org-tasks-properties-metadata~, then call ~nm/org-clarify-metadata~ and it will PROMPT to update for tasks that are missing a value.
-      a. You can also define multiple lists, and pass the variable as an argument to ~nm/org-clarify-task-properties~, as such ~(nm/org-clarify-task-properties org-tasks-properties-lists2)~
-   b. Added ~nm/org-assign-tasks-proj~ function to update task ~org-todo-keyword~ as PROJ when child-task exist and vice-versa. This function has been set as a ~before-save-hook~. \\
-      [[file:attachments/proj-tasks-update.gif]]
-2. [2020-08-26 Wed]
-   a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
-   b. Added *FiraCode* fonts (see [[Requirements]])
-3. [2020-07-22 Wed]
-   a. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
-   b. Moved GTD Module to [[file:gtd.el]]
-   c. Configure your variable settings in Setting up my GTD Methodology
-4. [2020-06-21 Sun]
-   a. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
-   b. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
-   c. added org-roam-server
-5. [2020-06-02 Tue]
-   a. Added =org-roam=
-   b. Added agenda schdules faces (thanks to )
-   c. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
-   d. Agenda-Hook to narrow on current subtree
-   e. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
-   f. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
-   g. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
+** [2020-09-25 Fri]
+a. Added new clarify function for task items.. You can define your property values to the variable ~org-tasks-properties-metadata~, then call ~nm/org-clarify-metadata~ and it will PROMPT to update for tasks that are missing a value.
+   a. You can also define multiple lists, and pass the variable as an argument to ~nm/org-clarify-task-properties~, as such ~(nm/org-clarify-task-properties org-tasks-properties-lists2)~
+b. Added ~nm/org-assign-tasks-proj~ function to update task ~org-todo-keyword~ as PROJ when child-task exist and vice-versa. This function has been set as a ~before-save-hook~. \\
+   [[file:attachments/proj-tasks-update.gif]]
+** [2020-08-26 Wed]
+a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
+b. Added *FiraCode* fonts (see [[Requirements]])
+** [2020-07-22 Wed]
+a. Added new functions specifically for GTD workflow, this will require some changes to fit your needs:
+b. Moved GTD Module to [[file:gtd.el]]
+c. Configure your variable settings in Setting up my GTD Methodology
+** [2020-06-21 Sun]
+a. metrics-tracker + capture-template for habit tracker (see ~/.doom.d/templates/habitstracker.org)
+b. new templates for captures, breakfix, meeting-notes, diary and more... (check the ~/.doom.d/templates/.. directory)
+c. added org-roam-server
+** [2020-06-02 Tue]
+a. Added =org-roam=
+b. Added agenda schdules faces (thanks to )
+c. Search and narrow... Bound to =SPC ^=, this provides a function to pick a headline from the current buffer and narrow to it.
+d. Agenda-Hook to narrow on current subtree
+e. Deft mode with custom title maker (thanks to [[https://jingsi.space/post/2017/04/05/organizing-a-complex-directory-for-emacs-org-mode-and-deft/][jingsi's space]])
+f. GTD Inbox Processing ... Credit to Jethro for his function. Function is bound to =jethro/org-inbox-process=
+g. [[https://github.com/alphapapa/org-web-tools][Org-Web-Tools]], thanks Alphapapa for the awesome package.
 * Requirements
 These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
@@ -151,7 +151,7 @@ Setting up my initial agenda settings
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
-                  org-agenda-window-setup 'other-window
+                  org-agenda-window-setup 'current-window
                   org-enforce-todo-checkbox-dependencies nil
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
