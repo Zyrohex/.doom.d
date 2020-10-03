@@ -46,11 +46,11 @@
         doom-big-font (font-spec :family "InputMono" :size 22)))
 
 ; TODO Re-write new function for popup profile setup.
-(after! org (set-popup-rule! "^\\*lsp-help" :side 'left :size .40 :select t)
-  (set-popup-rule! "*helm*" :side 'left :size .30 :select t)
+(after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
+  (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'left :size .35 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+;  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
@@ -80,9 +80,11 @@
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
+                  org-agenda-window-setup 'other-window
                   org-enforce-todo-checkbox-dependencies nil
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
+
 (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org"))))
 
 (after! org (setq org-clock-continuously t))
@@ -542,9 +544,6 @@
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 
-(setq side-notes-file "notes.org")
-(setq side-notes-secondary-file "notes2.org")
-
 (org-super-agenda-mode t)
 
 (setq org-agenda-custom-commands
@@ -562,6 +561,7 @@
               ("w" "Master Agenda"
                ((agenda ""
                         ((org-agenda-span '1)
+                         (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                          (org-agenda-start-day (org-today))))
                 (tags-todo "-CANCELLED/!"
                            ((org-agenda-overriding-header "Stuck Projects")
@@ -586,7 +586,7 @@
                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-sorting-strategy
                              '(todo-state-down effort-up category-keep))))
-                (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
+                (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
                            ((org-agenda-overriding-header (concat "Project Subtasks"
                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
                                                                       ""
@@ -597,18 +597,18 @@
                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-REFILE-CANCELLED-#waiting-#hold-#monitor/!"
+                (tags-todo "-SOMEDAY-REFILE-CANCELLED-#waiting-#hold-#monitor/!"
                            ((org-agenda-overriding-header (concat "Standalone Tasks"
                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
                                                                       ""
                                                                     " (including WAITING and SCHEDULED tasks)")))
                             (org-agenda-skip-function 'bh/skip-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-todo-ignore-deadlines t)
+                            (org-agenda-todo-ignore-with-date t)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-CANCELLED+#waiting|#hold|#monitor/!"
+                (tags-todo "-CANCELLED+#waiting|#hold|#monitor/"
                            ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
                                                                       ""
@@ -774,4 +774,4 @@
   (doom/reload-font))
 
 (after! org (toggle-frame-fullscreen)
-  (setq doom-theme 'doom-one))
+  (setq doom-theme 'doom-solarized-dark))
