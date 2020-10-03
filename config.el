@@ -90,11 +90,11 @@
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("p" "New Project" plain (file +nick/org-capture-file-picker)
+        ("p" "New Project" plain (file nm/org-capture-file-picker)
          (file "~/.doom.d/templates/template-projects.org"))
-        ("n" "Note on headline" plain (function +nick/org-end-of-headline)
+        ("n" "Note on headline" plain (function nm/org-end-of-headline)
          "%?" :empty-lines-before 1 :empty-lines-after 1)
-        ("q" "quick note to file" entry (function +nick/org-capture-weeklies)
+        ("q" "quick note to file" entry (function nm/org-capture-weeklies)
          "* %?" :empty-lines-before 1 :empty-lines-after 1)
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -638,7 +638,7 @@
       :map org-mode-map
       :localleader
       :prefix ("j" . "nicks functions")
-      :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
+      :desc "Insert timestamp at POS" "i" #'nm/org-insert-timestamp)
 
 (defun nm/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
@@ -658,7 +658,7 @@
 (defun nm/org-get-headline-title ()
   "Get headline title from current headline."
   (interactive)
-  (org-element-property :title (+nick/org-get-headline-properties)))
+  (org-element-property :title (nm/org-get-headline-properties)))
 
 ;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
 
@@ -716,7 +716,7 @@
   (defun nm/org-clarify-metadata ()
     "Runs the clarify-task-metadata function with ARG being a list of property values."
     (interactive)
-    (+nick/org-clarify-task-properties org-tasks-properties-metadata))
+    (nm/org-clarify-task-properties org-tasks-properties-metadata))
 
   (map! :after org
         :map org-mode-map

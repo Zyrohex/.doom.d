@@ -6,8 +6,8 @@
 
 * New Changes
 1. [2020-09-25 Fri]
-   a. Added new clarify function for task items.. You can define your property values to the variable ~org-tasks-properties-metadata~, then call ~+nick/org-clarify-metadata~ and it will PROMPT to update for tasks that are missing a value.
-      a. You can also define multiple lists, and pass the variable as an argument to ~+nick/org-clarify-task-properties~, as such ~(+nick/org-clarify-task-properties org-tasks-properties-lists2)~
+   a. Added new clarify function for task items.. You can define your property values to the variable ~org-tasks-properties-metadata~, then call ~nm/org-clarify-metadata~ and it will PROMPT to update for tasks that are missing a value.
+      a. You can also define multiple lists, and pass the variable as an argument to ~nm/org-clarify-task-properties~, as such ~(nm/org-clarify-task-properties org-tasks-properties-lists2)~
    b. Added ~nm/org-assign-tasks-proj~ function to update task ~org-todo-keyword~ as PROJ when child-task exist and vice-versa. This function has been set as a ~before-save-hook~.
 2. [2020-08-26 Wed]
    a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
@@ -166,11 +166,11 @@ Here we setup the capture templates we want for ~org-capture~. I use a file temp
 (after! org (setq org-capture-templates
       '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("p" "New Project" plain (file +nick/org-capture-file-picker)
+        ("p" "New Project" plain (file nm/org-capture-file-picker)
          (file "~/.doom.d/templates/template-projects.org"))
-        ("n" "Note on headline" plain (function +nick/org-end-of-headline)
+        ("n" "Note on headline" plain (function nm/org-end-of-headline)
          "%?" :empty-lines-before 1 :empty-lines-after 1)
-        ("q" "quick note to file" entry (function +nick/org-capture-weeklies)
+        ("q" "quick note to file" entry (function nm/org-capture-weeklies)
          "* %?" :empty-lines-before 1 :empty-lines-after 1)
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -815,7 +815,7 @@ These are my default ROAM settings
       :map org-mode-map
       :localleader
       :prefix ("j" . "nicks functions")
-      :desc "Insert timestamp at POS" "i" #'+nick/org-insert-timestamp)
+      :desc "Insert timestamp at POS" "i" #'nm/org-insert-timestamp)
 #+END_SRC
 ** Capture Template File Picker
 #+BEGIN_SRC emacs-lisp
@@ -825,7 +825,7 @@ These are my default ROAM settings
     (expand-file-name (format "%s" file))))
 #+END_SRC
 ** Clarify Tasks
-Clarify task will take a list of property fields and pass them to ~+nick/org-clarify-task-properties~ to update task items which are missing those property fields.
+Clarify task will take a list of property fields and pass them to ~nm/org-clarify-task-properties~ to update task items which are missing those property fields.
 #+BEGIN_SRC emacs-lisp
 (defun nm/org-get-headline-property (arg)
   "Extract property from headline and return results."
@@ -840,7 +840,7 @@ Clarify task will take a list of property fields and pass them to ~+nick/org-cla
 (defun nm/org-get-headline-title ()
   "Get headline title from current headline."
   (interactive)
-  (org-element-property :title (+nick/org-get-headline-properties)))
+  (org-element-property :title (nm/org-get-headline-properties)))
 
 ;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
 
@@ -898,7 +898,7 @@ Clarify task will take a list of property fields and pass them to ~+nick/org-cla
   (defun nm/org-clarify-metadata ()
     "Runs the clarify-task-metadata function with ARG being a list of property values."
     (interactive)
-    (+nick/org-clarify-task-properties org-tasks-properties-metadata))
+    (nm/org-clarify-task-properties org-tasks-properties-metadata))
 
   (map! :after org
         :map org-mode-map
