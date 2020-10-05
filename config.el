@@ -1,3 +1,5 @@
+(setq initial-buffer-choice "~/.org/gtd/next.org")
+
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
 
@@ -48,9 +50,10 @@
 ; TODO Re-write new function for popup profile setup.
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
+  (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-;  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
@@ -142,6 +145,7 @@
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
 (custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-keyword-face org-todo)))) "")
+(custom-declare-face 'org-checkbox-statistics-todo '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 
   (setq org-todo-keywords
         '((sequence
@@ -709,7 +713,22 @@
         (when (and (oh/is-todo-p) (not (oh/is-task-p)))
           (org-todo "PROJ"))
         (when (and (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
-          (org-todo "TODO"))))))
+          (org-todo "TODO"))
+        (nm/org-set-next-state)))))
+
+(defun nm/org-checkbox-exist-p ()
+  "Checks if a checkbox that's not marked DONE exist in the tree."
+  (interactive)
+  (org-back-to-heading)
+  (let ((end (save-excursion (org-end-of-subtree t))))
+    (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t)))
+
+(defun nm/org-checkbox-done-exist-p ()
+  "Checks if a checkbox that's not marked DONE exist in the tree."
+  (interactive)
+  (org-back-to-heading)
+  (let ((end (save-excursion (org-end-of-subtree t))))
+    (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t)))
 
 (add-hook 'before-save-hook #'nm/org-assign-tasks-proj)
 
@@ -773,5 +792,9 @@
           doom-big-font (font-spec :family font :size 24)))
   (doom/reload-font))
 
-(after! org (toggle-frame-fullscreen)
-  (setq doom-theme 'doom-solarized-dark))
+;(after! org (toggle-frame-maximized)
+  (setq doom-theme 'doom-solarized-dark)
+(defun nm/adjust-frame-size ()
+  "set frame size accordingly."
+  (set-frame-size (selected-frame) 130 65))
+(nm/adjust-frame-size)

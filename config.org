@@ -35,6 +35,9 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2. For fonts please download [[https://input.fontbureau.com/download/][Input]], [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]] and [[https://github.com/tonsky/FiraCode][FiraCode]]
 * Default Settings
 In this section we are going to cover all the basics, and then tangle the results into =config.el=
+#+BEGIN_SRC emacs-lisp
+(setq initial-buffer-choice "~/.org/gtd/next.org")
+#+END_SRC
 * User Information
 Environment settings, which are specific to the user and system. First up are user settings.
 #+BEGIN_SRC emacs-lisp
@@ -104,9 +107,10 @@ Then we will define some default files. I'm probably going to use default task f
 ; TODO Re-write new function for popup profile setup.
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
+  (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-;  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 #+END_SRC
 * Org mode settings
 First I like to add some extra fancy stuff to make orgmode more appealing when i'm using =+pretty= flag.
@@ -249,6 +253,7 @@ After much feedback and discussing with other users, I decided to simplify the k
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
 (custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-keyword-face org-todo)))) "")
+(custom-declare-face 'org-checkbox-statistics-todo '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 
   (setq org-todo-keywords
         '((sequence
@@ -890,7 +895,22 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
         (when (and (oh/is-todo-p) (not (oh/is-task-p)))
           (org-todo "PROJ"))
         (when (and (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
-          (org-todo "TODO"))))))
+          (org-todo "TODO"))
+        (nm/org-set-next-state)))))
+
+(defun nm/org-checkbox-exist-p ()
+  "Checks if a checkbox that's not marked DONE exist in the tree."
+  (interactive)
+  (org-back-to-heading)
+  (let ((end (save-excursion (org-end-of-subtree t))))
+    (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t)))
+
+(defun nm/org-checkbox-done-exist-p ()
+  "Checks if a checkbox that's not marked DONE exist in the tree."
+  (interactive)
+  (org-back-to-heading)
+  (let ((end (save-excursion (org-end-of-subtree t))))
+    (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t)))
 
 (add-hook 'before-save-hook #'nm/org-assign-tasks-proj)
 
@@ -964,6 +984,10 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
 #+END_SRC
 * Theme Settings
 #+BEGIN_SRC emacs-lisp
-(after! org (toggle-frame-fullscreen)
-  (setq doom-theme 'doom-solarized-dark))
+;(after! org (toggle-frame-maximized)
+  (setq doom-theme 'doom-solarized-dark)
+(defun nm/adjust-frame-size ()
+  "set frame size accordingly."
+  (set-frame-size (selected-frame) 130 65))
+(nm/adjust-frame-size)
 #+END_SRC
