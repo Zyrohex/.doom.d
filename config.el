@@ -1,4 +1,4 @@
-(setq initial-buffer-choice "~/.org/gtd/next.org")
+(find-file "~/.org/gtd/next.org")
 
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
@@ -715,6 +715,18 @@
         (when (and (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
           (org-todo "TODO"))
         (nm/org-set-next-state)))))
+
+(defun nm/org-set-next-state ()
+  "If task contains checkbox  that's not DONE then set task state to NEXT."
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (when (and (bh/is-task-p) (or (not (nm/org-checkbox-done-exist-p)) (nm/org-checkbox-exist-p)))
+      (org-todo "NEXT"))
+    (when (and (not (equal (org-get-todo-state) "DONE")) (bh/is-task-p) (not (nm/org-checkbox-done-exist-p)) (not (nm/org-checkbox-exist-p)))
+      (org-todo "TODO"))
+    (when (and (bh/is-task-p) (not (nm/org-checkbox-exist-p)) (nm/org-checkbox-done-exist-p))
+      (org-todo "DONE"))))
 
 (defun nm/org-checkbox-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
