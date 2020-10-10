@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: named code block for python
+# key: nbp
+# condition: t
+# --
+#+name:${1:name}
+#+begin_python :noweb no-export
+def $1($0):
+#+end_python

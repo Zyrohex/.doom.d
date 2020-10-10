@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: named-code-block
+# key: nbc
+# condition: t      
+# --
+#+name:${1:block-name}
+#+begin_src ${2:lang}
+${3:def} $1 $0
+#+end_src

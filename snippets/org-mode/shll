@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: shell
+# key: shll
+# condition: t
+# --
+#+BEGIN_SRC shell :results output verbatim
+$0
+#+END_SRC

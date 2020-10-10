@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: uml_plant
+# key: uml
+# condition: t
+# --
+#+BEGIN_SRC plantuml :exports :file $1
+@startuml
+$0
+@enduml
+#+END_SRC

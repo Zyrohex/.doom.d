@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: cautions edit
+# key: ce
+# condition: t                                                     
+# --
+Literate representation of the new content of the file:
+#+BEGIN_SRC sh :tangle ./${1:file}.new
+$0
+#+END_SRC
+
+Backup the existing file to be updated, before the update:
+#+begin_src sh :results output verbatim :dir (concat "/sudo::" (expand-file-name "."))
+cp -pn ${2:targetPath}/$1 $2/$1.bak # no overriding if the target exists
+#+end_src
+
+After careful review, execute the update
+#+begin_src sh :results output verbatim :dir (concat "/sudo::" (expand-file-name "."))
+cp -p ./$1.new $2/$1
+#+end_src

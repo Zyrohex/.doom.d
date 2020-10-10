@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: plan template
+# key: pln
+# condition: t           
+# --
+** ${1:`(current-time-string)`}
+
+*** Plan-$1
+
+*** Goal
+
+*** Outcome
+
+*** Lesson learned
+
+*** Notes
