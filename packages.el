@@ -60,11 +60,14 @@
 ; The following using org-roam on its development branch does not interfere with Doom's settings.
 ; It just override Doom's package definition.
 
-(unpin! org-roam company-org-roam)
+;; (unpin! org-roam company-org-roam)
 ;; With unpin! above, the folloving is not needed:
 ;; (package! org-roam
 ;;    :recipe (:host github :repo "jethrokuan/org-roam" :branch "develop")
 ;;    )
+(unpin! org-roam company-org-roam)      ; they are already integrated in Doom, and can use the latest
+(package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server" :files ("*")))
+(package! company-org-roam :recipe (:host github :repo "org-roam/company-org-roam"))
 
 (package! ox-pandoc)
 
@@ -87,3 +90,4 @@
 ;; ;; for using emacs-jupyter with jupyter kernel and virutal environment
 (package! pyim) ; for Chinese input inside emacs
 (package! pyim-basedict)
+(package! evil-tutor)                   ; for learning evil

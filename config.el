@@ -3,7 +3,8 @@
 
 (setq-hook! '(shell-mode-hook eshell-mode-hook) company-idle-delay nil)
 
-(setq org-agenda-files '("~/Dropbox/org/TODOs/tasks.org" "~/Dropbox/org/TODOs/projects.org"))
+(setq org-agenda-files '("~/Dropbox/org/TODOs/tasks.org" "~/Dropbox/org/TODOs/projects.org"
+                         "~/Dropbox/org/errors_orgmode_commits.org"))
 
 (use-package! org-journal
   :after org
@@ -21,6 +22,14 @@
   )
 
 (setq org-journal-enable-agenda-integration t)
+
+(setq org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-start-day nil ;; i.e. today
+      org-agenda-block-separator nil
+      org-agenda-tags-column 100 ;; from testing this seems to be a good value
+      org-agenda-compact-blocks t)
 
 (setq org-agenda-custom-commands
       '(("z" "Zen View"
@@ -95,9 +104,72 @@
 
 (setq doom-theme 'doom-gruvbox-light)
 
-(setq doom-modeline-modal-icon nil)
+(setq doom-modeline-modal-icon t)
 
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type `relative)
+
+;(setq org-roam-directory "~/Dropbox/org/org-roam")
+(after! org-roam
+        (setq org-roam-ref-capture-templates
+            '(("r" "ref" plain (function org-roam-capture--get-point)
+               "%?"
+               :file-name "websites/${slug}"
+               :head "#+TITLE: ${title}
+    #+ROAM_KEY: ${ref}
+    - source :: ${ref}"
+               :unnarrowed t))
+            org-roam-db-location
+            ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
+            "~/.emacs.d/.cache/org-roam.db"
+            org-roam-directory "~/Dropbox/org/org-roam"
+            )
+        (map! :leader
+            :prefix "n"
+            :desc "org-roam" "l" #'org-roam
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+            :desc "org-roam-find-file" "f" #'org-roam-find-file
+            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+            :desc "org-roam-capture" "c" #'org-roam-capture))
+
+(use-package! org-roam-server
+  :after org-roam
+  :defer t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-label-truncate t
+        org-roam-server-label-truncate-length 60
+        org-roam-server-label-wrap-length 20)
+  (defun org-roam-server-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (org-roam-server-mode 1)
+    (server-start)                          ; start emacs server required for org-roam-server to provide click and open org file
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+
+(after! org-roam
+  (org-roam-server-mode))
+
+(use-package! org-roam-protocol
+  :after org-roam
+  :defer t)
+
+;; (use-package! org-roam
+;;   :commands (org-roam-insert org-roam-find-file org-roam)
+;;   :init
+;;   (setq org-roam-directory "~/Dropbox/org/zettelkasten")
+;;   (map! :leader
+;;         :prefix "n"
+;;         :desc "Org-Roam-Insert" "i" #'org-roam-insert
+;;         :desc "Org-Roam-Find"   "/" #'org-roam-find-file
+;;         :desc "Org-Roam-Buffer" "r" #'org-roam)
+;;   :config
+;;   (org-roam-mode +1)
+
+;; (server-start)
 
 (setq org-directory "~/Dropbox/org/"
       org-image-actual-width nil
@@ -221,18 +293,6 @@
 \*Describe in your own words how your day was*:
 - %?")))
 
-;; (use-package! org-roam
-;;   :commands (org-roam-insert org-roam-find-file org-roam)
-;;   :init
-;;   (setq org-roam-directory "~/Dropbox/org/zettelkasten")
-;;   (map! :leader
-;;         :prefix "n"
-;;         :desc "Org-Roam-Insert" "i" #'org-roam-insert
-;;         :desc "Org-Roam-Find"   "/" #'org-roam-find-file
-;;         :desc "Org-Roam-Buffer" "r" #'org-roam)
-;;   :config
-;;   (org-roam-mode +1)
-
 (use-package! zetteldeft
   :after deft
 :init
@@ -345,30 +405,6 @@
         org-reveal-title-slide nil
         )
   )
-
-;(setq org-roam-directory "~/Dropbox/org/org-roam")
-(after! org-roam
-        (setq org-roam-ref-capture-templates
-            '(("r" "ref" plain (function org-roam-capture--get-point)
-               "%?"
-               :file-name "websites/${slug}"
-               :head "#+TITLE: ${title}
-    #+ROAM_KEY: ${ref}
-    - source :: ${ref}"
-               :unnarrowed t))
-            org-roam-db-location
-            ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
-            "~/.emacs.d/.cache/org-roam.db"
-            org-roam-directory "~/Dropbox/org/org-roam"
-            )
-        (map! :leader
-            :prefix "n"
-            :desc "org-roam" "l" #'org-roam
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-            :desc "org-roam-find-file" "f" #'org-roam-find-file
-            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-            :desc "org-roam-capture" "c" #'org-roam-capture))
 
 (after! org (setq org-todo-keyword-faces
       '(("TODO" :foreground "tomato" :weight bold)

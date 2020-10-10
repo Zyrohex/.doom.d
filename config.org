@@ -10,7 +10,6 @@ clients, file templates and snippets.
       user-mail-address "yshen@bart.gov | yubrshen@gmail.com")
 #+END_SRC
 
-
 * Improve the resposiveness of shell with ssh
 
 To improve on the responsiveness of shell with ssh:
@@ -24,12 +23,14 @@ Here is the Discord convesation of the problem and solution. Eventually Henrik's
 [7:00 PM] Henrik: @Aaron S turn off automatic code completion (company) in shell/eshell buffers, for starters
 [7:00 PM] Henrik: (setq-hook! '(shell-mode-hook eshell-mode-hook) company-idle-delay nil)
 
-* Review and confirmed
-The above are the configurations that have been tested.
-
 * Setup for org-journal and related org-agenda-files for the workflow of org-journal as inbox
+** org-journal setup
+
+The settings to org-journal works well as of Mon Sep 28 20:07:26 2020.
+
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files '("~/Dropbox/org/TODOs/tasks.org" "~/Dropbox/org/TODOs/projects.org"))
+(setq org-agenda-files '("~/Dropbox/org/TODOs/tasks.org" "~/Dropbox/org/TODOs/projects.org"
+                         "~/Dropbox/org/errors_orgmode_commits.org"))
 
 (use-package! org-journal
   :after org
@@ -53,12 +54,24 @@ The following was the old way to set the keybinging, no longer used, kept for ex
   (map! :map org-journal-mode-map
         "C-c n s" #'evil-save-modified-and-close)
        
-This is the new setup that I find it acceptable for new.
+** Define org-agenda-custom commands
 
 Note, to develop the agenda view, what matters is the value of
 org-agenda-custom-commands computed below. Therefore, to experiement with a suitable
 view, it's matter of experiement with the value. So, it's productive to experiment with a file or a buffer of
 the value, and start agenda view SPC o A to test.
+
+The following configuration customizes the view of agenda: (especially the title of agenda)
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-start-day nil ;; i.e. today
+      org-agenda-block-separator nil
+      org-agenda-tags-column 100 ;; from testing this seems to be a good value
+      org-agenda-compact-blocks t)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
@@ -126,6 +139,7 @@ the value, and start agenda view SPC o A to test.
                           ))))
           ))))
 #+END_SRC
+      
 * Vsiual Tweaks
 
 ** Fonts
@@ -173,26 +187,138 @@ But 'doom-acario-light is not colorful enough for me for ediff.
 ;; `load-theme' function. This is the default:
 
 It seems that 'doom-vibrant provides indeed much vibrant contrast for ediff. Keep use it.
-(setq doom-theme 'doom-vibrant)
+(setq doom-theme 'doom-vibrant) this one looks very pleasant.
 
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-gruvbox-light)
 #+END_SRC
 
 ** Configuration evil mode line for modal
-Not use colored icon to indicate the modal of evil,
+Not to use colored icon to indicate the modal of evil,
 better visible for the colorblind.
-#+BEGIN_SRC emacs-lisp
 (setq doom-modeline-modal-icon nil)
+
+Try to set it t, to see if it works for me.
+#+BEGIN_SRC emacs-lisp
+(setq doom-modeline-modal-icon t)
 #+END_SRC
 ** Line Number
 
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
+This determines the style of line numbers in effect. If set to `nil', line
+numbers are disabled. To have absolute line number, set it to t,
+For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
 
 #+BEGIN_SRC emacs-lisp
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type `relative)
 #+END_SRC
+
+* org-roam
+
+Based on https://www.ianjones.us/own-your-second-brain
+Added +roam in ./init.el in the clause of org
+
+You can access all of the Roam commands with spc n r. It's nice to bind your own to skip that one character so lets add some custom key mappings.
+
+Add a org-roam-ref-capture-templates in your config.el heres mine:
+The ROAM_KEY is how org-roam knows what site links to what note.
+
+#+BEGIN_SRC emacs-lisp
+;(setq org-roam-directory "~/Dropbox/org/org-roam")
+(after! org-roam
+        (setq org-roam-ref-capture-templates
+            '(("r" "ref" plain (function org-roam-capture--get-point)
+               "%?"
+               :file-name "websites/${slug}"
+               :head "#+TITLE: ${title}
+    ,#+ROAM_KEY: ${ref}
+    - source :: ${ref}"
+               :unnarrowed t))
+            org-roam-db-location
+            ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
+            "~/.emacs.d/.cache/org-roam.db"
+            org-roam-directory "~/Dropbox/org/org-roam"
+            )
+        (map! :leader
+            :prefix "n"
+            :desc "org-roam" "l" #'org-roam
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+            :desc "org-roam-find-file" "f" #'org-roam-find-file
+            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+            :desc "org-roam-capture" "c" #'org-roam-capture))
+#+END_SRC
+
+For setting up org-roam-server for showing graph in browser
+
+#+BEGIN_SRC emacs-lisp
+(use-package! org-roam-server
+  :after org-roam
+  :defer t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-label-truncate t
+        org-roam-server-label-truncate-length 60
+        org-roam-server-label-wrap-length 20)
+  (defun org-roam-server-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (org-roam-server-mode 1)
+    (server-start)                          ; start emacs server required for org-roam-server to provide click and open org file
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+
+(after! org-roam
+  (org-roam-server-mode))
+
+(use-package! org-roam-protocol
+  :after org-roam
+  :defer t)
+#+END_SRC
+
+The following are kept for historical reason for now.
+
+(use-package! org-journal
+      :bind
+      ("C-c n j" . org-journal-new-entry)
+      :custom
+      (org-journal-dir "~/Dropbox/org/org-roam/")
+      (org-journal-date-prefix "#+TITLE: ")
+      (org-journal-file-format "%Y-%m-%d.org")
+      (org-journal-date-format "%A, %d %B %Y"))
+    (setq org-journal-enable-agenda-integration t)
+*** org-roam for zettelkasten
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package! org-roam
+;;   :commands (org-roam-insert org-roam-find-file org-roam)
+;;   :init
+;;   (setq org-roam-directory "~/Dropbox/org/zettelkasten")
+;;   (map! :leader
+;;         :prefix "n"
+;;         :desc "Org-Roam-Insert" "i" #'org-roam-insert
+;;         :desc "Org-Roam-Find"   "/" #'org-roam-find-file
+;;         :desc "Org-Roam-Buffer" "r" #'org-roam)
+;;   :config
+;;   (org-roam-mode +1)
+#+END_SRC
+
+#+RESULTS:
+
+
+* Review and confirmed
+The above are the configurations that have been tested.
+
+* Experiment
+** Start emacs's server
+
+#+BEGIN_SRC emacs-lisp
+;; (server-start)
+#+END_SRC
+
+#+RESULTS:
 
 * Org Setup
 
@@ -338,23 +464,6 @@ better visible for the colorblind.
 \*Describe in your own words how your day was*:
 - %?")))
 #+END_SRC
-** org-roam for zettelkasten
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package! org-roam
-;;   :commands (org-roam-insert org-roam-find-file org-roam)
-;;   :init
-;;   (setq org-roam-directory "~/Dropbox/org/zettelkasten")
-;;   (map! :leader
-;;         :prefix "n"
-;;         :desc "Org-Roam-Insert" "i" #'org-roam-insert
-;;         :desc "Org-Roam-Find"   "/" #'org-roam-find-file
-;;         :desc "Org-Roam-Buffer" "r" #'org-roam)
-;;   :config
-;;   (org-roam-mode +1)
-#+END_SRC
-
-#+RESULTS:
 
 ** zetteldeft another implementation zettelkasten
 I have not yet figured out which is more suitable for me, org-roam or
@@ -591,53 +700,7 @@ Convert org-files to HTML slides reveal.js based
 
 
 
-** org-roam
 
-Based on https://www.ianjones.us/own-your-second-brain
-Added +roam in ./init.el in the clause of org
-
-You can access all of the Roam commands with spc n r. It's nice to bind your own to skip that one character so lets add some custom key mappings.
-
-Add a org-roam-ref-capture-templates in your config.el heres mine:
-The ROAM_KEY is how org-roam knows what site links to what note.
-
-#+BEGIN_SRC emacs-lisp
-;(setq org-roam-directory "~/Dropbox/org/org-roam")
-(after! org-roam
-        (setq org-roam-ref-capture-templates
-            '(("r" "ref" plain (function org-roam-capture--get-point)
-               "%?"
-               :file-name "websites/${slug}"
-               :head "#+TITLE: ${title}
-    ,#+ROAM_KEY: ${ref}
-    - source :: ${ref}"
-               :unnarrowed t))
-            org-roam-db-location
-            ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
-            "~/.emacs.d/.cache/org-roam.db"
-            org-roam-directory "~/Dropbox/org/org-roam"
-            )
-        (map! :leader
-            :prefix "n"
-            :desc "org-roam" "l" #'org-roam
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-            :desc "org-roam-find-file" "f" #'org-roam-find-file
-            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-            :desc "org-roam-capture" "c" #'org-roam-capture))
-
-
-
-#+END_SRC
-(use-package! org-journal
-      :bind
-      ("C-c n j" . org-journal-new-entry)
-      :custom
-      (org-journal-dir "~/Dropbox/org/org-roam/")
-      (org-journal-date-prefix "#+TITLE: ")
-      (org-journal-file-format "%Y-%m-%d.org")
-      (org-journal-date-format "%A, %d %B %Y"))
-    (setq org-journal-enable-agenda-integration t)
 ** TODO Faces
 
 Need to add condition to adjust faces based on theme select.
