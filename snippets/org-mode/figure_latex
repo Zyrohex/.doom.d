@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: A Full width figure with PlantUML in LaTeX
+# key: pfig
+# condition: t                                               
+# Note in Doom/evil setting to fill in the tab fields of snippet, press i to input mode first, then
+# type the value for the field, then use tab to the next field
+# --
+Fig.\ref{fig:${1:label}} shows the architecture of ${2:caption}.
+
+\begin{figure*}[htbp]
+  \includegraphics[width=\linewidth]{./image/${3:file-name}.png}%
+  \caption{$2}%
+  \label{fig:$1}%
+\end{figure*}
+
+#+BEGIN_SRC plantuml :exports none :file ../image/$3.png
+@startuml
+$0
+@enduml
+#+END_SRC
+
