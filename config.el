@@ -707,7 +707,7 @@
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (when (save-excursion (and (bh/is-task-p) (or (and (nm/exist-context-tag-p) (not (equal (org-get-todo-state) "DONE")) (and (nm/org-checkbox-exist-p) (nm/org-checkbox-done-exist-p)) (nm/org-checkbox-exist-p))))
+    (when (save-excursion (and (bh/is-task-p) (or (and (nm/exist-context-tag-p) (not (equal (org-get-todo-state) "DONE"))) (and (nm/org-checkbox-exist-p) (nm/org-checkbox-done-exist-p)) (nm/org-checkbox-exist-p))))
       (org-todo "NEXT"))
     (when (and (not (equal (org-get-todo-state) "DONE")) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/org-checkbox-done-exist-p)) (not (nm/org-checkbox-exist-p)))
       (org-todo "TODO"))
