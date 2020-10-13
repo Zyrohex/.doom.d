@@ -15,8 +15,8 @@
 (package! org-edna)
 (package! literate-calc-mode)
 ;; Python
-;; Misc Packages
 (package! ob-ipython)
+;; Misc Packages
 (package! define-word)
 (package! elfeed)
 (package! elfeed-org)
