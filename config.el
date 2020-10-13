@@ -1,5 +1,3 @@
-(find-file "~/.org/gtd/next.org")
-
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
 
@@ -41,8 +39,8 @@
 (setq org-directory "~/.org/")
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Fira Code" :size 18)
-        doom-big-font (font-spec :family "Fira Code" :size 26)))
+  (setq doom-font (font-spec :family "Anonymous Pro" :size 18)
+        doom-big-font (font-spec :family "Anonymous Pro" :size 26)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
@@ -52,8 +50,8 @@
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+;  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
@@ -61,7 +59,7 @@
 ;                  org-ellipsis "▼"))
 
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("◉" "●" "○")
+  (setq org-superstar-headline-bullets-list '("●" "○")
         org-superstar-item-bullet-alist nil))
 
 (defun zyro/rifle-roam ()
@@ -93,14 +91,16 @@
 (after! org (setq org-clock-continuously t))
 
 (after! org (setq org-capture-templates
-      '(("!" "Quick Capture" plain (file "~/.org/gtd/inbox.org")
+      '(("!" "Quick Capture" plain (file+headline "~/.org/gtd/next.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("p" "New Project" plain (file nm/org-capture-file-picker)
          (file "~/.doom.d/templates/template-projects.org"))
+        ("j" "Journal" entry (file "~/.org/journal.org")
+         "* <%<%Y-%m-%d %H:%M %a>> %?")
         ("n" "Note on headline" plain (function nm/org-end-of-headline)
+         "%?" :empty-lines-before 1 :empty-lines-after 1 :unnarrow t)
+        ("f" "quick note to file" plain (function nm/org-capture-weeklies)
          "%?" :empty-lines-before 1 :empty-lines-after 1)
-        ("q" "quick note to file" entry (function nm/org-capture-weeklies)
-         "* %?" :empty-lines-before 1 :empty-lines-after 1)
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
         ("l" "Ledger Transaction" plain (file "~/.org/gtd/finances.ledger")
@@ -463,45 +463,26 @@
       :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
 
 (setq org-roam-capture-templates
-        '(("b" "book" plain (function org-roam-capture--get-point)
-           :file-name "book/${slug}%<%Y%m%d%H%M>"
-           :head "#+TITLE: ${slug}\n#+roam_tags: %^{tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
+        '(("d" "digest" plain (function org-roam-capture--get-point)
            "%?"
-           :unnarrowed t)
-          ("c" "curiousity" plain (function org-roam-capture--get-point)
-           :file-name "curious/${slug}"
-           :head "#+TITLE: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
-           "%?"
-           :unnarrowed t)
-          ("d" "digest" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "digest/${slug}"
+           :file-name "notes/digest/%<%Y%m%d%H%M>-${slug}"
            :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
            :unnarrowed t)
-          ("f" "fleeting" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "fleeting/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
-           :unnarrowed t)
+          ("n" "notes" plain (function org-roam-capture--get-point)
+           :file-name "notes/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+           :unnarrowed t
+           "%?")
           ("p" "private" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "private/${slug}"
-           :head "#+title: ${title}\n"
-           :unnarrowed t)
-          ("x" "programming" plain (function org-roam-capture--get-point)
-           :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %^{tags}\n- source :: [[%^{link}][%^{description}]] \\\n- metadata :: %?\n\n* Notes\n\n* Follow-up Actions"
-           :unnarrowed t)
-          ("r" "research" entry (function org-roam--capture-get-point)
-           (file "~/.doom.d/templates/org-roam-research.org")
-           :file-name "research/${slug}"
-           "%?"
-           :unnarrowed t)
-          ("t" "technical" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "technical/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\n"
-           :unnarrowed t)))
+           :file-name "notes/private/${slug}"
+           :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+           :unnarrowed t
+           "%?")
+          ("r" "reveal slide" plain (function org-roam-capture--get-point)
+           :file-name "slides/%<%Y%m%d%H%M>-${slug}"
+           :head "#+title: ${title}\n#+options: num:nil toc:nil\n#+REVEAL_THEME: %^{theme|black|white|league|beige|sky|night|serif|simple|solarized|blood|moon}\n#+REVEAL_PLUGINS: (highlight)\n#+REVEAL_OVERVIEW: t\n\n"
+           :unnarrow t
+           "%?")))
 
 (use-package org-roam-server
   :ensure t
@@ -702,7 +683,7 @@
               (org-todo "PROJ"))
             (widen)))))))
 
-(defun nm/org-assign-tasks-proj ()
+(defun nm/update-task-states ()
   "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword and vice versa."
   (interactive)
   (save-excursion
@@ -710,20 +691,25 @@
     (while (not (eobp))
       (outline-next-heading)
       (unless (eobp)
-        (when (and (oh/is-todo-p) (not (oh/is-task-p)))
-          (org-todo "PROJ"))
-        (when (and (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
-          (org-todo "TODO"))
+        (nm/org-update-projects)
         (nm/org-set-next-state)))))
+
+(defun nm/org-update-projects ()
+  "If task is project then assign to PROJ keyword."
+  (when (or (and (nm/has-subtask-active-p) (oh/is-todo-p)) (and (oh/is-todo-p) (nm/has-subtask-done-p) (nm/has-subtask-active-p)))
+    (org-todo "PROJ")))
+;  (when (or (and (not (nm/org-checkbox-exist-p)) (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
+;            (and (not (nm/org-checkbox-exist-p)) (oh/is-task-p) (not (equal (org-get-todo-state) "DONE"))))
+;    (org-todo "TODO")))
 
 (defun nm/org-set-next-state ()
   "If task contains checkbox  that's not DONE then set task state to NEXT."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (when (and (bh/is-task-p) (or (not (nm/org-checkbox-done-exist-p)) (nm/org-checkbox-exist-p)))
+    (when (save-excursion (and (bh/is-task-p) (or (nm/exist-context-tag-p) (and (nm/org-checkbox-exist-p) (nm/org-checkbox-done-exist-p)) (nm/org-checkbox-exist-p))))
       (org-todo "NEXT"))
-    (when (and (not (equal (org-get-todo-state) "DONE")) (bh/is-task-p) (not (nm/org-checkbox-done-exist-p)) (not (nm/org-checkbox-exist-p)))
+    (when (and (not (equal (org-get-todo-state) "DONE")) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/org-checkbox-done-exist-p)) (not (nm/org-checkbox-exist-p)))
       (org-todo "TODO"))
     (when (and (bh/is-task-p) (not (nm/org-checkbox-exist-p)) (nm/org-checkbox-done-exist-p))
       (org-todo "DONE"))))
@@ -742,18 +728,57 @@
   (let ((end (save-excursion (org-end-of-subtree t))))
     (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t)))
 
-(add-hook 'before-save-hook #'nm/org-assign-tasks-proj)
+(defun nm/has-subtask-done-p ()
+  "Returns t for any heading that has a subtask is DONE state."
+  (interactive)
+  (org-back-to-heading t)
+  (let ((end (save-excursion (org-end-of-subtree t))))
+    (outline-end-of-heading)
+    (save-excursion
+      (re-search-forward (concat "^\*+ " "\\(DONE\\|KILL\\)") nil end))))
 
-  (defun nm/org-clarify-metadata ()
-    "Runs the clarify-task-metadata function with ARG being a list of property values."
-    (interactive)
-    (nm/org-clarify-task-properties org-tasks-properties-metadata))
+(defun nm/has-subtask-active-p ()
+  "Returns t for any heading that has subtasks."
+  (save-restriction
+    (widen)
+    (org-back-to-heading t)
+    (let ((end (save-excursion (org-end-of-subtree t))))
+      (outline-end-of-heading)
+      (save-excursion
+        (re-search-forward (concat "^\*+ " "\\(NEXT\\|WAIT\\|TODO\\)") end t)))))
 
-  (map! :after org
-        :map org-mode-map
-        :localleader
-        :prefix ("j" . "nicks functions")
-        :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
+(defun nm/exist-tag-p (arg)
+  "If headline has ARG tag keyword assigned, return t."
+  (interactive)
+  (let ((end (save-excursion (end-of-line))))
+    (save-excursion
+      (progn
+        (unless (org-at-heading-p)
+          (org-back-to-heading t))
+        (beginning-of-line)
+        (re-search-forward (format ":%s:" arg) end t)))))
+
+(defconst nm/context-tags " *:[@\\w+:]")
+
+(defun nm/exist-context-tag-p (&optional arg)
+  "If headline has context tag keyword assigned, return t."
+  (interactive)
+  (goto-char (org-entry-beginning-position))
+  (let ((end (save-excursion (line-end-position))))
+    (re-search-forward nm/context-tags end t)))
+
+(add-hook 'before-save-hook #'nm/update-task-states)
+
+(defun nm/org-clarify-metadata ()
+  "Runs the clarify-task-metadata function with ARG being a list of property values."
+  (interactive)
+  (nm/org-clarify-task-properties org-tasks-properties-metadata))
+
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :prefix ("j" . "nicks functions")
+      :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 (defun nm/org-capture-system ()
   "Capture stuff."
@@ -785,8 +810,10 @@
 (defun nm/org-capture-weeklies ()
   "Find weeklies file and call counsel-outline."
   (interactive)
-  (org-open-file "~/.org/gtd/weeklies.org")
-  (counsel-outline))
+  (find-file (read-file-name "file: " "~/.org/"))
+  (progn
+    (counsel-outline)
+    (nm/org-end-of-headline)))
 
 (defun nm/org-end-of-headline()
   "Move to end of current headline"
@@ -805,8 +832,7 @@
   (doom/reload-font))
 
 ;(after! org (toggle-frame-maximized)
-  (setq doom-theme 'doom-solarized-dark)
+  (setq doom-theme 'doom-city-lights)
 (defun nm/adjust-frame-size ()
   "set frame size accordingly."
   (set-frame-size (selected-frame) 130 65))
-(nm/adjust-frame-size)
