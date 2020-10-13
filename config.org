@@ -3,11 +3,15 @@
 [[file:attachments/workspace.png]]
 
 * New Changes
-** [2020-09-25 Fri]
-a. Added new clarify function for task items.. You can define your property values to the variable ~org-tasks-properties-metadata~, then call ~nm/org-clarify-metadata~ and it will PROMPT to update for tasks that are missing a value.
-   a. You can also define multiple lists, and pass the variable as an argument to ~nm/org-clarify-task-properties~, as such ~(nm/org-clarify-task-properties org-tasks-properties-lists2)~
-b. Added ~nm/org-assign-tasks-proj~ function to update task ~org-todo-keyword~ as PROJ when child-task exist and vice-versa. This function has been set as a ~before-save-hook~. \\
-   [[file:attachments/proj-tasks-update.gif]]
+** Clarify Tasks
+I got tired of manually setting task states to "NEXT" "PROJ" "TODO" so i've added a few functions to automate these steps now... Pictures are always more convincing, and even more so are GIFs. \\
+
+[[file:attachments/next-states.gif]] \\
+
+[[file:attachments/projects.gif]] \\
+
+[[file:attachments/context-tags.gif]] \\
+
 ** [2020-08-26 Wed]
 a. Moved ~roam-db-directory~ to *.emacs.d* directory FIXME address syncthing permission issue
 b. Added *FiraCode* fonts (see [[Requirements]])
