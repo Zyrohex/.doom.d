@@ -710,14 +710,14 @@
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (cond
-     ((and (oh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
-     ((and (oh/is-task-p) (nm/exist-context-tag-p)) (org-todo "NEXT"))
-     ((and (oh/is-task-p) (not (nm/checkbox-active-exist-p)) (not (nm/checkbox-done-exist-p)) (not (nm/exist-context-tag-p))) (org-todo "TODO"))
-     ((and (oh/is-task-p) (nm/exist-tag-p "wait") (not (equal (org-get-todo-state) "DONE"))) (org-todo "WAIT"))
-     ((and (oh/is-task-p) (nm/checkbox-done-exist-p) (not (nm/checkbox-active-exist-p))) (org-todo "DONE"))
-     ((and (oh/is-todo-p) (nm/has-subtask-active-p) (not (equal (org-get-todo-state) "DONE"))) (org-todo "PROJ"))
-     ((nil)))))
+      (cond
+       ((and (oh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
+       ((and (oh/is-task-p) (nm/exist-context-tag-p) (not (nm/exist-tag-p "wait"))) (org-todo "NEXT"))
+       ((and (oh/is-task-p) (not (nm/checkbox-active-exist-p)) (not (nm/checkbox-done-exist-p)) (not (nm/exist-context-tag-p))) (org-todo "TODO"))
+       ((and (oh/is-task-p) (nm/exist-tag-p "wait") (not (equal (org-get-todo-state) "DONE"))) (org-todo "WAIT"))
+       ((and (oh/is-task-p) (nm/checkbox-done-exist-p) (not (nm/checkbox-active-exist-p))) (org-todo "DONE"))
+       ((and (oh/is-todo-p) (nm/has-subtask-active-p) (not (equal (org-get-todo-state) "DONE"))) (org-todo "PROJ"))
+       ((nil)))))
 
 (defun nm/org-checkbox-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
