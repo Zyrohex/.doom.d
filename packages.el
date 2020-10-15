@@ -17,6 +17,7 @@
 ;; Python
 (package! ob-ipython)
 ;; Misc Packages
+(package! focus)
 (package! define-word)
 (package! elfeed)
 (package! elfeed-org)
