@@ -456,8 +456,6 @@
 (setq org-roam-tag-sources '(prop last-directory))
 (setq org-roam-db-location "~/.org/roam.db")
 (setq org-roam-directory "~/.org/")
-(add-to-list 'safe-local-variable-values
-'(org-roam-directory . "."))
 
 (setq org-roam-dailies-capture-templates
    '(("d" "daily" plain (function org-roam-capture--get-point) ""
@@ -710,23 +708,21 @@
   (interactive)
   (save-excursion
     (org-back-to-heading)
-      (cond
-       ((and (oh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
-       ((and (oh/is-task-p) (nm/exist-context-tag-p) (not (nm/exist-tag-p "wait"))) (org-todo "NEXT"))
-       ((and (oh/is-task-p) (not (nm/checkbox-active-exist-p)) (not (nm/checkbox-done-exist-p)) (not (nm/exist-context-tag-p))) (org-todo "TODO"))
-       ((and (oh/is-task-p) (nm/exist-tag-p "wait") (not (equal (org-get-todo-state) "DONE"))) (org-todo "WAIT"))
-       ((and (oh/is-task-p) (nm/checkbox-done-exist-p) (not (nm/checkbox-active-exist-p))) (org-todo "DONE"))
-       ((and (oh/is-todo-p) (nm/has-subtask-active-p) (not (equal (org-get-todo-state) "DONE"))) (org-todo "PROJ"))
-       ((nil)))))
+    (when (save-excursion (and (bh/is-task-p) (or (and (nm/exist-context-tag-p) (not (equal (org-get-todo-state) "DONE"))) (and (nm/checkbox-active-exist-p) (nm/checkbox-done-exist-p)) (nm/checkbox-active-exist-p))))
+      (org-todo "NEXT"))
+    (when (and (not (equal (org-get-todo-state) "DONE")) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/checkbox-done-exist-p)) (not (nm/checkbox-active-exist-p)))
+      (org-todo "TODO"))
+    (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p))
+      (org-todo "DONE"))))
 
-(defun nm/org-checkbox-exist-p ()
+(defun nm/checkbox-active-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
   (interactive)
   (org-back-to-heading)
   (let ((end (save-excursion (org-end-of-subtree t))))
     (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t)))
 
-(defun nm/org-checkbox-done-exist-p ()
+(defun nm/checkbox-done-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
   (interactive)
   (org-back-to-heading)
