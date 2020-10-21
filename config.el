@@ -91,15 +91,16 @@
 (after! org (setq org-clock-continuously t))
 
 (after! org (setq org-capture-templates
-      '(("!" "Quick Capture" plain (file+headline "~/.org/gtd/next.org" "Inbox")
+      '(("h" "Headline templates")
+        ("!" "Quick Capture" plain (file+headline "~/.org/gtd/next.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("p" "New Project" plain (file nm/org-capture-file-picker)
-         (file "~/.doom.d/templates/template-projects.org"))
-        ("j" "Journal" entry (file "~/.org/journal.org")
-         "* <%<%Y-%m-%d %H:%M %a>> %?")
-        ("n" "Note on headline" plain (function nm/org-end-of-headline)
-         "%?" :empty-lines-before 1 :empty-lines-after 1 :unnarrow t)
-        ("f" "quick note to file" plain (function nm/org-capture-weeklies)
+        ("j" "Journal" entry (file "~/.org/gtd/journal.org")
+         "* <%<%Y-%m-%d %b %H:%M>> %?")
+        ("c" "Journal w/clock" entry (file "~/.org/gtd/journal.org")
+         "* <%<%Y-%m-%d %b %H:%M>> %?" :clock-in t :clock-resume t)
+        ("hn" "Note to headline" plain (function nm/org-end-of-headline)
+         "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-before 1 :empty-lines-after 1 :unnarrow t)
+        ("n" "Note to... (+find headline)" plain (function nm/org-capture-weeklies)
          "%?" :empty-lines-before 1 :empty-lines-after 1)
         ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -708,9 +709,9 @@
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (when (save-excursion (and (bh/is-task-p) (or (and (nm/exist-context-tag-p) (not (equal (org-get-todo-state) "DONE"))) (and (nm/checkbox-active-exist-p) (nm/checkbox-done-exist-p)) (nm/checkbox-active-exist-p))))
+    (when (save-excursion (and (bh/is-task-p) (or (and (nm/exist-context-tag-p) (not (equal (org-get-todo-state) "DONE"))) (and (nm/checkbox-active-exist-p) (nm/checkbox-done-exist-p)) (nm/checkbox-active-exist-p) (nm/is-scheduled-p))))
       (org-todo "NEXT"))
-    (when (and (not (equal (org-get-todo-state) "DONE")) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/checkbox-done-exist-p)) (not (nm/checkbox-active-exist-p)))
+    (when (and (not (equal (org-get-todo-state) "DONE")) (not (nm/is-scheduled-p)) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/checkbox-done-exist-p)) (not (nm/checkbox-active-exist-p)))
       (org-todo "TODO"))
     (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p))
       (org-todo "DONE"))))
@@ -767,6 +768,13 @@
   (goto-char (org-entry-beginning-position))
   (let ((end (save-excursion (line-end-position))))
     (re-search-forward nm/context-tags end t)))
+
+(defun nm/is-scheduled-p ()
+  "Checks task for SCHEDULE and if found, return t."
+  (save-excursion
+    (org-back-to-heading)
+    (let ((end (save-excursion (outline-end-of-heading))))
+      (re-search-forward org-scheduled-regexp end t))))
 
 (add-hook 'before-save-hook #'nm/update-task-states)
 
