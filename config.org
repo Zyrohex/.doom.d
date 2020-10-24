@@ -868,7 +868,7 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
     (save-excursion
       (member arg (org-get-tags)))))
 
-(defconst nm/context-tags ".+\s\\(:@\w.+:\\)")
+(defconst nm/context-tags ".+\s:@\w.+:")
 
 (defun nm/exist-context-tag-p (&optional arg)
   "If headline has context tag keyword assigned, return t."
