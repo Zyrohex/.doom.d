@@ -1,5 +1,7 @@
+#+TITLE: Org-Mode Literate Config
 #+EXPORT_FILE_NAME: README
 
+Uses org-babel to tangle all of my source code blocks back to _config.el_, this makes it easy so that I can write my changes from config.org or config.el.
 [[file:attachments/workspace.png]]
 
 * New Changes
@@ -20,24 +22,35 @@ The PROJ state will become active upon the following conditions:
 * Requirements
 These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
-2. For fonts please download [[https://input.fontbureau.com/download/][Input]], [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]] and [[https://github.com/tonsky/FiraCode][FiraCode]]
-* Default Settings
-In this section we are going to cover all the basics, and then tangle the results into =config.el=
-* User Information
-Environment settings, which are specific to the user and system. First up are user settings.
-#+BEGIN_SRC emacs-lisp
+2. I use a few different monospace fonts: [[https://input.fontbureau.com/download/][Input]], [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]], [[https://github.com/tonsky/FiraCode][FiraCode]], [[google:IBM Plex Mono font Download][IBM Plex Mono]] and [[google:Roboto Mono Font Download][Roboto Mono]].
+
+* Initial Settings
+User inormation and time-display:
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
-#+END_SRC
-* Misc Settings
-Now we load some default settings for EMACS.
-#+BEGIN_SRC emacs-lisp
+
 (display-time-mode 1)
 (setq display-time-day-and-date t)
+
+(global-auto-revert-mode 1)
+(setq undo-limit 80000000
+      evil-want-fine-undo t
+      auto-save-default nil
+      inhibit-compacting-font-caches t)
+(whitespace-mode -1)
+
+(setq display-line-numbers-type t)
+(setq-default
+ delete-by-moving-to-trash t
+ tab-width 4
+ uniquify-buffer-name-style 'forward
+ window-combination-resize t
+ x-stretch-cursor t)
 #+END_SRC
-* Key Bindings
-From here we load some extra key bindings that I use often
-#+BEGIN_SRC emacs-lisp
+
+Additioanl key bindings
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (bind-key "<f6>" #'link-hint-copy-link)
 (map! :after org
       :map org-mode-map
@@ -62,114 +75,122 @@ From here we load some extra key bindings that I use often
       :map org-agenda-mode-map
       :localleader
       :desc "Filter" "f" #'org-agenda-filter)
-
 #+END_SRC
-* Terminal Mode
-Set a few settings if we detect terminal mode
-#+BEGIN_SRC emacs-lisp
+
+If I ever use terminal mode, these are some settings i'll want to set to increase the quality of life when working from my terminal window.
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (when (equal (window-system) nil)
   (and
    (bind-key "C-<down>" #'+org/insert-item-below)
-   (setq doom-theme 'doom-monokai-pro)
-   (setq doom-font (font-spec :family "Input Mono" :size 20))))
+   (setq doom-theme nil)
+   (setq doom-font (font-spec :family "Roboto Mono" :size 20))))
 #+END_SRC
-* Default folder(s) and file(s)
-Then we will define some default files. I'm probably going to use default task files for inbox/someday/todo at some point so expect this to change. Also note, all customer functions will start with a =+= to distinguish from major symbols.
-#+BEGIN_SRC emacs-lisp
+
+Now I add my default folders and files that I want emacs/org-mode to use:
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (setq diary-file "~/.org/diary.org")
 (setq org-directory "~/.org/")
+(setq projectile-project-search-path "~/projects/")
 #+END_SRC
 
-* Setup Layout by Monitor Profile
-#+BEGIN_SRC emacs-lisp
-(when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Anonymous Pro" :size 18)
-        doom-big-font (font-spec :family "Anonymous Pro" :size 26)))
-(when (equal system-type 'windows-nt)
-  (setq doom-font (font-spec :family "InputMono" :size 18)
-        doom-big-font (font-spec :family "InputMono" :size 22)))
+Next we configure popup-rules and default fonts.
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(setq doom-theme 'doom-one)
 
-; TODO Re-write new function for popup profile setup.
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-;  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
+
+(when (equal system-type 'gnu/linux)
+  (setq doom-font (font-spec :family "Roboto Mono" :size 18)
+        doom-big-font (font-spec :family "Roboto Mono" :size 26)))
+(when (equal system-type 'windows-nt)
+  (setq doom-font (font-spec :family "InputMono" :size 18)
+        doom-big-font (font-spec :family "InputMono" :size 22)))
 #+END_SRC
-* Org mode settings
-First I like to add some extra fancy stuff to make orgmode more appealing when i'm using =+pretty= flag.
-#+BEGIN_SRC emacs-lisp
+
+* Org-Mode
+Here we add any requirements before org-mode starts to load
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(require 'org-habit)
+(require 'org-id)
+(after! org (setq org-archive-location "~/.org/gtd/archives.org::datetree"
+                  org-image-actual-width nil
+                  org-link-file-path-type 'relative
+                  org-log-state-notes-insert-after-drawers nil
+                  org-catch-invisible-edits 'error
+                  org-refile-targets '((nil :maxlevel . 9)
+                                       (org-agenda-files :maxlevel . 4))
+                  org-refile-use-outline-path 'buffer-name
+                  org-outline-path-complete-in-steps nil
+                  org-refile-allow-creating-parent-nodes 'confirm
+                  org-startup-indented 'indent
+                  org-startup-folded 'fold
+                  org-src-tab-acts-natively t
+                  org-list-allow-alphabetical nil))
+
+(add-hook 'org-mode-hook 'turn-off-auto-fill)
+#+END_SRC
+
+** Looks and Feels
+Here we change some of the things how org-mode looks and feels, some options available are:
+- org-ellipsis ="▼, ↴, ⬎, ⤷,…, and ⋱."=
+- org-superstar-headline-bullets-list ="◉" "●" "○" "∴"=
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-;                  org-ellipsis "▼"))
-#+END_SRC
 
-- Other options for ellipsis "▼, ↴, ⬎, ⤷,…, and ⋱."
-- Extra options for headline-bullets-list: "◉" "●" "○" "∴"
-
-Add a when condition that only adjust settings when certain features are enabled... This depends on where i'm running Emacs from (eg: Terminla, X11 or native).
-#+BEGIN_SRC emacs-lisp
 (when (require 'org-superstar nil 'noerror)
   (setq org-superstar-headline-bullets-list '("●" "○")
         org-superstar-item-bullet-alist nil))
 #+END_SRC
 
-Adding additional search functions
-#+BEGIN_SRC emacs-lisp
-(defun zyro/rifle-roam ()
-  "Rifle through your ROAM directory"
-  (interactive)
-  (helm-org-rifle-directories org-roam-directory))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("n" . "notes")
-      :desc "Rifle ROAM Notes" "!" #'zyro/rifle-roam)
-#+END_SRC
-
-Setting up my initial agenda settings
-#+BEGIN_SRC emacs-lisp
+** Loading agenda settings
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
-                  org-agenda-dim-blocked-tasks t
+                  org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid t
-                  org-agenda-hide-tags-regexp "\\w+"
+                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
                   org-agenda-window-setup 'current-window
-                  org-enforce-todo-checkbox-dependencies nil
+                  org-enforce-todo-checkbox-dependencies t ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
 
 (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org"))))
 #+END_SRC
-Adjusting clock settings
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-clock-continuously t))
+
+** Clock Settings
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 #+END_SRC
 
 ** Capture Templates
 Here we setup the capture templates we want for ~org-capture~. I use a file template that's pre-filled with my monthly scheduled transactions. (TODO: Add default file-template for new projects.)
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-capture-templates
       '(("h" "Headline templates")
-        ("!" "Quick Capture" plain (file+headline "~/.org/gtd/next.org" "Inbox")
+        ("l" "Ledger")
+        ("j" "Journal")
+        ("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("j" "Journal" entry (file "~/.org/gtd/journal.org")
+        ("jn" "New Entry" entry (file "~/.org/gtd/journal.org")
          "* <%<%Y-%m-%d %b %H:%M>> %?")
-        ("c" "Journal w/clock" entry (file "~/.org/gtd/journal.org")
+        ("jc" "Clocked Entry" entry (file "~/.org/gtd/journal.org")
          "* <%<%Y-%m-%d %b %H:%M>> %?" :clock-in t :clock-resume t)
         ("hn" "Note to headline" plain (function nm/org-end-of-headline)
          "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-before 1 :empty-lines-after 1 :unnarrow t)
-        ("n" "Note to... (+find headline)" plain (function nm/org-capture-weeklies)
+        ("hf" "Find headline" plain (function nm/org-capture-weeklies)
          "%?" :empty-lines-before 1 :empty-lines-after 1)
-        ("$" "Scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
+        ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
-        ("l" "Ledger Transaction" plain (file "~/.org/gtd/finances.ledger")
+        ("la" "Add Transaction" plain (file "~/.org/gtd/finances.ledger")
          "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
 #+END_SRC
 
@@ -180,15 +201,8 @@ Example ledger template file: = ~/.doom.d/templates/ledger-scheduled.org~
     Expenses:Insurance                         dollar amount
 #+END_EXAMPLE
 
-* Directory settings
-TODO add function to set image-width to *80%* of the window size.
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-image-actual-width nil
-                  org-archive-location "~/.org/gtd/archives.org::datetree"
-                  projectile-project-search-path '("~/projects/")))
-#+END_SRC
-* Export Settings
-#+BEGIN_SRC emacs-lisp
+** Export Settings
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
                   org-export-with-author t
@@ -205,7 +219,7 @@ TODO add function to set image-width to *80%* of the window size.
 #+END_SRC
 
 Embed images into the exported HTML files.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
@@ -220,12 +234,7 @@ Embed images into the exported HTML files.
               (buffer-string)))
             (file-name-nondirectory source))))
 #+END_SRC
-* Misc Org Mode settings
-#+BEGIN_SRC emacs-lisp
-(require 'org-id)
-(setq org-link-file-path-type 'relative)
-#+END_SRC
-* Keywords
+** Keywords
 After much feedback and discussing with other users, I decided to simplify the keyword list to make it simple. Defining a project will now focus on the tag word *:project:* so that all child task are treated as part of the project.
 | Keyword | Description                                                  |
 |---------+--------------------------------------------------------------|
@@ -235,8 +244,7 @@ After much feedback and discussing with other users, I decided to simplify the k
 | DONE    | Task is completed and closed.                                |
 | KILL    | Abandoned or terminated.                                     |
 
-#+BEGIN_SRC emacs-lisp
-
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (custom-declare-face '+org-todo-active  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
@@ -258,14 +266,9 @@ After much feedback and discussing with other users, I decided to simplify the k
           ("TODO" . +org-todo-active)
           ("NEXT" . +org-todo-next)))
 #+END_SRC
-* Logging and Drawers
-For the logging drawers, we like to keep our notes and clock history *seperate* from our properties drawer...
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-log-state-notes-insert-after-drawers nil))
-#+END_SRC
-
+** Logging and Drawers
 Next, we like to keep a history of our activity of a task so we *track* when changes occur, and we also keep our notes logged in *their own drawer*. Optionally you can also add the following in-buffer settings to override the =org-log-into-drawer= function. ~#+STARTUP: logdrawer~ or ~#+STARTUP: nologdrawer~
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-log-into-drawer t
                   org-log-done 'time
                   org-log-repeat 'time
@@ -273,14 +276,13 @@ Next, we like to keep a history of our activity of a task so we *track* when cha
                   org-log-reschedule 'note))
 #+END_SRC
 
-* Properties
-#+BEGIN_SRC emacs-lisp
-(setq org-use-property-inheritance t ; We like to inhert properties from their parents
-      org-catch-invisible-edits 'error) ; Catch invisible edits
+** Properties
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 #+END_SRC
-* Publishing
+** Publishing
 REVIEW do we need to re-define our publish settings for the ROAM directory?
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-publish-project-alist
                   '(("attachments"
                      :base-directory "~/.org/"
@@ -317,97 +319,33 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                      :with-toc t)
                     ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 #+END_SRC
-* Refiling Defaults
-TODO tweak refiling settings to match new GTD setup
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-refile-targets '((nil :maxlevel . 9)
-                                       (org-agenda-files :maxlevel . 4))
-                  org-refile-use-outline-path 'buffer-name
-                  org-outline-path-complete-in-steps nil
-                  org-refile-allow-creating-parent-nodes 'confirm))
-#+END_SRC
-* Orgmode Startup
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-startup-indented 'indent
-                  org-startup-folded 'content
-                  org-src-tab-acts-natively t))
-(add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-#+END_SRC
-* Org Protocol
-#+BEGIN_SRC emacs-lisp
-(require 'org-roam-protocol)
-(setq org-protocol-default-template-key "d")
-#+END_SRC
-* Default Tags
-REVIEW should we define any additional tags?
-#+BEGIN_SRC emacs-lisp
-(setq org-tags-column 0)
-(setq org-tag-alist '((:startgrouptag)
-                      ("Context")
-                      (:grouptags)
-                      ("@home" . ?h)
-                      ("@computer")
-                      ("@work")
-                      ("@place")
-                      ("@bills")
-                      ("@order")
-                      ("@labor")
-                      ("@read")
-                      ("@brainstorm")
-                      ("@planning")
-                      (:endgrouptag)
-                      (:startgrouptag)
-                      ("Categories")
-                      (:grouptags)
-                      ("vehicles")
-                      ("health")
-                      ("house")
-                      ("hobby")
-                      ("coding")
-                      ("material")
-                      ("goal")
-                      (:endgrouptag)
-                      (:startgrouptag)
-                      ("Section")
-                      (:grouptags)
-                      ("#coding")
-                      ("#research")))
-#+END_SRC
-* Buffer Settings
-#+BEGIN_SRC emacs-lisp
-(global-auto-revert-mode 1)
-(setq undo-limit 80000000
-      evil-want-fine-undo t
-;      auto-save-default t
-      inhibit-compacting-font-caches t)
-(whitespace-mode -1)
-
-(defun zyro/remove-lines ()
-  "Remove lines mode."
-  (display-line-numbers-mode -1))
-(remove-hook! '(org-roam-mode-hook) #'zyro/remove-lines)
-#+END_SRC
-
-* Misc Settings
-#+BEGIN_SRC emacs-lisp
-(setq display-line-numbers-type t)
-(setq-default
- delete-by-moving-to-trash t
- tab-width 4
- uniquify-buffer-name-style 'forward
- window-combination-resize t
- x-stretch-cursor t)
+** Default Tags
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(after! org (setq org-tags-column 0
+                  org-tag-alist '((:startgrouptag)
+                                  (:grouptags)
+                                  ("@home" . ?h)
+                                  ("@computer")
+                                  ("@work")
+                                  ("@place")
+                                  ("@bills")
+                                  ("@order")
+                                  ("@labor")
+                                  ("@read")
+                                  ("@brainstorm")
+                                  ("@planning")
+                                  ("WAIT")
+                                  ("SOMEDAY"))))
 #+END_SRC
 * Module Settings
 ** company mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org
   (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
   (setq company-idle-delay 0.25))
 #+END_SRC
 ** Define Word
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (use-package define-word
   :config
   (map! :after org
@@ -415,20 +353,15 @@ REVIEW should we define any additional tags?
         :leader
         :desc "Define word at point" "@" #'define-word-at-point))
 #+END_SRC
-** Focus Mode
-#+BEGIN_SRC emacs-lisp
-(setq focus-mode-to-thing '((text-mode . line)
-                            (prog-mode . defun)))
-#+END_SRC
 ** Misc Modules [Bookmarks, PDF Tools]
 Configuring PDF support and ORG-NOTER for note taking
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 ;(use-package org-pdftools
 ;  :hook (org-load . org-pdftools-setup-link))
 #+END_SRC
 ** Graphs and Chart Modules
 Eventually I would like to have org-mind-map generating charts like Sacha's [[https://pages.sachachua.com/evil-plans/][evil-plans]].
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
 (use-package gnuplot
@@ -454,7 +387,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 #+END_SRC
 
 ** Elfeed
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (use-package elfeed-org
   :defer
   :config
@@ -471,7 +404,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 #+END_SRC
 ** DEFT
 When this variable is set to ~t~ your deft directory will be updated to your projectile-project root's folder when switching projects, and the deft buffer's contents will be refreshed.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (setq deft-use-projectile-projects t)
 (defun zyro/deft-update-directory ()
   "Updates deft directory to current projectile's project root folder and updates the deft buffer."
@@ -484,7 +417,7 @@ When this variable is set to ~t~ your deft directory will be updated to your pro
 #+END_SRC
 
 Configuring DEFT default settings
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (load! "my-deft-title.el")
 (use-package deft
   :bind (("<f8>" . deft))
@@ -503,7 +436,7 @@ Configuring DEFT default settings
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 #+END_SRC
 ** Org-Rifle
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (use-package helm-org-rifle
   :after (helm org)
   :preface
@@ -599,12 +532,12 @@ Configuring DEFT default settings
 (provide 'setup-helm-org-rifle)
 #+END_SRC
 ** Pandoc
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 #+END_SRC
 ** ROAM
 These are my default ROAM settings
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (setq org-roam-tag-sources '(prop last-directory))
 (setq org-roam-db-location "~/.org/roam.db")
 (setq org-roam-directory "~/.org/")
@@ -638,7 +571,7 @@ These are my default ROAM settings
            "%?")))
 #+END_SRC
 ** ROAM Server
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (use-package org-roam-server
   :ensure t
   :config
@@ -653,7 +586,7 @@ These are my default ROAM settings
         org-roam-server-network-label-wrap-length 20))
 #+END_SRC
 ** ROAM Export Backlinks + Content
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun my/org-roam--backlinks-list-with-content (file)
   (with-temp-buffer
     (if-let* ((backlinks (org-roam--get-backlinks file))
@@ -683,15 +616,13 @@ These are my default ROAM settings
 (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 #+END_SRC
 ** Reveal [HTML Presentations]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 #+END_SRC
 ** Super Agenda Settings
-#+BEGIN_SRC emacs-lisp
-(org-super-agenda-mode t)
-
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (setq org-agenda-custom-commands
       (quote (("N" "Notes" tags "NOTE"
                ((org-agenda-overriding-header "Notes")
@@ -701,9 +632,15 @@ These are my default ROAM settings
                 (org-agenda-sorting-strategy
                  '(todo-state-down effort-up category-keep))))
               ("i" "Inbox"
-               ((tags "REFILE"
-                      ((org-agenda-overriding-header "Tasks to Refile")
-                       (org-tags-match-list-sublevels nil)))))
+               ((tags-todo "-SOMEDAY/TODO"
+                      ((org-agenda-overriding-header "New Tasks to Refile")
+                       (org-tags-match-list-sublevels nil)))
+                (tags-todo "SOMEDAY/"
+                           ((org-agenda-overriding-header "Someday Tasks")
+                            (org-agenda-skip-function 'nm/skip-scheduled)
+                            (org-tags-match-list-sublevels nil)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
               ("w" "Master Agenda"
                ((agenda ""
                         ((org-agenda-span '1)
@@ -725,7 +662,7 @@ These are my default ROAM settings
                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
                                                                       ""
                                                                     " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                            (org-agenda-skip-function 'nm/skip-projects-and-habits-and-single-tasks)
                             (org-tags-match-list-sublevels t)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
@@ -743,23 +680,23 @@ These are my default ROAM settings
                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-SOMEDAY-REFILE-CANCELLED-#waiting-#hold-#monitor/!"
+                (tags-todo "-SOMEDAY-REFILE-CANCELLED-/NEXT"
                            ((org-agenda-overriding-header (concat "Standalone Tasks"
                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
                                                                       ""
                                                                     " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-project-tasks)
+                            (org-agenda-skip-function 'nm/skip-project-tasks)
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-todo-ignore-deadlines t)
                             (org-agenda-todo-ignore-with-date t)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-CANCELLED+#waiting|#hold|#monitor/"
+                (tags-todo "-SOMEDAY+WAITING/"
                            ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
                                                                       ""
                                                                     " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-tasks)
+                            (org-agenda-skip-function 'nm/skip-scheduled)
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
@@ -769,20 +706,13 @@ These are my default ROAM settings
                        (org-tags-match-list-sublevels nil))))
                nil))))
 #+END_SRC
-* Loading secrets
-#+BEGIN_SRC emacs-lisp
-(let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
-(when (file-exists-p secrets)
-  (load secrets)))
-#+END_SRC
-* Hacks
 * Custom Functions
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (load! "customs.el")
 (load! "org-helpers.el")
 #+END_SRC
 ** Time Stamps
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun nm/org-insert-timestamp ()
   "Insert active timestamp at POS."
   (interactive)
@@ -794,7 +724,7 @@ These are my default ROAM settings
       :desc "Insert timestamp at POS" "i" #'nm/org-insert-timestamp)
 #+END_SRC
 ** Capture Template File Picker
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun nm/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
@@ -802,7 +732,7 @@ These are my default ROAM settings
 #+END_SRC
 ** Clarify Tasks
 Clarify task will take a list of property fields and pass them to ~nm/org-clarify-task-properties~ to update task items which are missing those property fields.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun nm/org-get-headline-property (arg)
   "Extract property from headline and return results."
   (interactive)
@@ -884,7 +814,7 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
       (org-todo "NEXT"))
     (when (and (not (equal (org-get-todo-state) "DONE")) (not (nm/is-scheduled-p)) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/checkbox-done-exist-p)) (not (nm/checkbox-active-exist-p)))
       (org-todo "TODO"))
-    (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p))
+    (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)) (nm/checkbox-done-exist-p))
       (org-todo "DONE"))))
 
 (defun nm/checkbox-active-exist-p ()
@@ -920,18 +850,25 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
       (save-excursion
         (re-search-forward (concat "^\*+ " "\\(NEXT\\|WAIT\\|TODO\\)") end t)))))
 
+;; (defun nm/exist-tag-p (arg)
+;;   "If headline has ARG tag keyword assigned, return t."
+;;   (interactive)
+;;   (let ((end (save-excursion (end-of-line))))
+;;     (save-excursion
+;;       (progn
+;;         (unless (org-at-heading-p)
+;;           (org-back-to-heading t))
+;;         (beginning-of-line)
+;;         (re-search-forward (format ":%s:" arg) end t)))))
+
 (defun nm/exist-tag-p (arg)
   "If headline has ARG tag keyword assigned, return t."
   (interactive)
   (let ((end (save-excursion (end-of-line))))
     (save-excursion
-      (progn
-        (unless (org-at-heading-p)
-          (org-back-to-heading t))
-        (beginning-of-line)
-        (re-search-forward (format ":%s:" arg) end t)))))
+      (member arg (org-get-tags)))))
 
-(defconst nm/context-tags " *:[@\\w+:]")
+(defconst nm/context-tags ".+\s\\(:@\w.+:\\)")
 
 (defun nm/exist-context-tag-p (&optional arg)
   "If headline has context tag keyword assigned, return t."
@@ -944,8 +881,42 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
   "Checks task for SCHEDULE and if found, return t."
   (save-excursion
     (org-back-to-heading)
-    (let ((end (save-excursion (outline-end-of-heading))))
+    (let ((end (save-excursion (org-end-of-subtree t))))
       (re-search-forward org-scheduled-regexp end t))))
+
+(defun nm/skip-project-tasks ()
+  "Show non-project tasks.
+Skip project and sub-project tasks, habits, and project related tasks."
+  (save-restriction
+    (widen)
+    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+       ((bh/is-project-p) subtree-end)
+       ((oh/is-scheduled-p) subtree-end)
+       ((org-is-habit-p) subtree-end)
+       ((bh/is-project-subtree-p) subtree-end)
+       (t nil)))))
+
+(defun nm/skip-projects-and-habits-and-single-tasks ()
+  "Skip trees that are projects, tasks that are habits, single non-project tasks"
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (cond
+       ((org-is-habit-p) next-headline)
+       ((nm/is-scheduled-p) next-headline)
+       ((bh/is-project-p) next-headline)
+       ((and (bh/is-task-p) (not (bh/is-project-subtree-p))) next-headline)
+       (t nil)))))
+
+(defun nm/skip-scheduled ()
+  "Skip headlines that are scheduled."
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (cond
+       ((nm/is-scheduled-p) next-headline)
+       (t nil)))))
 
 (add-hook 'before-save-hook #'nm/update-task-states)
 
@@ -959,11 +930,10 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
       :localleader
       :prefix ("j" . "nicks functions")
       :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
-
 #+END_SRC
 
 ** Capture headline finder
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun nm/org-capture-system ()
   "Capture stuff."
   (interactive)
@@ -1006,11 +976,11 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
   (forward-char -1))
 #+END_SRC
 ** Search file headlines and send tree to indirect buffer
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 ; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
 #+END_SRC
 ** Change Font
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun nm/emacs-change-font ()
   "Change font based on available font list."
   (interactive)
@@ -1019,11 +989,10 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
           doom-big-font (font-spec :family font :size 24)))
   (doom/reload-font))
 #+END_SRC
-* Theme Settings
-#+BEGIN_SRC emacs-lisp
-;(after! org (toggle-frame-maximized)
-  (setq doom-theme 'doom-city-lights)
-(defun nm/adjust-frame-size ()
-  "set frame size accordingly."
-  (set-frame-size (selected-frame) 130 65))
+* End of file loading
+Load secrets from here...
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
+(when (file-exists-p secrets)
+  (load secrets)))
 #+END_SRC
