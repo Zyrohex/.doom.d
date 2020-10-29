@@ -46,7 +46,7 @@ User inormation and time-display:
  tab-width 4
  uniquify-buffer-name-style 'forward
  window-combination-resize t
- x-stretch-cursor t)
+ x-stretch-cursor nil)
 #+END_SRC
 
 Additioanl key bindings
@@ -102,6 +102,7 @@ Next we configure popup-rules and default fonts.
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+;  (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t))
 
 (when (equal system-type 'gnu/linux)
   (setq doom-font (font-spec :family "Roboto Mono" :size 18)
@@ -127,7 +128,7 @@ Here we add any requirements before org-mode starts to load
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm
                   org-startup-indented 'indent
-                  org-startup-folded 'fold
+                  org-startup-folded 'content
                   org-src-tab-acts-natively t
                   org-list-allow-alphabetical nil))
 
@@ -177,13 +178,10 @@ Here we setup the capture templates we want for ~org-capture~. I use a file temp
 (after! org (setq org-capture-templates
       '(("h" "Headline templates")
         ("l" "Ledger")
-        ("j" "Journal")
         ("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
-        ("jn" "New Entry" entry (file "~/.org/gtd/journal.org")
-         "* <%<%Y-%m-%d %b %H:%M>> %?")
-        ("jc" "Clocked Entry" entry (file "~/.org/gtd/journal.org")
-         "* <%<%Y-%m-%d %b %H:%M>> %?" :clock-in t :clock-resume t)
+        ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
+         "* %^{title}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
         ("hn" "Note to headline" plain (function nm/org-end-of-headline)
          "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-before 1 :empty-lines-after 1 :unnarrow t)
         ("hf" "Find headline" plain (function nm/org-capture-weeklies)
@@ -337,21 +335,21 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                   ("WAIT")
                                   ("SOMEDAY"))))
 #+END_SRC
+** Wrapping it up
+#+BEGIN_SRC emacs-lisp
+(defun nm/quick-capture ()
+  "Start a capture template using the quick capture template."
+  (interactive)
+  (org-capture nil "!"))
+(bind-key "<f9>" 'nm/quick-capture)
+(bind-key "<f12>" 'org-cycle-agenda-files)
+#+END_SRC
 * Module Settings
 ** company mode
 #+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (after! org
   (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
   (setq company-idle-delay 0.25))
-#+END_SRC
-** Define Word
-#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
-(use-package define-word
-  :config
-  (map! :after org
-        :map org-mode-map
-        :leader
-        :desc "Define word at point" "@" #'define-word-at-point))
 #+END_SRC
 ** Misc Modules [Bookmarks, PDF Tools]
 Configuring PDF support and ORG-NOTER for note taking
@@ -418,7 +416,7 @@ When this variable is set to ~t~ your deft directory will be updated to your pro
 
 Configuring DEFT default settings
 #+BEGIN_SRC emacs-lisp :tangle config.el :comments link
-(load! "my-deft-title.el")
+;(load! "my-deft-title.el")
 (use-package deft
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
@@ -432,7 +430,42 @@ Configuring DEFT default settings
         deft-use-filename-as-title nil
         deft-markdown-mode-title-level 1
         deft-file-naming-rules '((nospace . "-"))))
-(require 'my-deft-title)
+
+(defun my-deft/strip-quotes (str)
+  (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
+        ((string-match "'\\(.+\\)'" str) (match-string 1 str))
+        (t str)))
+
+(defun my-deft/parse-title-from-front-matter-data (str)
+  (if (string-match "^title: \\(.+\\)" str)
+      (let* ((title-text (my-deft/strip-quotes (match-string 1 str)))
+             (is-draft (string-match "^draft: true" str)))
+        (concat (if is-draft "[DRAFT] " "") title-text))))
+
+(defun my-deft/deft-file-relative-directory (filename)
+  (file-name-directory (file-relative-name filename deft-directory)))
+
+(defun my-deft/title-prefix-from-file-name (filename)
+  (let ((reldir (my-deft/deft-file-relative-directory filename)))
+    (if reldir
+        (concat (directory-file-name reldir) " > "))))
+
+(defun my-deft/parse-title-with-directory-prepended (orig &rest args)
+  (let ((str (nth 1 args))
+        (filename (car args)))
+    (concat
+      (my-deft/title-prefix-from-file-name filename)
+      (let ((nondir (file-name-nondirectory filename)))
+        (if (or (string-prefix-p "README" nondir)
+                (string-suffix-p ".txt" filename))
+            nondir
+          (if (string-prefix-p "---\n" str)
+              (my-deft/parse-title-from-front-matter-data
+               (car (split-string (substring str 4) "\n---\n")))
+            (apply orig args)))))))
+
+(provide 'my-deft-title)
+
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 #+END_SRC
 ** Org-Rifle
@@ -699,16 +732,17 @@ These are my default ROAM settings
                             (org-agenda-skip-function 'nm/skip-scheduled)
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
-                (tags "-REFILE/"
-                      ((org-agenda-overriding-header "Tasks to Archive")
-                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-                       (org-tags-match-list-sublevels nil))))
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))
                nil))))
+;                (tags "-REFILE/"
+;                      ((org-agenda-overriding-header "Tasks to Archive")
+;                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+;                       (org-tags-match-list-sublevels nil))))
+;               nil))))
 #+END_SRC
 * Custom Functions
 #+BEGIN_SRC emacs-lisp :tangle config.el :comments link
-(load! "customs.el")
+;(load! "customs.el")
 (load! "org-helpers.el")
 #+END_SRC
 ** Time Stamps
@@ -868,7 +902,7 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
     (save-excursion
       (member arg (org-get-tags)))))
 
-(defconst nm/context-tags ".+\s:@\w.+:")
+(defconst nm/context-tags ".+\s:@\\w.+:")
 
 (defun nm/exist-context-tag-p (&optional arg)
   "If headline has context tag keyword assigned, return t."
