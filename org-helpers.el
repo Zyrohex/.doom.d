@@ -48,44 +48,44 @@
                      `(,(intern (concat "oh/is-" type "-p")))))
                 types)))
 
-(defun* oh/agenda-skip (&rest types
-                        &key ((:headline-if headline) nil)
-                             ((:headline-if-restricted-and headline-restricted) nil)
-                             ((:headline-if-unrestricted-and headline-unrestricted) nil)
-                             ((:subtree-if subtree) nil)
-                             ((:subtree-if-restricted-and subtree-restricted) nil)
-                             ((:subtree-if-unrestricted-and subtree-unrestricted) nil))
-  "True when one of the given check functions return true."
-  (save-restriction
-    (let* ((subtree-values (or types subtree))
-           (subtree-end (save-excursion (org-end-of-subtree t)))
-           (next-headline (save-excursion (or (outline-next-heading)
-                                              (point-max))))
-           (restricted-to-project (marker-buffer org-agenda-restrict-begin)))
-      (cond
-       ((and headline
-             (eval (macroexpand `(oh/agenda-type ,@headline))))
-        next-headline)
-       ((and subtree
-             (eval (macroexpand `(oh/agenda-type ,@subtree))))
-        subtree-end)
-       ((and headline-restricted
-             restricted-to-project
-             (eval (macroexpand `(oh/agenda-type ,@headline-restricted))))
-        next-headline)
-       ((and headline-unrestricted
-             (not restricted-to-project)
-             (eval (macroexpand `(oh/agenda-type ,@headline-unrestricted))))
-        next-headline)
-       ((and subtree-restricted
-             restricted-to-project
-             (eval (macroexpand `(oh/agenda-type ,@subtree-restricted))))
-        subtree-end)
-       ((and subtree-unrestricted
-             (not restricted-to-project)
-             (eval (macroexpand `(oh/agenda-type ,@subtree-unrestricted))))
-        subtree-end)
-       (t nil)))))
+;; (defun* oh/agenda-skip (&rest types
+;;                         &key ((:headline-if headline) nil)
+;;                              ((:headline-if-restricted-and headline-restricted) nil)
+;;                              ((:headline-if-unrestricted-and headline-unrestricted) nil)
+;;                              ((:subtree-if subtree) nil)
+;;                              ((:subtree-if-restricted-and subtree-restricted) nil)
+;;                              ((:subtree-if-unrestricted-and subtree-unrestricted) nil))
+;;   "True when one of the given check functions return true."
+;;   (save-restriction
+;;     (let* ((subtree-values (or types subtree))
+;;            (subtree-end (save-excursion (org-end-of-subtree t)))
+;;            (next-headline (save-excursion (or (outline-next-heading)
+;;                                               (point-max))))
+;;            (restricted-to-project (marker-buffer org-agenda-restrict-begin)))
+;;       (cond
+;;        ((and headline
+;;              (eval (macroexpand `(oh/agenda-type ,@headline))))
+;;         next-headline)
+;;        ((and subtree
+;;              (eval (macroexpand `(oh/agenda-type ,@subtree))))
+;;         subtree-end)
+;;        ((and headline-restricted
+;;              restricted-to-project
+;;              (eval (macroexpand `(oh/agenda-type ,@headline-restricted))))
+;;         next-headline)
+;;        ((and headline-unrestricted
+;;              (not restricted-to-project)
+;;              (eval (macroexpand `(oh/agenda-type ,@headline-unrestricted))))
+;;         next-headline)
+;;        ((and subtree-restricted
+;;              restricted-to-project
+;;              (eval (macroexpand `(oh/agenda-type ,@subtree-restricted))))
+;;         subtree-end)
+;;        ((and subtree-unrestricted
+;;              (not restricted-to-project)
+;;              (eval (macroexpand `(oh/agenda-type ,@subtree-unrestricted))))
+;;         subtree-end)
+;;        (t nil)))))
 
 (defun oh/has-subtask-p ()
   "Returns t for any heading that has subtasks."
