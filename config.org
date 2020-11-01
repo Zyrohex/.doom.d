@@ -906,9 +906,10 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
 (defun nm/checkbox-done-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
   (interactive)
-  (org-back-to-heading)
-  (let ((end (save-excursion (org-end-of-subtree t))))
-    (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t)))
+  (save-excursion
+    (org-back-to-heading)
+    (let ((end (save-excursion (org-end-of-subtree t))))
+      (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t))))
 
 (defun nm/has-subtask-done-p ()
   "Returns t for any heading that has a subtask is DONE state."
