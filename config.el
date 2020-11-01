@@ -654,17 +654,19 @@
       :prefix ("d" . "date/deadline")
       :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 
+(require 'find-lisp)
 (defun nm/org-id-prompt-id ()
   "Prompt for the id during completion of id: link."
-  (let ((dest (org-refile-get-location))
-        (name nil)
-        (id nil))
-    (save-excursion
-      (find-file (cadr dest))
-      (goto-char (nth 3 dest))
-      (setq id (org-id-get (point) t)
-            name (org-get-heading t t t t)))
-    (org-insert-link nil (concat "id:" id) name)))
+  (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
+    (let ((dest (org-refile-get-location))
+          (name nil)
+          (id nil))
+      (save-excursion
+        (find-file (cadr dest))
+        (goto-char (nth 3 dest))
+        (setq id (org-id-get (point) t)
+              name (org-get-heading t t t t)))
+      (org-insert-link nil (concat "id:" id) name))))
 
 (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
 
@@ -918,9 +920,6 @@ Skip project and sub-project tasks, habits, and project related tasks."
   (outline-next-heading)
   (forward-char -1))
 
-; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
-
-(require 'find-lisp)
 (defun nm/goto-headline-agenda-files ()
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
