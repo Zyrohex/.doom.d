@@ -1,55 +1,56 @@
 
 # Table of Contents
 
--   [New Changes](#orgf745520)
-    -   [Clarify Tasks](#orgb46ad4c)
--   [Requirements](#orgd61522b)
--   [Initial-Settings](#orge8268e0)
--   [Org-Mode](#orgd3a5276)
-    -   [Looks and Feels](#orgd7aadf0)
-    -   [Loading agenda settings](#org9dda498)
-    -   [Clock Settings](#org2496cb7)
-    -   [Capture Templates](#orgc68a79a)
-    -   [Export Settings](#org7d99764)
-    -   [Keywords](#orgc299087)
-    -   [Logging and Drawers](#org19d4dec)
-    -   [Properties](#org42e0a6a)
-    -   [Publishing](#orgb1b1e46)
-    -   [Default Tags](#org9ff295e)
--   [Module Settings](#orged40963)
-    -   [company mode](#org724e827)
-    -   [DEFT](#org8a81e38)
-    -   [Elfeed](#org8340d29)
-    -   [Graphs and Chart Modules](#org1ca20a0)
-    -   [Journal](#org0f1f391)
-    -   [Org-Rifle](#org93e4cdb)
-    -   [org-ql](#orgab730b2)
-    -   [Pandoc](#org5d1527b)
-    -   [Reveal](#org11ef1d2)
-    -   [ROAM](#orgf26c3f1)
-    -   [ROAM Export Backlinks + Content](#org0a643a9)
-    -   [ROAM Server](#org9fe867f)
-    -   [Super Agenda Settings](#org8f3e246)
--   [Custom Functions](#org7328734)
-    -   [Time Stamps](#org72d35cf)
-    -   [Prompt for headline when creating ID links](#orge0411be)
-    -   [Capture Template File Picker](#org7a20af1)
-    -   [Clarify Tasks](#org7907155)
-    -   [Capture headline finder](#orga77d348)
-    -   [Search file headlines and send tree to indirect buffer](#org3141706)
-    -   [Change Font](#org9068ca6)
--   [End of file loading](#org16fb741)
+-   [New Changes](#org2d89a71)
+    -   [Clarify Tasks](#org71cccf4)
+-   [Requirements](#org999aed8)
+-   [Initial-Settings](#orgcb88163)
+-   [Org-Mode](#org426da0f)
+    -   [Looks and Feels](#org5b81dca)
+    -   [Loading agenda settings](#org1764d50)
+    -   [Clock Settings](#org5ab9de8)
+    -   [Capture Templates](#org5960161)
+    -   [Export Settings](#org3615bd3)
+    -   [Keywords](#orgcf83b38)
+    -   [Logging and Drawers](#orga56fbac)
+    -   [Properties](#org55ae45b)
+    -   [Publishing](#org722bc79)
+    -   [Default Tags](#org51a690c)
+-   [Module Settings](#org0242376)
+    -   [company mode](#org563b415)
+    -   [DEFT](#orgb76b589)
+    -   [Elfeed](#org87499bb)
+    -   [Graphs and Chart Modules](#orgb0b8b9c)
+    -   [Journal](#org9ca963e)
+    -   [Org-Rifle](#org99bbe99)
+    -   [org-ql](#orgcbeee68)
+    -   [Pandoc](#orgf80d7b7)
+    -   [Reveal](#orga3d1193)
+    -   [ROAM](#org73aa7ff)
+    -   [ROAM Export Backlinks + Content](#org7e4f431)
+    -   [ROAM Server](#org979b6d2)
+    -   [Super Agenda Settings](#orgc5c0aac)
+-   [Custom Functions](#org884ed6f)
+    -   [Time Stamps](#org427632c)
+    -   [Prompt for headline when creating ID links](#org200b2a2)
+    -   [Capture Template File Picker](#org5f5aa5f)
+    -   [Clarify Tasks](#org178af28)
+    -   [Capture headline finder](#org765773c)
+    -   [Search file headlines and send tree to indirect buffer](#org8170da0)
+    -   [Search for headline across org-directory and return to indirect buffer](#org5a28a5b)
+    -   [Change Font](#org467e211)
+-   [End of file loading](#org93e43bf)
 
 Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="orgf745520"></a>
+<a id="org2d89a71"></a>
 
 # New Changes
 
 
-<a id="orgb46ad4c"></a>
+<a id="org71cccf4"></a>
 
 ## Clarify Tasks
 
@@ -71,7 +72,7 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="orgd61522b"></a>
+<a id="org999aed8"></a>
 
 # Requirements
 
@@ -81,7 +82,7 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="orge8268e0"></a>
+<a id="orgcb88163"></a>
 
 # Initial-Settings
 
@@ -163,13 +164,13 @@ Next we configure popup-rules and default fonts.
     
     (when (equal system-type 'gnu/linux)
       (setq doom-font (font-spec :family "Victor Mono" :size 18)
-            doom-big-font (font-spec :family "Victor Mono" :size 26)))
+            doom-big-font (font-spec :family "Victor Mono" :size 22)))
     (when (equal system-type 'windows-nt)
       (setq doom-font (font-spec :family "InputMono" :size 18)
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="orgd3a5276"></a>
+<a id="org426da0f"></a>
 
 # Org-Mode
 
@@ -196,7 +197,7 @@ Here we add any requirements before org-mode starts to load
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="orgd7aadf0"></a>
+<a id="org5b81dca"></a>
 
 ## Looks and Feels
 
@@ -214,7 +215,7 @@ Here we change some of the things how org-mode looks and feels, some options ava
             org-superstar-item-bullet-alist nil))
 
 
-<a id="org9dda498"></a>
+<a id="org1764d50"></a>
 
 ## Loading agenda settings
 
@@ -234,14 +235,14 @@ Here we change some of the things how org-mode looks and feels, some options ava
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 
 
-<a id="org2496cb7"></a>
+<a id="org5ab9de8"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="orgc68a79a"></a>
+<a id="org5960161"></a>
 
 ## Capture Templates
 
@@ -270,7 +271,7 @@ Example ledger template file: = `/.doom.d/templates/ledger-scheduled.org`
         Expenses:Insurance                         dollar amount
 
 
-<a id="org7d99764"></a>
+<a id="org3615bd3"></a>
 
 ## Export Settings
 
@@ -305,7 +306,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgc299087"></a>
+<a id="orgcf83b38"></a>
 
 ## Keywords
 
@@ -380,7 +381,7 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="org19d4dec"></a>
+<a id="orga56fbac"></a>
 
 ## Logging and Drawers
 
@@ -393,14 +394,14 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="org42e0a6a"></a>
+<a id="org55ae45b"></a>
 
 ## Properties
 
     (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 
 
-<a id="orgb1b1e46"></a>
+<a id="org722bc79"></a>
 
 ## Publishing
 
@@ -443,7 +444,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org9ff295e"></a>
+<a id="org51a690c"></a>
 
 ## Default Tags
 
@@ -464,12 +465,12 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                       ("SOMEDAY"))))
 
 
-<a id="orged40963"></a>
+<a id="org0242376"></a>
 
 # Module Settings
 
 
-<a id="org724e827"></a>
+<a id="org563b415"></a>
 
 ## company mode
 
@@ -478,7 +479,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
       (setq company-idle-delay 0.25))
 
 
-<a id="org8a81e38"></a>
+<a id="orgb76b589"></a>
 
 ## DEFT
 
@@ -548,7 +549,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org8340d29"></a>
+<a id="org87499bb"></a>
 
 ## Elfeed
 
@@ -567,7 +568,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org1ca20a0"></a>
+<a id="orgb0b8b9c"></a>
 
 ## Graphs and Chart Modules
 
@@ -597,7 +598,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org0f1f391"></a>
+<a id="org9ca963e"></a>
 
 ## Journal
 
@@ -607,7 +608,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="org93e4cdb"></a>
+<a id="org99bbe99"></a>
 
 ## Org-Rifle
 
@@ -706,7 +707,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgab730b2"></a>
+<a id="orgcbeee68"></a>
 
 ## org-ql
 
@@ -745,14 +746,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="org5d1527b"></a>
+<a id="orgf80d7b7"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org11ef1d2"></a>
+<a id="orga3d1193"></a>
 
 ## Reveal
 
@@ -761,7 +762,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="orgf26c3f1"></a>
+<a id="org73aa7ff"></a>
 
 ## ROAM
 
@@ -800,7 +801,7 @@ These are my default ROAM settings
                "%?")))
 
 
-<a id="org0a643a9"></a>
+<a id="org7e4f431"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -833,7 +834,7 @@ These are my default ROAM settings
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org9fe867f"></a>
+<a id="org979b6d2"></a>
 
 ## ROAM Server
 
@@ -851,7 +852,7 @@ These are my default ROAM settings
     ;;         org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org8f3e246"></a>
+<a id="orgc5c0aac"></a>
 
 ## Super Agenda Settings
 
@@ -863,11 +864,8 @@ These are my default ROAM settings
                    ((org-agenda-overriding-header "Habits")
                     (org-agenda-sorting-strategy
                      '(todo-state-down effort-up category-keep))))
-                  ("i" "Inbox"
-                   ((tags-todo "-SOMEDAY/TODO"
-                          ((org-agenda-overriding-header "New Tasks to Refile")
-                           (org-tags-match-list-sublevels nil)))
-                    (tags-todo "SOMEDAY/"
+                  ("s" "Someday"
+                   ((tags-todo "SOMEDAY/"
                                ((org-agenda-overriding-header "Someday Tasks")
                                 (org-agenda-skip-function 'nm/skip-scheduled)
                                 (org-tags-match-list-sublevels nil)
@@ -931,8 +929,12 @@ These are my default ROAM settings
                                 (org-agenda-skip-function 'nm/skip-scheduled)
                                 (org-tags-match-list-sublevels nil)
                                 (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))
+                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
+                    (tags-todo "-SOMEDAY/TODO"
+                               ((org-tags-match-list-sublevels nil)
+                                (org-agenda-overriding-header "Inbox Bucket"))))
                    nil))))
+    
     ;                (tags "-REFILE/"
     ;                      ((org-agenda-overriding-header "Tasks to Archive")
     ;                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
@@ -940,14 +942,14 @@ These are my default ROAM settings
     ;               nil))))
 
 
-<a id="org7328734"></a>
+<a id="org884ed6f"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="org72d35cf"></a>
+<a id="org427632c"></a>
 
 ## Time Stamps
 
@@ -964,7 +966,7 @@ These are my default ROAM settings
           :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 
 
-<a id="orge0411be"></a>
+<a id="org200b2a2"></a>
 
 ## Prompt for headline when creating ID links
 
@@ -983,7 +985,7 @@ These are my default ROAM settings
     (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
 
 
-<a id="org7a20af1"></a>
+<a id="org5f5aa5f"></a>
 
 ## Capture Template File Picker
 
@@ -993,7 +995,7 @@ These are my default ROAM settings
         (expand-file-name (format "%s" file))))
 
 
-<a id="org7907155"></a>
+<a id="org178af28"></a>
 
 ## Clarify Tasks
 
@@ -1204,7 +1206,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="orga77d348"></a>
+<a id="org765773c"></a>
 
 ## Capture headline finder
 
@@ -1250,14 +1252,33 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (forward-char -1))
 
 
-<a id="org3141706"></a>
+<a id="org8170da0"></a>
 
 ## Search file headlines and send tree to indirect buffer
 
     ; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
 
 
-<a id="org9068ca6"></a>
+<a id="org5a28a5b"></a>
+
+## Search for headline across org-directory and return to indirect buffer
+
+    (defun nm/goto-headline-agenda-files ()
+      "Searches org-directory for headline and returns results to indirect buffer."
+      (interactive)
+      (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
+        (let ((dest (org-refile-get-location)))
+          (find-file (cadr dest))
+          (goto-char (nth 3 dest))
+          (org-tree-to-indirect-buffer))))
+    
+    (map! :after org
+          :map org-mode-map
+          :localleader
+          :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
+
+
+<a id="org467e211"></a>
 
 ## Change Font
 
@@ -1266,11 +1287,11 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (interactive)
       (let ((font (ivy-completing-read "font: " (font-family-list))))
         (setq doom-font (font-spec :family font :size 18)
-              doom-big-font (font-spec :family font :size 24)))
+              doom-big-font (font-spec :family font :size 22)))
       (doom/reload-font))
 
 
-<a id="org16fb741"></a>
+<a id="org93e43bf"></a>
 
 # End of file loading
 
