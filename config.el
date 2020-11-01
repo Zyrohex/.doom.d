@@ -920,6 +920,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
 
 ; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
 
+(require 'find-lisp)
 (defun nm/goto-headline-agenda-files ()
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)

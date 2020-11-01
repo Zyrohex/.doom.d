@@ -1067,6 +1067,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
 #+END_SRC
 ** Search for headline across org-directory and return to indirect buffer
 #+BEGIN_SRC emacs-lisp
+(require 'find-lisp)
 (defun nm/goto-headline-agenda-files ()
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
