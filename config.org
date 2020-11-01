@@ -1073,8 +1073,9 @@ Skip project and sub-project tasks, habits, and project related tasks."
   (interactive)
   (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
     (let ((dest (org-refile-get-location)))
-      (find-file (cadr dest))
-      (goto-char (nth 3 dest))
+      (save-excursion
+        (find-file (cadr dest))
+        (goto-char (nth 3 dest)))
       (org-tree-to-indirect-buffer))))
 
 (map! :after org
