@@ -65,8 +65,8 @@
   (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Victor Mono" :size 18)
-        doom-big-font (font-spec :family "Victor Mono" :size 22)))
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
+        doom-big-font (font-spec :family "JetBrains Mono" :size 22)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
@@ -482,65 +482,65 @@
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 
-(setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/.org/roam.db")
-(setq org-roam-directory "~/.org/")
+;; (setq org-roam-tag-sources '(prop last-directory))
+;; (setq org-roam-db-location "~/.org/roam.db")
+;; (setq org-roam-directory "~/.org/")
 
-(setq org-roam-dailies-capture-templates
-   '(("d" "daily" plain (function org-roam-capture--get-point) ""
-      :immediate-finish t
-      :file-name "journal/%<%Y-%m-%d-%a>"
-      :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+;; (setq org-roam-dailies-capture-templates
+;;    '(("d" "daily" plain (function org-roam-capture--get-point) ""
+;;       :immediate-finish t
+;;       :file-name "journal/%<%Y-%m-%d-%a>"
+;;       :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
 
-(setq org-roam-capture-templates
-        '(("d" "digest" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "notes/digest/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
-           :unnarrowed t)
-          ("n" "notes" plain (function org-roam-capture--get-point)
-           :file-name "notes/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-           :unnarrowed t
-           "%?")
-          ("p" "private" plain (function org-roam-capture--get-point)
-           :file-name "notes/private/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-           :unnarrowed t
-           "%?")
-          ("r" "reveal slide" plain (function org-roam-capture--get-point)
-           :file-name "slides/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+options: num:nil toc:nil\n#+REVEAL_THEME: %^{theme|black|white|league|beige|sky|night|serif|simple|solarized|blood|moon}\n#+REVEAL_PLUGINS: (highlight)\n#+REVEAL_OVERVIEW: t\n\n"
-           :unnarrow t
-           "%?")))
+;; (setq org-roam-capture-templates
+;;         '(("d" "digest" plain (function org-roam-capture--get-point)
+;;            "%?"
+;;            :file-name "notes/digest/%<%Y%m%d%H%M>-${slug}"
+;;            :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
+;;            :unnarrowed t)
+;;           ("n" "notes" plain (function org-roam-capture--get-point)
+;;            :file-name "notes/${slug}"
+;;            :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+;;            :unnarrowed t
+;;            "%?")
+;;           ("p" "private" plain (function org-roam-capture--get-point)
+;;            :file-name "notes/private/${slug}"
+;;            :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+;;            :unnarrowed t
+;;            "%?")
+;;           ("r" "reveal slide" plain (function org-roam-capture--get-point)
+;;            :file-name "slides/%<%Y%m%d%H%M>-${slug}"
+;;            :head "#+title: ${title}\n#+options: num:nil toc:nil\n#+REVEAL_THEME: %^{theme|black|white|league|beige|sky|night|serif|simple|solarized|blood|moon}\n#+REVEAL_PLUGINS: (highlight)\n#+REVEAL_OVERVIEW: t\n\n"
+;;            :unnarrow t
+;;            "%?")))
 
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          (insert (format "\n\n* %d Backlinks\n"
-                          (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "** [[file:%s][%s]]\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
+;; (defun my/org-roam--backlinks-list-with-content (file)
+;;   (with-temp-buffer
+;;     (if-let* ((backlinks (org-roam--get-backlinks file))
+;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+;;         (progn
+;;           (insert (format "\n\n* %d Backlinks\n"
+;;                           (length backlinks)))
+;;           (dolist (group grouped-backlinks)
+;;             (let ((file-from (car group))
+;;                   (bls (cdr group)))
+;;               (insert (format "** [[file:%s][%s]]\n"
+;;                               file-from
+;;                               (org-roam--get-title-or-slug file-from)))
+;;               (dolist (backlink bls)
+;;                 (pcase-let ((`(,file-from _ ,props) backlink))
+;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+;;                   (insert "\n\n")))))))
+;;     (buffer-string)))
 
-(defun my/org-export-preprocessor (backend)
-  (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-    (unless (string= links "")
-      (save-excursion
-        (goto-char (point-max))
-        (insert (concat "\n* Backlinks\n") links)))))
+;; (defun my/org-export-preprocessor (backend)
+;;   (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+;;     (unless (string= links "")
+;;       (save-excursion
+;;         (goto-char (point-max))
+;;         (insert (concat "\n* Backlinks\n") links)))))
 
-(add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 ;; (use-package org-roam-server
 ;;   :ensure t
@@ -925,11 +925,16 @@ Skip project and sub-project tasks, habits, and project related tasks."
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
   (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
-    (let ((dest (org-refile-get-location)))
+    (let ((dest (org-refile-get-location))
+          (buffer nil)
+          (first (frame-first-window)))
       (save-excursion
+        (if (eq first (next-window first))
+            (progn (evil-window-vsplit) (evil-window-right 1))
+          (other-window 1))
         (find-file (cadr dest))
-        (goto-char (nth 3 dest)))
-      (org-tree-to-indirect-buffer))))
+        (goto-char (nth 3 dest))
+        (org-tree-to-indirect-buffer)))))
 
 (map! :after org
       :map org-mode-map
