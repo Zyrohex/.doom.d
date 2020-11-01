@@ -1,4 +1,4 @@
-;; [[file:../../../tmp/config.org.amErD1::*Initial-Settings][Initial-Settings:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Initial-Settings][Initial-Settings:1]]
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
 
@@ -21,7 +21,7 @@
  x-stretch-cursor nil)
 ;; Initial-Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Initial-Settings][Initial-Settings:2]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Initial-Settings][Initial-Settings:2]]
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "<f12>" #'org-cycle-agenda-files)
 (map! :after org
@@ -49,7 +49,7 @@
       :desc "Filter" "f" #'org-agenda-filter)
 ;; Initial-Settings:2 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Initial-Settings][Initial-Settings:3]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Initial-Settings][Initial-Settings:3]]
 (when (equal (window-system) nil)
   (and
    (bind-key "C-<down>" #'+org/insert-item-below)
@@ -57,13 +57,13 @@
    (setq doom-font (font-spec :family "Roboto Mono" :size 20))))
 ;; Initial-Settings:3 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Initial-Settings][Initial-Settings:4]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Initial-Settings][Initial-Settings:4]]
 (setq diary-file "~/.org/diary.org")
 (setq org-directory "~/.org/")
 (setq projectile-project-search-path "~/projects/")
 ;; Initial-Settings:4 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Initial-Settings][Initial-Settings:5]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Initial-Settings][Initial-Settings:5]]
 (setq doom-theme 'doom-solarized-dark)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
@@ -81,7 +81,7 @@
         doom-big-font (font-spec :family "InputMono" :size 22)))
 ;; Initial-Settings:5 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Org-Mode][Org-Mode:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Org-Mode][Org-Mode:1]]
 (require 'org-habit)
 (require 'org-id)
 (after! org (setq org-archive-location "~/.org/gtd/archives.org::datetree/"
@@ -103,7 +103,7 @@
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
 ;; Org-Mode:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Looks and Feels][Looks and Feels:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Looks and Feels][Looks and Feels:1]]
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
@@ -113,7 +113,7 @@
         org-superstar-item-bullet-alist nil))
 ;; Looks and Feels:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Loading agenda settings][Loading agenda settings:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Loading agenda settings][Loading agenda settings:1]]
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid t
@@ -130,11 +130,11 @@
 (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 ;; Loading agenda settings:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Clock Settings][Clock Settings:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Clock Settings][Clock Settings:1]]
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 ;; Clock Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Capture Templates][Capture Templates:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Capture Templates][Capture Templates:1]]
 (after! org (setq org-capture-templates
       '(("h" "Headline templates")
         ("l" "Ledger")
@@ -152,7 +152,7 @@
          "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
 ;; Capture Templates:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Export Settings][Export Settings:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Export Settings][Export Settings:1]]
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
                   org-export-with-author t
@@ -168,7 +168,7 @@
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
 ;; Export Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Export Settings][Export Settings:2]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Export Settings][Export Settings:2]]
 (defun replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
@@ -184,7 +184,7 @@
             (file-name-nondirectory source))))
 ;; Export Settings:2 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Keywords][Keywords:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Keywords][Keywords:1]]
 (custom-declare-face '+org-todo-active  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
@@ -207,7 +207,7 @@
           ("NEXT" . +org-todo-next)))
 ;; Keywords:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Logging and Drawers][Logging and Drawers:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Logging and Drawers][Logging and Drawers:1]]
 (after! org (setq org-log-into-drawer t
                   org-log-done 'time
                   org-log-repeat 'time
@@ -215,11 +215,11 @@
                   org-log-reschedule 'note))
 ;; Logging and Drawers:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Properties][Properties:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Properties][Properties:1]]
 (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 ;; Properties:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Publishing][Publishing:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Publishing][Publishing:1]]
 (after! org (setq org-publish-project-alist
                   '(("attachments"
                      :base-directory "~/.org/"
@@ -257,7 +257,7 @@
                     ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 ;; Publishing:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Default Tags][Default Tags:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Default Tags][Default Tags:1]]
 (after! org (setq org-tags-column 0
                   org-tag-alist '((:startgrouptag)
                                   (:grouptags)
@@ -275,13 +275,13 @@
                                   ("SOMEDAY"))))
 ;; Default Tags:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*company mode][company mode:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*company mode][company mode:1]]
 (after! org
   (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
   (setq company-idle-delay 0.25))
 ;; company mode:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*DEFT][DEFT:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*DEFT][DEFT:1]]
 (setq deft-use-projectile-projects t)
 (defun zyro/deft-update-directory ()
   "Updates deft directory to current projectile's project root folder and updates the deft buffer."
@@ -293,7 +293,7 @@
   (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
 ;; DEFT:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*DEFT][DEFT:2]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*DEFT][DEFT:2]]
 (use-package deft
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
@@ -346,7 +346,7 @@
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 ;; DEFT:2 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Elfeed][Elfeed:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Elfeed][Elfeed:1]]
 (use-package elfeed-org
   :defer
   :config
@@ -362,7 +362,7 @@
 ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 ;; Elfeed:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Graphs and Chart Modules][Graphs and Chart Modules:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Graphs and Chart Modules][Graphs and Chart Modules:1]]
 (after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
 (use-package gnuplot
@@ -387,14 +387,14 @@
   (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 ;; Graphs and Chart Modules:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Journal][Journal:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Journal][Journal:1]]
 (after! org (setq org-journal-dir "~/.org/gtd/journal/"
                   org-journal-enable-agenda-integration t
                   org-journal-file-type 'monthly
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 ;; Journal:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Org-Rifle][Org-Rifle:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Org-Rifle][Org-Rifle:1]]
 (use-package helm-org-rifle
   :after (helm org)
   :preface
@@ -490,7 +490,7 @@
 (provide 'setup-helm-org-rifle)
 ;; Org-Rifle:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*org-ql][org-ql:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*org-ql][org-ql:1]]
 (setq org-ql-views '(("Overview: Agenda-like" :buffers-files org-agenda-files :query
                       (and (not (done))
                            (or (habit) (deadline auto) (scheduled :to today) (scheduled :on today)))
@@ -526,17 +526,17 @@
 (bind-key "<f9>" #'org-ql-view)
 ;; org-ql:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Pandoc][Pandoc:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Pandoc][Pandoc:1]]
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 ;; Pandoc:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Reveal][Reveal:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Reveal][Reveal:1]]
 (require 'ox-reveal)
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 ;; Reveal:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*ROAM][ROAM:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*ROAM][ROAM:1]]
 (setq org-roam-tag-sources '(prop last-directory))
 (setq org-roam-db-location "~/.org/roam.db")
 (setq org-roam-directory "~/.org/")
@@ -570,7 +570,7 @@
            "%?")))
 ;; ROAM:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*ROAM Export Backlinks + Content][ROAM Export Backlinks + Content:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*ROAM Export Backlinks + Content][ROAM Export Backlinks + Content:1]]
 (defun my/org-roam--backlinks-list-with-content (file)
   (with-temp-buffer
     (if-let* ((backlinks (org-roam--get-backlinks file))
@@ -600,7 +600,7 @@
 (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 ;; ROAM Export Backlinks + Content:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*ROAM Server][ROAM Server:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*ROAM Server][ROAM Server:1]]
 ;; (use-package org-roam-server
 ;;   :ensure t
 ;;   :config
@@ -615,7 +615,7 @@
 ;;         org-roam-server-network-label-wrap-length 20))
 ;; ROAM Server:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Super Agenda Settings][Super Agenda Settings:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Super Agenda Settings][Super Agenda Settings:1]]
 (setq org-agenda-custom-commands
       (quote (("N" "Notes" tags "NOTE"
                ((org-agenda-overriding-header "Notes")
@@ -701,11 +701,11 @@
 ;               nil))))
 ;; Super Agenda Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Custom Functions][Custom Functions:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Custom Functions][Custom Functions:1]]
 (load! "org-helpers.el")
 ;; Custom Functions:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Time Stamps][Time Stamps:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Time Stamps][Time Stamps:1]]
 (defun nm/insert-time-stamp-at-point ()
   "Insert active timestamp at POINT."
   (interactive)
@@ -719,14 +719,30 @@
       :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 ;; Time Stamps:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Capture Template File Picker][Capture Template File Picker:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Prompt for headline when creating ID links][Prompt for headline when creating ID links:1]]
+(defun nm/org-id-prompt-id ()
+  "Prompt for the id during completion of id: link."
+  (let ((dest (org-refile-get-location))
+        (name nil)
+        (id nil))
+    (save-excursion
+      (find-file (cadr dest))
+      (goto-char (nth 3 dest))
+      (setq id (org-id-get (point) t)
+            name (org-get-heading t t t t)))
+    (org-insert-link nil (concat "id:" id) name)))
+
+(org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
+;; Prompt for headline when creating ID links:1 ends here
+
+;; [[file:../../../tmp/config.org.AgRpjZ::*Capture Template File Picker][Capture Template File Picker:1]]
 (defun nm/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))
 ;; Capture Template File Picker:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Clarify Tasks][Clarify Tasks:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Clarify Tasks][Clarify Tasks:1]]
 (defun nm/org-get-headline-property (arg)
   "Extract property from headline and return results."
   (interactive)
@@ -932,7 +948,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
       :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 ;; Clarify Tasks:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Capture headline finder][Capture headline finder:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Capture headline finder][Capture headline finder:1]]
 (defun nm/org-capture-system ()
   "Capture stuff."
   (interactive)
@@ -975,11 +991,11 @@ Skip project and sub-project tasks, habits, and project related tasks."
   (forward-char -1))
 ;; Capture headline finder:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Search file headlines and send tree to indirect buffer][Search file headlines and send tree to indirect buffer:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Search file headlines and send tree to indirect buffer][Search file headlines and send tree to indirect buffer:1]]
 ; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
 ;; Search file headlines and send tree to indirect buffer:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*Change Font][Change Font:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*Change Font][Change Font:1]]
 (defun nm/emacs-change-font ()
   "Change font based on available font list."
   (interactive)
@@ -989,7 +1005,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
   (doom/reload-font))
 ;; Change Font:1 ends here
 
-;; [[file:../../../tmp/config.org.amErD1::*End of file loading][End of file loading:1]]
+;; [[file:../../../tmp/config.org.AgRpjZ::*End of file loading][End of file loading:1]]
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
   (load secrets)))

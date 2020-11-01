@@ -786,6 +786,22 @@ These are my default ROAM settings
       :prefix ("d" . "date/deadline")
       :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 #+END_SRC
+** Prompt for headline when creating ID links
+#+BEGIN_SRC emacs-lisp :tangle config.el :comments link
+(defun nm/org-id-prompt-id ()
+  "Prompt for the id during completion of id: link."
+  (let ((dest (org-refile-get-location))
+        (name nil)
+        (id nil))
+    (save-excursion
+      (find-file (cadr dest))
+      (goto-char (nth 3 dest))
+      (setq id (org-id-get (point) t)
+            name (org-get-heading t t t t)))
+    (org-insert-link nil (concat "id:" id) name)))
+
+(org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
+#+END_SRC
 ** Capture Template File Picker
 #+BEGIN_SRC emacs-lisp :tangle config.el :comments link
 (defun nm/org-capture-file-picker ()
