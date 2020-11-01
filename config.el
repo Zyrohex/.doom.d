@@ -1,4 +1,4 @@
-;; [[file:../../../tmp/config.org.jepfmN::*Initial Settings][Initial Settings:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Initial-Settings][Initial-Settings:1]]
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
 
@@ -19,9 +19,9 @@
  uniquify-buffer-name-style 'forward
  window-combination-resize t
  x-stretch-cursor nil)
-;; Initial Settings:1 ends here
+;; Initial-Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Initial Settings][Initial Settings:2]]
+;; [[file:../../../tmp/config.org.kGGMte::*Initial-Settings][Initial-Settings:2]]
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "<f12>" #'org-cycle-agenda-files)
 (map! :after org
@@ -47,45 +47,45 @@
       :map org-agenda-mode-map
       :localleader
       :desc "Filter" "f" #'org-agenda-filter)
-;; Initial Settings:2 ends here
+;; Initial-Settings:2 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Initial Settings][Initial Settings:3]]
+;; [[file:../../../tmp/config.org.kGGMte::*Initial-Settings][Initial-Settings:3]]
 (when (equal (window-system) nil)
   (and
    (bind-key "C-<down>" #'+org/insert-item-below)
    (setq doom-theme nil)
    (setq doom-font (font-spec :family "Roboto Mono" :size 20))))
-;; Initial Settings:3 ends here
+;; Initial-Settings:3 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Initial Settings][Initial Settings:4]]
+;; [[file:../../../tmp/config.org.kGGMte::*Initial-Settings][Initial-Settings:4]]
 (setq diary-file "~/.org/diary.org")
 (setq org-directory "~/.org/")
 (setq projectile-project-search-path "~/projects/")
-;; Initial Settings:4 ends here
+;; Initial-Settings:4 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Initial Settings][Initial Settings:5]]
-(setq doom-theme 'doom-one)
+;; [[file:../../../tmp/config.org.kGGMte::*Initial-Settings][Initial-Settings:5]]
+(setq doom-theme 'doom-solarized-dark)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-;  (set-popup-rule! "*Org Agenda*" :side 'left :size .30 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Roboto Mono" :size 18)
-        doom-big-font (font-spec :family "Roboto Mono" :size 26)))
+  (setq doom-font (font-spec :family "Victor Mono" :size 18)
+        doom-big-font (font-spec :family "Victor Mono" :size 26)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
-;; Initial Settings:5 ends here
+;; Initial-Settings:5 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Org-Mode][Org-Mode:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Org-Mode][Org-Mode:1]]
 (require 'org-habit)
 (require 'org-id)
-(after! org (setq org-archive-location "~/.org/gtd/archives.org::datetree"
-                  org-image-actual-width nil
+(after! org (setq org-archive-location "~/.org/gtd/archives.org::datetree/"
+                  org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
                   org-log-state-notes-insert-after-drawers nil
                   org-catch-invisible-edits 'error
@@ -95,6 +95,7 @@
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm
                   org-startup-indented 'indent
+                  org-insert-heading-respect-content nil
                   org-startup-folded 'content
                   org-src-tab-acts-natively t
                   org-list-allow-alphabetical nil))
@@ -102,7 +103,7 @@
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
 ;; Org-Mode:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Looks and Feels][Looks and Feels:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Looks and Feels][Looks and Feels:1]]
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
@@ -112,7 +113,7 @@
         org-superstar-item-bullet-alist nil))
 ;; Looks and Feels:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Loading agenda settings][Loading agenda settings:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Loading agenda settings][Loading agenda settings:1]]
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid t
@@ -129,11 +130,11 @@
 (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 ;; Loading agenda settings:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Clock Settings][Clock Settings:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Clock Settings][Clock Settings:1]]
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 ;; Clock Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Capture Templates][Capture Templates:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Capture Templates][Capture Templates:1]]
 (after! org (setq org-capture-templates
       '(("h" "Headline templates")
         ("l" "Ledger")
@@ -142,7 +143,7 @@
         ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
          "* %^{title}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
         ("hn" "Note to headline" plain (function nm/org-end-of-headline)
-         "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-before 1 :empty-lines-after 1 :unnarrow t)
+         "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-after 1 :unnarrow t)
         ("hf" "Find headline" plain (function nm/org-capture-weeklies)
          "%?" :empty-lines-before 1 :empty-lines-after 1)
         ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
@@ -151,7 +152,7 @@
          "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
 ;; Capture Templates:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Export Settings][Export Settings:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Export Settings][Export Settings:1]]
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
                   org-export-with-author t
@@ -167,7 +168,7 @@
                   org-export-backends '(pdf ascii html latex odt md pandoc)))
 ;; Export Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Export Settings][Export Settings:2]]
+;; [[file:../../../tmp/config.org.kGGMte::*Export Settings][Export Settings:2]]
 (defun replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
@@ -183,7 +184,7 @@
             (file-name-nondirectory source))))
 ;; Export Settings:2 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Keywords][Keywords:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Keywords][Keywords:1]]
 (custom-declare-face '+org-todo-active  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
@@ -206,7 +207,7 @@
           ("NEXT" . +org-todo-next)))
 ;; Keywords:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Logging and Drawers][Logging and Drawers:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Logging and Drawers][Logging and Drawers:1]]
 (after! org (setq org-log-into-drawer t
                   org-log-done 'time
                   org-log-repeat 'time
@@ -214,11 +215,11 @@
                   org-log-reschedule 'note))
 ;; Logging and Drawers:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Properties][Properties:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Properties][Properties:1]]
 (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 ;; Properties:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Publishing][Publishing:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Publishing][Publishing:1]]
 (after! org (setq org-publish-project-alist
                   '(("attachments"
                      :base-directory "~/.org/"
@@ -256,7 +257,7 @@
                     ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 ;; Publishing:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Default Tags][Default Tags:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Default Tags][Default Tags:1]]
 (after! org (setq org-tags-column 0
                   org-tag-alist '((:startgrouptag)
                                   (:grouptags)
@@ -274,59 +275,13 @@
                                   ("SOMEDAY"))))
 ;; Default Tags:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*company mode][company mode:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*company mode][company mode:1]]
 (after! org
   (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
   (setq company-idle-delay 0.25))
 ;; company mode:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Misc Modules \[Bookmarks, PDF Tools\]][Misc Modules [Bookmarks, PDF Tools]:1]]
-;(use-package org-pdftools
-;  :hook (org-load . org-pdftools-setup-link))
-;; Misc Modules [Bookmarks, PDF Tools]:1 ends here
-
-;; [[file:../../../tmp/config.org.jepfmN::*Graphs and Chart Modules][Graphs and Chart Modules:1]]
-(after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
-
-(use-package gnuplot
-  :defer
-  :config
-  (setq gnuplot-program "gnuplot"))
-
-; MERMAID
-(use-package mermaid-mode
-  :defer
-  :config
-  (setq mermaid-mmdc-location "/node_modules/.bin/mmdc"
-        ob-mermaid-cli-path "/node-modules/.bin/mmdc"))
-
-; PLANTUML
-(use-package ob-plantuml
-  :ensure nil
-  :commands
-  (org-babel-execute:plantuml)
-  :defer
-  :config
-  (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
-;; Graphs and Chart Modules:1 ends here
-
-;; [[file:../../../tmp/config.org.jepfmN::*Elfeed][Elfeed:1]]
-(use-package elfeed-org
-  :defer
-  :config
-  (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")))
-(use-package elfeed
-  :defer
-  :config
-  (setq elfeed-db-directory "~/.elfeed/"))
-
-;; (require 'elfeed-org)
-;; (elfeed-org)
-;; (setq elfeed-db-directory "~/.elfeed/")
-;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
-;; Elfeed:1 ends here
-
-;; [[file:../../../tmp/config.org.jepfmN::*DEFT][DEFT:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*DEFT][DEFT:1]]
 (setq deft-use-projectile-projects t)
 (defun zyro/deft-update-directory ()
   "Updates deft directory to current projectile's project root folder and updates the deft buffer."
@@ -338,7 +293,7 @@
   (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
 ;; DEFT:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*DEFT][DEFT:2]]
+;; [[file:../../../tmp/config.org.kGGMte::*DEFT][DEFT:2]]
 (use-package deft
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
@@ -391,7 +346,55 @@
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 ;; DEFT:2 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Org-Rifle][Org-Rifle:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Elfeed][Elfeed:1]]
+(use-package elfeed-org
+  :defer
+  :config
+  (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")))
+(use-package elfeed
+  :defer
+  :config
+  (setq elfeed-db-directory "~/.elfeed/"))
+
+;; (require 'elfeed-org)
+;; (elfeed-org)
+;; (setq elfeed-db-directory "~/.elfeed/")
+;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
+;; Elfeed:1 ends here
+
+;; [[file:../../../tmp/config.org.kGGMte::*Graphs and Chart Modules][Graphs and Chart Modules:1]]
+(after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
+
+(use-package gnuplot
+  :defer
+  :config
+  (setq gnuplot-program "gnuplot"))
+
+; MERMAID
+(use-package mermaid-mode
+  :defer
+  :config
+  (setq mermaid-mmdc-location "/node_modules/.bin/mmdc"
+        ob-mermaid-cli-path "/node-modules/.bin/mmdc"))
+
+; PLANTUML
+(use-package ob-plantuml
+  :ensure nil
+  :commands
+  (org-babel-execute:plantuml)
+  :defer
+  :config
+  (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
+;; Graphs and Chart Modules:1 ends here
+
+;; [[file:../../../tmp/config.org.kGGMte::*Journal][Journal:1]]
+(after! org (setq org-journal-dir "~/.org/gtd/journal/"
+                  org-journal-enable-agenda-integration t
+                  org-journal-file-type 'monthly
+                  org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
+;; Journal:1 ends here
+
+;; [[file:../../../tmp/config.org.kGGMte::*Org-Rifle][Org-Rifle:1]]
 (use-package helm-org-rifle
   :after (helm org)
   :preface
@@ -487,11 +490,53 @@
 (provide 'setup-helm-org-rifle)
 ;; Org-Rifle:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Pandoc][Pandoc:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*org-ql][org-ql:1]]
+(setq org-ql-views '(("Overview: Agenda-like" :buffers-files org-agenda-files :query
+                      (and (not (done))
+                           (or (habit) (deadline auto) (scheduled :to today) (scheduled :on today)))
+                      :sort
+                      (date priority todo)
+                      :super-groups org-super-agenda-groups :title "Agenda Like")
+                     ("Overview: Project Sub-tasks" :buffers-files org-agenda-files
+                      :query (and (todo "TODO" "NEXT" "WAIT") (ancestors (todo "PROJ")))
+                      :sort nil :narrow nil :super-groups ((:auto-parent t))
+                      :title "Overview: Project Sub-tasks")
+                     ("Overview: Sub-projects" :buffers-files org-agenda-files
+                      :query (and (todo "PROJ") (ancestors (todo "PROJ")))
+                      :sort nil :narrow nil
+                      :super-groups ((:auto-parent t))
+                      :title "Overview: Sub-projects")
+                     ("Inbox Bucket" :buffers-files org-agenda-files
+                      :query (and (todo "TODO") (not (tags "SOMEDAY")))
+                      :sort (date)
+                      :narrow nil :super-groups ((:auto-ts t))  :title "Inbox Bucket")
+                     ("Recent Items" :buffers-files org-agenda-files
+                      :query (and (ts :from -7 :to today) (not (or (todo) (todo "DONE"))))
+                      :sort (date)
+                      :narrow nil
+                      :super-groups ((:auto-ts t))
+                      :title "Recent Items")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("o" . "open")
+      :desc "org-ql" "q" #'org-ql-view)
+
+(bind-key "<f9>" #'org-ql-view)
+;; org-ql:1 ends here
+
+;; [[file:../../../tmp/config.org.kGGMte::*Pandoc][Pandoc:1]]
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 ;; Pandoc:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*ROAM][ROAM:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Reveal][Reveal:1]]
+(require 'ox-reveal)
+(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+(setq org-reveal-title-slide nil)
+;; Reveal:1 ends here
+
+;; [[file:../../../tmp/config.org.kGGMte::*ROAM][ROAM:1]]
 (setq org-roam-tag-sources '(prop last-directory))
 (setq org-roam-db-location "~/.org/roam.db")
 (setq org-roam-directory "~/.org/")
@@ -525,22 +570,7 @@
            "%?")))
 ;; ROAM:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*ROAM Server][ROAM Server:1]]
-(use-package org-roam-server
-  :ensure t
-  :config
-  (setq org-roam-server-host "192.168.1.82"
-        org-roam-server-port 8070
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-poll nil
-        org-roam-server-network-arrows 'from
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
-;; ROAM Server:1 ends here
-
-;; [[file:../../../tmp/config.org.jepfmN::*ROAM Export Backlinks + Content][ROAM Export Backlinks + Content:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*ROAM Export Backlinks + Content][ROAM Export Backlinks + Content:1]]
 (defun my/org-roam--backlinks-list-with-content (file)
   (with-temp-buffer
     (if-let* ((backlinks (org-roam--get-backlinks file))
@@ -570,13 +600,22 @@
 (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 ;; ROAM Export Backlinks + Content:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Reveal \[HTML Presentations\]][Reveal [HTML Presentations]:1]]
-(require 'ox-reveal)
-(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
-(setq org-reveal-title-slide nil)
-;; Reveal [HTML Presentations]:1 ends here
+;; [[file:../../../tmp/config.org.kGGMte::*ROAM Server][ROAM Server:1]]
+;; (use-package org-roam-server
+;;   :ensure t
+;;   :config
+;;   (setq org-roam-server-host "192.168.1.82"
+;;         org-roam-server-port 8070
+;;         org-roam-server-export-inline-images t
+;;         org-roam-server-authenticate nil
+;;         org-roam-server-network-poll nil
+;;         org-roam-server-network-arrows 'from
+;;         org-roam-server-network-label-truncate t
+;;         org-roam-server-network-label-truncate-length 60
+;;         org-roam-server-network-label-wrap-length 20))
+;; ROAM Server:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Super Agenda Settings][Super Agenda Settings:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Super Agenda Settings][Super Agenda Settings:1]]
 (setq org-agenda-custom-commands
       (quote (("N" "Notes" tags "NOTE"
                ((org-agenda-overriding-header "Notes")
@@ -662,30 +701,32 @@
 ;               nil))))
 ;; Super Agenda Settings:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Custom Functions][Custom Functions:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Custom Functions][Custom Functions:1]]
 (load! "org-helpers.el")
 ;; Custom Functions:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Time Stamps][Time Stamps:1]]
-(defun nm/org-insert-timestamp ()
-  "Insert active timestamp at POS."
+;; [[file:../../../tmp/config.org.kGGMte::*Time Stamps][Time Stamps:1]]
+(defun nm/insert-time-stamp-at-point ()
+  "Insert active timestamp at POINT."
   (interactive)
-  (insert (format "<%s> " (format-time-string "%Y-%m-%d %H:%M:%p"))))
+  (format "%s " (org-insert-time-stamp nil t)))
+
+(bind-key "C-S-l" #'nm/insert-time-stamp-at-point)
 (map! :after org
       :map org-mode-map
       :localleader
-      :prefix ("j" . "nicks functions")
-      :desc "Insert timestamp at POS" "i" #'nm/org-insert-timestamp)
+      :prefix ("d" . "date/deadline")
+      :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 ;; Time Stamps:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Capture Template File Picker][Capture Template File Picker:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Capture Template File Picker][Capture Template File Picker:1]]
 (defun nm/org-capture-file-picker ()
   "Select a file from the PROJECTS folder and return file-name."
   (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
     (expand-file-name (format "%s" file))))
 ;; Capture Template File Picker:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Clarify Tasks][Clarify Tasks:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Clarify Tasks][Clarify Tasks:1]]
 (defun nm/org-get-headline-property (arg)
   "Extract property from headline and return results."
   (interactive)
@@ -702,6 +743,21 @@
   (org-element-property :title (nm/org-get-headline-properties)))
 
 ;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
+
+(add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
+;(add-hook! 'org-todo-statistics-hook #'nm/set-proj-state)
+
+(defun nm/statistics-update-task ()
+  "Update task state when statistics checker runs"
+  (when (and (bh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
+  (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p)) (org-todo "DONE")))
+
+(defun nm/set-proj-state ()
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (when (bh/is-project-p)
+    (org-todo "PROJ"))
+  (when (and (bh/is-task-p) (or (nm/checkbox-active-exist-p) (nm/is-scheduled-p)))
+    (org-todo "NEXT")))
 
 (defun nm/update-task-tags ()
   "Update all child tasks in buffer that are missing a TAG value."
@@ -773,9 +829,10 @@
 (defun nm/checkbox-active-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
   (interactive)
-  (org-back-to-heading)
-  (let ((end (save-excursion (org-end-of-subtree t))))
-    (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t)))
+  (save-excursion
+    (org-back-to-heading)
+    (let ((end (save-excursion (org-end-of-subtree t))))
+      (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t))))
 
 (defun nm/checkbox-done-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
@@ -802,17 +859,6 @@
       (outline-end-of-heading)
       (save-excursion
         (re-search-forward (concat "^\*+ " "\\(NEXT\\|WAIT\\|TODO\\)") end t)))))
-
-;; (defun nm/exist-tag-p (arg)
-;;   "If headline has ARG tag keyword assigned, return t."
-;;   (interactive)
-;;   (let ((end (save-excursion (end-of-line))))
-;;     (save-excursion
-;;       (progn
-;;         (unless (org-at-heading-p)
-;;           (org-back-to-heading t))
-;;         (beginning-of-line)
-;;         (re-search-forward (format ":%s:" arg) end t)))))
 
 (defun nm/exist-tag-p (arg)
   "If headline has ARG tag keyword assigned, return t."
@@ -885,7 +931,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
       :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 ;; Clarify Tasks:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Capture headline finder][Capture headline finder:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Capture headline finder][Capture headline finder:1]]
 (defun nm/org-capture-system ()
   "Capture stuff."
   (interactive)
@@ -928,11 +974,11 @@ Skip project and sub-project tasks, habits, and project related tasks."
   (forward-char -1))
 ;; Capture headline finder:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Search file headlines and send tree to indirect buffer][Search file headlines and send tree to indirect buffer:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Search file headlines and send tree to indirect buffer][Search file headlines and send tree to indirect buffer:1]]
 ; TODO Write function that takes a file as input from user, then returns a searchable headline list and narrows the results to a indirect buffer.
 ;; Search file headlines and send tree to indirect buffer:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*Change Font][Change Font:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*Change Font][Change Font:1]]
 (defun nm/emacs-change-font ()
   "Change font based on available font list."
   (interactive)
@@ -942,7 +988,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
   (doom/reload-font))
 ;; Change Font:1 ends here
 
-;; [[file:../../../tmp/config.org.jepfmN::*End of file loading][End of file loading:1]]
+;; [[file:../../../tmp/config.org.kGGMte::*End of file loading][End of file loading:1]]
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
   (load secrets)))
