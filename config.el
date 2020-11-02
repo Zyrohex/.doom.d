@@ -563,13 +563,6 @@
                ((org-agenda-overriding-header "Habits")
                 (org-agenda-sorting-strategy
                  '(todo-state-down effort-up category-keep))))
-              ("S" "Someday"
-               ((tags-todo "SOMEDAY/"
-                           ((org-agenda-overriding-header "Someday Tasks")
-                            (org-agenda-skip-function 'nm/skip-scheduled)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
               ("n" "Next Actions"
                ((agenda ""
                         ((org-agenda-span '1)
@@ -616,8 +609,13 @@
                              '(category-keep))))
                 (tags-todo "-SOMEDAY/TODO"
                            ((org-tags-match-list-sublevels nil)
-                            (org-agenda-overriding-header "Inbox Bucket"))))
-               nil))))
+                            (org-agenda-overriding-header "Inbox Bucket")))
+                (tags-todo "SOMEDAY/"
+                           ((org-agenda-overriding-header "Someday Tasks")
+                            (org-agenda-skip-function 'nm/skip-scheduled)
+                            (org-tags-match-list-sublevels nil)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 (load! "org-helpers.el")
 
