@@ -1068,7 +1068,9 @@ Skip project and sub-project tasks, habits, and project related tasks."
 (defun nm/goto-headline-agenda-files ()
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
-  (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
+  (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$"))
+        (org-refile-use-outline-path nil)
+        (org-refile-history nil))
     (let ((dest (org-refile-get-location))
           (buffer nil)
           (first (frame-first-window)))
