@@ -479,12 +479,9 @@ Callers of this function already widen the buffer view."
         (widen)
         (let ((subtree-end (save-excursion (org-end-of-subtree t))))
           (cond
-           ((bh/is-project-p)
-            nil)
-           ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
-            nil)
-           (t
-            subtree-end))))
+           ((or (bh/is-project-p) (and (bh/is-task-p) (bh/is-project-subtree-p))) nil)
+           ((and (bh/is-project-subtree-p) (not (bh/is-task-p))) nil)
+           (t subtree-end))))
     (save-excursion (org-end-of-subtree t))))
 
 (defun bh/skip-non-tasks ()
