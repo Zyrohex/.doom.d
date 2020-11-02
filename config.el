@@ -101,7 +101,7 @@
 
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
-                  org-agenda-use-time-grid t
+                  org-agenda-use-time-grid nil
                   org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
                   org-agenda-block-separator ""
@@ -570,6 +570,24 @@
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
+              ("n" "Next Actions"
+               ((agenda ""
+                        ((org-agenda-span '1)
+                         (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                         (org-agenda-start-day (org-today))))
+                (tags-todo "/NEXT|PROJ"
+                           ((org-agenda-overriding-header "Projects")
+                            (org-agenda-skip-function 'bh/skip-non-projects)
+                            (org-tags-match-list-sublevels 'indented)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-SOMEDAY-REFILE-CANCELLED-/NEXT"
+                           ((org-agenda-overriding-header (concat "Standalone Tasks"))
+                            (org-agenda-skip-function 'nm/skip-project-tasks)
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-todo-ignore-deadlines t)
+                            (org-agenda-todo-ignore-with-date t)
+                            (org-agenda-sorting-strategy '(category-keep))))))
               ("w" "Master Agenda"
                ((agenda ""
                         ((org-agenda-span '1)
@@ -580,7 +598,7 @@
                             (org-agenda-skip-function 'bh/skip-non-stuck-projects)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-HOLD-CANCELLED/!"
+                (todo ""
                            ((org-agenda-overriding-header "Projects")
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-tags-match-list-sublevels 'indented)
@@ -633,12 +651,6 @@
                            ((org-tags-match-list-sublevels nil)
                             (org-agenda-overriding-header "Inbox Bucket"))))
                nil))))
-
-;                (tags "-REFILE/"
-;                      ((org-agenda-overriding-header "Tasks to Archive")
-;                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-;                       (org-tags-match-list-sublevels nil))))
-;               nil))))
 
 (load! "org-helpers.el")
 
@@ -939,7 +951,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
 
 (map! :after org
       :map org-mode-map
-      :localleader
+      :leader
       :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
 
 (defun nm/emacs-change-font ()
