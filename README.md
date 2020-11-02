@@ -1,55 +1,55 @@
 
 # Table of Contents
 
--   [New Changes](#org46c7590)
-    -   [Clarify Tasks](#orga85ee1a)
--   [Requirements](#org8128d6a)
--   [Initial-Settings](#org0070d07)
--   [Org-Mode](#orgbdfba30)
-    -   [Looks and Feels](#org0444e7a)
-    -   [Loading agenda settings](#orgdf4f030)
-    -   [Clock Settings](#org2af17f1)
-    -   [Capture Templates](#org17b35af)
-    -   [Export Settings](#org605c203)
-    -   [Keywords](#orgb92aad6)
-    -   [Logging and Drawers](#orgbdbab62)
-    -   [Properties](#org18186a4)
-    -   [Publishing](#orgf2fa524)
-    -   [Default Tags](#orgda5463f)
--   [Module Settings](#org64ed8f1)
-    -   [company mode](#orge3ec3a3)
-    -   [DEFT](#org56447fc)
-    -   [Elfeed](#org9c3b61d)
-    -   [Graphs and Chart Modules](#org67773ec)
-    -   [Journal](#orgd3f336d)
-    -   [Org-Rifle](#org646d361)
-    -   [org-ql](#orgf4201ca)
-    -   [Pandoc](#org80921e2)
-    -   [Reveal](#org30d74d9)
-    -   [ROAM](#org818565d)
-    -   [ROAM Export Backlinks + Content](#org057de8b)
-    -   [ROAM Server](#org141ef8c)
-    -   [Super Agenda Settings](#orgcdaa4bf)
--   [Custom Functions](#org5e9783c)
-    -   [Time Stamps](#org6e71c84)
-    -   [Prompt for headline when creating ID links](#org50cc8cc)
-    -   [Capture Template File Picker](#org9a15eca)
-    -   [Clarify Tasks](#orgef46cd2)
-    -   [Capture headline finder](#org74aca6d)
-    -   [Search for headline across org-directory and return to indirect buffer](#orgf2184e6)
-    -   [Change Font](#orgf660a20)
--   [End of file loading](#org14b3532)
+-   [New Changes](#orgfe28bad)
+    -   [Clarify Tasks](#orgf59487d)
+-   [Requirements](#org189683d)
+-   [Initial-Settings](#orgb74e351)
+-   [Org-Mode](#org14cf66e)
+    -   [Looks and Feels](#org842ed4f)
+    -   [Loading agenda settings](#orgcfc2588)
+    -   [Clock Settings](#org7e8f7c8)
+    -   [Capture Templates](#org849ce11)
+    -   [Export Settings](#org8e5fe8d)
+    -   [Keywords](#org2ed6d81)
+    -   [Logging and Drawers](#org8615438)
+    -   [Properties](#org3e4e3a3)
+    -   [Publishing](#org7bb1325)
+    -   [Default Tags](#orgca6744f)
+-   [Module Settings](#org4591802)
+    -   [company mode](#org9cd1214)
+    -   [DEFT](#org7447e7a)
+    -   [Elfeed](#org346ce50)
+    -   [Graphs and Chart Modules](#orgb815efd)
+    -   [Journal](#org062dafe)
+    -   [Org-Rifle](#org0ac0d97)
+    -   [org-ql](#org39d7ba9)
+    -   [Pandoc](#org70e38e6)
+    -   [Reveal](#orgf44c817)
+    -   [ROAM](#org440e24c)
+    -   [ROAM Export Backlinks + Content](#orgd94d178)
+    -   [ROAM Server](#org11c9a3f)
+    -   [Super Agenda Settings](#org6e4a114)
+-   [Custom Functions](#org59b117c)
+    -   [Time Stamps](#org27b01de)
+    -   [Prompt for headline when creating ID links](#orga5315f1)
+    -   [Capture Template File Picker](#orgb18f7cd)
+    -   [Clarify Tasks](#org13aaef8)
+    -   [Capture headline finder](#orge6781b1)
+    -   [Search for headline across org-directory and return to indirect buffer](#orga81fff2)
+    -   [Change Font](#org5fafd8c)
+-   [End of file loading](#org3f2d464)
 
 Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="org46c7590"></a>
+<a id="orgfe28bad"></a>
 
 # New Changes
 
 
-<a id="orga85ee1a"></a>
+<a id="orgf59487d"></a>
 
 ## Clarify Tasks
 
@@ -71,7 +71,7 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="org8128d6a"></a>
+<a id="org189683d"></a>
 
 # Requirements
 
@@ -81,7 +81,7 @@ These are some items that are required outside of the normal DOOM EMACS installa
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="org0070d07"></a>
+<a id="orgb74e351"></a>
 
 # Initial-Settings
 
@@ -169,7 +169,7 @@ Next we configure popup-rules and default fonts.
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="orgbdfba30"></a>
+<a id="org14cf66e"></a>
 
 # Org-Mode
 
@@ -196,7 +196,7 @@ Here we add any requirements before org-mode starts to load
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="org0444e7a"></a>
+<a id="org842ed4f"></a>
 
 ## Looks and Feels
 
@@ -214,34 +214,34 @@ Here we change some of the things how org-mode looks and feels, some options ava
             org-superstar-item-bullet-alist nil))
 
 
-<a id="orgdf4f030"></a>
+<a id="orgcfc2588"></a>
 
 ## Loading agenda settings
 
     (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                       org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
-                      org-agenda-use-time-grid t
+                      org-agenda-use-time-grid nil
                       org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                       org-agenda-compact-blocks nil
                       org-agenda-block-separator ""
                       org-agenda-skip-scheduled-if-done t
                       org-agenda-skip-deadline-if-done t
                       org-agenda-window-setup 'current-window
-                      org-enforce-todo-checkbox-dependencies t ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
+                      org-enforce-todo-checkbox-dependencies nil ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
                       org-enforce-todo-dependencies t
                       org-habit-show-habits t))
     
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 
 
-<a id="org2af17f1"></a>
+<a id="org7e8f7c8"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="org17b35af"></a>
+<a id="org849ce11"></a>
 
 ## Capture Templates
 
@@ -270,7 +270,7 @@ Example ledger template file: = `/.doom.d/templates/ledger-scheduled.org`
         Expenses:Insurance                         dollar amount
 
 
-<a id="org605c203"></a>
+<a id="org8e5fe8d"></a>
 
 ## Export Settings
 
@@ -305,7 +305,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgb92aad6"></a>
+<a id="org2ed6d81"></a>
 
 ## Keywords
 
@@ -380,7 +380,7 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="orgbdbab62"></a>
+<a id="org8615438"></a>
 
 ## Logging and Drawers
 
@@ -393,14 +393,14 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="org18186a4"></a>
+<a id="org3e4e3a3"></a>
 
 ## Properties
 
     (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 
 
-<a id="orgf2fa524"></a>
+<a id="org7bb1325"></a>
 
 ## Publishing
 
@@ -443,7 +443,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="orgda5463f"></a>
+<a id="orgca6744f"></a>
 
 ## Default Tags
 
@@ -464,12 +464,12 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                       ("SOMEDAY"))))
 
 
-<a id="org64ed8f1"></a>
+<a id="org4591802"></a>
 
 # Module Settings
 
 
-<a id="orge3ec3a3"></a>
+<a id="org9cd1214"></a>
 
 ## company mode
 
@@ -478,7 +478,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
       (setq company-idle-delay 0.25))
 
 
-<a id="org56447fc"></a>
+<a id="org7447e7a"></a>
 
 ## DEFT
 
@@ -548,7 +548,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org9c3b61d"></a>
+<a id="org346ce50"></a>
 
 ## Elfeed
 
@@ -567,7 +567,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org67773ec"></a>
+<a id="orgb815efd"></a>
 
 ## Graphs and Chart Modules
 
@@ -597,7 +597,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="orgd3f336d"></a>
+<a id="org062dafe"></a>
 
 ## Journal
 
@@ -607,7 +607,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="org646d361"></a>
+<a id="org0ac0d97"></a>
 
 ## Org-Rifle
 
@@ -706,7 +706,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgf4201ca"></a>
+<a id="org39d7ba9"></a>
 
 ## org-ql
 
@@ -745,14 +745,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="org80921e2"></a>
+<a id="org70e38e6"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org30d74d9"></a>
+<a id="orgf44c817"></a>
 
 ## Reveal
 
@@ -761,7 +761,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="org818565d"></a>
+<a id="org440e24c"></a>
 
 ## ROAM
 
@@ -800,7 +800,7 @@ These are my default ROAM settings
     ;;            "%?")))
 
 
-<a id="org057de8b"></a>
+<a id="orgd94d178"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -833,7 +833,7 @@ These are my default ROAM settings
     ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org141ef8c"></a>
+<a id="org11c9a3f"></a>
 
 ## ROAM Server
 
@@ -851,7 +851,7 @@ These are my default ROAM settings
     ;;         org-roam-server-network-label-wrap-length 20))
 
 
-<a id="orgcdaa4bf"></a>
+<a id="org6e4a114"></a>
 
 ## Super Agenda Settings
 
@@ -863,41 +863,46 @@ These are my default ROAM settings
                    ((org-agenda-overriding-header "Habits")
                     (org-agenda-sorting-strategy
                      '(todo-state-down effort-up category-keep))))
-                  ("s" "Someday"
+                  ("S" "Someday"
                    ((tags-todo "SOMEDAY/"
                                ((org-agenda-overriding-header "Someday Tasks")
                                 (org-agenda-skip-function 'nm/skip-scheduled)
                                 (org-tags-match-list-sublevels nil)
                                 (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
                                 (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
-                  ("w" "Master Agenda"
+                  ("n" "Next Actions"
                    ((agenda ""
                             ((org-agenda-span '1)
                              (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                              (org-agenda-start-day (org-today))))
-                    (tags-todo "-CANCELLED/!"
-                               ((org-agenda-overriding-header "Stuck Projects")
-                                (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                                (org-agenda-sorting-strategy
-                                 '(category-keep))))
-                    (tags-todo "-HOLD-CANCELLED/!"
+                    (tags-todo "/NEXT|PROJ"
                                ((org-agenda-overriding-header "Projects")
                                 (org-agenda-skip-function 'bh/skip-non-projects)
                                 (org-tags-match-list-sublevels 'indented)
                                 (org-agenda-sorting-strategy
                                  '(category-keep))))
-                    (tags-todo "-CANCELLED/!NEXT"
-                               ((org-agenda-overriding-header (concat "Project Next Tasks"
+                    (tags-todo "-SOMEDAY-REFILE-CANCELLED-/NEXT"
+                               ((org-agenda-overriding-header (concat "Standalone Tasks"))
+                                (org-agenda-skip-function 'nm/skip-project-tasks)
+                                (org-agenda-todo-ignore-scheduled t)
+                                (org-agenda-todo-ignore-deadlines t)
+                                (org-agenda-todo-ignore-with-date t)
+                                (org-agenda-sorting-strategy '(category-keep))))
+                    (tags-todo "/WAIT"
+                               ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
                                                                       (if bh/hide-scheduled-and-waiting-next-tasks
                                                                           ""
                                                                         " (including WAITING and SCHEDULED tasks)")))
-                                (org-agenda-skip-function 'nm/skip-projects-and-habits-and-single-tasks)
-                                (org-tags-match-list-sublevels t)
+                                (org-agenda-skip-function 'nm/skip-scheduled)
+                                (org-tags-match-list-sublevels nil)
                                 (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
+                  ("r" "Review"
+                   ((tags-todo "-CANCELLED/!"
+                               ((org-agenda-overriding-header "Stuck Projects")
+                                (org-agenda-skip-function 'bh/skip-non-stuck-projects)
                                 (org-agenda-sorting-strategy
-                                 '(todo-state-down effort-up category-keep))))
+                                 '(category-keep))))
                     (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
                                ((org-agenda-overriding-header (concat "Project Subtasks"
                                                                       (if bh/hide-scheduled-and-waiting-next-tasks
@@ -909,46 +914,20 @@ These are my default ROAM settings
                                 (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
                                 (org-agenda-sorting-strategy
                                  '(category-keep))))
-                    (tags-todo "-SOMEDAY-REFILE-CANCELLED-/NEXT"
-                               ((org-agenda-overriding-header (concat "Standalone Tasks"
-                                                                      (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                          ""
-                                                                        " (including WAITING and SCHEDULED tasks)")))
-                                (org-agenda-skip-function 'nm/skip-project-tasks)
-                                (org-agenda-todo-ignore-scheduled t)
-                                (org-agenda-todo-ignore-deadlines t)
-                                (org-agenda-todo-ignore-with-date t)
-                                (org-agenda-sorting-strategy
-                                 '(category-keep))))
-                    (tags-todo "-SOMEDAY+WAITING/"
-                               ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
-                                                                      (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                          ""
-                                                                        " (including WAITING and SCHEDULED tasks)")))
-                                (org-agenda-skip-function 'nm/skip-scheduled)
-                                (org-tags-match-list-sublevels nil)
-                                (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
                     (tags-todo "-SOMEDAY/TODO"
                                ((org-tags-match-list-sublevels nil)
                                 (org-agenda-overriding-header "Inbox Bucket"))))
                    nil))))
-    
-    ;                (tags "-REFILE/"
-    ;                      ((org-agenda-overriding-header "Tasks to Archive")
-    ;                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-    ;                       (org-tags-match-list-sublevels nil))))
-    ;               nil))))
 
 
-<a id="org5e9783c"></a>
+<a id="org59b117c"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="org6e71c84"></a>
+<a id="org27b01de"></a>
 
 ## Time Stamps
 
@@ -965,7 +944,7 @@ These are my default ROAM settings
           :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 
 
-<a id="org50cc8cc"></a>
+<a id="orga5315f1"></a>
 
 ## Prompt for headline when creating ID links
 
@@ -986,7 +965,7 @@ These are my default ROAM settings
     (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
 
 
-<a id="org9a15eca"></a>
+<a id="orgb18f7cd"></a>
 
 ## Capture Template File Picker
 
@@ -996,7 +975,7 @@ These are my default ROAM settings
         (expand-file-name (format "%s" file))))
 
 
-<a id="orgef46cd2"></a>
+<a id="org13aaef8"></a>
 
 ## Clarify Tasks
 
@@ -1207,7 +1186,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="org74aca6d"></a>
+<a id="orge6781b1"></a>
 
 ## Capture headline finder
 
@@ -1253,7 +1232,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (forward-char -1))
 
 
-<a id="orgf2184e6"></a>
+<a id="orga81fff2"></a>
 
 ## Search for headline across org-directory and return to indirect buffer
 
@@ -1276,11 +1255,11 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
     
     (map! :after org
           :map org-mode-map
-          :localleader
+          :leader
           :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
 
 
-<a id="orgf660a20"></a>
+<a id="org5fafd8c"></a>
 
 ## Change Font
 
@@ -1293,7 +1272,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (doom/reload-font))
 
 
-<a id="org14b3532"></a>
+<a id="org3f2d464"></a>
 
 # End of file loading
 
