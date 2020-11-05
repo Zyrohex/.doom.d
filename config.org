@@ -107,7 +107,9 @@ Next we configure popup-rules and default fonts.
 
 (when (equal system-type 'gnu/linux)
   (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 22)))
+        doom-big-font (font-spec :family "JetBrains Mono" :size 22)
+        doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 18)
+        doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
@@ -810,19 +812,11 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
 ;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
 
 (add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
-;(add-hook! 'org-todo-statistics-hook #'nm/set-proj-state)
 
 (defun nm/statistics-update-task ()
   "Update task state when statistics checker runs"
   (when (and (bh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
   (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p)) (org-todo "DONE")))
-
-(defun nm/set-proj-state ()
-  "Switch entry to DONE when all subentries are done, to TODO otherwise."
-  (when (bh/is-project-p)
-    (org-todo "PROJ"))
-  (when (and (bh/is-task-p) (or (nm/checkbox-active-exist-p) (nm/is-scheduled-p)))
-    (org-todo "NEXT")))
 
 (defun nm/update-task-tags ()
   "Update all child tasks in buffer that are missing a TAG value."
@@ -879,17 +873,51 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
 ;            (and (not (nm/org-checkbox-exist-p)) (oh/is-task-p) (not (equal (org-get-todo-state) "DONE"))))
 ;    (org-todo "TODO")))
 
+(defun nm/task-has-next-condition ()
+  "Checks task to see if it meets NEXT state critera and returns t."
+  (interactive)
+  (save-excursion
+    (and (bh/is-task-p)
+         (or (nm/checkbox-active-exist-p) (nm/is-scheduled-p) (nm/exist-context-tag-p))
+         (and (not (member "WAIT" (org-get-tags))) (not (equal (org-get-todo-state) "DONE"))))))
+
+(defun nm/task-has-todo-condition ()
+  "Checks to see if task conditions meet TODO crtieria, and returns t if so."
+  (interactive)
+  (save-excursion
+    (and (bh/is-task-p)
+         (and (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)))
+         (and (not (member "WAIT" (org-get-tags))) (not (equal (org-get-todo-state) "DONE"))))))
+
+(defun nm/task-has-done-condition ()
+  "Checks if task is considered DONE, and returns t."
+  (interactive)
+  (save-excursion
+    (and (bh/is-task-p)
+         (and (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)))
+         (nm/checkbox-done-exist-p))))
+
+(defun nm/task-has-wait-condition ()
+  "Checks if task has conditions for WAIT state, retunrs t."
+  (interactive)
+  (and (bh/is-task-p)
+       (member "WAIT" (org-get-tags))
+       (not (equal (org-get-todo-state) "DONE"))
+       (not (member "SOMEDAY" (org-get-tags)))))
+
 (defun nm/org-set-next-state ()
   "If task contains checkbox  that's not DONE then set task state to NEXT."
   (interactive)
   (save-excursion
     (org-back-to-heading)
-    (when (save-excursion (and (bh/is-task-p) (or (and (nm/exist-context-tag-p) (not (equal (org-get-todo-state) "DONE"))) (and (nm/checkbox-active-exist-p) (nm/checkbox-done-exist-p)) (nm/checkbox-active-exist-p) (nm/is-scheduled-p))))
+    (when (nm/task-has-next-condition)
       (org-todo "NEXT"))
-    (when (and (not (equal (org-get-todo-state) "DONE")) (not (nm/is-scheduled-p)) (null (nm/exist-context-tag-p)) (bh/is-task-p) (not (nm/checkbox-done-exist-p)) (not (nm/checkbox-active-exist-p)))
+    (when (nm/task-has-todo-condition)
       (org-todo "TODO"))
-    (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)) (nm/checkbox-done-exist-p))
-      (org-todo "DONE"))))
+    (when (nm/task-has-done-condition)
+      (org-todo "DONE"))
+    (when (nm/task-has-wait-condition)
+      (org-todo "WAIT"))))
 
 (defun nm/checkbox-active-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
