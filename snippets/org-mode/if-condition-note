@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: if-condition-note
+# key: if-condition-note
+# --
+`(let ((texta (nm/org-get-headline-property "TEXTA"))
+      (textb (nm/org-get-headline-property "TEXTB"))
+      (textc (nm/org-get-headline-property "TEXTC")))
+  (unless texta
+    (setq texta "$1"))
+  (unless textb
+    (setq textb "$2"))
+  (unless textc
+    (setq textc "$3"))
+  (insert (format "\n#+caption: Notes for text# %s\n- %s\n- %s\n- Notes: %s %s" texta texta textb texta textb)))`
