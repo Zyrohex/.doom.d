@@ -1,12 +1,14 @@
 #+TITLE: Org-Mode Literate Config
 #+EXPORT_FILE_NAME: README
 
-Uses org-babel to tangle all of my source code blocks back to _config.el_, this makes it easy so that I can write my changes from config.org or config.el.
+Uses org-babel to tangle all of my source code blocks back to _config.el_, this
+makes it easy so that I can write my changes from config.org or config.el.
 [[file:attachments/workspace.png]]
 
 * New Changes
 ** Clarify Tasks
-I got tired of manually setting task states to "NEXT" "PROJ" "TODO" so i've added a few functions to automate this based on a few conditions.
+I got tired of manually setting task states to "NEXT" "PROJ" "TODO" so i've
+added a few functions to automate this based on a few conditions.
 
 The *NEXT* state will be set if any of the following 3 conditions exist:
 1. Has a scheduled date assign to the task. (NOTE: We may want to add additional checks for expired task)
@@ -20,7 +22,9 @@ The PROJ state will become active upon the following conditions:
 [[file:attachments/projects.gif]]
 
 * Requirements
-These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
+These are some items that are required outside of the normal DOOM EMACS
+installation, before you can use this config. The idea here is to keep this
+minimum so as much of this is close to regular DOOM EMACS.
 1. *SQLITE3 Installation*: You will need to install sqlite3, typicalled installed via your package manager as ~sudo apt install sqlite3~
 2. I use a few different monospace fonts: [[https://input.fontbureau.com/download/][Input]], [[http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2][DejaVu]], [[https://github.com/tonsky/FiraCode][FiraCode]], [[google:IBM Plex Mono font Download][IBM Plex Mono]] and [[google:Roboto Mono Font Download][Roboto Mono]].
 
@@ -137,10 +141,12 @@ Here we add any requirements before org-mode starts to load
                   org-list-allow-alphabetical nil))
 
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
+
 #+END_SRC
 
 ** Looks and Feels
-Here we change some of the things how org-mode looks and feels, some options available are:
+Here we change some of the things how org-mode looks and feels, some options
+available are:
 - org-ellipsis ="▼, ↴, ⬎, ⤷,…, and ⋱."=
 - org-superstar-headline-bullets-list ="◉" "●" "○" "∴"=
 #+BEGIN_SRC emacs-lisp
@@ -343,7 +349,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
 ** company mode
 #+BEGIN_SRC emacs-lisp
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
+  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
   (setq company-idle-delay 0.25))
 #+END_SRC
 ** DEFT
@@ -748,6 +754,10 @@ These are my default ROAM settings
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 #+END_SRC
+** Visual Fill Column
+#+begin_src emacs-lisp
+(setq visual-fill-column 120)
+#+end_src
 * Custom Functions
 #+BEGIN_SRC emacs-lisp
 (load! "org-helpers.el")

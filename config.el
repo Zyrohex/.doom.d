@@ -244,7 +244,7 @@
                                   ("SOMEDAY"))))
 
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
+  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
   (setq company-idle-delay 0.25))
 
 (setq deft-use-projectile-projects t)
@@ -618,6 +618,8 @@
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+
+(setq visual-fill-column 120)
 
 (load! "org-helpers.el")
 

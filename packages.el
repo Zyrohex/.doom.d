@@ -1,10 +1,7 @@
-;; Roam Packages
-(package! org-roam-server)
-(package! company-org-roam)
-(package! org-roam)
 ;; Alphapapa packages
 (package! helm-org-rifle)
 (package! org-super-agenda)
+(package! visual-fill-column)
 (package! org-ql)
 (package! org-web-tools)
 ;; Themes
