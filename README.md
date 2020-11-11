@@ -1,59 +1,62 @@
 
 # Table of Contents
 
--   [New Changes](#orge00beae)
-    -   [Clarify Tasks](#org180d54e)
--   [Requirements](#org89ea447)
--   [Initial-Settings](#orgacbf17d)
--   [Org-Mode](#orgc6905fc)
-    -   [Looks and Feels](#org5651c38)
-    -   [Loading agenda settings](#orgabace56)
-    -   [Clock Settings](#orgd04a3e3)
-    -   [Capture Templates](#org67ac4e2)
-    -   [Export Settings](#org90db740)
-    -   [Keywords](#org98a7f91)
-    -   [Logging and Drawers](#org4ae9d2a)
-    -   [Properties](#org14c31d4)
-    -   [Publishing](#org81445fb)
-    -   [Default Tags](#org865a1cc)
--   [Module Settings](#org4f1806c)
-    -   [company mode](#orgfd1af98)
-    -   [DEFT](#orgfcf0fb5)
-    -   [Elfeed](#orgcdb0a22)
-    -   [Graphs and Chart Modules](#orgd074d1a)
-    -   [Journal](#org40a9945)
-    -   [Org-Rifle](#orgb386d68)
-    -   [org-ql](#org01c517c)
-    -   [Pandoc](#org348b166)
-    -   [Reveal](#org1e4233a)
-    -   [ROAM](#org782373d)
-    -   [ROAM Export Backlinks + Content](#org7b23791)
-    -   [ROAM Server](#org65ec819)
-    -   [Super Agenda Settings](#org793c1c9)
--   [Custom Functions](#org703921d)
-    -   [Time Stamps](#org1ff28bf)
-    -   [Prompt for headline when creating ID links](#org68f8432)
-    -   [Capture Template File Picker](#org2055e9e)
-    -   [Clarify Tasks](#org30af509)
-    -   [Capture headline finder](#org9ac7fec)
-    -   [Search for headline across org-directory and return to indirect buffer](#org46cb096)
-    -   [Change Font](#org9fea522)
--   [End of file loading](#org1514d9c)
+-   [New Changes](#org6a6605d)
+    -   [Clarify Tasks](#orgcd954d0)
+-   [Requirements](#org93c7b25)
+-   [Initial-Settings](#org13527d1)
+-   [Org-Mode](#org0d93d11)
+    -   [Looks and Feels](#org9e05202)
+    -   [Loading agenda settings](#org001e6b3)
+    -   [Clock Settings](#orga8242b6)
+    -   [Capture Templates](#orgf4ad836)
+    -   [Export Settings](#orgc647612)
+    -   [Keywords](#orgc715c0c)
+    -   [Logging and Drawers](#orgcda57b8)
+    -   [Properties](#org04838c6)
+    -   [Publishing](#org410e164)
+    -   [Default Tags](#orgb8d75ea)
+-   [Module Settings](#orgb110799)
+    -   [company mode](#orgde8032c)
+    -   [DEFT](#org024efdd)
+    -   [Elfeed](#orgd03e920)
+    -   [Graphs and Chart Modules](#org8a81c63)
+    -   [Journal](#orge5c7ca0)
+    -   [Org-Rifle](#org84de492)
+    -   [org-ql](#org5017052)
+    -   [Pandoc](#orgc26f222)
+    -   [Reveal](#org9064423)
+    -   [ROAM](#org954d806)
+    -   [ROAM Export Backlinks + Content](#org2fdae42)
+    -   [ROAM Server](#orgb32c1bd)
+    -   [Super Agenda Settings](#org4e6a722)
+    -   [Visual Fill Column](#orgacae8ed)
+-   [Custom Functions](#org752f219)
+    -   [Time Stamps](#org9aad9a7)
+    -   [Prompt for headline when creating ID links](#org10f4298)
+    -   [Capture Template File Picker](#orgf3ceca8)
+    -   [Clarify Tasks](#org674091c)
+    -   [Capture headline finder](#org87eb989)
+    -   [Search for headline across org-directory and return to indirect buffer](#org00cb56d)
+    -   [Change Font](#orgbf45629)
+-   [End of file loading](#org4cb4d99)
 
-Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this makes it easy so that I can write my changes from config.org or config.el.
+Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this
+makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="orge00beae"></a>
+<a id="org6a6605d"></a>
 
 # New Changes
 
 
-<a id="org180d54e"></a>
+<a id="orgcd954d0"></a>
 
 ## Clarify Tasks
 
-I got tired of manually setting task states to &ldquo;NEXT&rdquo; &ldquo;PROJ&rdquo; &ldquo;TODO&rdquo; so i&rsquo;ve added a few functions to automate this based on a few conditions.
+I got tired of manually setting task states to &ldquo;NEXT&rdquo; &ldquo;PROJ&rdquo; &ldquo;TODO&rdquo; so i&rsquo;ve
+added a few functions to automate this based on a few conditions.
 
 The **NEXT** state will be set if any of the following 3 conditions exist:
 
@@ -71,17 +74,19 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="org89ea447"></a>
+<a id="org93c7b25"></a>
 
 # Requirements
 
-These are some items that are required outside of the normal DOOM EMACS installation, before you can use this config. The idea here is to keep this minimum so as much of this is close to regular DOOM EMACS.
+These are some items that are required outside of the normal DOOM EMACS
+installation, before you can use this config. The idea here is to keep this
+minimum so as much of this is close to regular DOOM EMACS.
 
 1.  **SQLITE3 Installation**: You will need to install sqlite3, typicalled installed via your package manager as `sudo apt install sqlite3`
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="orgacbf17d"></a>
+<a id="org13527d1"></a>
 
 # Initial-Settings
 
@@ -171,7 +176,7 @@ Next we configure popup-rules and default fonts.
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="orgc6905fc"></a>
+<a id="org0d93d11"></a>
 
 # Org-Mode
 
@@ -198,11 +203,12 @@ Here we add any requirements before org-mode starts to load
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
 
-<a id="org5651c38"></a>
+<a id="org9e05202"></a>
 
 ## Looks and Feels
 
-Here we change some of the things how org-mode looks and feels, some options available are:
+Here we change some of the things how org-mode looks and feels, some options
+available are:
 
 -   org-ellipsis `"▼, ↴, ⬎, ⤷,…, and ⋱."`
 -   org-superstar-headline-bullets-list `"◉" "●" "○" "∴"`
@@ -216,7 +222,7 @@ Here we change some of the things how org-mode looks and feels, some options ava
             org-superstar-item-bullet-alist nil))
 
 
-<a id="orgabace56"></a>
+<a id="org001e6b3"></a>
 
 ## Loading agenda settings
 
@@ -236,14 +242,14 @@ Here we change some of the things how org-mode looks and feels, some options ava
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 
 
-<a id="orgd04a3e3"></a>
+<a id="orga8242b6"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="org67ac4e2"></a>
+<a id="orgf4ad836"></a>
 
 ## Capture Templates
 
@@ -272,7 +278,7 @@ Example ledger template file: = `/.doom.d/templates/ledger-scheduled.org`
         Expenses:Insurance                         dollar amount
 
 
-<a id="org90db740"></a>
+<a id="orgc647612"></a>
 
 ## Export Settings
 
@@ -307,7 +313,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="org98a7f91"></a>
+<a id="orgc715c0c"></a>
 
 ## Keywords
 
@@ -382,7 +388,7 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="org4ae9d2a"></a>
+<a id="orgcda57b8"></a>
 
 ## Logging and Drawers
 
@@ -395,14 +401,14 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="org14c31d4"></a>
+<a id="org04838c6"></a>
 
 ## Properties
 
     (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 
 
-<a id="org81445fb"></a>
+<a id="org410e164"></a>
 
 ## Publishing
 
@@ -445,7 +451,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org865a1cc"></a>
+<a id="orgb8d75ea"></a>
 
 ## Default Tags
 
@@ -466,21 +472,21 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                       ("SOMEDAY"))))
 
 
-<a id="org4f1806c"></a>
+<a id="orgb110799"></a>
 
 # Module Settings
 
 
-<a id="orgfd1af98"></a>
+<a id="orgde8032c"></a>
 
 ## company mode
 
     (after! org
-      (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-org-roam company-elisp))
+      (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
       (setq company-idle-delay 0.25))
 
 
-<a id="orgfcf0fb5"></a>
+<a id="org024efdd"></a>
 
 ## DEFT
 
@@ -550,7 +556,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orgcdb0a22"></a>
+<a id="orgd03e920"></a>
 
 ## Elfeed
 
@@ -569,7 +575,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orgd074d1a"></a>
+<a id="org8a81c63"></a>
 
 ## Graphs and Chart Modules
 
@@ -599,7 +605,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org40a9945"></a>
+<a id="orge5c7ca0"></a>
 
 ## Journal
 
@@ -609,7 +615,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="orgb386d68"></a>
+<a id="org84de492"></a>
 
 ## Org-Rifle
 
@@ -708,7 +714,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org01c517c"></a>
+<a id="org5017052"></a>
 
 ## org-ql
 
@@ -747,14 +753,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="org348b166"></a>
+<a id="orgc26f222"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org1e4233a"></a>
+<a id="org9064423"></a>
 
 ## Reveal
 
@@ -763,7 +769,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="org782373d"></a>
+<a id="org954d806"></a>
 
 ## ROAM
 
@@ -802,7 +808,7 @@ These are my default ROAM settings
     ;;            "%?")))
 
 
-<a id="org7b23791"></a>
+<a id="org2fdae42"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -835,7 +841,7 @@ These are my default ROAM settings
     ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org65ec819"></a>
+<a id="orgb32c1bd"></a>
 
 ## ROAM Server
 
@@ -853,7 +859,7 @@ These are my default ROAM settings
     ;;         org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org793c1c9"></a>
+<a id="org4e6a722"></a>
 
 ## Super Agenda Settings
 
@@ -920,14 +926,21 @@ These are my default ROAM settings
                                 (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 
-<a id="org703921d"></a>
+<a id="orgacae8ed"></a>
+
+## Visual Fill Column
+
+    (setq visual-fill-column 120)
+
+
+<a id="org752f219"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="org1ff28bf"></a>
+<a id="org9aad9a7"></a>
 
 ## Time Stamps
 
@@ -944,7 +957,7 @@ These are my default ROAM settings
           :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 
 
-<a id="org68f8432"></a>
+<a id="org10f4298"></a>
 
 ## Prompt for headline when creating ID links
 
@@ -965,7 +978,7 @@ These are my default ROAM settings
     (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
 
 
-<a id="org2055e9e"></a>
+<a id="orgf3ceca8"></a>
 
 ## Capture Template File Picker
 
@@ -975,7 +988,7 @@ These are my default ROAM settings
         (expand-file-name (format "%s" file))))
 
 
-<a id="org30af509"></a>
+<a id="org674091c"></a>
 
 ## Clarify Tasks
 
@@ -1020,45 +1033,58 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
     
     (setq org-tasks-properties-metadata (list "SOURCE"))
     
-    (defun nm/org-clarify-task-properties (arg)
-      "Update the metadata for a task headline."
-      (unless (equal major-mode 'org-mode)
-        (error "Not visiting an org-mode buffer."))
-      (save-restriction
-        (save-excursion
-          (org-show-all)
-          (goto-char (point-min))
-          (let ((props arg))
-            (while (not (eobp))
-              (outline-next-heading)
-              (org-narrow-to-subtree)
-              (unless (eobp)
-                (when (or (and (oh/is-project-p) (oh/is-todo-p)) (and (oh/is-task-p) (null (oh/has-parent-project-p)) (null (oh/has-subtask-p))))
-                  (mapcar (lambda (props)
-                            (when (null (org-entry-get nil (upcase props) t))
-                              (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
-                (when (and (oh/is-todo-p) (not (oh/is-task-p)))
-                  (org-todo "PROJ"))
-                (widen)))))))
+    ;; (defun nm/org-clarify-task-properties (arg)
+    ;;   "Update the metadata for a task headline."
+    ;;   (unless (equal major-mode 'org-mode)
+    ;;     (error "Not visiting an org-mode buffer."))
+    ;;   (save-restriction
+    ;;     (save-excursion
+    ;;       (org-show-all)
+    ;;       (goto-char (point-min))
+    ;;       (let ((props arg))
+    ;;         (while (not (eobp))
+    ;;           (outline-next-heading)
+    ;;           (org-narrow-to-subtree)
+    ;;           (unless (eobp)
+    ;;             (when (or (and (oh/is-project-p) (oh/is-todo-p)) (and (oh/is-task-p) (null (oh/has-parent-project-p)) (null (oh/has-subtask-p))))
+    ;;               (mapcar (lambda (props)
+    ;;                         (when (null (org-entry-get nil (upcase props) t))
+    ;;                           (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
+    ;;             (when (and (oh/is-todo-p) (not (oh/is-task-p)))
+    ;;               (org-todo "PROJ"))
+    ;;             (widen)))))))
     
-    (defun nm/update-task-states ()
-      "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword and vice versa."
+    (defun nm/update-task-conditions ()
+      "Update task states depending on their conditions."
       (interactive)
-      (save-excursion
-        (goto-line 1)
-        (while (not (eobp))
-          (outline-next-heading)
-          (unless (eobp)
-            (nm/org-update-projects)
-            (nm/org-set-next-state)))))
+      (org-map-entries (lambda ()
+                         (when (nm/task-has-next-condition) (org-todo "NEXT"))
+                         (when (nm/task-has-todo-condition) (org-todo "TODO"))
+                         (when (nm/task-has-wait-condition) (org-todo "WAIT"))
+                         (when (bh/is-project-p) (org-todo "PROJ"))) t))
     
-    (defun nm/org-update-projects ()
-      "If task is project then assign to PROJ keyword."
-      (when (or (and (nm/has-subtask-active-p) (oh/is-todo-p)) (and (oh/is-todo-p) (nm/has-subtask-done-p) (nm/has-subtask-active-p)))
-        (org-todo "PROJ")))
-    ;  (when (or (and (not (nm/org-checkbox-exist-p)) (equal (org-get-todo-state) "PROJ") (oh/is-task-p))
-    ;            (and (not (nm/org-checkbox-exist-p)) (oh/is-task-p) (not (equal (org-get-todo-state) "DONE"))))
-    ;    (org-todo "TODO")))
+    ;; (defun nm/update-task-states ()
+    ;;   "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword and vice versa."
+    ;;   (interactive)
+    ;;   (save-excursion
+    ;;     (goto-line 1)
+    ;;     (while (not (eobp))
+    ;;       (outline-next-heading)
+    ;;       (unless (eobp)
+    ;;         (nm/org-update-projects)
+    ;;         (nm/org-set-next-state)))))
+    
+    ;; (defun nm/org-update-projects ()
+    ;;   "If task is project then assign to PROJ keyword."
+    ;;   (when (or
+    ;;          (and
+    ;;           (nm/has-subtask-active-p)
+    ;;           (oh/is-todo-p))
+    ;;          (and
+    ;;           (oh/is-todo-p)
+    ;;           (nm/has-subtask-done-p)
+    ;;           (nm/has-subtask-active-p)))
+    ;;     (org-todo "PROJ")))
     
     (defun nm/task-has-next-condition ()
       "Checks task to see if it meets NEXT state critera and returns t."
@@ -1148,7 +1174,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
         (save-excursion
           (member arg (org-get-tags)))))
     
-    (defconst nm/context-tags ".+\s:@\\w.+:")
+    (defconst nm/context-tags ".+\s:@\\w.+:\\|.+:@\\w.+:")
     
     (defun nm/exist-context-tag-p (&optional arg)
       "If headline has context tag keyword assigned, return t."
@@ -1198,7 +1224,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
            ((nm/is-scheduled-p) next-headline)
            (t nil)))))
     
-    (add-hook 'before-save-hook #'nm/update-task-states)
+    (add-hook 'before-save-hook #'nm/update-task-conditions)
     
     (defun nm/org-clarify-metadata ()
       "Runs the clarify-task-metadata function with ARG being a list of property values."
@@ -1212,7 +1238,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="org9ac7fec"></a>
+<a id="org87eb989"></a>
 
 ## Capture headline finder
 
@@ -1258,7 +1284,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (forward-char -1))
 
 
-<a id="org46cb096"></a>
+<a id="org00cb56d"></a>
 
 ## Search for headline across org-directory and return to indirect buffer
 
@@ -1285,7 +1311,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
 
 
-<a id="org9fea522"></a>
+<a id="orgbf45629"></a>
 
 ## Change Font
 
@@ -1298,7 +1324,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (doom/reload-font))
 
 
-<a id="org1514d9c"></a>
+<a id="org4cb4d99"></a>
 
 # End of file loading
 
