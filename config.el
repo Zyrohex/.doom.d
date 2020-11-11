@@ -702,7 +702,12 @@
                      (when (nm/task-has-next-condition) (org-todo "NEXT"))
                      (when (nm/task-has-todo-condition) (org-todo "TODO"))
                      (when (nm/task-has-wait-condition) (org-todo "WAIT"))
-                     (when (bh/is-project-p) (org-todo "PROJ"))) t))
+                     (when (nm/task-is-active-proj) (org-todo "PROJ"))) t))
+
+(defun nm/task-is-active-proj ()
+  "Checks if task is a Project with child subtask"
+  (and (bh/is-project-p)
+       (nm/has-subtask-active-p)))
 
 (defun nm/task-has-next-condition ()
   "Checks task to see if it meets NEXT state critera and returns t."
