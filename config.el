@@ -695,27 +695,6 @@
 
 (setq org-tasks-properties-metadata (list "SOURCE"))
 
-;; (defun nm/org-clarify-task-properties (arg)
-;;   "Update the metadata for a task headline."
-;;   (unless (equal major-mode 'org-mode)
-;;     (error "Not visiting an org-mode buffer."))
-;;   (save-restriction
-;;     (save-excursion
-;;       (org-show-all)
-;;       (goto-char (point-min))
-;;       (let ((props arg))
-;;         (while (not (eobp))
-;;           (outline-next-heading)
-;;           (org-narrow-to-subtree)
-;;           (unless (eobp)
-;;             (when (or (and (oh/is-project-p) (oh/is-todo-p)) (and (oh/is-task-p) (null (oh/has-parent-project-p)) (null (oh/has-subtask-p))))
-;;               (mapcar (lambda (props)
-;;                         (when (null (org-entry-get nil (upcase props) t))
-;;                           (org-set-property (upcase props) (org-read-property-value (upcase props))))) props))
-;;             (when (and (oh/is-todo-p) (not (oh/is-task-p)))
-;;               (org-todo "PROJ"))
-;;             (widen)))))))
-
 (defun nm/update-task-conditions ()
   "Update task states depending on their conditions."
   (interactive)
@@ -724,29 +703,6 @@
                      (when (nm/task-has-todo-condition) (org-todo "TODO"))
                      (when (nm/task-has-wait-condition) (org-todo "WAIT"))
                      (when (bh/is-project-p) (org-todo "PROJ"))) t))
-
-;; (defun nm/update-task-states ()
-;;   "Scans buffer and assigns all tasks that contain child-tasks the PROJ keyword and vice versa."
-;;   (interactive)
-;;   (save-excursion
-;;     (goto-line 1)
-;;     (while (not (eobp))
-;;       (outline-next-heading)
-;;       (unless (eobp)
-;;         (nm/org-update-projects)
-;;         (nm/org-set-next-state)))))
-
-;; (defun nm/org-update-projects ()
-;;   "If task is project then assign to PROJ keyword."
-;;   (when (or
-;;          (and
-;;           (nm/has-subtask-active-p)
-;;           (oh/is-todo-p))
-;;          (and
-;;           (oh/is-todo-p)
-;;           (nm/has-subtask-done-p)
-;;           (nm/has-subtask-active-p)))
-;;     (org-todo "PROJ")))
 
 (defun nm/task-has-next-condition ()
   "Checks task to see if it meets NEXT state critera and returns t."
@@ -779,20 +735,6 @@
        (member "WAIT" (org-get-tags))
        (not (equal (org-get-todo-state) "DONE"))
        (not (member "SOMEDAY" (org-get-tags)))))
-
-(defun nm/org-set-next-state ()
-  "If task contains checkbox  that's not DONE then set task state to NEXT."
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (when (nm/task-has-next-condition)
-      (org-todo "NEXT"))
-    (when (nm/task-has-todo-condition)
-      (org-todo "TODO"))
-    (when (nm/task-has-done-condition)
-      (org-todo "DONE"))
-    (when (nm/task-has-wait-condition)
-      (org-todo "WAIT"))))
 
 (defun nm/checkbox-active-exist-p ()
   "Checks if a checkbox that's not marked DONE exist in the tree."
@@ -889,7 +831,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
 (add-hook 'before-save-hook #'nm/update-task-conditions)
 
 (defun nm/org-clarify-metadata ()
-  "Runs the clarify-task-metadata function with ARG being a list of property values."
+  "Runs the clarify-task-metadata function with ARG being a list of property values." ; TODO work on this function and add some meaning to it.
   (interactive)
   (nm/org-clarify-task-properties org-tasks-properties-metadata))
 
