@@ -92,13 +92,14 @@
                   org-list-allow-alphabetical nil))
 
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
+(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 (after! org (setq org-hide-emphasis-markers t
                   org-hide-leading-stars t
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
 
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("●" "○")
+  (setq org-superstar-headline-bullets-list '("•")
         org-superstar-item-bullet-alist nil))
 
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
@@ -617,7 +618,13 @@
                             (org-agenda-skip-function 'nm/skip-scheduled)
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
+              ("m" "Master List"
+               ((todo ""
+                      ((org-super-agenda-mode t)
+                       (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                       (org-super-agenda-groups
+                        '((:auto-parent t))))))))))
 
 (setq visual-fill-column 120)
 

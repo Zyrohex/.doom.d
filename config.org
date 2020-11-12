@@ -141,6 +141,7 @@ Here we add any requirements before org-mode starts to load
                   org-list-allow-alphabetical nil))
 
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
+(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 #+END_SRC
 
@@ -155,7 +156,7 @@ available are:
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
 
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("●" "○")
+  (setq org-superstar-headline-bullets-list '("•")
         org-superstar-item-bullet-alist nil))
 #+END_SRC
 
@@ -752,7 +753,13 @@ These are my default ROAM settings
                             (org-agenda-skip-function 'nm/skip-scheduled)
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
+              ("m" "Master List"
+               ((todo ""
+                      ((org-super-agenda-mode t)
+                       (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                       (org-super-agenda-groups
+                        '((:auto-parent t))))))))))
 #+END_SRC
 ** Visual Fill Column
 #+begin_src emacs-lisp
