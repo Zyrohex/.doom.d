@@ -2,6 +2,7 @@
 (package! helm-org-rifle)
 (package! org-super-agenda)
 (package! visual-fill-column)
+(package! org-sidebar)
 (package! org-ql)
 (package! org-web-tools)
 ;; Themes
