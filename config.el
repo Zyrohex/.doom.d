@@ -55,20 +55,18 @@
 (setq org-directory "~/.org/")
 (setq projectile-project-search-path "~/projects/")
 
-(setq doom-theme 'doom-solarized-dark)
+(setq doom-theme 'doom-dracula)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
 
 (when (equal system-type 'gnu/linux)
   (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 22)
-        doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 18)
-        doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)))
+        doom-big-font (font-spec :family "JetBrains Mono" :size 22)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
@@ -120,16 +118,15 @@
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 (after! org (setq org-capture-templates
-      '(("h" "Headline templates")
-        ("l" "Ledger")
+      '(("l" "Ledger")
         ("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
-         "* %^{title}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-        ("hn" "Note to headline" plain (function nm/org-end-of-headline)
-         "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-after 1 :unnarrow t)
-        ("hf" "Find headline" plain (function nm/org-capture-weeklies)
-         "%?" :empty-lines-before 1 :empty-lines-after 1)
+         "* %(read-string \"Title: \") \n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
+        ("k" "Quick note w/killring" plain (function nm/org-capture-weeklies)
+         "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
+        ("q" "Quick note" plain (function nm/org-capture-weeklies)
+         "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%?" :empty-lines-before 1 :empty-lines-after 1)
         ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
         ("la" "Add Transaction" plain (file "~/.org/gtd/finances.ledger")
@@ -489,6 +486,13 @@
 ;; (setq org-roam-db-location "~/.org/roam.db")
 ;; (setq org-roam-directory "~/.org/")
 
+;; (use-package company-org-roam
+;;   :ensure t
+;;   ;; You may want to pin in case the version from stable.melpa.org is not working
+;;   ; :pin melpa
+;;   :config
+;;   (push 'company-org-roam company-backends))
+
 ;; (setq org-roam-dailies-capture-templates
 ;;    '(("d" "daily" plain (function org-roam-capture--get-point) ""
 ;;       :immediate-finish t
@@ -548,7 +552,7 @@
 ;; (use-package org-roam-server
 ;;   :ensure t
 ;;   :config
-;;   (setq org-roam-server-host "192.168.1.82"
+;;   (setq org-roam-server-host "127.0.0.1"
 ;;         org-roam-server-port 8070
 ;;         org-roam-server-export-inline-images t
 ;;         org-roam-server-authenticate nil
@@ -571,8 +575,14 @@
                         ((org-agenda-span '1)
                          (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                          (org-agenda-start-day (org-today))))
-                (tags-todo "/NEXT|PROJ"
+                (tags-todo "/PROJ"
                            ((org-agenda-overriding-header "Projects")
+                            (org-agenda-skip-function 'bh/skip-non-projects)
+                            (org-tags-match-list-sublevels 'indented)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "/NEXT"
+                           ((org-agenda-overriding-header "Project Next Tasks")
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
@@ -680,172 +690,12 @@
 
 ;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
 
-(add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
-
-(defun nm/statistics-update-task ()
-  "Update task state when statistics checker runs"
-  (when (and (bh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
-  (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p)) (org-todo "DONE")))
-
-(defun nm/update-task-tags ()
-  "Update all child tasks in buffer that are missing a TAG value."
-  (interactive)
-  (org-show-all)
-  (while (not (eobp))
-    (progn
-      (outline-next-heading)
-      (org-narrow-to-subtree)
-      (unless (eobp)
-        (if (and (oh/is-task-p) (null (org-get-tags)))
-            (counsel-org-tag)))
-      (widen))))
-
-(setq org-tasks-properties-metadata (list "SOURCE"))
-
-(defun nm/update-task-conditions ()
-  "Update task states depending on their conditions."
-  (interactive)
-  (org-map-entries (lambda ()
-                     (when (nm/task-has-next-condition) (org-todo "NEXT"))
-                     (when (nm/task-has-todo-condition) (org-todo "TODO"))
-                     (when (nm/task-has-wait-condition) (org-todo "WAIT"))
-                     (when (nm/task-is-active-proj) (org-todo "PROJ"))) t))
-
-(defun nm/task-is-active-proj ()
-  "Checks if task is a Project with child subtask"
-  (and (bh/is-project-p)
-       (nm/has-subtask-active-p)))
-
-(defun nm/task-has-next-condition ()
-  "Checks task to see if it meets NEXT state critera and returns t."
-  (interactive)
-  (save-excursion
-    (and (bh/is-task-p)
-         (or (nm/checkbox-active-exist-p) (nm/is-scheduled-p) (nm/exist-context-tag-p))
-         (and (not (member "WAIT" (org-get-tags))) (not (equal (org-get-todo-state) "DONE"))))))
-
-(defun nm/task-has-todo-condition ()
-  "Checks to see if task conditions meet TODO crtieria, and returns t if so."
-  (interactive)
-  (save-excursion
-    (and (bh/is-task-p)
-         (and (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)))
-         (and (not (member "WAIT" (org-get-tags))) (not (equal (org-get-todo-state) "DONE"))))))
-
-(defun nm/task-has-done-condition ()
-  "Checks if task is considered DONE, and returns t."
-  (interactive)
-  (save-excursion
-    (and (bh/is-task-p)
-         (and (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)))
-         (nm/checkbox-done-exist-p))))
-
-(defun nm/task-has-wait-condition ()
-  "Checks if task has conditions for WAIT state, retunrs t."
-  (interactive)
-  (and (bh/is-task-p)
-       (member "WAIT" (org-get-tags))
-       (not (equal (org-get-todo-state) "DONE"))
-       (not (member "SOMEDAY" (org-get-tags)))))
-
-(defun nm/checkbox-active-exist-p ()
-  "Checks if a checkbox that's not marked DONE exist in the tree."
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (let ((end (save-excursion (org-end-of-subtree t))))
-      (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t))))
-
-(defun nm/checkbox-done-exist-p ()
-  "Checks if a checkbox that's not marked DONE exist in the tree."
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (let ((end (save-excursion (org-end-of-subtree t))))
-      (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t))))
-
-(defun nm/has-subtask-done-p ()
-  "Returns t for any heading that has a subtask is DONE state."
-  (interactive)
-  (org-back-to-heading t)
-  (let ((end (save-excursion (org-end-of-subtree t))))
-    (outline-end-of-heading)
-    (save-excursion
-      (re-search-forward (concat "^\*+ " "\\(DONE\\|KILL\\)") nil end))))
-
-(defun nm/has-subtask-active-p ()
-  "Returns t for any heading that has subtasks."
-  (save-restriction
-    (widen)
-    (org-back-to-heading t)
-    (let ((end (save-excursion (org-end-of-subtree t))))
-      (outline-end-of-heading)
-      (save-excursion
-        (re-search-forward (concat "^\*+ " "\\(NEXT\\|WAIT\\|TODO\\)") end t)))))
-
-(defun nm/exist-tag-p (arg)
-  "If headline has ARG tag keyword assigned, return t."
-  (interactive)
-  (let ((end (save-excursion (end-of-line))))
-    (save-excursion
-      (member arg (org-get-tags)))))
-
-(defconst nm/context-tags ".+\s:@\\w.+:\\|.+:@\\w.+:")
-
-(defun nm/exist-context-tag-p (&optional arg)
-  "If headline has context tag keyword assigned, return t."
-  (interactive)
-  (goto-char (org-entry-beginning-position))
-  (let ((end (save-excursion (line-end-position))))
-    (re-search-forward nm/context-tags end t)))
-
-(defun nm/is-scheduled-p ()
-  "Checks task for SCHEDULE and if found, return t."
-  (save-excursion
-    (org-back-to-heading)
-    (let ((end (save-excursion (org-end-of-subtree t))))
-      (re-search-forward org-scheduled-regexp end t))))
-
-(defun nm/skip-project-tasks ()
-  "Show non-project tasks.
-Skip project and sub-project tasks, habits, and project related tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p) subtree-end)
-       ((oh/is-scheduled-p) subtree-end)
-       ((org-is-habit-p) subtree-end)
-       ((bh/is-project-subtree-p) subtree-end)
-       (t nil)))))
-
-(defun nm/skip-projects-and-habits-and-single-tasks ()
-  "Skip trees that are projects, tasks that are habits, single non-project tasks"
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((org-is-habit-p) next-headline)
-       ((nm/is-scheduled-p) next-headline)
-       ((bh/is-project-p) next-headline)
-       ((and (bh/is-task-p) (not (bh/is-project-subtree-p))) next-headline)
-       (t nil)))))
-
-(defun nm/skip-scheduled ()
-  "Skip headlines that are scheduled."
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((nm/is-scheduled-p) next-headline)
-       (t nil)))))
-
-(add-hook 'before-save-hook #'nm/update-task-conditions)
-
 (defun nm/org-clarify-metadata ()
   "Runs the clarify-task-metadata function with ARG being a list of property values." ; TODO work on this function and add some meaning to it.
   (interactive)
   (nm/org-clarify-task-properties org-tasks-properties-metadata))
+
+(load! "org-task-automation.el")
 
 (map! :after org
       :map org-mode-map
@@ -853,40 +703,15 @@ Skip project and sub-project tasks, habits, and project related tasks."
       :prefix ("j" . "nicks functions")
       :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
-(defun nm/org-capture-system ()
-  "Capture stuff."
-  (interactive)
-  (save-restriction
-    (let ((org-capture-templates
-           '(("h" "headline capture" entry (function counsel-outline)
-              "* %?" :empty-lines-before 1 :empty-lines-after 1)
-             ("p" "plain capture" plain (function end-of-buffer)
-              "<%<%Y-%m-%d %H:%M>> %?" :empty-lines-before 1 :empty-lines-after 1))))
-      (find-file-other-window (read-file-name "file: " "~/.org/"))
-      (if (counsel-outline-candidates)
-          (org-capture nil "h"))
-      (org-capture nil "p"))))
-
-(defun nm/org-capture-to-file ()
-  "Capture stuff."
-  (interactive)
-  (save-restriction
-    (let ((org-capture-templates
-           '(("h" "headline capture" entry (function counsel-outline)
-              "* %?" :empty-lines-before 1 :empty-lines-after 1)
-             ("p" "plain capture" plain (function end-of-buffer)
-              "<%<%Y-%m-%d %H:%M>> %?" :empty-lines-before 1 :empty-lines-after 1))))
-      (org-capture nil "h"))))
-
-(bind-key "<f7>" #'nm/org-capture-to-file)
-
 (defun nm/org-capture-weeklies ()
-  "Find weeklies file and call counsel-outline."
-  (interactive)
-  (find-file (read-file-name "file: " "~/.org/"))
-  (progn
-    (counsel-outline)
-    (nm/org-end-of-headline)))
+  "Initiate the capture system and find headline to capture under."
+  (let ((dest (org-refile-get-location)))
+    (let ((file (cadr dest))
+          (pos (nth 3 dest))
+          (title (nth 2 dest)))
+      (find-file file)
+      (goto-char pos)
+      (nm/org-end-of-headline))))
 
 (defun nm/org-end-of-headline()
   "Move to end of current headline"
@@ -919,10 +744,12 @@ Skip project and sub-project tasks, habits, and project related tasks."
 (defun nm/emacs-change-font ()
   "Change font based on available font list."
   (interactive)
-  (let ((font (ivy-completing-read "font: " (font-family-list))))
+  (let ((font (ivy-completing-read "font: " nm/font-family-list)))
     (setq doom-font (font-spec :family font :size 18)
           doom-big-font (font-spec :family font :size 22)))
   (doom/reload-font))
+
+(defvar nm/font-family-list '("Input Mono" "IBM Plex Mono" "Victor Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
 
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
