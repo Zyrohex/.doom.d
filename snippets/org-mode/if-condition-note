@@ -2,9 +2,9 @@
 # name: if-condition-note
 # key: if-condition-note
 # --
-`(let ((texta (nm/org-get-headline-property "TEXTA"))
-      (textb (nm/org-get-headline-property "TEXTB"))
-      (textc (nm/org-get-headline-property "TEXTC")))
+`(let ((texta (org-entry-get nil "TEXTA" t))
+      (textb (org-entry-get nil "TEXTB" t))
+      (textc (org-entry-get nil "TEXTC" t)))
   (unless texta
     (setq texta "$1"))
   (unless textb
