@@ -27,6 +27,10 @@ storing it in the appropriate location without losing focus on what i'm
 currently working on. This is common when on calls or meetings and you need to
 make a note for another task item you're working.
 
+So with that, I added a new function tied to the quick note capture-template
+key, which will prompt for a headline from any of your task files that exist in
+"~~/.org/gtd/~".
+
 * Requirements
 These are some items that are required outside of the normal DOOM EMACS
 installation, before you can use this config. The idea here is to keep this

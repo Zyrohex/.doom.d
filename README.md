@@ -1,62 +1,63 @@
 
 # Table of Contents
 
--   [New Changes](#org5659de9)
-    -   [Clarify Tasks](#org533f58a)
--   [Requirements](#org0c5602f)
--   [Initial-Settings](#org4ff8841)
--   [Org-Mode](#org116ee63)
-    -   [Looks and Feels](#org09ad01e)
-    -   [Loading agenda settings](#org74030cb)
-    -   [Clock Settings](#orgd957bd3)
-    -   [Capture Templates](#org154622f)
-    -   [Export Settings](#org57768e8)
-    -   [Keywords](#orgd9315d1)
-    -   [Logging and Drawers](#org2d5f4ee)
-    -   [Properties](#orgeaa3f84)
-    -   [Publishing](#org0876894)
-    -   [Default Tags](#org3f0ed8c)
--   [Module Settings](#org6c77a80)
-    -   [company mode](#org6e75954)
-    -   [DEFT](#org624ff13)
-    -   [Elfeed](#org0d9b297)
-    -   [Graphs and Chart Modules](#orgfbc17b4)
-    -   [Journal](#org10efa6a)
-    -   [Org-Rifle](#org61487e5)
-    -   [org-ql](#org1301074)
-    -   [Pandoc](#orgf477f50)
-    -   [Reveal](#orga5df452)
-    -   [ROAM](#org802aa5c)
-    -   [ROAM Export Backlinks + Content](#orgca0c018)
-    -   [ROAM Server](#org566f473)
-    -   [Super Agenda Settings](#org0ad9ea8)
-    -   [Visual Fill Column](#orgbafec9f)
--   [Custom Functions](#org6fca55a)
-    -   [Time Stamps](#org4a0dc35)
-    -   [Prompt for headline when creating ID links](#orgc21e43b)
-    -   [Capture Template File Picker](#orgf2e2592)
-    -   [Clarify Tasks](#org0e4be72)
-    -   [Capture headline finder](#org741914c)
-    -   [Search for headline across org-directory and return to indirect buffer](#orgf4d9aac)
-    -   [Change Font](#orgfd00200)
--   [End of file loading](#org451146b)
+-   [New Changes](#orgc0cc12f)
+    -   [Task Automation](#org333a7fa)
+    -   [Quick Note Find Headline](#orgf31c386)
+-   [Requirements](#org640c5b7)
+-   [Initial-Settings](#org63f0ff8)
+-   [Org-Mode](#org966f635)
+    -   [Looks and Feels](#org5e27b75)
+    -   [Loading agenda settings](#orgd7f1510)
+    -   [Clock Settings](#org2b9205f)
+    -   [Capture Templates](#orgf586a85)
+    -   [Export Settings](#org92bb448)
+    -   [Keywords](#org39ebeeb)
+    -   [Logging and Drawers](#org7a951a4)
+    -   [Properties](#org48812a6)
+    -   [Publishing](#orgd5ea80d)
+    -   [Default Tags](#org9f63604)
+-   [Module Settings](#orgee7aba1)
+    -   [company mode](#orgd368801)
+    -   [DEFT](#org19a4ce2)
+    -   [Elfeed](#orgdd4230a)
+    -   [Graphs and Chart Modules](#org39eb901)
+    -   [Journal](#org878f2a4)
+    -   [Org-Rifle](#orgba0e98c)
+    -   [org-ql](#orgad5b106)
+    -   [Pandoc](#org95fa61c)
+    -   [Reveal](#orgf860bb5)
+    -   [ROAM](#orga199fa8)
+    -   [ROAM Export Backlinks + Content](#org464bc9b)
+    -   [ROAM Server](#org655e9da)
+    -   [Super Agenda Settings](#org46989f0)
+    -   [Visual Fill Column](#orgfcfe052)
+-   [Custom Functions](#org1d0257b)
+    -   [Time Stamps](#org2437ca6)
+    -   [Prompt for headline when creating ID links](#orgc339d6c)
+    -   [Capture Template File Picker](#org0449a86)
+    -   [Clarify Tasks](#org913823a)
+    -   [Capture headline finder](#orgf98d60b)
+    -   [Search for headline across org-directory and return to indirect buffer](#org37baaf0)
+    -   [Change Font](#org2a8aca2)
+-   [End of file loading](#org9cd76d1)
 
 Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this
 makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="org5659de9"></a>
+<a id="orgc0cc12f"></a>
 
 # New Changes
 
 
-<a id="org533f58a"></a>
+<a id="org333a7fa"></a>
 
-## Clarify Tasks
+## Task Automation
 
 I got tired of manually setting task states to &ldquo;NEXT&rdquo; &ldquo;PROJ&rdquo; &ldquo;TODO&rdquo; so i&rsquo;ve
-added a few functions to automate this based on a few conditions.
+added a few functions to automate this for me.
 
 The **NEXT** state will be set if any of the following 3 conditions exist:
 
@@ -74,7 +75,21 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="org0c5602f"></a>
+<a id="orgf31c386"></a>
+
+## Quick Note Find Headline
+
+Another pain point i&rsquo;ve been constantly facing is quickly taking a note and
+storing it in the appropriate location without losing focus on what i&rsquo;m
+currently working on. This is common when on calls or meetings and you need to
+make a note for another task item you&rsquo;re working.
+
+So with that, I added a new function tied to the quick note capture-template
+key, which will prompt for a headline from any of your task files that exist in
+&ldquo;`~/.org/gtd/`&rdquo;.
+
+
+<a id="org640c5b7"></a>
 
 # Requirements
 
@@ -86,7 +101,7 @@ minimum so as much of this is close to regular DOOM EMACS.
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="org4ff8841"></a>
+<a id="org63f0ff8"></a>
 
 # Initial-Settings
 
@@ -157,26 +172,24 @@ Now I add my default folders and files that I want emacs/org-mode to use:
 
 Next we configure popup-rules and default fonts.
 
-    (setq doom-theme 'doom-solarized-dark)
+    (setq doom-theme 'doom-dracula)
     
     (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
       (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
       (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
       (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-      (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
+      (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+    ;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
     
     (when (equal system-type 'gnu/linux)
       (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
-            doom-big-font (font-spec :family "JetBrains Mono" :size 22)
-            doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 18)
-            doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)))
+            doom-big-font (font-spec :family "JetBrains Mono" :size 22)))
     (when (equal system-type 'windows-nt)
       (setq doom-font (font-spec :family "InputMono" :size 18)
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="org116ee63"></a>
+<a id="org966f635"></a>
 
 # Org-Mode
 
@@ -201,9 +214,10 @@ Here we add any requirements before org-mode starts to load
                       org-list-allow-alphabetical nil))
     
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
+    (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 
-<a id="org09ad01e"></a>
+<a id="org5e27b75"></a>
 
 ## Looks and Feels
 
@@ -218,11 +232,11 @@ available are:
                       org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
     
     (when (require 'org-superstar nil 'noerror)
-      (setq org-superstar-headline-bullets-list '("●" "○")
+      (setq org-superstar-headline-bullets-list '("•")
             org-superstar-item-bullet-alist nil))
 
 
-<a id="org74030cb"></a>
+<a id="orgd7f1510"></a>
 
 ## Loading agenda settings
 
@@ -242,30 +256,29 @@ available are:
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 
 
-<a id="orgd957bd3"></a>
+<a id="org2b9205f"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="org154622f"></a>
+<a id="orgf586a85"></a>
 
 ## Capture Templates
 
 Here we setup the capture templates we want for `org-capture`. I use a file template that&rsquo;s pre-filled with my monthly scheduled transactions. (TODO: Add default file-template for new projects.)
 
     (after! org (setq org-capture-templates
-          '(("h" "Headline templates")
-            ("l" "Ledger")
+          '(("l" "Ledger")
             ("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
              "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
             ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
-             "* %^{title}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-            ("hn" "Note to headline" plain (function nm/org-end-of-headline)
-             "<%<%Y-%m-%d %b %H:%M>> - %?" :empty-lines-after 1 :unnarrow t)
-            ("hf" "Find headline" plain (function nm/org-capture-weeklies)
-             "%?" :empty-lines-before 1 :empty-lines-after 1)
+             "* %(read-string \"Title: \") \n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
+            ("k" "Quick note w/killring" plain (function nm/org-capture-weeklies)
+             "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
+            ("q" "Quick note" plain (function nm/org-capture-weeklies)
+             "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%?" :empty-lines-before 1 :empty-lines-after 1)
             ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
              (file "~/.doom.d/templates/ledger-scheduled.org"))
             ("la" "Add Transaction" plain (file "~/.org/gtd/finances.ledger")
@@ -278,7 +291,7 @@ Example ledger template file: = `/.doom.d/templates/ledger-scheduled.org`
         Expenses:Insurance                         dollar amount
 
 
-<a id="org57768e8"></a>
+<a id="org92bb448"></a>
 
 ## Export Settings
 
@@ -313,7 +326,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgd9315d1"></a>
+<a id="org39ebeeb"></a>
 
 ## Keywords
 
@@ -388,7 +401,7 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="org2d5f4ee"></a>
+<a id="org7a951a4"></a>
 
 ## Logging and Drawers
 
@@ -401,14 +414,14 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="orgeaa3f84"></a>
+<a id="org48812a6"></a>
 
 ## Properties
 
     (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 
 
-<a id="org0876894"></a>
+<a id="orgd5ea80d"></a>
 
 ## Publishing
 
@@ -451,7 +464,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
 
 
-<a id="org3f0ed8c"></a>
+<a id="org9f63604"></a>
 
 ## Default Tags
 
@@ -472,12 +485,12 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                       ("SOMEDAY"))))
 
 
-<a id="org6c77a80"></a>
+<a id="orgee7aba1"></a>
 
 # Module Settings
 
 
-<a id="org6e75954"></a>
+<a id="orgd368801"></a>
 
 ## company mode
 
@@ -486,7 +499,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
       (setq company-idle-delay 0.25))
 
 
-<a id="org624ff13"></a>
+<a id="org19a4ce2"></a>
 
 ## DEFT
 
@@ -556,7 +569,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org0d9b297"></a>
+<a id="orgdd4230a"></a>
 
 ## Elfeed
 
@@ -575,7 +588,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orgfbc17b4"></a>
+<a id="org39eb901"></a>
 
 ## Graphs and Chart Modules
 
@@ -605,7 +618,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org10efa6a"></a>
+<a id="org878f2a4"></a>
 
 ## Journal
 
@@ -615,7 +628,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="org61487e5"></a>
+<a id="orgba0e98c"></a>
 
 ## Org-Rifle
 
@@ -714,7 +727,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org1301074"></a>
+<a id="orgad5b106"></a>
 
 ## org-ql
 
@@ -753,14 +766,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="orgf477f50"></a>
+<a id="org95fa61c"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="orga5df452"></a>
+<a id="orgf860bb5"></a>
 
 ## Reveal
 
@@ -769,7 +782,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="org802aa5c"></a>
+<a id="orga199fa8"></a>
 
 ## ROAM
 
@@ -778,6 +791,13 @@ These are my default ROAM settings
     ;; (setq org-roam-tag-sources '(prop last-directory))
     ;; (setq org-roam-db-location "~/.org/roam.db")
     ;; (setq org-roam-directory "~/.org/")
+    
+    ;; (use-package company-org-roam
+    ;;   :ensure t
+    ;;   ;; You may want to pin in case the version from stable.melpa.org is not working
+    ;;   ; :pin melpa
+    ;;   :config
+    ;;   (push 'company-org-roam company-backends))
     
     ;; (setq org-roam-dailies-capture-templates
     ;;    '(("d" "daily" plain (function org-roam-capture--get-point) ""
@@ -808,7 +828,7 @@ These are my default ROAM settings
     ;;            "%?")))
 
 
-<a id="orgca0c018"></a>
+<a id="org464bc9b"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -841,14 +861,14 @@ These are my default ROAM settings
     ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org566f473"></a>
+<a id="org655e9da"></a>
 
 ## ROAM Server
 
     ;; (use-package org-roam-server
     ;;   :ensure t
     ;;   :config
-    ;;   (setq org-roam-server-host "192.168.1.82"
+    ;;   (setq org-roam-server-host "127.0.0.1"
     ;;         org-roam-server-port 8070
     ;;         org-roam-server-export-inline-images t
     ;;         org-roam-server-authenticate nil
@@ -859,7 +879,7 @@ These are my default ROAM settings
     ;;         org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org0ad9ea8"></a>
+<a id="org46989f0"></a>
 
 ## Super Agenda Settings
 
@@ -876,8 +896,14 @@ These are my default ROAM settings
                             ((org-agenda-span '1)
                              (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                              (org-agenda-start-day (org-today))))
-                    (tags-todo "/NEXT|PROJ"
+                    (tags-todo "/PROJ"
                                ((org-agenda-overriding-header "Projects")
+                                (org-agenda-skip-function 'bh/skip-non-projects)
+                                (org-tags-match-list-sublevels 'indented)
+                                (org-agenda-sorting-strategy
+                                 '(category-keep))))
+                    (tags-todo "/NEXT"
+                               ((org-agenda-overriding-header "Project Next Tasks")
                                 (org-agenda-skip-function 'bh/skip-non-projects)
                                 (org-tags-match-list-sublevels 'indented)
                                 (org-agenda-sorting-strategy
@@ -923,24 +949,30 @@ These are my default ROAM settings
                                 (org-agenda-skip-function 'nm/skip-scheduled)
                                 (org-tags-match-list-sublevels nil)
                                 (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
+                  ("m" "Master List"
+                   ((todo ""
+                          ((org-super-agenda-mode t)
+                           (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                           (org-super-agenda-groups
+                            '((:auto-parent t))))))))))
 
 
-<a id="orgbafec9f"></a>
+<a id="orgfcfe052"></a>
 
 ## Visual Fill Column
 
     (setq visual-fill-column 120)
 
 
-<a id="org6fca55a"></a>
+<a id="org1d0257b"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="org4a0dc35"></a>
+<a id="org2437ca6"></a>
 
 ## Time Stamps
 
@@ -957,7 +989,7 @@ These are my default ROAM settings
           :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
 
 
-<a id="orgc21e43b"></a>
+<a id="orgc339d6c"></a>
 
 ## Prompt for headline when creating ID links
 
@@ -978,7 +1010,7 @@ These are my default ROAM settings
     (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
 
 
-<a id="orgf2e2592"></a>
+<a id="org0449a86"></a>
 
 ## Capture Template File Picker
 
@@ -988,7 +1020,7 @@ These are my default ROAM settings
         (expand-file-name (format "%s" file))))
 
 
-<a id="org0e4be72"></a>
+<a id="org913823a"></a>
 
 ## Clarify Tasks
 
@@ -1011,167 +1043,12 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
     
     ;;;;;;;;;;;;--------[ Clarify Task Properties ]----------;;;;;;;;;;;;;
     
-    (add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
-    
-    (defun nm/statistics-update-task ()
-      "Update task state when statistics checker runs"
-      (when (and (bh/is-task-p) (nm/checkbox-active-exist-p)) (org-todo "NEXT"))
-      (when (and (bh/is-task-p) (not (nm/checkbox-active-exist-p)) (nm/checkbox-done-exist-p)) (org-todo "DONE")))
-    
-    (defun nm/update-task-tags ()
-      "Update all child tasks in buffer that are missing a TAG value."
-      (interactive)
-      (org-show-all)
-      (while (not (eobp))
-        (progn
-          (outline-next-heading)
-          (org-narrow-to-subtree)
-          (unless (eobp)
-            (if (and (oh/is-task-p) (null (org-get-tags)))
-                (counsel-org-tag)))
-          (widen))))
-    
-    (setq org-tasks-properties-metadata (list "SOURCE"))
-    
-    (defun nm/update-task-conditions ()
-      "Update task states depending on their conditions."
-      (interactive)
-      (org-map-entries (lambda ()
-                         (when (nm/task-has-next-condition) (org-todo "NEXT"))
-                         (when (nm/task-has-todo-condition) (org-todo "TODO"))
-                         (when (nm/task-has-wait-condition) (org-todo "WAIT"))
-                         (when (bh/is-project-p) (org-todo "PROJ"))) t))
-    
-    (defun nm/task-has-next-condition ()
-      "Checks task to see if it meets NEXT state critera and returns t."
-      (interactive)
-      (save-excursion
-        (and (bh/is-task-p)
-             (or (nm/checkbox-active-exist-p) (nm/is-scheduled-p) (nm/exist-context-tag-p))
-             (and (not (member "WAIT" (org-get-tags))) (not (equal (org-get-todo-state) "DONE"))))))
-    
-    (defun nm/task-has-todo-condition ()
-      "Checks to see if task conditions meet TODO crtieria, and returns t if so."
-      (interactive)
-      (save-excursion
-        (and (bh/is-task-p)
-             (and (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)))
-             (and (not (member "WAIT" (org-get-tags))) (not (equal (org-get-todo-state) "DONE"))))))
-    
-    (defun nm/task-has-done-condition ()
-      "Checks if task is considered DONE, and returns t."
-      (interactive)
-      (save-excursion
-        (and (bh/is-task-p)
-             (and (not (nm/checkbox-active-exist-p)) (not (nm/is-scheduled-p)) (not (nm/exist-context-tag-p)))
-             (nm/checkbox-done-exist-p))))
-    
-    (defun nm/task-has-wait-condition ()
-      "Checks if task has conditions for WAIT state, retunrs t."
-      (interactive)
-      (and (bh/is-task-p)
-           (member "WAIT" (org-get-tags))
-           (not (equal (org-get-todo-state) "DONE"))
-           (not (member "SOMEDAY" (org-get-tags)))))
-    
-    (defun nm/checkbox-active-exist-p ()
-      "Checks if a checkbox that's not marked DONE exist in the tree."
-      (interactive)
-      (save-excursion
-        (org-back-to-heading)
-        (let ((end (save-excursion (org-end-of-subtree t))))
-          (search-forward-regexp "^[-+] \\[\\W].+\\|^[1-9].\\W\\[\\W]" end t))))
-    
-    (defun nm/checkbox-done-exist-p ()
-      "Checks if a checkbox that's not marked DONE exist in the tree."
-      (interactive)
-      (save-excursion
-        (org-back-to-heading)
-        (let ((end (save-excursion (org-end-of-subtree t))))
-          (search-forward-regexp "^[-+] \\[X].+\\|^[1-9].\\W\\[X]" end t))))
-    
-    (defun nm/has-subtask-done-p ()
-      "Returns t for any heading that has a subtask is DONE state."
-      (interactive)
-      (org-back-to-heading t)
-      (let ((end (save-excursion (org-end-of-subtree t))))
-        (outline-end-of-heading)
-        (save-excursion
-          (re-search-forward (concat "^\*+ " "\\(DONE\\|KILL\\)") nil end))))
-    
-    (defun nm/has-subtask-active-p ()
-      "Returns t for any heading that has subtasks."
-      (save-restriction
-        (widen)
-        (org-back-to-heading t)
-        (let ((end (save-excursion (org-end-of-subtree t))))
-          (outline-end-of-heading)
-          (save-excursion
-            (re-search-forward (concat "^\*+ " "\\(NEXT\\|WAIT\\|TODO\\)") end t)))))
-    
-    (defun nm/exist-tag-p (arg)
-      "If headline has ARG tag keyword assigned, return t."
-      (interactive)
-      (let ((end (save-excursion (end-of-line))))
-        (save-excursion
-          (member arg (org-get-tags)))))
-    
-    (defconst nm/context-tags ".+\s:@\\w.+:\\|.+:@\\w.+:")
-    
-    (defun nm/exist-context-tag-p (&optional arg)
-      "If headline has context tag keyword assigned, return t."
-      (interactive)
-      (goto-char (org-entry-beginning-position))
-      (let ((end (save-excursion (line-end-position))))
-        (re-search-forward nm/context-tags end t)))
-    
-    (defun nm/is-scheduled-p ()
-      "Checks task for SCHEDULE and if found, return t."
-      (save-excursion
-        (org-back-to-heading)
-        (let ((end (save-excursion (org-end-of-subtree t))))
-          (re-search-forward org-scheduled-regexp end t))))
-    
-    (defun nm/skip-project-tasks ()
-      "Show non-project tasks.
-    Skip project and sub-project tasks, habits, and project related tasks."
-      (save-restriction
-        (widen)
-        (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p) subtree-end)
-           ((oh/is-scheduled-p) subtree-end)
-           ((org-is-habit-p) subtree-end)
-           ((bh/is-project-subtree-p) subtree-end)
-           (t nil)))))
-    
-    (defun nm/skip-projects-and-habits-and-single-tasks ()
-      "Skip trees that are projects, tasks that are habits, single non-project tasks"
-      (save-restriction
-        (widen)
-        (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-          (cond
-           ((org-is-habit-p) next-headline)
-           ((nm/is-scheduled-p) next-headline)
-           ((bh/is-project-p) next-headline)
-           ((and (bh/is-task-p) (not (bh/is-project-subtree-p))) next-headline)
-           (t nil)))))
-    
-    (defun nm/skip-scheduled ()
-      "Skip headlines that are scheduled."
-      (save-restriction
-        (widen)
-        (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-          (cond
-           ((nm/is-scheduled-p) next-headline)
-           (t nil)))))
-    
-    (add-hook 'before-save-hook #'nm/update-task-conditions)
-    
     (defun nm/org-clarify-metadata ()
       "Runs the clarify-task-metadata function with ARG being a list of property values." ; TODO work on this function and add some meaning to it.
       (interactive)
       (nm/org-clarify-task-properties org-tasks-properties-metadata))
+    
+    (load! "org-task-automation.el")
     
     (map! :after org
           :map org-mode-map
@@ -1180,44 +1057,20 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="org741914c"></a>
+<a id="orgf98d60b"></a>
 
 ## Capture headline finder
 
-    (defun nm/org-capture-system ()
-      "Capture stuff."
-      (interactive)
-      (save-restriction
-        (let ((org-capture-templates
-               '(("h" "headline capture" entry (function counsel-outline)
-                  "* %?" :empty-lines-before 1 :empty-lines-after 1)
-                 ("p" "plain capture" plain (function end-of-buffer)
-                  "<%<%Y-%m-%d %H:%M>> %?" :empty-lines-before 1 :empty-lines-after 1))))
-          (find-file-other-window (read-file-name "file: " "~/.org/"))
-          (if (counsel-outline-candidates)
-              (org-capture nil "h"))
-          (org-capture nil "p"))))
-    
-    (defun nm/org-capture-to-file ()
-      "Capture stuff."
-      (interactive)
-      (save-restriction
-        (let ((org-capture-templates
-               '(("h" "headline capture" entry (function counsel-outline)
-                  "* %?" :empty-lines-before 1 :empty-lines-after 1)
-                 ("p" "plain capture" plain (function end-of-buffer)
-                  "<%<%Y-%m-%d %H:%M>> %?" :empty-lines-before 1 :empty-lines-after 1))))
-          (org-capture nil "h"))))
-    
-    (bind-key "<f7>" #'nm/org-capture-to-file)
     
     (defun nm/org-capture-weeklies ()
-      "Find weeklies file and call counsel-outline."
-      (interactive)
-      (find-file (read-file-name "file: " "~/.org/"))
-      (progn
-        (counsel-outline)
-        (nm/org-end-of-headline)))
+      "Initiate the capture system and find headline to capture under."
+      (let ((dest (org-refile-get-location)))
+        (let ((file (cadr dest))
+              (pos (nth 3 dest))
+              (title (nth 2 dest)))
+          (find-file file)
+          (goto-char pos)
+          (nm/org-end-of-headline))))
     
     (defun nm/org-end-of-headline()
       "Move to end of current headline"
@@ -1226,7 +1079,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       (forward-char -1))
 
 
-<a id="orgf4d9aac"></a>
+<a id="org37baaf0"></a>
 
 ## Search for headline across org-directory and return to indirect buffer
 
@@ -1253,20 +1106,22 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
 
 
-<a id="orgfd00200"></a>
+<a id="org2a8aca2"></a>
 
 ## Change Font
 
     (defun nm/emacs-change-font ()
       "Change font based on available font list."
       (interactive)
-      (let ((font (ivy-completing-read "font: " (font-family-list))))
+      (let ((font (ivy-completing-read "font: " nm/font-family-list)))
         (setq doom-font (font-spec :family font :size 18)
               doom-big-font (font-spec :family font :size 22)))
       (doom/reload-font))
+    
+    (defvar nm/font-family-list '("Input Mono" "IBM Plex Mono" "Victor Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
 
 
-<a id="org451146b"></a>
+<a id="org9cd76d1"></a>
 
 # End of file loading
 
