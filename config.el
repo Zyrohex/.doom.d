@@ -55,7 +55,7 @@
 (setq org-directory "~/.org/")
 (setq projectile-project-search-path "~/projects/")
 
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-solarized-dark)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
@@ -581,15 +581,21 @@
                             (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "/NEXT"
+                (tags-todo "-@delegated/NEXT"
                            ((org-agenda-overriding-header "Project Next Tasks")
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-SOMEDAY-REFILE-CANCELLED-/NEXT"
+                (tags-todo "-SOMEDAY-@delegated/NEXT"
                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
                             (org-agenda-skip-function 'nm/skip-project-tasks)
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-todo-ignore-deadlines t)
+                            (org-agenda-todo-ignore-with-date t)
+                            (org-agenda-sorting-strategy '(category-keep))))
+                (tags-todo "@delegated/!"
+                           ((org-agenda-overriding-header "Delegated")
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-todo-ignore-deadlines t)
                             (org-agenda-todo-ignore-with-date t)
