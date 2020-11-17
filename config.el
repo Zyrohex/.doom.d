@@ -73,7 +73,7 @@
 
 (require 'org-habit)
 (require 'org-id)
-(after! org (setq org-archive-location "~/.org/gtd/archives.org::datetree/"
+(after! org (setq org-archive-location "~/.org/gtd/archives.org::* %s"
                   org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
                   org-log-state-notes-insert-after-drawers nil
@@ -123,9 +123,9 @@
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
          "* %(read-string \"Title: \") \n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-        ("k" "Quick note w/killring" plain (function nm/org-capture-weeklies)
+        ("x" "Quick note w/killring" plain (function nm/org-capture-weeklies)
          "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
-        ("q" "Quick note" plain (function nm/org-capture-weeklies)
+        ("z" "Quick note" plain (function nm/org-capture-weeklies)
          "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%?" :empty-lines-before 1 :empty-lines-after 1)
         ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -646,6 +646,49 @@
 
 (load! "org-helpers.el")
 
+(defadvice org-archive-subtree (around fix-hierarchy activate)
+  (let* ((fix-archive-p (and (not current-prefix-arg)
+                             (not (use-region-p))))
+         (location (org-archive--compute-location org-archive-location))
+         (afile (car location))
+         (offset (if (= 0 (length (cdr location)))
+                     1
+                   (1+ (string-match "[^*]" (cdr location)))))
+         (buffer (or (find-buffer-visiting afile) (find-file-noselect afile))))
+    ad-do-it
+    (when fix-archive-p
+      (with-current-buffer buffer
+        (goto-char (point-max))
+        (while (> (org-current-level) offset) (org-up-heading-safe))
+        (let* ((olpath (org-entry-get (point) "ARCHIVE_OLPATH"))
+               (path (and olpath (split-string olpath "/")))
+               (level offset)
+               tree-text)
+          (when olpath
+            (org-mark-subtree)
+            (setq tree-text (buffer-substring (region-beginning) (region-end)))
+            (let (this-command) (org-cut-subtree))
+            (goto-char (point-min))
+            (save-restriction
+              (widen)
+              (-each path
+                (lambda (heading)
+                  (if (re-search-forward
+                       (rx-to-string
+                        `(: bol (repeat ,level "*") (1+ " ") ,heading)) nil t)
+                      (org-narrow-to-subtree)
+                    (goto-char (point-max))
+                    (unless (looking-at "^")
+                      (insert "\n"))
+                    (insert (make-string level ?*)
+                            " "
+                            heading
+                            "\n"))
+                  (cl-incf level)))
+              (widen)
+              (org-end-of-subtree t t)
+              (org-paste-subtree level tree-text))))))))
+
 (defun nm/insert-time-stamp-at-point ()
   "Insert active timestamp at POINT."
   (interactive)
@@ -755,7 +798,7 @@
           doom-big-font (font-spec :family font :size 22)))
   (doom/reload-font))
 
-(defvar nm/font-family-list '("Input Mono" "IBM Plex Mono" "Victor Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
+(defvar nm/font-family-list '("Input Mono" "Fantasque Sans Mono" "IBM Plex Mono" "Victor Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
 
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
