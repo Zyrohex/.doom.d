@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: notes+actions
+# key: notes+actions
+# --
+${1:note}
+- [ ] ${2:Task}
