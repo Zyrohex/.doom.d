@@ -103,7 +103,8 @@
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid nil
-                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
+                  org-agenda-tags-column 0
+;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
                   org-agenda-block-separator ""
                   org-agenda-skip-scheduled-if-done t
@@ -118,15 +119,18 @@
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 (after! org (setq org-capture-templates
-      '(("l" "Ledger")
-        ("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
+      '(("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
          "* %(read-string \"Title: \") \n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-        ("x" "Quick note w/killring" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
-        ("z" "Quick note" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%(read-string \"title: \")\" on <%<%Y-%m-%d %a %H:%M>>\n%?" :empty-lines-before 1 :empty-lines-after 1)
+        ("n" "New Note" entry (file "~/.org/gtd/notes.org")
+         "* %^{title} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+        ("z" "Logs")
+        ("zx" "Log w/killring" plain (function nm/org-capture-weeklies)
+         "#+caption: recap of \"%(read-string \"title: \")\" on [%<%Y-%m-%d %a %H:%M>]\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
+        ("zz" "Quick log" plain (function nm/org-capture-weeklies)
+         "#+caption: recap of \"%(read-string \"title: \")\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1)
+        ("l" "Ledger")
         ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
         ("la" "Add Transaction" plain (file "~/.org/gtd/finances.ledger")
@@ -575,14 +579,8 @@
                         ((org-agenda-span '1)
                          (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                          (org-agenda-start-day (org-today))))
-                (tags-todo "/PROJ"
-                           ((org-agenda-overriding-header "Projects")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-tags-match-list-sublevels 'indented)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-@delegated/NEXT"
-                           ((org-agenda-overriding-header "Project Next Tasks")
+                (tags-todo "-@delegated/NEXT|WAIT"
+                           ((org-agenda-overriding-header "Project Tasks")
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
@@ -634,13 +632,7 @@
                             (org-agenda-skip-function 'nm/skip-scheduled)
                             (org-tags-match-list-sublevels nil)
                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
-              ("m" "Master List"
-               ((todo ""
-                      ((org-super-agenda-mode t)
-                       (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
-                       (org-super-agenda-groups
-                        '((:auto-parent t))))))))))
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 (setq visual-fill-column 120)
 
@@ -688,6 +680,14 @@
               (widen)
               (org-end-of-subtree t t)
               (org-paste-subtree level tree-text))))))))
+
+(defface org-logbook-note
+  '((t (:foreground "LightSkyBlue")))
+  "Face for printr function")
+
+(font-lock-add-keywords
+ 'org-mode
+ '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
 
 (defun nm/insert-time-stamp-at-point ()
   "Insert active timestamp at POINT."
@@ -798,7 +798,7 @@
           doom-big-font (font-spec :family font :size 22)))
   (doom/reload-font))
 
-(defvar nm/font-family-list '("Input Mono" "Fantasque Sans Mono" "IBM Plex Mono" "Victor Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
+(defvar nm/font-family-list '("Input Mono" "Anonymous Pro" "Cousine" "Bront" "Hack" "Fira Code" "IBM Plex Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
 
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)
