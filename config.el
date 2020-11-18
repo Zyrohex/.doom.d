@@ -585,7 +585,7 @@
                             (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
-                (tags-todo "-SOMEDAY-@delegated/NEXT"
+                (tags-todo "-SOMEDAY-@delegated/NEXT|WAIT"
                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
                             (org-agenda-skip-function 'nm/skip-project-tasks)
                             (org-agenda-todo-ignore-scheduled t)
@@ -598,15 +598,12 @@
                             (org-agenda-todo-ignore-deadlines t)
                             (org-agenda-todo-ignore-with-date t)
                             (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "/WAIT"
-                           ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'nm/skip-scheduled)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))))
+                (tags-todo "-@delegated/PROJ"
+                           ((org-agenda-overriding-header "Projects")
+                            (org-agenda-skip-function 'bh/skip-non-projects)
+                            (org-tags-match-list-sublevels 'indented)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))))
               ("r" "Review"
                ((tags-todo "-CANCELLED/!"
                            ((org-agenda-overriding-header "Stuck Projects")
