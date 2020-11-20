@@ -65,8 +65,8 @@
 ;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 22)))
+  (setq doom-font (font-spec :family "Roboto Mono" :size 18 :weight 'light)
+        doom-big-font (font-spec :family "Roboto Mono" :size 22 :weight 'light)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
@@ -122,7 +122,7 @@
       '(("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
          "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
         ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
-         "* %(read-string \"Title: \") \n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
+         "* %^{title}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
         ("n" "New Note" entry (file "~/.org/gtd/notes.org")
          "* %^{title} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
         ("t" "Tasks")
@@ -203,12 +203,12 @@
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
-                    ("notes-to-orgfiles"
-                     :base-directory "~/.org/notes/"
-                     :publishing-directory "~/notes/"
+                    ("org files to MD"
+                     :base-directory "~/.org/"
+                     :publishing-directory "~/org-md/"
                      :base-extension "org"
                      :recursive t
-                     :publishing-function org-org-publish-to-org)
+                     :publishing-function org-md-publish-to-md)
                     ("notes"
                      :base-directory "~/.org/notes/"
                      :publishing-directory "~/nmartin84.github.io"
@@ -230,7 +230,7 @@
                      :html-link-up "../../index.html"
                      :auto-preamble t
                      :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes" "notes-to-orgfiles")))))
+                    ("myprojectweb" :components("attachments" "notes" "org files to MD")))))
 
 (after! org (setq org-tags-column 0
                   org-tag-alist '((:startgrouptag)
@@ -808,9 +808,10 @@
 (defun nm/emacs-change-font ()
   "Change font based on available font list."
   (interactive)
-  (let ((font (ivy-completing-read "font: " nm/font-family-list)))
-    (setq doom-font (font-spec :family font :size 18)
-          doom-big-font (font-spec :family font :size 22)))
+  (let ((font (ivy-completing-read "font: " nm/font-family-list))
+        (weight (ivy-completing-read "weight: " '(normal light medium))))
+    (setq doom-font (font-spec :family font :size 18 :weight (intern weight))
+          doom-big-font (font-spec :family font :size 22 :weight (intern weight))))
   (doom/reload-font))
 
 (defvar nm/font-family-list '("Input Mono" "Anonymous Pro" "Cousine" "Bront" "Hack" "Fira Code" "IBM Plex Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))

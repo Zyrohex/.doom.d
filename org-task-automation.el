@@ -1,7 +1,7 @@
 ;;; org-task-automation.el -*- lexical-binding: t; -*-
 
 (add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
-;(add-hook 'before-save-hook #'nm/update-task-conditions)
+(add-hook 'before-save-hook #'nm/update-task-conditions)
 
 (defvar org-tasks-properties-metadata "SOURCE" "List of property values used to clarify task items.")
 
@@ -23,9 +23,9 @@
   "Update task states depending on their conditions."
   (interactive)
   (org-map-entries (lambda ()
-                     (when (nm/task-has-next-condition) (org-todo "NEXT"))
-                     (when (nm/task-has-todo-condition) (org-todo "TODO"))
-                     (when (nm/task-has-wait-condition) (org-todo "WAIT"))
+;                     (when (nm/task-has-next-condition) (org-todo "NEXT"))
+;                     (when (nm/task-has-todo-condition) (org-todo "TODO"))
+;                     (when (nm/task-has-wait-condition) (org-todo "WAIT"))
                      (when (nm/task-is-active-proj) (org-todo "PROJ"))) t))
 
 (defun nm/task-is-active-proj ()
