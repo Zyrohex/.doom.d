@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: HTML_WIDTH
-# key: HTML WIDTH
-# --
-#+HTML_HEAD: <style type="text/css">body{ max-width:80%; }</style>

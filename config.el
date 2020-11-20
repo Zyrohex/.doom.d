@@ -125,6 +125,9 @@
          "* %(read-string \"Title: \") \n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
         ("n" "New Note" entry (file "~/.org/gtd/notes.org")
          "* %^{title} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+        ("t" "Tasks")
+        ("tn" "New Task" entry (file+olp "~/.org/gtd/personal.org" "dailies")
+         "* TODO %^{title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
         ("z" "Logs")
         ("zx" "Log w/killring" plain (function nm/org-capture-weeklies)
          "#+caption: recap of \"%(read-string \"title: \")\" on [%<%Y-%m-%d %a %H:%M>]\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
@@ -566,6 +569,11 @@
 ;;         org-roam-server-network-label-truncate-length 60
 ;;         org-roam-server-network-label-wrap-length 20))
 
+(setq org-super-agenda-mode t
+      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-tags-todo-honor-ignore-options t
+      org-agenda-fontify-priorities t)
+
 (setq org-agenda-custom-commands
       (quote (("N" "Notes" tags "NOTE"
                ((org-agenda-overriding-header "Notes")
@@ -579,18 +587,21 @@
                         ((org-agenda-span '1)
                          (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
                          (org-agenda-start-day (org-today))))
-                (tags-todo "-@delegated/NEXT|WAIT"
+                (tags-todo "-@delegated/-PROJ-TODO-WAIT-WATCH"
                            ((org-agenda-overriding-header "Project Tasks")
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY-@delegated/NEXT|WAIT"
+                             '(category-up))))
+                (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
                             (org-agenda-skip-function 'nm/skip-project-tasks)
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-todo-ignore-deadlines t)
                             (org-agenda-todo-ignore-with-date t)
+                            (org-agenda-sorting-strategy '(category-up))))
+                (tags-todo "-SOMEDAY-@delegated/WATCH"
+                           ((org-agenda-overriding-header "Keep eye on")
                             (org-agenda-sorting-strategy '(category-keep))))
                 (tags-todo "@delegated/!"
                            ((org-agenda-overriding-header "Delegated")
@@ -598,6 +609,13 @@
                             (org-agenda-todo-ignore-deadlines t)
                             (org-agenda-todo-ignore-with-date t)
                             (org-agenda-sorting-strategy '(category-keep))))
+                (tags-todo "-@delegated/WAIT"
+                           ((org-agenda-overriding-header "On Hold")
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-SOMEDAY/TODO"
+                           ((org-tags-match-list-sublevels nil)
+                            (org-agenda-overriding-header "Inbox Bucket")))
                 (tags-todo "-@delegated/PROJ"
                            ((org-agenda-overriding-header "Projects")
                             (org-agenda-skip-function 'bh/skip-non-projects)

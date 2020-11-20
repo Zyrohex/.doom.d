@@ -2,4 +2,5 @@
 .idea
 *.log
 tmp/
-templates/ledger-scheduled.org
+templates/
+snippets/

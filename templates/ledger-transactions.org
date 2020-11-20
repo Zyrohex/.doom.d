@@ -1,3 +1,0 @@
-%(format-time-string "%Y/%m/%d") * %^{transaction name}
-    Income:%^{From Account|Checking|Card|Cash}                            -$^{dollar}
-    Expenses:%^{Category}                          %\\3

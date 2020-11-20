@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: timestamp
-# key: timestamp
-# --
-`(format-time-string "<%Y-%m-%d %a %H:%M>")` $0

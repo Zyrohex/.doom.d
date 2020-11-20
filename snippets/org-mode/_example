@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: _example
-# key: _example
-# --
-#+BEGIN_EXAMPLE
-$1
-#+END_EXAMPLE

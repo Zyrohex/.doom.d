@@ -1,4 +1,0 @@
-* TODO %(read-string "Task Name: ")
-:PROPERTIES:
-:CREATED: %U
-:END:

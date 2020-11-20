@@ -1,8 +1,0 @@
-* %(read-string "Entry name: ") %?
-:PROPERTIES:
-:CUSTOMER: %^{CUSTOMER}p
-:TAG:      %^{TAG}p
-:CREATED:  %(format "[%s]" (format-time-string "%Y-%m-%d"))
-:END:
-:LOGBOOK:
-:END:

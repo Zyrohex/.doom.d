@@ -1,7 +1,7 @@
 ;;; org-task-automation.el -*- lexical-binding: t; -*-
 
 (add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
-(add-hook 'before-save-hook #'nm/update-task-conditions)
+;(add-hook 'before-save-hook #'nm/update-task-conditions)
 
 (defvar org-tasks-properties-metadata "SOURCE" "List of property values used to clarify task items.")
 

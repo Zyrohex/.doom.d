@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: pythonblock
-# key: pythonblock
-# --
-#+begin_src python :exports code
-$1
-#+end_src

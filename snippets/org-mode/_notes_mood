@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: _notes_mood
-# key: _notes_mood                                                          
-# --
-- My current mood is _${1:mood}_ on [`(format-time-string "%Y-%m-%d %H:%M")`] \\
-  ${2:details}

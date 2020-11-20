@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: elisp_defun
-# key: elisp_defun
-# --
-(defun $1 ($2)
- "$3"
- ($4))

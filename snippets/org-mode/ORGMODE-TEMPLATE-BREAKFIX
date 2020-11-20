@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: ORGMODE-TEMPLATE-BREAKFIX
-# key: ORGMODE TEMPLATE BREAKFIX
-# --
-New issue reported for a $1. $2.
-- Case Number: $3
-- Service Tag: $4
-- Case Owner: $5

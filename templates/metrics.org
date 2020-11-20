@@ -1,1 +1,0 @@
-%(format "%s" (format-time-string "%Y-%m-%d")) %^{activity} %^{value}
