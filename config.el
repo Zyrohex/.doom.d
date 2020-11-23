@@ -61,18 +61,20 @@
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
 ;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Roboto Mono" :size 18 :weight 'light)
-        doom-big-font (font-spec :family "Roboto Mono" :size 22 :weight 'light)))
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 18 :weight 'light)
+        doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
 
 (require 'org-habit)
 (require 'org-id)
+(require 'org-checklist)
 (after! org (setq org-archive-location "~/.org/gtd/archives.org::* %s"
                   org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
@@ -100,6 +102,9 @@
   (setq org-superstar-headline-bullets-list '("•")
         org-superstar-item-bullet-alist nil))
 
+(when (require 'org-fancy-priorities nil 'noerror)
+  (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
+
 (after! org (setq org-agenda-diary-file "~/.org/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid nil
@@ -118,21 +123,30 @@
 
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
+(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/.org/gtd/tasks.org" "Tasks") "- [ ] %?")))
+
+(push '("d" "Task by Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
+
+;; It's important that I capture what I have in my mind at this time I create this new entry...
+;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
+(push '("i" "Capture to inbox" entry (file+olp "~/.org/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+
 (after! org (setq org-capture-templates
-      '(("!" "Quick Capture" entry (file+headline "~/.org/gtd/inbox.org" "Inbox")
-         "* TODO %(read-string \"Task: \")\n:PROPERTIES:\n:CREATED: %U\n:END:")
+      '(("!" "Quick Capture" checkitem (file+olp "~/.org/gtd/tasks.org" "Tasks")
+         "- [ ] %?")
         ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
-         "* %^{title}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-        ("n" "New Note" entry (file "~/.org/gtd/notes.org")
+         "* %^{journal}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
+        ("n" "New Note" entry (file+olp "~/.org/gtd/inbox.org" "Notes")
          "* %^{title} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
-        ("t" "Tasks")
-        ("tn" "New Task" entry (file+olp "~/.org/gtd/personal.org" "dailies")
-         "* TODO %^{title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
+        ("c" "Quicktask" checkitem (file+olp "~/.org/gtd/tasks.org" "Quick Tasks")
+         "- [ ] %?")
+        ("@" "Task on date" checkitem (function nm/org-capture-to-task-file)
+         "- [ ] %?")
         ("z" "Logs")
-        ("zx" "Log w/killring" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%(read-string \"title: \")\" on [%<%Y-%m-%d %a %H:%M>]\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
-        ("zz" "Quick log" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%(read-string \"title: \")\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1)
+        ("zx" "Log Killring" plain (function nm/org-capture-weeklies)
+         "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
+        ("zz" "Quick Log" plain (function nm/org-capture-weeklies)
+         "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1)
         ("l" "Ledger")
         ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
          (file "~/.doom.d/templates/ledger-scheduled.org"))
@@ -590,7 +604,6 @@
                 (tags-todo "-@delegated/-PROJ-TODO-WAIT-WATCH"
                            ((org-agenda-overriding-header "Project Tasks")
                             (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-tags-match-list-sublevels 'indented)
                             (org-agenda-sorting-strategy
                              '(category-up))))
                 (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
@@ -766,6 +779,30 @@
       :localleader
       :prefix ("j" . "nicks functions")
       :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
+
+(defun nm/org-capture-to-task-file ()
+  "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
+  (let* ((file "~/.org/gtd/tasks.org")
+         (parent-l nil)
+         (child-l nil)
+         (parent "Agenda Items")
+         (date (org-read-date))
+         (heading (format "Tasks for ")))
+    (find-file file)
+    (goto-char 0)
+    ;;; Locate or Create our parent headline
+    (unless (search-forward (format "* %s" parent) nil t)
+      (progn
+        (org-next-visible-heading) (next-line -1) (newline) (insert (format "* %s%s" parent date))))
+    ;;; Capture outline level
+    (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
+    ;;; Next we locate or create our subheading using the date string passed by the user.
+    (let* ((end (save-excursion (org-end-of-subtree))))
+      (unless (search-forward (format "%s TODO %s%s" child-l heading date) end t)
+        (nm/org-end-of-headline)
+        (newline)
+        (beginning-of-line)
+        (insert (format "%s TODO %s%s %s\nSCHEDULED: <%s>" child-l heading date date))))))
 
 (defun nm/org-capture-weeklies ()
   "Initiate the capture system and find headline to capture under."
