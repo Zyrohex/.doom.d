@@ -131,27 +131,11 @@
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
 (push '("i" "Capture to inbox" entry (file+olp "~/.org/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
 
-(after! org (setq org-capture-templates
-      '(("!" "Quick Capture" checkitem (file+olp "~/.org/gtd/tasks.org" "Tasks")
-         "- [ ] %?")
-        ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
-         "* %^{journal}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-        ("n" "New Note" entry (file+olp "~/.org/gtd/inbox.org" "Notes")
-         "* %^{title} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
-        ("c" "Quicktask" checkitem (file+olp "~/.org/gtd/tasks.org" "Quick Tasks")
-         "- [ ] %?")
-        ("@" "Task on date" checkitem (function nm/org-capture-to-task-file)
-         "- [ ] %?")
-        ("z" "Logs")
-        ("zx" "Log Killring" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
-        ("zz" "Quick Log" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1)
-        ("l" "Ledger")
-        ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
-         (file "~/.doom.d/templates/ledger-scheduled.org"))
-        ("la" "Add Transaction" plain (file "~/.org/gtd/finances.ledger")
-         "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
+(push '("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+
+(push '("w" "Working on [Capture link]" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?} - [[%c][%^{description}]]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
+
+(push '("z" "Quick Note on Task" plain (function nm/org-capture-weeklies) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -798,11 +782,11 @@
     (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
     ;;; Next we locate or create our subheading using the date string passed by the user.
     (let* ((end (save-excursion (org-end-of-subtree))))
-      (unless (search-forward (format "%s TODO %s%s" child-l heading date) end t)
+      (unless (search-forward (format "%s NEXT %s%s" child-l heading date) end t)
         (nm/org-end-of-headline)
         (newline)
         (beginning-of-line)
-        (insert (format "%s TODO %s%s %s\nSCHEDULED: <%s>" child-l heading date date))))))
+        (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
 
 (defun nm/org-capture-weeklies ()
   "Initiate the capture system and find headline to capture under."

@@ -236,36 +236,27 @@ kicks in and I log a new task to my INBOX.
 (push '("i" "Capture to inbox" entry (file+olp "~/.org/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
 #+end_src
 
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-capture-templates
-      '(("!" "Quick Capture" checkitem (file+olp "~/.org/gtd/tasks.org" "Tasks")
-         "- [ ] %?")
-        ("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org")
-         "* %^{journal}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?")
-        ("n" "New Note" entry (file+olp "~/.org/gtd/inbox.org" "Notes")
-         "* %^{title} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
-        ("c" "Quicktask" checkitem (file+olp "~/.org/gtd/tasks.org" "Quick Tasks")
-         "- [ ] %?")
-        ("@" "Task on date" checkitem (function nm/org-capture-to-task-file)
-         "- [ ] %?")
-        ("z" "Logs")
-        ("zx" "Log Killring" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%c %?" :empty-lines-before 1 :empty-lines-after 1)
-        ("zz" "Quick Log" plain (function nm/org-capture-weeklies)
-         "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1)
-        ("l" "Ledger")
-        ("ls" "Add scheduled Transactions" plain (file "~/.org/gtd/finances.ledger")
-         (file "~/.doom.d/templates/ledger-scheduled.org"))
-        ("la" "Add Transaction" plain (file "~/.org/gtd/finances.ledger")
-         "%(format-time-string \"%Y/%m/%d\") * %^{transaction}\n Income:%^{From Account|Checking|Card|Cash}  -%^{dollar amount}\n Expenses:%^{category}  %\\3\n" :empty-lines-before 1))))
-#+END_SRC
+Occassionally I do like to take a note in my journal, to make a mental note of
+my day...
+#+begin_src emacs-lisp
+(push '("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+#+end_src
 
-Example ledger template file: = ~/.doom.d/templates/ledger-scheduled.org~
-#+BEGIN_EXAMPLE
-%(format-time-string "%Y/%m")/24 * Transaction name
-    Income:Checking                           -dollar amount
-    Expenses:Insurance                         dollar amount
-#+END_EXAMPLE
+Sometimes i'll just start working on things that I find interseting, and I need
+a method of take notes on what i'm doing so I can keep track of what I discover
+and document those things back into my master notes file.
+#+begin_src emacs-lisp
+(push '("w" "Working on [Capture link]" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?} - [[%c][%^{description}]]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
+#+end_src
+
+With my crazy busy scheduled, I can end up working on multiple things at any
+given time... and I need a way to quickly log a note for another task item i'm
+working... So i've written up a small function that utilizes
+~org-refile-get-location~ to locate the headline and capture under the selected
+headline.
+#+begin_src emacs-lisp
+(push '("z" "Quick Note on Task" plain (function nm/org-capture-weeklies) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+#+end_src
 
 ** Export Settings
 #+BEGIN_SRC emacs-lisp
@@ -991,11 +982,11 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
     (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
     ;;; Next we locate or create our subheading using the date string passed by the user.
     (let* ((end (save-excursion (org-end-of-subtree))))
-      (unless (search-forward (format "%s TODO %s%s" child-l heading date) end t)
+      (unless (search-forward (format "%s NEXT %s%s" child-l heading date) end t)
         (nm/org-end-of-headline)
         (newline)
         (beginning-of-line)
-        (insert (format "%s TODO %s%s %s\nSCHEDULED: <%s>" child-l heading date date))))))
+        (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
 #+end_src
 
 ** Capture headline finder
