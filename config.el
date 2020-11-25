@@ -133,9 +133,9 @@
 
 (push '("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
 
-(push '("w" "Working on [Capture link]" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?} - [[%c][%^{description}]]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
+(push '("w" "Working on" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 
-(push '("z" "Quick Note on Task" plain (function nm/org-capture-weeklies) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("a" "Add note on Task" plain (function nm/org-capture-weeklies) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -314,7 +314,7 @@
 (use-package elfeed-org
   :defer
   :config
-  (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")))
+  (setq rmh-elfeed-org-files (list "~/.org/elfeed.org")))
 (use-package elfeed
   :defer
   :config
@@ -804,10 +804,10 @@
   (outline-next-heading)
   (forward-char -1))
 
-(defun nm/goto-headline-agenda-files ()
+(defun nm/get-headlines-org-files (arg)
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
-  (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$"))
+  (let ((org-agenda-files (find-lisp-find-files arg "\.org$"))
         (org-refile-use-outline-path nil)
         (org-refile-history nil))
     (let ((dest (org-refile-get-location))
@@ -821,10 +821,21 @@
         (goto-char (nth 3 dest))
         (org-tree-to-indirect-buffer)))))
 
+(defun nm/search-headlines-org-directory ()
+  "Search the ORG-DIRECTORY."
+  (interactive)
+  (nm/get-headlines-org-files "~/.org/"))
+
+(defun nm/search-headlines-org-tasks-directory ()
+  "Search the GTD folder."
+  (interactive)
+  (nm/get-headlines-org-files "~/.org/gtd/"))
+
 (map! :after org
       :map org-mode-map
       :leader
-      :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
+      :desc "Outline all to indirect-buffer" "@" #'nm/search-headlines-org-directory
+      :desc "Search TASK outlines and return indirect buffer" "!" #'nm/search-headlines-org-tasks-directory)
 
 (defun nm/emacs-change-font ()
   "Change font based on available font list."
