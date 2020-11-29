@@ -32,18 +32,17 @@
 
 (defun nm/org-capture-to-task-file ()
   "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
-  (let* ((file "~/.org/gtd/tasks.org")
+  (let* ((file "~/orgmode/gtd/tasks.org")
          (parent-l nil)
          (child-l nil)
-         (parent "Agenda Items")
+         (parent "Daily Tasks")
          (date (org-read-date))
          (heading (format "Tasks for ")))
     (find-file file)
     (goto-char 0)
     ;;; Locate or Create our parent headline
     (unless (search-forward (format "* %s" parent) nil t)
-      (progn
-        (org-next-visible-heading) (next-line -1) (newline) (insert (format "* %s%s" parent date))))
+      (progn (goto-char (point-max)) (newline) (insert (format "* %s" parent))))
     ;;; Capture outline level
     (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
     ;;; Next we locate or create our subheading using the date string passed by the user.
@@ -104,7 +103,7 @@
 (defun nm/productive-window ()
   "Setup"
   (interactive)
-  (nm/setup-productive-windows "~/.org/gtd/personal.org" "~/.org/gtd/tasks.org"))
+  (nm/setup-productive-windows "~/orgmode/gtd/personal.org" "~/orgmode/gtd/tasks.org"))
 
 (map! :after org
       :map org-mode-map
@@ -132,12 +131,12 @@
 (defun nm/search-headlines-org-directory ()
   "Search the ORG-DIRECTORY."
   (interactive)
-  (nm/get-headlines-org-files "~/.org/"))
+  (nm/get-headlines-org-files "~/orgmode/"))
 
 (defun nm/search-headlines-org-tasks-directory ()
   "Search the GTD folder."
   (interactive)
-  (nm/get-headlines-org-files "~/.org/gtd/"))
+  (nm/get-headlines-org-files "~/orgmode/gtd/"))
 
 (map! :after org
       :map org-mode-map
@@ -198,8 +197,8 @@
    (setq doom-theme nil)
    (setq doom-font (font-spec :family "Roboto Mono" :size 20))))
 
-(setq diary-file "~/.org/diary.org")
-(setq org-directory "~/.org/")
+(setq diary-file "~/orgmode/diary.org")
+(setq org-directory "~/orgmode/")
 (setq projectile-project-search-path "~/projects/")
 
 (setq doom-theme 'doom-solarized-dark)
@@ -222,7 +221,7 @@
 (require 'org-habit)
 (require 'org-id)
 (require 'org-checklist)
-(after! org (setq org-archive-location "~/.org/gtd/archives.org::* %s"
+(after! org (setq org-archive-location "~/orgmode/gtd/archives.org::* %s"
                   org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
                   org-log-state-notes-insert-after-drawers nil
@@ -252,7 +251,7 @@
 (when (require 'org-fancy-priorities nil 'noerror)
   (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 
-(after! org (setq org-agenda-diary-file "~/.org/diary.org"
+(after! org (setq org-agenda-diary-file "~/orgmode/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid nil
                   org-agenda-tags-column 0
@@ -266,21 +265,21 @@
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
 
-(after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org") (file-expand-wildcards "~/orgmode/gtd/*/*.org"))))
 
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
-(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/.org/gtd/tasks.org" "Tasks") "- [ ] %?")))
+(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/orgmode/gtd/tasks.org" "Tasks") "- [ ] %?")))
 
 (push '("d" "Task by Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 
 ;; It's important that I capture what I have in my mind at this time I create this new entry...
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
-(push '("i" "Capture to inbox" entry (file+olp "~/.org/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+(push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
 
-(push '("j" "Journal Entry" entry (file+olp+datetree "~/.org/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+(push '("j" "Journal Entry" entry (file+olp+datetree "~/orgmode/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
 
-(push '("w" "Working on" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
+(push '("w" "Working on" entry (file+olp "~/orgmode/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 
 (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
@@ -343,19 +342,19 @@
 
 (after! org (setq org-publish-project-alist
                   '(("attachments"
-                     :base-directory "~/.org/"
+                     :base-directory "~/orgmode/"
                      :recursive t
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
                     ("org files to MD"
-                     :base-directory "~/.org/"
+                     :base-directory "~/orgmode/"
                      :publishing-directory "~/org-md/"
                      :base-extension "org"
                      :recursive t
                      :publishing-function org-md-publish-to-md)
                     ("notes"
-                     :base-directory "~/.org/notes/"
+                     :base-directory "~/orgmode/notes/"
                      :publishing-directory "~/nmartin84.github.io"
                      :section-numbers nil
                      :base-extension "org"
@@ -411,7 +410,7 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/.org/"
+  (setq deft-directory "~/orgmode/"
         deft-auto-save-interval 0
         deft-recursive t
         deft-current-sort-method 'title
@@ -461,7 +460,7 @@
 (use-package elfeed-org
   :defer
   :config
-  (setq rmh-elfeed-org-files (list "~/.org/elfeed.org")))
+  (setq rmh-elfeed-org-files (list "~/orgmode/elfeed.org")))
 (use-package elfeed
   :defer
   :config
@@ -495,7 +494,7 @@
   :config
   (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
-(after! org (setq org-journal-dir "~/.org/gtd/journal/"
+(after! org (setq org-journal-dir "~/orgmode/gtd/journal/"
                   org-journal-enable-agenda-integration t
                   org-journal-file-type 'monthly
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
@@ -635,8 +634,8 @@
 (setq org-reveal-title-slide nil)
 
 (setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/.org/notes/roam.db")
-(setq org-roam-directory "~/.org/notes/")
+(setq org-roam-db-location "~/orgmode/notes/roam.db")
+(setq org-roam-directory "~/orgmode/notes/")
 
 (use-package company-org-roam
   :ensure t
@@ -730,7 +729,7 @@
               ("n" "Next Actions"
                ((agenda ""
                         ((org-agenda-span '1)
-                         (org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org")))
+                         (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
                          (org-agenda-start-day (org-today))))
                 (tags-todo "-@delegated/-PROJ-TODO-WAIT-WATCH"
                            ((org-agenda-overriding-header "Project Tasks")
