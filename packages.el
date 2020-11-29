@@ -1,3 +1,7 @@
+;; Roam Packages
+(package! org-roam)
+(package! company-org-roam)
+(package! org-roam-server)
 ;; Alphapapa packages
 (package! helm-org-rifle)
 (package! org-super-agenda)
@@ -12,8 +16,12 @@
 (package! org-analyzer)
 (package! org-edna)
 (package! literate-calc-mode)
+(package! ftable
+  :recipe (:host github :repo "casouri/ftable"))
 ;; Python
 (package! ob-ipython)
+(package! anaconda-mode)
+(package! company-anaconda)
 ;; Misc Packages
 (package! elfeed)
 (package! elfeed-org)
