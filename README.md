@@ -1,61 +1,60 @@
 
 # Table of Contents
 
--   [New Changes](#org9615af7)
-    -   [Task Automation](#org1b503e8)
-    -   [Quick Note Find Headline](#org4204891)
--   [Requirements](#orga0820f6)
--   [Initial-Settings](#org1cd85d5)
--   [Org-Mode](#org49df906)
-    -   [Looks and Feels](#org6daa823)
-    -   [Loading agenda settings](#orgdb27572)
-    -   [Clock Settings](#orgb6bfd3c)
-    -   [Capture Templates](#orgb4c876b)
-    -   [Export Settings](#orgf74a3e1)
-    -   [Keywords](#orgaa9562f)
-    -   [Logging and Drawers](#org5f34e4d)
-    -   [Properties](#org645ae8e)
-    -   [Publishing](#orgf896638)
-    -   [Default Tags](#org0db3ab5)
--   [Module Settings](#orgb7b7b6f)
-    -   [company mode](#orgaf54c5d)
-    -   [DEFT](#org9576024)
-    -   [Elfeed](#org32e42cc)
-    -   [Graphs and Chart Modules](#org781e005)
-    -   [Journal](#org4c97419)
-    -   [Org-Rifle](#org3d616ce)
-    -   [org-ql](#orgd0531f1)
-    -   [Pandoc](#org5bd8e3d)
-    -   [Reveal](#org1357795)
-    -   [ROAM](#orge1687ff)
-    -   [ROAM Export Backlinks + Content](#orge9f896e)
-    -   [ROAM Server](#org0934ed8)
-    -   [Super Agenda Settings](#orgc75937c)
-    -   [Visual Fill Column](#org75e1a38)
--   [Custom Functions](#orge7af63f)
-    -   [Archive keeping Structure](#orgc7465e5)
-    -   [Custom Faces](#orga3cdde6)
-    -   [Time Stamps](#orgff0bdc2)
-    -   [Prompt for headline when creating ID links](#orgc0bcc73)
-    -   [Capture Template File Picker](#orgc0aedfc)
-    -   [Clarify Tasks](#org5ccd5f9)
-    -   [Daily Task Adder](#orgb2893b5)
-    -   [Capture headline finder](#orgfbb3d1a)
-    -   [Search for headline across org-directory and return to indirect buffer](#org1f771ae)
-    -   [Change Font](#orgf3c53ad)
--   [End of file loading](#org28962a1)
+-   [New Changes](#org59767cf)
+    -   [Task Automation](#orgf09fd0a)
+    -   [ID Completion](#org78f43fd)
+    -   [Quick Note Find Headline](#orgc3d5376)
+    -   [Daily Task Adder](#orgb3fc6a0)
+    -   [Add Blanklines between Headlines](#orge830414)
+    -   [Setting up my productivity layout](#org660063f)
+    -   [Return Indirect Buffer](#org17af63b)
+-   [Requirements](#orgbb5551c)
+-   [Initial-Settings](#org0d0a92d)
+-   [Org-Mode](#org5fa8567)
+    -   [Looks and Feels](#orgb0f098d)
+    -   [Loading agenda settings](#org4cafb08)
+    -   [Clock Settings](#org76ad0b3)
+    -   [Capture Templates](#org25c35d6)
+    -   [Export Settings](#org0c0edb1)
+    -   [Keywords](#org1d91795)
+    -   [Logging and Drawers](#orgbf2f0d0)
+    -   [Properties](#orgdca0470)
+    -   [Publishing](#org2d6bb58)
+    -   [Default Tags](#org8b36a2e)
+-   [Module Settings](#org67a615b)
+    -   [company mode](#org42d519a)
+    -   [DEFT](#orgd0d4b8b)
+    -   [Elfeed](#org6677fe1)
+    -   [Graphs and Chart Modules](#orgd416797)
+    -   [Journal](#org7f00dfc)
+    -   [Org-Rifle](#org6078597)
+    -   [org-ql](#org66783c9)
+    -   [Pandoc](#org0604d65)
+    -   [Reveal](#org669ee11)
+    -   [ROAM](#orgca47dcd)
+    -   [ROAM Export Backlinks + Content](#orgb586c7f)
+    -   [ROAM Server](#org8f47eb2)
+    -   [Super Agenda Settings](#org5972244)
+    -   [Visual Fill Column](#org8bb1616)
+-   [Custom Functions](#org147ea90)
+    -   [Archive keeping Structure](#orga30b069)
+    -   [Custom Faces](#orgcb36ae4)
+    -   [Clarify Tasks](#org951a507)
+    -   [Change Font](#orgb9e341f)
+-   [End of file loading](#orgec43baa)
 
 Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this
 makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="org9615af7"></a>
+<a id="org59767cf"></a>
 
 # New Changes
 
 
-<a id="org1b503e8"></a>
+<a id="orgf09fd0a"></a>
 
 ## Task Automation
 
@@ -78,7 +77,32 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="org4204891"></a>
+<a id="org78f43fd"></a>
+
+## ID Completion
+
+I got tired of flipping back n forth between buffers, copying the ID of a
+headline, then jump back and paste that ID into my link. So now i&rsquo;ll have
+`org-refile-get-location` fetch the ID for us when I call `org-insert-link`.
+
+    (require 'find-lisp)
+    (defun nm/org-id-prompt-id ()
+      "Prompt for the id during completion of id: link."
+      (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
+        (let ((dest (org-refile-get-location))
+              (name nil)
+              (id nil))
+          (save-excursion
+            (find-file (cadr dest))
+            (goto-char (nth 3 dest))
+            (setq id (org-id-get (point) t)
+                  name (org-get-heading t t t t)))
+          (org-insert-link nil (concat "id:" id) name))))
+    
+    (after! org (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id))
+
+
+<a id="orgc3d5376"></a>
 
 ## Quick Note Find Headline
 
@@ -91,8 +115,170 @@ So with that, I added a new function tied to the quick note capture-template
 key, which will prompt for a headline from any of your task files that exist in
 &ldquo;`~/.org/gtd/`&rdquo;.
 
+    (defun nm/org-capture-log ()
+      "Initiate the capture system and find headline to capture under."
+      (let ((dest (org-refile-get-location)))
+        (let ((file (cadr dest))
+              (pos (nth 3 dest))
+              (title (nth 2 dest)))
+          (find-file file)
+          (goto-char pos)
+          (nm/org-end-of-headline))))
+    
+    (defun nm/org-end-of-headline()
+      "Move to end of current headline"
+      (interactive)
+      (outline-next-heading)
+      (forward-char -1))
 
-<a id="orga0820f6"></a>
+
+<a id="orgb3fc6a0"></a>
+
+## Daily Task Adder
+
+This function will create a new headline, and nest the checkitem underneath the
+headline specified by DATE chosen during capture. This will also set a scheduled
+date on the headline.
+
+    (defun nm/org-capture-to-task-file ()
+      "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
+      (let* ((file "~/.org/gtd/tasks.org")
+             (parent-l nil)
+             (child-l nil)
+             (parent "Agenda Items")
+             (date (org-read-date))
+             (heading (format "Tasks for ")))
+        (find-file file)
+        (goto-char 0)
+        ;;; Locate or Create our parent headline
+        (unless (search-forward (format "* %s" parent) nil t)
+          (progn
+            (org-next-visible-heading) (next-line -1) (newline) (insert (format "* %s%s" parent date))))
+        ;;; Capture outline level
+        (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
+        ;;; Next we locate or create our subheading using the date string passed by the user.
+        (let* ((end (save-excursion (org-end-of-subtree))))
+          (unless (search-forward (format "%s NEXT %s%s" child-l heading date) end t)
+            (nm/org-end-of-headline)
+            (newline)
+            (beginning-of-line)
+            (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
+
+
+<a id="orge830414"></a>
+
+## Add Blanklines between Headlines
+
+I like to keep blank lines between major headlines. The setup look something like this:
+
+-   **Headline 1:** Keep newline between other headlines of equivelant level.
+-   **Headline 2:** Keep newline between other headlines of equivelant level.
+-   **Headline 3:** Do not create newline between headlines of equivelant unless its less than.
+-   **Headline 4-\*:** Do not put any newlines between headlines unless its 2 or less levels.
+
+    (defun nm/add-newline-between-headlines ()
+      ""
+      (when (equal major-mode 'org-mode)
+        (unless (org-at-heading-p)
+          (org-back-to-heading))
+        (nm/org-end-of-headline)
+        (if (not (org--line-empty-p 1))
+            (newline))))
+    
+    (defun nm/add-space-end-of-line ()
+      "If N-1 at end of heading is #+end_src then insert blank character on last line."
+      (interactive)
+      (when (equal major-mode 'org-mode)
+        (unless (org-at-heading-p)
+          (org-back-to-heading))
+        (nm/org-end-of-headline)
+        (next-line -1)
+        (if (org-looking-at-p "^#\\+end_src$")
+            (progn (next-line 1) (insert " ")))))
+    
+    (defun nm/newlines-between-headlines ()
+      "Uses the org-map-entries function to scan through a buffer's
+       contents and ensure newlines are inserted between headlines"
+      (interactive)
+      (org-map-entries #'nm/add-newline-between-headlines t 'file))
+    
+    (add-hook 'before-save-hook #'nm/newlines-between-headlines)
+
+
+<a id="org660063f"></a>
+
+## Setting up my productivity layout
+
+    (defun nm/setup-productive-windows (arg1 arg2)
+      "Delete all other windows, and setup our ORGMODE production window layout."
+      (interactive)
+      (progn
+        (delete-other-windows)
+        (progn
+          (find-file arg1))
+        (progn
+          (split-window-right)
+          (evil-window-right 1)
+          (org-agenda nil "n"))
+        (progn
+          (split-window)
+          (evil-window-down 1)
+          (find-file arg2)
+          (goto-char 1)
+          (re-search-forward (format "*+\s\\w+\sTasks\sfor\s%s" (format-time-string "%Y-%m-%d")))
+          (org-tree-to-indirect-buffer))))
+    
+    (defun nm/productive-window ()
+      "Setup"
+      (interactive)
+      (nm/setup-productive-windows "~/.org/gtd/personal.org" "~/.org/gtd/tasks.org"))
+    
+    (map! :after org
+          :map org-mode-map
+          :leader
+          :prefix ("TAB" . "workspace")
+          :desc "Load ORGMODE Setup" "," #'nm/productive-window)
+
+
+<a id="org17af63b"></a>
+
+## Return Indirect Buffer
+
+    (defun nm/get-headlines-org-files (arg)
+      "Searches org-directory for headline and returns results to indirect buffer."
+      (interactive)
+      (let ((org-agenda-files (find-lisp-find-files arg "\.org$"))
+            (org-refile-use-outline-path nil)
+            (org-refile-history nil))
+        (let ((dest (org-refile-get-location))
+              (buffer nil)
+              (first (frame-first-window)))
+          (save-excursion
+            (if (eq first (next-window first))
+                (progn (evil-window-vsplit) (evil-window-right 1))
+              (other-window 1))
+            (find-file (cadr dest))
+            (goto-char (nth 3 dest))
+            (org-tree-to-indirect-buffer)))))
+    
+    (defun nm/search-headlines-org-directory ()
+      "Search the ORG-DIRECTORY."
+      (interactive)
+      (nm/get-headlines-org-files "~/.org/"))
+    
+    (defun nm/search-headlines-org-tasks-directory ()
+      "Search the GTD folder."
+      (interactive)
+      (nm/get-headlines-org-files "~/.org/gtd/"))
+    
+    (map! :after org
+          :map org-mode-map
+          :leader
+          :desc "Return indirect buffer org-directory" "@" #'nm/search-headlines-org-directory
+          :desc "Return indirect buffer TASK files" "!" #'nm/search-headlines-org-tasks-directory)
+
+
+<a id="orgbb5551c"></a>
 
 # Requirements
 
@@ -104,7 +290,7 @@ minimum so as much of this is close to regular DOOM EMACS.
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="org1cd85d5"></a>
+<a id="org0d0a92d"></a>
 
 # Initial-Settings
 
@@ -186,14 +372,14 @@ Next we configure popup-rules and default fonts.
     ;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
     
     (when (equal system-type 'gnu/linux)
-      (setq doom-font (font-spec :family "JetBrains Mono" :size 18 :weight 'light)
-            doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light)))
+      (setq doom-font (font-spec :family "Victor Mono" :size 20 :weight 'normal)
+            doom-big-font (font-spec :family "Victor Mono" :size 22 :weight 'normal)))
     (when (equal system-type 'windows-nt)
       (setq doom-font (font-spec :family "InputMono" :size 18)
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="org49df906"></a>
+<a id="org5fa8567"></a>
 
 # Org-Mode
 
@@ -222,7 +408,7 @@ Here we add any requirements before org-mode starts to load
     (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 
-<a id="org6daa823"></a>
+<a id="orgb0f098d"></a>
 
 ## Looks and Feels
 
@@ -237,14 +423,14 @@ available are:
                       org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
     
     (when (require 'org-superstar nil 'noerror)
-      (setq org-superstar-headline-bullets-list '("•")
+      (setq org-superstar-headline-bullets-list '("#")
             org-superstar-item-bullet-alist nil))
     
     (when (require 'org-fancy-priorities nil 'noerror)
       (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 
 
-<a id="orgdb27572"></a>
+<a id="org4cafb08"></a>
 
 ## Loading agenda settings
 
@@ -265,14 +451,14 @@ available are:
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/.org/gtd/*.org") (file-expand-wildcards "~/.org/gtd/*/*.org"))))
 
 
-<a id="orgb6bfd3c"></a>
+<a id="org76ad0b3"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="orgb4c876b"></a>
+<a id="org25c35d6"></a>
 
 ## Capture Templates
 
@@ -319,7 +505,7 @@ Sometimes i&rsquo;ll just start working on things that I find interseting, and I
 a method of take notes on what i&rsquo;m doing so I can keep track of what I discover
 and document those things back into my master notes file.
 
-    (push '("w" "Working on [Capture link]" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?} - [[%c][%^{description}]]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
+    (push '("w" "Working on" entry (file+olp "~/.org/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 
 With my crazy busy scheduled, I can end up working on multiple things at any
 given time&#x2026; and I need a way to quickly log a note for another task item i&rsquo;m
@@ -327,10 +513,10 @@ working&#x2026; So i&rsquo;ve written up a small function that utilizes
 `org-refile-get-location` to locate the headline and capture under the selected
 headline.
 
-    (push '("z" "Quick Note on Task" plain (function nm/org-capture-weeklies) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+    (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 
-<a id="orgf74a3e1"></a>
+<a id="org0c0edb1"></a>
 
 ## Export Settings
 
@@ -365,7 +551,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgaa9562f"></a>
+<a id="org1d91795"></a>
 
 ## Keywords
 
@@ -440,7 +626,7 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="org5f34e4d"></a>
+<a id="orgbf2f0d0"></a>
 
 ## Logging and Drawers
 
@@ -453,14 +639,14 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="org645ae8e"></a>
+<a id="orgdca0470"></a>
 
 ## Properties
 
     (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 
 
-<a id="orgf896638"></a>
+<a id="org2d6bb58"></a>
 
 ## Publishing
 
@@ -503,7 +689,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "org files to MD")))))
 
 
-<a id="org0db3ab5"></a>
+<a id="org8b36a2e"></a>
 
 ## Default Tags
 
@@ -524,12 +710,12 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                       ("SOMEDAY"))))
 
 
-<a id="orgb7b7b6f"></a>
+<a id="org67a615b"></a>
 
 # Module Settings
 
 
-<a id="orgaf54c5d"></a>
+<a id="org42d519a"></a>
 
 ## company mode
 
@@ -538,7 +724,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
       (setq company-idle-delay 0.25))
 
 
-<a id="org9576024"></a>
+<a id="orgd0d4b8b"></a>
 
 ## DEFT
 
@@ -608,14 +794,14 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org32e42cc"></a>
+<a id="org6677fe1"></a>
 
 ## Elfeed
 
     (use-package elfeed-org
       :defer
       :config
-      (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org")))
+      (setq rmh-elfeed-org-files (list "~/.org/elfeed.org")))
     (use-package elfeed
       :defer
       :config
@@ -627,7 +813,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="org781e005"></a>
+<a id="orgd416797"></a>
 
 ## Graphs and Chart Modules
 
@@ -657,7 +843,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="org4c97419"></a>
+<a id="org7f00dfc"></a>
 
 ## Journal
 
@@ -667,7 +853,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="org3d616ce"></a>
+<a id="org6078597"></a>
 
 ## Org-Rifle
 
@@ -766,7 +952,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgd0531f1"></a>
+<a id="org66783c9"></a>
 
 ## org-ql
 
@@ -805,14 +991,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="org5bd8e3d"></a>
+<a id="org0604d65"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org1357795"></a>
+<a id="org669ee11"></a>
 
 ## Reveal
 
@@ -821,104 +1007,104 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="orge1687ff"></a>
+<a id="orgca47dcd"></a>
 
 ## ROAM
 
 These are my default ROAM settings
 
-    ;; (setq org-roam-tag-sources '(prop last-directory))
-    ;; (setq org-roam-db-location "~/.org/roam.db")
-    ;; (setq org-roam-directory "~/.org/")
+    (setq org-roam-tag-sources '(prop last-directory))
+    (setq org-roam-db-location "~/.org/notes/roam.db")
+    (setq org-roam-directory "~/.org/notes/")
     
-    ;; (use-package company-org-roam
-    ;;   :ensure t
-    ;;   ;; You may want to pin in case the version from stable.melpa.org is not working
-    ;;   ; :pin melpa
-    ;;   :config
-    ;;   (push 'company-org-roam company-backends))
+    (use-package company-org-roam
+      :ensure t
+      ;; You may want to pin in case the version from stable.melpa.org is not working
+      ; :pin melpa
+      :config
+      (push 'company-org-roam company-backends))
     
-    ;; (setq org-roam-dailies-capture-templates
-    ;;    '(("d" "daily" plain (function org-roam-capture--get-point) ""
-    ;;       :immediate-finish t
-    ;;       :file-name "journal/%<%Y-%m-%d-%a>"
-    ;;       :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+    (setq org-roam-dailies-capture-templates
+       '(("d" "daily" plain (function org-roam-capture--get-point) ""
+          :immediate-finish t
+          :file-name "journal/%<%Y-%m-%d-%a>"
+          :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
     
-    ;; (setq org-roam-capture-templates
-    ;;         '(("d" "digest" plain (function org-roam-capture--get-point)
-    ;;            "%?"
-    ;;            :file-name "notes/digest/%<%Y%m%d%H%M>-${slug}"
-    ;;            :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
-    ;;            :unnarrowed t)
-    ;;           ("n" "notes" plain (function org-roam-capture--get-point)
-    ;;            :file-name "notes/${slug}"
-    ;;            :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-    ;;            :unnarrowed t
-    ;;            "%?")
-    ;;           ("p" "private" plain (function org-roam-capture--get-point)
-    ;;            :file-name "notes/private/${slug}"
-    ;;            :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-    ;;            :unnarrowed t
-    ;;            "%?")
-    ;;           ("r" "reveal slide" plain (function org-roam-capture--get-point)
-    ;;            :file-name "slides/%<%Y%m%d%H%M>-${slug}"
-    ;;            :head "#+title: ${title}\n#+options: num:nil toc:nil\n#+REVEAL_THEME: %^{theme|black|white|league|beige|sky|night|serif|simple|solarized|blood|moon}\n#+REVEAL_PLUGINS: (highlight)\n#+REVEAL_OVERVIEW: t\n\n"
-    ;;            :unnarrow t
-    ;;            "%?")))
+    (setq org-roam-capture-templates
+            '(("d" "digest" plain (function org-roam-capture--get-point)
+               "%?"
+               :file-name "digest/%<%Y%m%d%H%M>-${slug}"
+               :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
+               :unnarrowed t)
+              ("n" "notes" plain (function org-roam-capture--get-point)
+               :file-name "${slug}"
+               :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+               :unnarrowed t
+               "%?")
+              ("p" "private" plain (function org-roam-capture--get-point)
+               :file-name "private/${slug}"
+               :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+               :unnarrowed t
+               "%?")
+              ("r" "reveal slide" plain (function org-roam-capture--get-point)
+               :file-name "slides/%<%Y%m%d%H%M>-${slug}"
+               :head "#+title: ${title}\n#+options: num:nil toc:nil\n#+REVEAL_THEME: %^{theme|black|white|league|beige|sky|night|serif|simple|solarized|blood|moon}\n#+REVEAL_PLUGINS: (highlight)\n#+REVEAL_OVERVIEW: t\n\n"
+               :unnarrow t
+               "%?")))
 
 
-<a id="orge9f896e"></a>
+<a id="orgb586c7f"></a>
 
 ## ROAM Export Backlinks + Content
 
-    ;; (defun my/org-roam--backlinks-list-with-content (file)
-    ;;   (with-temp-buffer
-    ;;     (if-let* ((backlinks (org-roam--get-backlinks file))
-    ;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-    ;;         (progn
-    ;;           (insert (format "\n\n* %d Backlinks\n"
-    ;;                           (length backlinks)))
-    ;;           (dolist (group grouped-backlinks)
-    ;;             (let ((file-from (car group))
-    ;;                   (bls (cdr group)))
-    ;;               (insert (format "** [[file:%s][%s]]\n"
-    ;;                               file-from
-    ;;                               (org-roam--get-title-or-slug file-from)))
-    ;;               (dolist (backlink bls)
-    ;;                 (pcase-let ((`(,file-from _ ,props) backlink))
-    ;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-    ;;                   (insert "\n\n")))))))
-    ;;     (buffer-string)))
+    (defun my/org-roam--backlinks-list-with-content (file)
+      (with-temp-buffer
+        (if-let* ((backlinks (org-roam--get-backlinks file))
+                  (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+            (progn
+              (insert (format "\n\n* %d Backlinks\n"
+                              (length backlinks)))
+              (dolist (group grouped-backlinks)
+                (let ((file-from (car group))
+                      (bls (cdr group)))
+                  (insert (format "** [[file:%s][%s]]\n"
+                                  file-from
+                                  (org-roam--get-title-or-slug file-from)))
+                  (dolist (backlink bls)
+                    (pcase-let ((`(,file-from _ ,props) backlink))
+                      (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+                      (insert "\n\n")))))))
+        (buffer-string)))
     
-    ;; (defun my/org-export-preprocessor (backend)
-    ;;   (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-    ;;     (unless (string= links "")
-    ;;       (save-excursion
-    ;;         (goto-char (point-max))
-    ;;         (insert (concat "\n* Backlinks\n") links)))))
+    (defun my/org-export-preprocessor (backend)
+      (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+        (unless (string= links "")
+          (save-excursion
+            (goto-char (point-max))
+            (insert (concat "\n* Backlinks\n") links)))))
     
-    ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+    (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org0934ed8"></a>
+<a id="org8f47eb2"></a>
 
 ## ROAM Server
 
-    ;; (use-package org-roam-server
-    ;;   :ensure t
-    ;;   :config
-    ;;   (setq org-roam-server-host "127.0.0.1"
-    ;;         org-roam-server-port 8070
-    ;;         org-roam-server-export-inline-images t
-    ;;         org-roam-server-authenticate nil
-    ;;         org-roam-server-network-poll nil
-    ;;         org-roam-server-network-arrows 'from
-    ;;         org-roam-server-network-label-truncate t
-    ;;         org-roam-server-network-label-truncate-length 60
-    ;;         org-roam-server-network-label-wrap-length 20))
+    (use-package org-roam-server
+      :ensure t
+      :config
+      (setq org-roam-server-host "127.0.0.1"
+            org-roam-server-port 8070
+            org-roam-server-export-inline-images t
+            org-roam-server-authenticate nil
+            org-roam-server-network-poll nil
+            org-roam-server-network-arrows 'from
+            org-roam-server-network-label-truncate t
+            org-roam-server-network-label-truncate-length 60
+            org-roam-server-network-label-wrap-length 20))
 
 
-<a id="orgc75937c"></a>
+<a id="org5972244"></a>
 
 ## Super Agenda Settings
 
@@ -1002,21 +1188,21 @@ These are my default ROAM settings
                                 (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 
-<a id="org75e1a38"></a>
+<a id="org8bb1616"></a>
 
 ## Visual Fill Column
 
     (setq visual-fill-column 120)
 
 
-<a id="orge7af63f"></a>
+<a id="org147ea90"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="orgc7465e5"></a>
+<a id="orga30b069"></a>
 
 ## Archive keeping Structure
 
@@ -1064,7 +1250,7 @@ These are my default ROAM settings
                   (org-paste-subtree level tree-text))))))))
 
 
-<a id="orga3cdde6"></a>
+<a id="orgcb36ae4"></a>
 
 ## Custom Faces
 
@@ -1077,55 +1263,7 @@ These are my default ROAM settings
      '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
 
 
-<a id="orgff0bdc2"></a>
-
-## Time Stamps
-
-    (defun nm/insert-time-stamp-at-point ()
-      "Insert active timestamp at POINT."
-      (interactive)
-      (format "%s " (org-insert-time-stamp nil t)))
-    
-    (bind-key "C-S-l" #'nm/insert-time-stamp-at-point)
-    (map! :after org
-          :map org-mode-map
-          :localleader
-          :prefix ("d" . "date/deadline")
-          :desc "Insert timestamp at POS" "i" #'nm/insert-time-stamp-at-point)
-
-
-<a id="orgc0bcc73"></a>
-
-## Prompt for headline when creating ID links
-
-    (require 'find-lisp)
-    (defun nm/org-id-prompt-id ()
-      "Prompt for the id during completion of id: link."
-      (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
-        (let ((dest (org-refile-get-location))
-              (name nil)
-              (id nil))
-          (save-excursion
-            (find-file (cadr dest))
-            (goto-char (nth 3 dest))
-            (setq id (org-id-get (point) t)
-                  name (org-get-heading t t t t)))
-          (org-insert-link nil (concat "id:" id) name))))
-    
-    (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id)
-
-
-<a id="orgc0aedfc"></a>
-
-## Capture Template File Picker
-
-    (defun nm/org-capture-file-picker ()
-      "Select a file from the PROJECTS folder and return file-name."
-      (let ((file (read-file-name "Project: " "~/.org/gtd/projects/")))
-        (expand-file-name (format "%s" file))))
-
-
-<a id="org5ccd5f9"></a>
+<a id="org951a507"></a>
 
 ## Clarify Tasks
 
@@ -1162,85 +1300,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="orgb2893b5"></a>
-
-## Daily Task Adder
-
-    (defun nm/org-capture-to-task-file ()
-      "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
-      (let* ((file "~/.org/gtd/tasks.org")
-             (parent-l nil)
-             (child-l nil)
-             (parent "Agenda Items")
-             (date (org-read-date))
-             (heading (format "Tasks for ")))
-        (find-file file)
-        (goto-char 0)
-        ;;; Locate or Create our parent headline
-        (unless (search-forward (format "* %s" parent) nil t)
-          (progn
-            (org-next-visible-heading) (next-line -1) (newline) (insert (format "* %s%s" parent date))))
-        ;;; Capture outline level
-        (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
-        ;;; Next we locate or create our subheading using the date string passed by the user.
-        (let* ((end (save-excursion (org-end-of-subtree))))
-          (unless (search-forward (format "%s NEXT %s%s" child-l heading date) end t)
-            (nm/org-end-of-headline)
-            (newline)
-            (beginning-of-line)
-            (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
-
-
-<a id="orgfbb3d1a"></a>
-
-## Capture headline finder
-
-    
-    (defun nm/org-capture-weeklies ()
-      "Initiate the capture system and find headline to capture under."
-      (let ((dest (org-refile-get-location)))
-        (let ((file (cadr dest))
-              (pos (nth 3 dest))
-              (title (nth 2 dest)))
-          (find-file file)
-          (goto-char pos)
-          (nm/org-end-of-headline))))
-    
-    (defun nm/org-end-of-headline()
-      "Move to end of current headline"
-      (interactive)
-      (outline-next-heading)
-      (forward-char -1))
-
-
-<a id="org1f771ae"></a>
-
-## Search for headline across org-directory and return to indirect buffer
-
-    (defun nm/goto-headline-agenda-files ()
-      "Searches org-directory for headline and returns results to indirect buffer."
-      (interactive)
-      (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$"))
-            (org-refile-use-outline-path nil)
-            (org-refile-history nil))
-        (let ((dest (org-refile-get-location))
-              (buffer nil)
-              (first (frame-first-window)))
-          (save-excursion
-            (if (eq first (next-window first))
-                (progn (evil-window-vsplit) (evil-window-right 1))
-              (other-window 1))
-            (find-file (cadr dest))
-            (goto-char (nth 3 dest))
-            (org-tree-to-indirect-buffer)))))
-    
-    (map! :after org
-          :map org-mode-map
-          :leader
-          :desc "Outline all to indirect-buffer" "@" #'nm/goto-headline-agenda-files)
-
-
-<a id="orgf3c53ad"></a>
+<a id="orgb9e341f"></a>
 
 ## Change Font
 
@@ -1248,15 +1308,17 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
       "Change font based on available font list."
       (interactive)
       (let ((font (ivy-completing-read "font: " nm/font-family-list))
-            (weight (ivy-completing-read "weight: " '(normal light medium))))
-        (setq doom-font (font-spec :family font :size 18 :weight (intern weight))
-              doom-big-font (font-spec :family font :size 22 :weight (intern weight))))
+            (size (ivy-completing-read "size: " '("16" "18" "20" "22" "24" "26" "28" "30")))
+            (weight (ivy-completing-read "weight: " '(normal light bold extra-light ultra-light semi-light extra-bold ultra-bold)))
+            (width (ivy-completing-read "width: " '(normal condensed expanded ultra-condensed extra-condensed semi-condensed semi-expanded extra-expanded ultra-expanded))))
+        (setq doom-font (font-spec :family font :size (string-to-number size) :weight (intern weight) :width (intern width))
+              doom-big-font (font-spec :family font :size (+ 2 (string-to-number size)) :weight (intern weight) :width (intern width))))
       (doom/reload-font))
     
-    (defvar nm/font-family-list '("Input Mono" "Anonymous Pro" "Cousine" "Bront" "Hack" "Fira Code" "IBM Plex Mono" "JetBrains Mono" "Roboto Mono" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Overpass Mono" "Liberation Mono" "FreeMono" "Ubuntu Mono"))
+    (defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
 
 
-<a id="org28962a1"></a>
+<a id="orgec43baa"></a>
 
 # End of file loading
 
