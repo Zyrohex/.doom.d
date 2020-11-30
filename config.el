@@ -81,6 +81,21 @@
 
 (add-hook 'before-save-hook #'nm/newlines-between-headlines)
 
+(defun nm/capture-to-journal ()
+  "When org-capture-template is initiated, it creates the respected headline structure."
+  (let ((file "~/orgmode/gtd/journal.org")
+        (parent nil)
+        (child nil))
+    (unless (file-exists-p file)
+      (with-temp-buffer (write-file file)))
+    (find-file file)
+    (goto-char (point-min))
+    ;; Search for headline, or else create it.
+    (unless (re-search-forward "* Journal" nil t)
+      (progn (goto-char (point-max)) (newline) (insert "* Journal")))
+    (unless (re-search-forward (format "** %s" (format-time-string "%b '%y")) (save-excursion (org-end-of-subtree)) t)
+      (progn (org-end-of-subtree t) (newline) (insert (format "** %s" (format-time-string "%b '%y")))))))
+
 (defun nm/setup-productive-windows (arg1 arg2)
   "Delete all other windows, and setup our ORGMODE production window layout."
   (interactive)
@@ -277,7 +292,7 @@
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
 (push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
 
-(push '("j" "Journal Entry" entry (file+olp+datetree "~/orgmode/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
 
 (push '("w" "Working on" entry (file+olp "~/orgmode/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 

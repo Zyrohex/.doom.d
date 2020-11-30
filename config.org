@@ -138,6 +138,24 @@ I like to keep blank lines between major headlines. The setup look something lik
 (add-hook 'before-save-hook #'nm/newlines-between-headlines)
 #+end_src
 
+** Journal Capture Template
+#+begin_src emacs-lisp
+(defun nm/capture-to-journal ()
+  "When org-capture-template is initiated, it creates the respected headline structure."
+  (let ((file "~/orgmode/gtd/journal.org")
+        (parent nil)
+        (child nil))
+    (unless (file-exists-p file)
+      (with-temp-buffer (write-file file)))
+    (find-file file)
+    (goto-char (point-min))
+    ;; Search for headline, or else create it.
+    (unless (re-search-forward "* Journal" nil t)
+      (progn (goto-char (point-max)) (newline) (insert "* Journal")))
+    (unless (re-search-forward (format "** %s" (format-time-string "%b '%y")) (save-excursion (org-end-of-subtree)) t)
+      (progn (org-end-of-subtree t) (newline) (insert (format "** %s" (format-time-string "%b '%y")))))))
+#+end_src
+
 ** Setting up my productivity layout
 #+begin_src emacs-lisp
 (defun nm/setup-productive-windows (arg1 arg2)
@@ -415,7 +433,7 @@ kicks in and I log a new task to my INBOX.
 Occassionally I do like to take a note in my journal, to make a mental note of
 my day...
 #+begin_src emacs-lisp
-(push '("j" "Journal Entry" entry (file+olp+datetree "~/orgmode/gtd/journal.org") "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
 #+end_src
 
 Sometimes i'll just start working on things that I find interseting, and I need
