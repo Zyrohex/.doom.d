@@ -103,11 +103,7 @@ date on the headline.
 #+end_src
 
 ** Add Blanklines between Headlines
-I like to keep blank lines between major headlines. The setup look something like this:
-- Headline 1 :: Keep newline between other headlines of equivelant level.
-- Headline 2 :: Keep newline between other headlines of equivelant level.
-- Headline 3 :: Do not create newline between headlines of equivelant unless its less than.
-- Headline 4-* :: Do not put any newlines between headlines unless its 2 or less levels.
+Adds a newline between headlines, and also add blank characters at the end of the subtree, if a src block is at the end of the subtree.
 #+begin_src emacs-lisp
 (defun nm/add-newline-between-headlines ()
   ""

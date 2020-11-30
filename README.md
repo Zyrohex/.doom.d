@@ -1,61 +1,61 @@
 
 # Table of Contents
 
--   [New Changes](#orgc66927f)
-    -   [Task Automation](#orgcbf5c39)
-    -   [ID Completion](#orgcd2ca8f)
-    -   [Quick Note Find Headline](#org8a74715)
-    -   [Daily Task Adder](#orgb349aa0)
-    -   [Add Blanklines between Headlines](#org7d3300f)
-    -   [Journal Capture Template](#org6c40d00)
-    -   [Setting up my productivity layout](#orgc19fd5e)
-    -   [Return Indirect Buffer](#org3b84bb4)
--   [Requirements](#org6240821)
--   [Initial-Settings](#org01063d5)
--   [Org-Mode](#org5aab127)
-    -   [Looks and Feels](#orgf341b9d)
-    -   [Loading agenda settings](#orgf54f06c)
-    -   [Clock Settings](#orgd986990)
-    -   [Capture Templates](#org5405816)
-    -   [Export Settings](#org3c00231)
-    -   [Keywords](#orgc264af9)
-    -   [Logging and Drawers](#org75e17e7)
-    -   [Properties](#org381ea20)
-    -   [Publishing](#org866ee26)
-    -   [Default Tags](#org1b8e93c)
--   [Module Settings](#orgaa65cbb)
-    -   [company mode](#org844e53a)
-    -   [DEFT](#orgfb9b74b)
-    -   [Elfeed](#org64fe51a)
-    -   [Graphs and Chart Modules](#orgcbb9c7a)
-    -   [Journal](#orge3caf67)
-    -   [Org-Rifle](#org4e4adf3)
-    -   [org-ql](#orgee13a0b)
-    -   [Pandoc](#orgef908e8)
-    -   [Reveal](#org4dcc0e1)
-    -   [ROAM](#org8895a7e)
-    -   [ROAM Export Backlinks + Content](#org5abd298)
-    -   [ROAM Server](#orgc7d8dc3)
-    -   [Super Agenda Settings](#orgd508593)
-    -   [Visual Fill Column](#org52b56b1)
--   [Custom Functions](#org612f14b)
-    -   [Archive keeping Structure](#org228fc08)
-    -   [Custom Faces](#orga926e00)
-    -   [Clarify Tasks](#org71d1036)
-    -   [Change Font](#org6eb62af)
--   [End of file loading](#org1ae0f52)
+-   [New Changes](#org96924c5)
+    -   [Task Automation](#orge13cfb1)
+    -   [ID Completion](#org8f367e0)
+    -   [Quick Note Find Headline](#org27fc4cf)
+    -   [Daily Task Adder](#orgbdab570)
+    -   [Add Blanklines between Headlines](#orgcd00cf3)
+    -   [Journal Capture Template](#orgef6cc7a)
+    -   [Setting up my productivity layout](#org7b47a60)
+    -   [Return Indirect Buffer](#org0b8bc1e)
+-   [Requirements](#org8d35edd)
+-   [Initial-Settings](#org25adf6f)
+-   [Org-Mode](#org3b8584e)
+    -   [Looks and Feels](#orge8bc437)
+    -   [Loading agenda settings](#org1564a7e)
+    -   [Clock Settings](#org41debd1)
+    -   [Capture Templates](#orgcef4bf6)
+    -   [Export Settings](#orgcbf7e3e)
+    -   [Keywords](#orgfd005b7)
+    -   [Logging and Drawers](#org0470e34)
+    -   [Properties](#orgdfc5870)
+    -   [Publishing](#orgcf06f9b)
+    -   [Default Tags](#org54acb72)
+-   [Module Settings](#org1f7f58a)
+    -   [company mode](#org2ee2891)
+    -   [DEFT](#org544ae64)
+    -   [Elfeed](#orgdbe3dba)
+    -   [Graphs and Chart Modules](#orge8d72f1)
+    -   [Journal](#orgfc9cf9d)
+    -   [Org-Rifle](#org40597cf)
+    -   [org-ql](#org3b123ac)
+    -   [Pandoc](#org2ea7a60)
+    -   [Reveal](#org42a1e95)
+    -   [ROAM](#org29a121f)
+    -   [ROAM Export Backlinks + Content](#org25fe52d)
+    -   [ROAM Server](#org6c9c8a6)
+    -   [Super Agenda Settings](#org9e7ff47)
+    -   [Visual Fill Column](#org42c813b)
+-   [Custom Functions](#orga47675b)
+    -   [Archive keeping Structure](#orgfbcdb84)
+    -   [Custom Faces](#org564bbb5)
+    -   [Clarify Tasks](#orgc7a87e6)
+    -   [Change Font](#orgc4dd9f1)
+-   [End of file loading](#org26b7ad1)
 
 Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this
 makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="orgc66927f"></a>
+<a id="org96924c5"></a>
 
 # New Changes
 
 
-<a id="orgcbf5c39"></a>
+<a id="orge13cfb1"></a>
 
 ## Task Automation
 
@@ -78,7 +78,7 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="orgcd2ca8f"></a>
+<a id="org8f367e0"></a>
 
 ## ID Completion
 
@@ -103,7 +103,7 @@ headline, then jump back and paste that ID into my link. So now i&rsquo;ll have
     (after! org (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id))
 
 
-<a id="org8a74715"></a>
+<a id="org27fc4cf"></a>
 
 ## Quick Note Find Headline
 
@@ -133,7 +133,7 @@ key, which will prompt for a headline from any of your task files that exist in
       (forward-char -1))
 
 
-<a id="orgb349aa0"></a>
+<a id="orgbdab570"></a>
 
 ## Daily Task Adder
 
@@ -165,16 +165,11 @@ date on the headline.
             (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
 
 
-<a id="org7d3300f"></a>
+<a id="orgcd00cf3"></a>
 
 ## Add Blanklines between Headlines
 
-I like to keep blank lines between major headlines. The setup look something like this:
-
--   **Headline 1:** Keep newline between other headlines of equivelant level.
--   **Headline 2:** Keep newline between other headlines of equivelant level.
--   **Headline 3:** Do not create newline between headlines of equivelant unless its less than.
--   **Headline 4-\*:** Do not put any newlines between headlines unless its 2 or less levels.
+Adds a newline between headlines, and also add blank characters at the end of the subtree, if a src block is at the end of the subtree.
 
     (defun nm/add-newline-between-headlines ()
       ""
@@ -205,7 +200,7 @@ I like to keep blank lines between major headlines. The setup look something lik
     (add-hook 'before-save-hook #'nm/newlines-between-headlines)
 
 
-<a id="org6c40d00"></a>
+<a id="orgef6cc7a"></a>
 
 ## Journal Capture Template
 
@@ -230,7 +225,7 @@ that are called when initiated.
           (progn (org-end-of-subtree t) (newline) (insert (format "** %s" (format-time-string "%b '%y")))))))
 
 
-<a id="orgc19fd5e"></a>
+<a id="org7b47a60"></a>
 
 ## Setting up my productivity layout
 
@@ -265,7 +260,7 @@ that are called when initiated.
           :desc "Load ORGMODE Setup" "," #'nm/productive-window)
 
 
-<a id="org3b84bb4"></a>
+<a id="org0b8bc1e"></a>
 
 ## Return Indirect Buffer
 
@@ -303,7 +298,7 @@ that are called when initiated.
           :desc "Return indirect buffer TASK files" "!" #'nm/search-headlines-org-tasks-directory)
 
 
-<a id="org6240821"></a>
+<a id="org8d35edd"></a>
 
 # Requirements
 
@@ -315,7 +310,7 @@ minimum so as much of this is close to regular DOOM EMACS.
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="org01063d5"></a>
+<a id="org25adf6f"></a>
 
 # Initial-Settings
 
@@ -404,7 +399,7 @@ Next we configure popup-rules and default fonts.
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="org5aab127"></a>
+<a id="org3b8584e"></a>
 
 # Org-Mode
 
@@ -433,7 +428,7 @@ Here we add any requirements before org-mode starts to load
     (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 
-<a id="orgf341b9d"></a>
+<a id="orge8bc437"></a>
 
 ## Looks and Feels
 
@@ -455,7 +450,7 @@ available are:
       (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 
 
-<a id="orgf54f06c"></a>
+<a id="org1564a7e"></a>
 
 ## Loading agenda settings
 
@@ -476,14 +471,14 @@ available are:
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org") (file-expand-wildcards "~/orgmode/gtd/*/*.org"))))
 
 
-<a id="orgd986990"></a>
+<a id="org41debd1"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="org5405816"></a>
+<a id="orgcef4bf6"></a>
 
 ## Capture Templates
 
@@ -541,7 +536,7 @@ headline.
     (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 
-<a id="org3c00231"></a>
+<a id="orgcbf7e3e"></a>
 
 ## Export Settings
 
@@ -576,7 +571,7 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgc264af9"></a>
+<a id="orgfd005b7"></a>
 
 ## Keywords
 
@@ -651,7 +646,7 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="org75e17e7"></a>
+<a id="org0470e34"></a>
 
 ## Logging and Drawers
 
@@ -664,14 +659,14 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="org381ea20"></a>
+<a id="orgdfc5870"></a>
 
 ## Properties
 
     (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
 
 
-<a id="org866ee26"></a>
+<a id="orgcf06f9b"></a>
 
 ## Publishing
 
@@ -714,7 +709,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "org files to MD")))))
 
 
-<a id="org1b8e93c"></a>
+<a id="org54acb72"></a>
 
 ## Default Tags
 
@@ -735,12 +730,12 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                                       ("SOMEDAY"))))
 
 
-<a id="orgaa65cbb"></a>
+<a id="org1f7f58a"></a>
 
 # Module Settings
 
 
-<a id="org844e53a"></a>
+<a id="org2ee2891"></a>
 
 ## company mode
 
@@ -749,7 +744,7 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
       (setq company-idle-delay 0.25))
 
 
-<a id="orgfb9b74b"></a>
+<a id="org544ae64"></a>
 
 ## DEFT
 
@@ -819,7 +814,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="org64fe51a"></a>
+<a id="orgdbe3dba"></a>
 
 ## Elfeed
 
@@ -838,7 +833,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orgcbb9c7a"></a>
+<a id="orge8d72f1"></a>
 
 ## Graphs and Chart Modules
 
@@ -868,7 +863,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="orge3caf67"></a>
+<a id="orgfc9cf9d"></a>
 
 ## Journal
 
@@ -878,7 +873,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="org4e4adf3"></a>
+<a id="org40597cf"></a>
 
 ## Org-Rifle
 
@@ -977,7 +972,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="orgee13a0b"></a>
+<a id="org3b123ac"></a>
 
 ## org-ql
 
@@ -1016,14 +1011,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="orgef908e8"></a>
+<a id="org2ea7a60"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org4dcc0e1"></a>
+<a id="org42a1e95"></a>
 
 ## Reveal
 
@@ -1032,7 +1027,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="org8895a7e"></a>
+<a id="org29a121f"></a>
 
 ## ROAM
 
@@ -1078,7 +1073,7 @@ These are my default ROAM settings
                "%?")))
 
 
-<a id="org5abd298"></a>
+<a id="org25fe52d"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -1111,7 +1106,7 @@ These are my default ROAM settings
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="orgc7d8dc3"></a>
+<a id="org6c9c8a6"></a>
 
 ## ROAM Server
 
@@ -1129,7 +1124,7 @@ These are my default ROAM settings
             org-roam-server-network-label-wrap-length 20))
 
 
-<a id="orgd508593"></a>
+<a id="org9e7ff47"></a>
 
 ## Super Agenda Settings
 
@@ -1213,21 +1208,21 @@ These are my default ROAM settings
                                 (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 
-<a id="org52b56b1"></a>
+<a id="org42c813b"></a>
 
 ## Visual Fill Column
 
     (setq visual-fill-column 120)
 
 
-<a id="org612f14b"></a>
+<a id="orga47675b"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="org228fc08"></a>
+<a id="orgfbcdb84"></a>
 
 ## Archive keeping Structure
 
@@ -1275,7 +1270,7 @@ These are my default ROAM settings
                   (org-paste-subtree level tree-text))))))))
 
 
-<a id="orga926e00"></a>
+<a id="org564bbb5"></a>
 
 ## Custom Faces
 
@@ -1288,7 +1283,7 @@ These are my default ROAM settings
      '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
 
 
-<a id="org71d1036"></a>
+<a id="orgc7a87e6"></a>
 
 ## Clarify Tasks
 
@@ -1325,7 +1320,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="org6eb62af"></a>
+<a id="orgc4dd9f1"></a>
 
 ## Change Font
 
@@ -1343,7 +1338,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
     (defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
 
 
-<a id="org1ae0f52"></a>
+<a id="org26b7ad1"></a>
 
 # End of file loading
 
