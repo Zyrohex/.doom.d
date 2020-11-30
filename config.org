@@ -297,8 +297,8 @@ Next we configure popup-rules and default fonts.
 ;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
 
 (when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "Victor Mono" :size 20 :weight 'normal)
-        doom-big-font (font-spec :family "Victor Mono" :size 22 :weight 'normal)))
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
+        doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'normal)))
 (when (equal system-type 'windows-nt)
   (setq doom-font (font-spec :family "InputMono" :size 18)
         doom-big-font (font-spec :family "InputMono" :size 22)))
