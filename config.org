@@ -139,6 +139,10 @@ I like to keep blank lines between major headlines. The setup look something lik
 #+end_src
 
 ** Journal Capture Template
+I need a way to make a dynamic template that will let me capture various types
+of information: meeting notes, calls, conversations, things i'm working on,
+etc.. Eventually this function will contain several mini templates inside of it
+that are called when initiated.
 #+begin_src emacs-lisp
 (defun nm/capture-to-journal ()
   "When org-capture-template is initiated, it creates the respected headline structure."
