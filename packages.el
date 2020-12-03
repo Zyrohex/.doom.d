@@ -23,6 +23,7 @@
 (package! anaconda-mode)
 (package! company-anaconda)
 ;; Misc Packages
+(package! company-manually)
 (package! elfeed)
 (package! elfeed-org)
 (package! ob-mermaid)
