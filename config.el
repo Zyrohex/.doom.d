@@ -1,3 +1,25 @@
+(defun nm/only-show-next-and-skip-non-projects ()
+  "Skip trees that are not projects, and shows only tasks that are in next condition state."
+  (if (save-excursion (bh/skip-non-stuck-projects))
+      (save-restriction
+        (widen)
+        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+          (cond
+           ((or (bh/is-project-p) (and (bh/is-task-p) (bh/is-project-subtree-p) (nm/has-next-condition))) nil)
+           ((and (and (bh/is-project-subtree-p) (nm/has-next-condition)) (and (not (bh/is-task-p)) (nm/has-next-condition))) nil)
+           (t subtree-end))))
+    (save-excursion (org-end-of-subtree t))))
+
+(defun nm/has-next-condition ()
+  "Returns t if headline has next condition state"
+  (save-excursion
+    (cond
+     ((nm/is-scheduled-p) t)
+     ((nm/exist-context-tag-p) t)
+     ((nm/checkbox-active-exist-p) t))))
+
+
+
 (require 'find-lisp)
 (defun nm/org-id-prompt-id ()
   "Prompt for the id during completion of id: link."
@@ -79,7 +101,7 @@
   (interactive)
   (org-map-entries #'nm/add-newline-between-headlines t 'file))
 
-(add-hook 'before-save-hook #'nm/newlines-between-headlines)
+(add-hook 'org-insert-heading-hook #'nm/newlines-between-headlines)
 
 (defun nm/capture-to-journal ()
   "When org-capture-template is initiated, it creates the respected headline structure."
@@ -272,7 +294,7 @@
                   org-agenda-tags-column 0
 ;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
-                  org-agenda-block-separator ""
+                  org-agenda-block-separator 61
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
                   org-agenda-window-setup 'current-window
@@ -292,7 +314,7 @@
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
 (push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
 
-(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 
 (push '("w" "Working on" entry (file+olp "~/orgmode/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 
@@ -353,7 +375,7 @@
                   org-log-redeadline 'note
                   org-log-reschedule 'note))
 
-(after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
+(after! org (setq org-use-property-inheritance t))
 
 (after! org (setq org-publish-project-alist
                   '(("attachments"
@@ -391,24 +413,28 @@
                      :with-toc t)
                     ("myprojectweb" :components("attachments" "notes" "org files to MD")))))
 
-(after! org (setq org-tags-column 0
-                  org-tag-alist '((:startgrouptag)
-                                  (:grouptags)
-                                  ("@home" . ?h)
-                                  ("@computer")
-                                  ("@work")
-                                  ("@place")
-                                  ("@bills")
-                                  ("@order")
-                                  ("@labor")
-                                  ("@read")
-                                  ("@brainstorm")
-                                  ("@planning")
-                                  ("WAIT")
-                                  ("SOMEDAY"))))
+(setq org-tags-column 0)
+
+(setq org-tag-alist '(("@home")
+                      ("@computer")
+                      ("@email")
+                      ("@call")
+                      ("@brainstorm")
+                      ("@write")
+                      ("@read")
+                      ("@code")
+                      ("@research")
+                      ("@purchase")
+                      ("@payment")
+                      ("@place")))
+
+(push '("delegated") org-tag-alist)
+(push '("waiting") org-tag-alist)
+(push '("someday") org-tag-alist)
+(push '("remember") org-tag-alist)
 
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
+;  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
   (setq company-idle-delay 0.25))
 
 (setq deft-use-projectile-projects t)
@@ -733,79 +759,102 @@
       org-agenda-tags-todo-honor-ignore-options t
       org-agenda-fontify-priorities t)
 
-(setq org-agenda-custom-commands
-      (quote (("N" "Notes" tags "NOTE"
-               ((org-agenda-overriding-header "Notes")
-                (org-tags-match-list-sublevels t)))
-              ("h" "Habits" tags-todo "STYLE=\"habit\""
-               ((org-agenda-overriding-header "Habits")
-                (org-agenda-sorting-strategy
-                 '(todo-state-down effort-up category-keep))))
-              ("n" "Next Actions"
-               ((agenda ""
-                        ((org-agenda-span '1)
-                         (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
-                         (org-agenda-start-day (org-today))))
-                (tags-todo "-@delegated/-PROJ-TODO-WAIT-WATCH"
-                           ((org-agenda-overriding-header "Project Tasks")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-agenda-sorting-strategy
-                             '(category-up))))
-                (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
-                           ((org-agenda-overriding-header (concat "Standalone Tasks"))
-                            (org-agenda-skip-function 'nm/skip-project-tasks)
-                            (org-agenda-todo-ignore-scheduled t)
-                            (org-agenda-todo-ignore-deadlines t)
-                            (org-agenda-todo-ignore-with-date t)
-                            (org-agenda-sorting-strategy '(category-up))))
-                (tags-todo "-SOMEDAY-@delegated/WATCH"
-                           ((org-agenda-overriding-header "Keep eye on")
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "@delegated/!"
-                           ((org-agenda-overriding-header "Delegated")
-                            (org-agenda-todo-ignore-scheduled t)
-                            (org-agenda-todo-ignore-deadlines t)
-                            (org-agenda-todo-ignore-with-date t)
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "-@delegated/WAIT"
-                           ((org-agenda-overriding-header "On Hold")
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY/TODO"
-                           ((org-tags-match-list-sublevels nil)
-                            (org-agenda-overriding-header "Inbox Bucket")))
-                (tags-todo "-@delegated/PROJ"
-                           ((org-agenda-overriding-header "Projects")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-tags-match-list-sublevels 'indented)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))))
-              ("r" "Review"
-               ((tags-todo "-CANCELLED/!"
-                           ((org-agenda-overriding-header "Stuck Projects")
-                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
-                           ((org-agenda-overriding-header (concat "Project Subtasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY/TODO"
-                           ((org-tags-match-list-sublevels nil)
-                            (org-agenda-overriding-header "Inbox Bucket")))
-                (tags-todo "SOMEDAY/"
-                           ((org-agenda-overriding-header "Someday Tasks")
-                            (org-agenda-skip-function 'nm/skip-scheduled)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+(push '("n" "Next Actions"
+        ((agenda ""
+                 ((org-agenda-span '1)
+                  (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+                  (org-agenda-start-day (org-today))))
+         (tags-todo "-@delegated/"
+                    ((org-agenda-overriding-header "Project Tasks")
+                     (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
+                    ((org-agenda-overriding-header (concat "Standalone Tasks"))
+                     (org-agenda-skip-function 'nm/skip-project-tasks)
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy '(category-up))))
+         (tags-todo "-SOMEDAY/TODO"
+                    ((org-tags-match-list-sublevels nil)
+                     (org-agenda-overriding-header "Inbox Bucket")))
+         (tags-todo "-@delegated/PROJ"
+                    ((org-agenda-overriding-header "Projects")
+                     (org-agenda-skip-function 'bh/skip-non-projects)
+                     (org-tags-match-list-sublevels 'indented)
+                     (org-agenda-sorting-strategy
+                      '(category-keep)))))) org-agenda-custom-commands)
+
+;; (setq org-super-agenda-mode t
+;;       org-agenda-todo-ignore-scheduled 'future
+;;       org-agenda-tags-todo-honor-ignore-options t
+;;       org-agenda-fontify-priorities t)
+
+;; (setq org-agenda-custom-commands
+;;       (quote (("N" "Notes" tags "NOTE"
+;;                ((org-agenda-overriding-header "Notes")
+;;                 (org-tags-match-list-sublevels t)))
+;;               ("h" "Habits" tags-todo "STYLE=\"habit\""
+;;                ((org-agenda-overriding-header "Habits")
+;;                 (org-agenda-sorting-strategy
+;;                  '(todo-state-down effort-up category-keep))))
+;;               ("n" "Next Actions"
+;;                ((agenda ""
+;;                         ((org-agenda-span '1)
+;;                          (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+;;                          (org-agenda-start-day (org-today))))
+;;                 (tags-todo "-@delegated/"
+;;                            ((org-agenda-overriding-header "Project Tasks")
+;;                             (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
+;;                             (org-tags-match-list-sublevels 'indented)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-up))))
+;;                 (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
+;;                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
+;;                             (org-agenda-skip-function 'nm/skip-project-tasks)
+;;                             (org-agenda-todo-ignore-scheduled t)
+;;                             (org-agenda-todo-ignore-deadlines t)
+;;                             (org-agenda-todo-ignore-with-date t)
+;;                             (org-agenda-sorting-strategy '(category-up))))
+;;                 (tags-todo "-SOMEDAY/TODO"
+;;                            ((org-tags-match-list-sublevels nil)
+;;                             (org-agenda-overriding-header "Inbox Bucket")))
+;;                 (tags-todo "-@delegated/PROJ"
+;;                            ((org-agenda-overriding-header "Projects")
+;;                             (org-agenda-skip-function 'bh/skip-non-projects)
+;;                             (org-tags-match-list-sublevels 'indented)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-keep))))))
+;;               ("r" "Review"
+;;                ((tags-todo "-CANCELLED/!"
+;;                            ((org-agenda-overriding-header "Stuck Projects")
+;;                             (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-keep))))
+;;                 (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
+;;                            ((org-agenda-overriding-header (concat "Project Subtasks"
+;;                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
+;;                                                                       ""
+;;                                                                     " (including WAITING and SCHEDULED tasks)")))
+;;                             (org-agenda-skip-function 'bh/skip-non-project-tasks)
+;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-keep))))
+;;                 (tags-todo "-SOMEDAY/TODO"
+;;                            ((org-tags-match-list-sublevels nil)
+;;                             (org-agenda-overriding-header "Inbox Bucket")))
+;;                 (tags-todo "SOMEDAY/"
+;;                            ((org-agenda-overriding-header "Someday Tasks")
+;;                             (org-agenda-skip-function 'nm/skip-scheduled)
+;;                             (org-tags-match-list-sublevels nil)
+;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 (setq visual-fill-column 120)
 

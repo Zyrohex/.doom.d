@@ -7,6 +7,41 @@ makes it easy so that I can write my changes from config.org or config.el.
 
 * New Changes
 
+** Org-Agenda Functions for Condition checks
+So another pain point has been maintaining my task items. So i'm always looking
+for ways to tweak or adjust how I can automate or simply task management, and my
+agenda setup. So this next piece adds some functions to run condition checks for
+tasks that are in a NEXT state, or a Inbox or waiting to be defined state.
+
+For this piece, i've used bits and pieces from Doc Norang's ~org-helper.el~.
+#+begin_src emacs-lisp
+(defun nm/only-show-next-and-skip-non-projects ()
+  "Skip trees that are not projects, and shows only tasks that are in next condition state."
+  (if (save-excursion (bh/skip-non-stuck-projects))
+      (save-restriction
+        (widen)
+        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+          (cond
+           ((or (bh/is-project-p) (and (bh/is-task-p) (bh/is-project-subtree-p) (nm/has-next-condition))) nil)
+           ((and (and (bh/is-project-subtree-p) (nm/has-next-condition)) (and (not (bh/is-task-p)) (nm/has-next-condition))) nil)
+           (t subtree-end))))
+    (save-excursion (org-end-of-subtree t))))
+
+(defun nm/has-next-condition ()
+  "Returns t if headline has next condition state"
+  (save-excursion
+    (cond
+     ((nm/is-scheduled-p) t)
+     ((nm/exist-context-tag-p) t)
+     ((nm/checkbox-active-exist-p) t))))
+#+end_src
+
+Great, so that takes care of my project tasks that are ready to be worked, now I
+need something for standalone tasks.
+#+begin_src emacs-lisp
+
+#+end_src
+
 ** Task Automation
 I got tired of manually setting task states to "NEXT" "PROJ" "TODO" so i've
 added a few functions to automate this for me.
@@ -21,7 +56,6 @@ The *NEXT* state will be set if any of the following 3 conditions exist:
 The PROJ state will become active upon the following conditions:
 1. Task has a child headline with a TODO-KEYWORD of any-type (TODO/NEXT/WAIT). \\
 [[file:attachments/projects.gif]]
-
 ** ID Completion
 I got tired of flipping back n forth between buffers, copying the ID of a
 headline, then jump back and paste that ID into my link. So now i'll have
@@ -131,7 +165,7 @@ Adds a newline between headlines, and also add blank characters at the end of th
   (interactive)
   (org-map-entries #'nm/add-newline-between-headlines t 'file))
 
-(add-hook 'before-save-hook #'nm/newlines-between-headlines)
+(add-hook 'org-insert-heading-hook #'nm/newlines-between-headlines)
 #+end_src
 
 ** Journal Capture Template
@@ -375,7 +409,7 @@ available are:
                   org-agenda-tags-column 0
 ;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
-                  org-agenda-block-separator ""
+                  org-agenda-block-separator 61
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
                   org-agenda-window-setup 'current-window
@@ -392,7 +426,8 @@ available are:
 #+END_SRC
 
 ** Capture Templates
-What templates do I need available for quick capture of information? This seems it would fall under 2-3 categories:
+What templates do I need available for quick capture of information? This seems
+it would fall under 2-3 categories:
 1. Task Items
 2. Notes
 3. Journal
@@ -433,7 +468,7 @@ kicks in and I log a new task to my INBOX.
 Occassionally I do like to take a note in my journal, to make a mental note of
 my day...
 #+begin_src emacs-lisp
-(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 #+end_src
 
 Sometimes i'll just start working on things that I find interseting, and I need
@@ -487,7 +522,9 @@ Embed images into the exported HTML files.
 #+END_SRC
 
 ** Keywords
-After much feedback and discussing with other users, I decided to simplify the keyword list to make it simple. Defining a project will now focus on the tag word *:project:* so that all child task are treated as part of the project.
+After much feedback and discussing with other users, I decided to simplify the
+keyword list to make it simple. Defining a project will now focus on the tag
+word *:project:* so that all child task are treated as part of the project.
 | Keyword | Description                                                  |
 |---------+--------------------------------------------------------------|
 | \TODO   | Task has actionable items defined and ready to be worked.    |
@@ -520,7 +557,10 @@ After much feedback and discussing with other users, I decided to simplify the k
 #+END_SRC
 
 ** Logging and Drawers
-Next, we like to keep a history of our activity of a task so we *track* when changes occur, and we also keep our notes logged in *their own drawer*. Optionally you can also add the following in-buffer settings to override the =org-log-into-drawer= function. ~#+STARTUP: logdrawer~ or ~#+STARTUP: nologdrawer~
+Next, we like to keep a history of our activity of a task so we *track* when
+changes occur, and we also keep our notes logged in *their own drawer*. Optionally
+you can also add the following in-buffer settings to override the
+=org-log-into-drawer= function. ~#+STARTUP: logdrawer~ or ~#+STARTUP: nologdrawer~
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-log-into-drawer t
                   org-log-done 'time
@@ -530,8 +570,9 @@ Next, we like to keep a history of our activity of a task so we *track* when cha
 #+END_SRC
 
 ** Properties
+I like to have properties inherited from their parent.
 #+BEGIN_SRC emacs-lisp
-(after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
+(after! org (setq org-use-property-inheritance t))
 #+END_SRC
 
 ** Publishing
@@ -575,30 +616,44 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
 #+END_SRC
 
 ** Default Tags
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-tags-column 0
-                  org-tag-alist '((:startgrouptag)
-                                  (:grouptags)
-                                  ("@home" . ?h)
-                                  ("@computer")
-                                  ("@work")
-                                  ("@place")
-                                  ("@bills")
-                                  ("@order")
-                                  ("@labor")
-                                  ("@read")
-                                  ("@brainstorm")
-                                  ("@planning")
-                                  ("WAIT")
-                                  ("SOMEDAY"))))
-#+END_SRC
+I don't like to shift my eyes back n forth when i'm scanning data, so I keep my
+columns one space after the headline.
+#+begin_src emacs-lisp
+(setq org-tags-column 0)
+#+end_src
+
+I like to keep a list of predefined context tags, this helps speed the
+assignment process up and also keep things consistent.
+#+begin_src emacs-lisp
+(setq org-tag-alist '(("@home")
+                      ("@computer")
+                      ("@email")
+                      ("@call")
+                      ("@brainstorm")
+                      ("@write")
+                      ("@read")
+                      ("@code")
+                      ("@research")
+                      ("@purchase")
+                      ("@payment")
+                      ("@place")))
+#+end_src
+
+I also like to use tags to specify when a task is one of the following:
+~delegated, waiting, someday, remember~.
+#+begin_src emacs-lisp
+(push '("delegated") org-tag-alist)
+(push '("waiting") org-tag-alist)
+(push '("someday") org-tag-alist)
+(push '("remember") org-tag-alist)
+#+end_src
 
 * Module Settings
 
 ** company mode
 #+BEGIN_SRC emacs-lisp
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
+;  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
   (setq company-idle-delay 0.25))
 #+END_SRC
 
@@ -959,85 +1014,114 @@ These are my default ROAM settings
 #+END_SRC
 
 ** Super Agenda Settings
-#+BEGIN_SRC emacs-lisp
+First we setup a few deafults for the org-agenda buffer:
+#+begin_src emacs-lisp
 (setq org-super-agenda-mode t
       org-agenda-todo-ignore-scheduled 'future
       org-agenda-tags-todo-honor-ignore-options t
       org-agenda-fontify-priorities t)
+#+end_src
 
-(setq org-agenda-custom-commands
-      (quote (("N" "Notes" tags "NOTE"
-               ((org-agenda-overriding-header "Notes")
-                (org-tags-match-list-sublevels t)))
-              ("h" "Habits" tags-todo "STYLE=\"habit\""
-               ((org-agenda-overriding-header "Habits")
-                (org-agenda-sorting-strategy
-                 '(todo-state-down effort-up category-keep))))
-              ("n" "Next Actions"
-               ((agenda ""
-                        ((org-agenda-span '1)
-                         (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
-                         (org-agenda-start-day (org-today))))
-                (tags-todo "-@delegated/-PROJ-TODO-WAIT-WATCH"
-                           ((org-agenda-overriding-header "Project Tasks")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-agenda-sorting-strategy
-                             '(category-up))))
-                (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
-                           ((org-agenda-overriding-header (concat "Standalone Tasks"))
-                            (org-agenda-skip-function 'nm/skip-project-tasks)
-                            (org-agenda-todo-ignore-scheduled t)
-                            (org-agenda-todo-ignore-deadlines t)
-                            (org-agenda-todo-ignore-with-date t)
-                            (org-agenda-sorting-strategy '(category-up))))
-                (tags-todo "-SOMEDAY-@delegated/WATCH"
-                           ((org-agenda-overriding-header "Keep eye on")
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "@delegated/!"
-                           ((org-agenda-overriding-header "Delegated")
-                            (org-agenda-todo-ignore-scheduled t)
-                            (org-agenda-todo-ignore-deadlines t)
-                            (org-agenda-todo-ignore-with-date t)
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "-@delegated/WAIT"
-                           ((org-agenda-overriding-header "On Hold")
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY/TODO"
-                           ((org-tags-match-list-sublevels nil)
-                            (org-agenda-overriding-header "Inbox Bucket")))
-                (tags-todo "-@delegated/PROJ"
-                           ((org-agenda-overriding-header "Projects")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-tags-match-list-sublevels 'indented)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))))
-              ("r" "Review"
-               ((tags-todo "-CANCELLED/!"
-                           ((org-agenda-overriding-header "Stuck Projects")
-                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
-                           ((org-agenda-overriding-header (concat "Project Subtasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      ""
-                                                                    " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-SOMEDAY/TODO"
-                           ((org-tags-match-list-sublevels nil)
-                            (org-agenda-overriding-header "Inbox Bucket")))
-                (tags-todo "SOMEDAY/"
-                           ((org-agenda-overriding-header "Someday Tasks")
-                            (org-agenda-skip-function 'nm/skip-scheduled)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+This first stage is how I track what's on my list of things to complete.
+#+begin_src emacs-lisp
+(push '("n" "Next Actions"
+        ((agenda ""
+                 ((org-agenda-span '1)
+                  (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+                  (org-agenda-start-day (org-today))))
+         (tags-todo "-@delegated/"
+                    ((org-agenda-overriding-header "Project Tasks")
+                     (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
+                    ((org-agenda-overriding-header (concat "Standalone Tasks"))
+                     (org-agenda-skip-function 'nm/skip-project-tasks)
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy '(category-up))))
+         (tags-todo "-SOMEDAY/TODO"
+                    ((org-tags-match-list-sublevels nil)
+                     (org-agenda-overriding-header "Inbox Bucket")))
+         (tags-todo "-@delegated/PROJ"
+                    ((org-agenda-overriding-header "Projects")
+                     (org-agenda-skip-function 'bh/skip-non-projects)
+                     (org-tags-match-list-sublevels 'indented)
+                     (org-agenda-sorting-strategy
+                      '(category-keep)))))) org-agenda-custom-commands)
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+;; (setq org-super-agenda-mode t
+;;       org-agenda-todo-ignore-scheduled 'future
+;;       org-agenda-tags-todo-honor-ignore-options t
+;;       org-agenda-fontify-priorities t)
+
+;; (setq org-agenda-custom-commands
+;;       (quote (("N" "Notes" tags "NOTE"
+;;                ((org-agenda-overriding-header "Notes")
+;;                 (org-tags-match-list-sublevels t)))
+;;               ("h" "Habits" tags-todo "STYLE=\"habit\""
+;;                ((org-agenda-overriding-header "Habits")
+;;                 (org-agenda-sorting-strategy
+;;                  '(todo-state-down effort-up category-keep))))
+;;               ("n" "Next Actions"
+;;                ((agenda ""
+;;                         ((org-agenda-span '1)
+;;                          (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+;;                          (org-agenda-start-day (org-today))))
+;;                 (tags-todo "-@delegated/"
+;;                            ((org-agenda-overriding-header "Project Tasks")
+;;                             (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
+;;                             (org-tags-match-list-sublevels 'indented)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-up))))
+;;                 (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
+;;                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
+;;                             (org-agenda-skip-function 'nm/skip-project-tasks)
+;;                             (org-agenda-todo-ignore-scheduled t)
+;;                             (org-agenda-todo-ignore-deadlines t)
+;;                             (org-agenda-todo-ignore-with-date t)
+;;                             (org-agenda-sorting-strategy '(category-up))))
+;;                 (tags-todo "-SOMEDAY/TODO"
+;;                            ((org-tags-match-list-sublevels nil)
+;;                             (org-agenda-overriding-header "Inbox Bucket")))
+;;                 (tags-todo "-@delegated/PROJ"
+;;                            ((org-agenda-overriding-header "Projects")
+;;                             (org-agenda-skip-function 'bh/skip-non-projects)
+;;                             (org-tags-match-list-sublevels 'indented)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-keep))))))
+;;               ("r" "Review"
+;;                ((tags-todo "-CANCELLED/!"
+;;                            ((org-agenda-overriding-header "Stuck Projects")
+;;                             (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-keep))))
+;;                 (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
+;;                            ((org-agenda-overriding-header (concat "Project Subtasks"
+;;                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
+;;                                                                       ""
+;;                                                                     " (including WAITING and SCHEDULED tasks)")))
+;;                             (org-agenda-skip-function 'bh/skip-non-project-tasks)
+;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-sorting-strategy
+;;                              '(category-keep))))
+;;                 (tags-todo "-SOMEDAY/TODO"
+;;                            ((org-tags-match-list-sublevels nil)
+;;                             (org-agenda-overriding-header "Inbox Bucket")))
+;;                 (tags-todo "SOMEDAY/"
+;;                            ((org-agenda-overriding-header "Someday Tasks")
+;;                             (org-agenda-skip-function 'nm/skip-scheduled)
+;;                             (org-tags-match-list-sublevels nil)
+;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 #+END_SRC
 
 ** Visual Fill Column
