@@ -1,7 +1,7 @@
 ;;; org-task-automation.el -*- lexical-binding: t; -*-
 
 (add-hook! 'org-checkbox-statistics-hook #'nm/statistics-update-task)
-;(add-hook 'before-save-hook #'nm/update-task-conditions)
+(add-hook 'before-save-hook #'nm/update-task-conditions)
 
 (defvar org-tasks-properties-metadata "SOURCE" "List of property values used to clarify task items.")
 
@@ -124,8 +124,7 @@
       (re-search-forward org-scheduled-regexp end t))))
 
 (defun nm/skip-project-tasks ()
-  "Show non-project tasks.
-Skip project and sub-project tasks, habits, and project related tasks."
+  "Show non-project tasks. Skip project and sub-project tasks, habits, and project related tasks."
   (save-restriction
     (widen)
     (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
