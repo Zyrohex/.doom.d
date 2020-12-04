@@ -1,61 +1,128 @@
 
 # Table of Contents
 
--   [New Changes](#org96924c5)
-    -   [Task Automation](#orge13cfb1)
-    -   [ID Completion](#org8f367e0)
-    -   [Quick Note Find Headline](#org27fc4cf)
-    -   [Daily Task Adder](#orgbdab570)
-    -   [Add Blanklines between Headlines](#orgcd00cf3)
-    -   [Journal Capture Template](#orgef6cc7a)
-    -   [Setting up my productivity layout](#org7b47a60)
-    -   [Return Indirect Buffer](#org0b8bc1e)
--   [Requirements](#org8d35edd)
--   [Initial-Settings](#org25adf6f)
--   [Org-Mode](#org3b8584e)
-    -   [Looks and Feels](#orge8bc437)
-    -   [Loading agenda settings](#org1564a7e)
-    -   [Clock Settings](#org41debd1)
-    -   [Capture Templates](#orgcef4bf6)
-    -   [Export Settings](#orgcbf7e3e)
-    -   [Keywords](#orgfd005b7)
-    -   [Logging and Drawers](#org0470e34)
-    -   [Properties](#orgdfc5870)
-    -   [Publishing](#orgcf06f9b)
-    -   [Default Tags](#org54acb72)
--   [Module Settings](#org1f7f58a)
-    -   [company mode](#org2ee2891)
-    -   [DEFT](#org544ae64)
-    -   [Elfeed](#orgdbe3dba)
-    -   [Graphs and Chart Modules](#orge8d72f1)
-    -   [Journal](#orgfc9cf9d)
-    -   [Org-Rifle](#org40597cf)
-    -   [org-ql](#org3b123ac)
-    -   [Pandoc](#org2ea7a60)
-    -   [Reveal](#org42a1e95)
-    -   [ROAM](#org29a121f)
-    -   [ROAM Export Backlinks + Content](#org25fe52d)
-    -   [ROAM Server](#org6c9c8a6)
-    -   [Super Agenda Settings](#org9e7ff47)
-    -   [Visual Fill Column](#org42c813b)
--   [Custom Functions](#orga47675b)
-    -   [Archive keeping Structure](#orgfbcdb84)
-    -   [Custom Faces](#org564bbb5)
-    -   [Clarify Tasks](#orgc7a87e6)
-    -   [Change Font](#orgc4dd9f1)
--   [End of file loading](#org26b7ad1)
+-   [New Changes](#org1f3051e)
+    -   [Org-Agenda Functions for Condition checks](#org1a2fc3d)
+    -   [Task Automation](#org264217c)
+    -   [ID Completion](#org64cfc72)
+    -   [Quick Note Find Headline](#orgb9279db)
+    -   [Daily Task Adder](#org8b94387)
+    -   [Add Blanklines between Headlines](#orgbdc0302)
+    -   [Journal Capture Template](#org8ade513)
+    -   [Setting up my productivity layout](#orgcec25fa)
+    -   [Return Indirect Buffer](#org4642d37)
+-   [Requirements](#org50e82e8)
+-   [Initial-Settings](#orgee36b63)
+-   [Org-Mode](#org2a7050a)
+    -   [Looks and Feels](#orgcab9c90)
+    -   [Loading agenda settings](#orgef72df9)
+    -   [Clock Settings](#orga2684e4)
+    -   [Capture Templates](#orgc7532af)
+    -   [Export Settings](#org50901fe)
+    -   [Keywords](#org0653cea)
+    -   [Logging and Drawers](#orgbca9def)
+    -   [Properties](#orgde09ff2)
+    -   [Publishing](#orgd4082e5)
+    -   [Default Tags](#orgda88740)
+-   [Module Settings](#orgfe7ea72)
+    -   [company mode](#org40acfd0)
+    -   [DEFT](#org5ed7f15)
+    -   [Elfeed](#org90e0374)
+    -   [Graphs and Chart Modules](#org671f27b)
+    -   [Journal](#org697f68a)
+    -   [Org-Rifle](#org063b587)
+    -   [org-ql](#orgbf84c53)
+    -   [Pandoc](#org628e408)
+    -   [Reveal](#org514795d)
+    -   [ROAM](#org7af9027)
+    -   [ROAM Export Backlinks + Content](#orga61c5b5)
+    -   [ROAM Server](#orgdd48664)
+    -   [Super Agenda Settings](#org6dccf3e)
+    -   [Visual Fill Column](#orgab27189)
+-   [Custom Functions](#orge50cb10)
+    -   [Archive keeping Structure](#org8871a3b)
+    -   [Custom Faces](#org39497ea)
+    -   [Clarify Tasks](#org1e02e9d)
+    -   [Change Font](#org5ed1e2a)
+-   [End of file loading](#org1aaeaf2)
 
 Uses org-babel to tangle all of my source code blocks back to <span class="underline">config.el</span>, this
 makes it easy so that I can write my changes from config.org or config.el.
 ![img](attachments/workspace.png)
 
 
-<a id="org96924c5"></a>
+<a id="org1f3051e"></a>
 
 # New Changes
 
 
-<a id="orge13cfb1"></a>
+<a id="org1a2fc3d"></a>
+
+## Org-Agenda Functions for Condition checks
+
+So another pain point has been maintaining my task items. So i&rsquo;m always looking
+for ways to tweak or adjust how I can automate or simply task management, and my
+agenda setup. So this next piece adds some functions to run condition checks for
+tasks that are in a NEXT state, or a Inbox or waiting to be defined state.
+
+For this piece, i&rsquo;ve used bits and pieces from Doc Norang&rsquo;s `org-helper.el`. We&rsquo;ll
+always skip any task that&rsquo;s scheduled since it&rsquo;ll be moved to our agenda.
+
+    (defun nm/project-tasks-ready ()
+      "Skip trees that are not projects"
+          (let ((next-headline (save-excursion (outline-next-heading)))
+                (subtree-end (org-end-of-subtree t)))
+            (cond
+               ((and (bh/is-project-subtree-p) (nm/has-next-condition)) nil)
+               ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) subtree-end)
+               (t subtree-end))))
+    
+    (defun nm/has-next-condition ()
+      "Returns t if headline has next condition state"
+      (save-excursion
+        (cond
+         ((nm/is-scheduled-p) t)
+         ((nm/exist-context-tag-p) t)
+         ((nm/checkbox-active-exist-p) t))))
+
+Great, so that takes care of my project tasks that are ready to be worked, now I
+need something for standalone tasks.
+
+    (defun nm/standard-tasks-ready ()
+      "Show non-project tasks. Skip project and sub-project tasks, habits, and project related tasks."
+      (save-restriction
+        (widen)
+        (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
+          (cond
+           ((bh/is-project-p) subtree-end)
+           ((oh/is-scheduled-p) subtree-end)
+           ((org-is-habit-p) subtree-end)
+           ((bh/is-project-subtree-p) subtree-end)
+           ((and (bh/is-task-p) (not (nm/has-next-condition))) subtree-end)
+           (t nil)))))
+
+For project tasks that are stuck:
+
+    (defun nm/stuck-projects ()
+      "Returns t when a project has no defined next actions for any of its subtasks."
+      (let ((next-headline (save-excursion (outline-next-heading)))
+            (subtree-end (org-end-of-subtree t)))
+        (cond
+         ((nm/has-next-condition) subtree-end)
+         ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) nil)
+         ((and (and (bh/is-task-p) (oh/has-parent-project-p)) (not (nm/has-next-condition))) nil))))
+
+For tasks that are ready to be refiled:
+
+    (defun nm/tasks-refile ()
+      "Returns t if the task is not part of a project and has no next state conditions."
+      (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+        (cond
+         ((and (not (or (oh/is-subtask-p) (oh/is-subproject-p))) (null (nm/has-next-condition))) nil)
+         (t subtree-end))))
+
+
+<a id="org264217c"></a>
 
 ## Task Automation
 
@@ -78,7 +145,7 @@ The PROJ state will become active upon the following conditions:
 ![img](attachments/projects.gif)
 
 
-<a id="org8f367e0"></a>
+<a id="org64cfc72"></a>
 
 ## ID Completion
 
@@ -103,7 +170,7 @@ headline, then jump back and paste that ID into my link. So now i&rsquo;ll have
     (after! org (org-link-set-parameters "id" :complete #'nm/org-id-prompt-id))
 
 
-<a id="org27fc4cf"></a>
+<a id="orgb9279db"></a>
 
 ## Quick Note Find Headline
 
@@ -133,7 +200,7 @@ key, which will prompt for a headline from any of your task files that exist in
       (forward-char -1))
 
 
-<a id="orgbdab570"></a>
+<a id="org8b94387"></a>
 
 ## Daily Task Adder
 
@@ -165,7 +232,7 @@ date on the headline.
             (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
 
 
-<a id="orgcd00cf3"></a>
+<a id="orgbdc0302"></a>
 
 ## Add Blanklines between Headlines
 
@@ -197,10 +264,10 @@ Adds a newline between headlines, and also add blank characters at the end of th
       (interactive)
       (org-map-entries #'nm/add-newline-between-headlines t 'file))
     
-    (add-hook 'before-save-hook #'nm/newlines-between-headlines)
+    (add-hook 'org-insert-heading-hook #'nm/newlines-between-headlines)
 
 
-<a id="orgef6cc7a"></a>
+<a id="org8ade513"></a>
 
 ## Journal Capture Template
 
@@ -225,7 +292,7 @@ that are called when initiated.
           (progn (org-end-of-subtree t) (newline) (insert (format "** %s" (format-time-string "%b '%y")))))))
 
 
-<a id="org7b47a60"></a>
+<a id="orgcec25fa"></a>
 
 ## Setting up my productivity layout
 
@@ -260,7 +327,7 @@ that are called when initiated.
           :desc "Load ORGMODE Setup" "," #'nm/productive-window)
 
 
-<a id="org0b8bc1e"></a>
+<a id="org4642d37"></a>
 
 ## Return Indirect Buffer
 
@@ -298,7 +365,7 @@ that are called when initiated.
           :desc "Return indirect buffer TASK files" "!" #'nm/search-headlines-org-tasks-directory)
 
 
-<a id="org8d35edd"></a>
+<a id="org50e82e8"></a>
 
 # Requirements
 
@@ -310,7 +377,7 @@ minimum so as much of this is close to regular DOOM EMACS.
 2.  I use a few different monospace fonts: [Input](https://input.fontbureau.com/download/), [DejaVu](http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2), [FiraCode](https://github.com/tonsky/FiraCode), [IBM Plex Mono](https://google.com/search?q=IBM Plex Mono font Download) and [Roboto Mono](https://google.com/search?q=Roboto Mono Font Download).
 
 
-<a id="org25adf6f"></a>
+<a id="orgee36b63"></a>
 
 # Initial-Settings
 
@@ -399,7 +466,7 @@ Next we configure popup-rules and default fonts.
             doom-big-font (font-spec :family "InputMono" :size 22)))
 
 
-<a id="org3b8584e"></a>
+<a id="org2a7050a"></a>
 
 # Org-Mode
 
@@ -428,7 +495,7 @@ Here we add any requirements before org-mode starts to load
     (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 
-<a id="orge8bc437"></a>
+<a id="orgcab9c90"></a>
 
 ## Looks and Feels
 
@@ -450,7 +517,7 @@ available are:
       (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 
 
-<a id="org1564a7e"></a>
+<a id="orgef72df9"></a>
 
 ## Loading agenda settings
 
@@ -460,7 +527,7 @@ available are:
                       org-agenda-tags-column 0
     ;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                       org-agenda-compact-blocks nil
-                      org-agenda-block-separator ""
+                      org-agenda-block-separator 61
                       org-agenda-skip-scheduled-if-done t
                       org-agenda-skip-deadline-if-done t
                       org-agenda-window-setup 'current-window
@@ -471,18 +538,19 @@ available are:
     (after! org (setq org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org") (file-expand-wildcards "~/orgmode/gtd/*/*.org"))))
 
 
-<a id="org41debd1"></a>
+<a id="orga2684e4"></a>
 
 ## Clock Settings
 
     (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
 
-<a id="orgcef4bf6"></a>
+<a id="orgc7532af"></a>
 
 ## Capture Templates
 
-What templates do I need available for quick capture of information? This seems it would fall under 2-3 categories:
+What templates do I need available for quick capture of information? This seems
+it would fall under 2-3 categories:
 
 1.  Task Items
 2.  Notes
@@ -519,7 +587,7 @@ kicks in and I log a new task to my INBOX.
 Occassionally I do like to take a note in my journal, to make a mental note of
 my day&#x2026;
 
-    (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry} :thoughts:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :immediate-finish t) org-capture-templates)
+    (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 
 Sometimes i&rsquo;ll just start working on things that I find interseting, and I need
 a method of take notes on what i&rsquo;m doing so I can keep track of what I discover
@@ -536,7 +604,7 @@ headline.
     (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 
-<a id="orgcbf7e3e"></a>
+<a id="org50901fe"></a>
 
 ## Export Settings
 
@@ -571,11 +639,13 @@ Embed images into the exported HTML files.
                 (file-name-nondirectory source))))
 
 
-<a id="orgfd005b7"></a>
+<a id="org0653cea"></a>
 
 ## Keywords
 
-After much feedback and discussing with other users, I decided to simplify the keyword list to make it simple. Defining a project will now focus on the tag word **:project:** so that all child task are treated as part of the project.
+After much feedback and discussing with other users, I decided to simplify the
+keyword list to make it simple. Defining a project will now focus on the tag
+word **:project:** so that all child task are treated as part of the project.
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -646,11 +716,14 @@ After much feedback and discussing with other users, I decided to simplify the k
               ("NEXT" . +org-todo-next)))
 
 
-<a id="org0470e34"></a>
+<a id="orgbca9def"></a>
 
 ## Logging and Drawers
 
-Next, we like to keep a history of our activity of a task so we **track** when changes occur, and we also keep our notes logged in **their own drawer**. Optionally you can also add the following in-buffer settings to override the `org-log-into-drawer` function. `#+STARTUP: logdrawer` or `#+STARTUP: nologdrawer`
+Next, we like to keep a history of our activity of a task so we **track** when
+changes occur, and we also keep our notes logged in **their own drawer**. Optionally
+you can also add the following in-buffer settings to override the
+`org-log-into-drawer` function. `#+STARTUP: logdrawer` or `#+STARTUP: nologdrawer`
 
     (after! org (setq org-log-into-drawer t
                       org-log-done 'time
@@ -659,14 +732,16 @@ Next, we like to keep a history of our activity of a task so we **track** when c
                       org-log-reschedule 'note))
 
 
-<a id="orgdfc5870"></a>
+<a id="orgde09ff2"></a>
 
 ## Properties
 
-    (after! org (setq org-use-property-inheritance t)) ; We like to inhert properties from their parents
+I like to have properties inherited from their parent.
+
+    (after! org (setq org-use-property-inheritance t))
 
 
-<a id="orgcf06f9b"></a>
+<a id="orgd4082e5"></a>
 
 ## Publishing
 
@@ -709,42 +784,55 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                         ("myprojectweb" :components("attachments" "notes" "org files to MD")))))
 
 
-<a id="org54acb72"></a>
+<a id="orgda88740"></a>
 
 ## Default Tags
 
-    (after! org (setq org-tags-column 0
-                      org-tag-alist '((:startgrouptag)
-                                      (:grouptags)
-                                      ("@home" . ?h)
-                                      ("@computer")
-                                      ("@work")
-                                      ("@place")
-                                      ("@bills")
-                                      ("@order")
-                                      ("@labor")
-                                      ("@read")
-                                      ("@brainstorm")
-                                      ("@planning")
-                                      ("WAIT")
-                                      ("SOMEDAY"))))
+I don&rsquo;t like to shift my eyes back n forth when i&rsquo;m scanning data, so I keep my
+columns one space after the headline.
+
+    (setq org-tags-column 0)
+
+I like to keep a list of predefined context tags, this helps speed the
+assignment process up and also keep things consistent.
+
+    (setq org-tag-alist '(("@home")
+                          ("@computer")
+                          ("@email")
+                          ("@call")
+                          ("@brainstorm")
+                          ("@write")
+                          ("@read")
+                          ("@code")
+                          ("@research")
+                          ("@purchase")
+                          ("@payment")
+                          ("@place")))
+
+I also like to use tags to specify when a task is one of the following:
+`delegated, waiting, someday, remember`.
+
+    (push '("delegated") org-tag-alist)
+    (push '("waiting") org-tag-alist)
+    (push '("someday") org-tag-alist)
+    (push '("remember") org-tag-alist)
 
 
-<a id="org1f7f58a"></a>
+<a id="orgfe7ea72"></a>
 
 # Module Settings
 
 
-<a id="org2ee2891"></a>
+<a id="org40acfd0"></a>
 
 ## company mode
 
     (after! org
-      (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
+    ;  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
       (setq company-idle-delay 0.25))
 
 
-<a id="org544ae64"></a>
+<a id="org5ed7f15"></a>
 
 ## DEFT
 
@@ -814,7 +902,7 @@ Configuring DEFT default settings
     (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
 
-<a id="orgdbe3dba"></a>
+<a id="org90e0374"></a>
 
 ## Elfeed
 
@@ -833,7 +921,7 @@ Configuring DEFT default settings
     ;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 
-<a id="orge8d72f1"></a>
+<a id="org671f27b"></a>
 
 ## Graphs and Chart Modules
 
@@ -863,7 +951,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
       (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
 
-<a id="orgfc9cf9d"></a>
+<a id="org697f68a"></a>
 
 ## Journal
 
@@ -873,7 +961,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
                       org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 
-<a id="org40597cf"></a>
+<a id="org063b587"></a>
 
 ## Org-Rifle
 
@@ -972,7 +1060,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (provide 'setup-helm-org-rifle)
 
 
-<a id="org3b123ac"></a>
+<a id="orgbf84c53"></a>
 
 ## org-ql
 
@@ -1011,14 +1099,14 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (bind-key "<f9>" #'org-ql-view)
 
 
-<a id="org2ea7a60"></a>
+<a id="org628e408"></a>
 
 ## Pandoc
 
     (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 
-<a id="org42a1e95"></a>
+<a id="org514795d"></a>
 
 ## Reveal
 
@@ -1027,7 +1115,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha&rsquo;
     (setq org-reveal-title-slide nil)
 
 
-<a id="org29a121f"></a>
+<a id="org7af9027"></a>
 
 ## ROAM
 
@@ -1073,7 +1161,7 @@ These are my default ROAM settings
                "%?")))
 
 
-<a id="org25fe52d"></a>
+<a id="orga61c5b5"></a>
 
 ## ROAM Export Backlinks + Content
 
@@ -1106,7 +1194,7 @@ These are my default ROAM settings
     (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 
-<a id="org6c9c8a6"></a>
+<a id="orgdd48664"></a>
 
 ## ROAM Server
 
@@ -1124,105 +1212,134 @@ These are my default ROAM settings
             org-roam-server-network-label-wrap-length 20))
 
 
-<a id="org9e7ff47"></a>
+<a id="org6dccf3e"></a>
 
 ## Super Agenda Settings
+
+First we setup a few deafults for the org-agenda buffer:
 
     (setq org-super-agenda-mode t
           org-agenda-todo-ignore-scheduled 'future
           org-agenda-tags-todo-honor-ignore-options t
           org-agenda-fontify-priorities t)
+
+This first stage is how I track what&rsquo;s on my list of things to complete.
+
+    (setq org-agenda-custom-commands nil)
+    (push '("n" "Next Actions"
+            ((agenda ""
+                     ((org-agenda-span '1)
+                      (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+                      (org-agenda-start-day (org-today))))
+             (tags-todo "-@delegated/-PROJ"
+                        ((org-agenda-overriding-header "Project Tasks")
+                         (org-agenda-skip-function 'nm/project-tasks-ready)
+                         (org-agenda-todo-ignore-scheduled t)
+                         (org-agenda-todo-ignore-deadlines t)
+                         (org-agenda-todo-ignore-with-date t)
+                         (org-agenda-sorting-strategy
+                          '(category-up))))
+             (tags-todo "-SOMEDAY-@delegated/"
+                        ((org-agenda-overriding-header (concat "Standalone Tasks"))
+                         (org-agenda-skip-function 'nm/standard-tasks-ready)
+                         (org-agenda-todo-ignore-scheduled t)
+                         (org-agenda-todo-ignore-deadlines t)
+                         (org-agenda-todo-ignore-with-date t)
+                         (org-agenda-sorting-strategy '(category-up))))
+             (tags-todo "-SOMEDAY/TODO"
+                        ((org-tags-match-list-sublevels nil)
+                         (org-agenda-skip-function 'nm/tasks-refile)
+                         (org-agenda-overriding-header "Ready to Refile")))
+             (tags-todo "-SOMEDAY-@delegated/"
+                        ((org-agenda-overriding-header "Stuck Projects")
+                         (org-agenda-skip-function 'nm/stuck-projects)
+                         (org-tags-match-list-sublevels 'indented)
+                         (org-agenda-sorting-strategy
+                          '(category-keep)))))) org-agenda-custom-commands)
+
+    ;; (setq org-super-agenda-mode t
+    ;;       org-agenda-todo-ignore-scheduled 'future
+    ;;       org-agenda-tags-todo-honor-ignore-options t
+    ;;       org-agenda-fontify-priorities t)
     
-    (setq org-agenda-custom-commands
-          (quote (("N" "Notes" tags "NOTE"
-                   ((org-agenda-overriding-header "Notes")
-                    (org-tags-match-list-sublevels t)))
-                  ("h" "Habits" tags-todo "STYLE=\"habit\""
-                   ((org-agenda-overriding-header "Habits")
-                    (org-agenda-sorting-strategy
-                     '(todo-state-down effort-up category-keep))))
-                  ("n" "Next Actions"
-                   ((agenda ""
-                            ((org-agenda-span '1)
-                             (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
-                             (org-agenda-start-day (org-today))))
-                    (tags-todo "-@delegated/-PROJ-TODO-WAIT-WATCH"
-                               ((org-agenda-overriding-header "Project Tasks")
-                                (org-agenda-skip-function 'bh/skip-non-projects)
-                                (org-agenda-sorting-strategy
-                                 '(category-up))))
-                    (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
-                               ((org-agenda-overriding-header (concat "Standalone Tasks"))
-                                (org-agenda-skip-function 'nm/skip-project-tasks)
-                                (org-agenda-todo-ignore-scheduled t)
-                                (org-agenda-todo-ignore-deadlines t)
-                                (org-agenda-todo-ignore-with-date t)
-                                (org-agenda-sorting-strategy '(category-up))))
-                    (tags-todo "-SOMEDAY-@delegated/WATCH"
-                               ((org-agenda-overriding-header "Keep eye on")
-                                (org-agenda-sorting-strategy '(category-keep))))
-                    (tags-todo "@delegated/!"
-                               ((org-agenda-overriding-header "Delegated")
-                                (org-agenda-todo-ignore-scheduled t)
-                                (org-agenda-todo-ignore-deadlines t)
-                                (org-agenda-todo-ignore-with-date t)
-                                (org-agenda-sorting-strategy '(category-keep))))
-                    (tags-todo "-@delegated/WAIT"
-                               ((org-agenda-overriding-header "On Hold")
-                                (org-agenda-sorting-strategy
-                                 '(category-keep))))
-                    (tags-todo "-SOMEDAY/TODO"
-                               ((org-tags-match-list-sublevels nil)
-                                (org-agenda-overriding-header "Inbox Bucket")))
-                    (tags-todo "-@delegated/PROJ"
-                               ((org-agenda-overriding-header "Projects")
-                                (org-agenda-skip-function 'bh/skip-non-projects)
-                                (org-tags-match-list-sublevels 'indented)
-                                (org-agenda-sorting-strategy
-                                 '(category-keep))))))
-                  ("r" "Review"
-                   ((tags-todo "-CANCELLED/!"
-                               ((org-agenda-overriding-header "Stuck Projects")
-                                (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                                (org-agenda-sorting-strategy
-                                 '(category-keep))))
-                    (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
-                               ((org-agenda-overriding-header (concat "Project Subtasks"
-                                                                      (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                          ""
-                                                                        " (including WAITING and SCHEDULED tasks)")))
-                                (org-agenda-skip-function 'bh/skip-non-project-tasks)
-                                (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-sorting-strategy
-                                 '(category-keep))))
-                    (tags-todo "-SOMEDAY/TODO"
-                               ((org-tags-match-list-sublevels nil)
-                                (org-agenda-overriding-header "Inbox Bucket")))
-                    (tags-todo "SOMEDAY/"
-                               ((org-agenda-overriding-header "Someday Tasks")
-                                (org-agenda-skip-function 'nm/skip-scheduled)
-                                (org-tags-match-list-sublevels nil)
-                                (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
+    ;; (setq org-agenda-custom-commands
+    ;;       (quote (("N" "Notes" tags "NOTE"
+    ;;                ((org-agenda-overriding-header "Notes")
+    ;;                 (org-tags-match-list-sublevels t)))
+    ;;               ("h" "Habits" tags-todo "STYLE=\"habit\""
+    ;;                ((org-agenda-overriding-header "Habits")
+    ;;                 (org-agenda-sorting-strategy
+    ;;                  '(todo-state-down effort-up category-keep))))
+    ;;               ("n" "Next Actions"
+    ;;                ((agenda ""
+    ;;                         ((org-agenda-span '1)
+    ;;                          (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+    ;;                          (org-agenda-start-day (org-today))))
+    ;;                 (tags-todo "-@delegated/"
+    ;;                            ((org-agenda-overriding-header "Project Tasks")
+    ;;                             (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
+    ;;                             (org-tags-match-list-sublevels 'indented)
+    ;;                             (org-agenda-sorting-strategy
+    ;;                              '(category-up))))
+    ;;                 (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
+    ;;                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
+    ;;                             (org-agenda-skip-function 'nm/skip-project-tasks)
+    ;;                             (org-agenda-todo-ignore-scheduled t)
+    ;;                             (org-agenda-todo-ignore-deadlines t)
+    ;;                             (org-agenda-todo-ignore-with-date t)
+    ;;                             (org-agenda-sorting-strategy '(category-up))))
+    ;;                 (tags-todo "-SOMEDAY/TODO"
+    ;;                            ((org-tags-match-list-sublevels nil)
+    ;;                             (org-agenda-overriding-header "Inbox Bucket")))
+    ;;                 (tags-todo "-@delegated/PROJ"
+    ;;                            ((org-agenda-overriding-header "Projects")
+    ;;                             (org-agenda-skip-function 'bh/skip-non-projects)
+    ;;                             (org-tags-match-list-sublevels 'indented)
+    ;;                             (org-agenda-sorting-strategy
+    ;;                              '(category-keep))))))
+    ;;               ("r" "Review"
+    ;;                ((tags-todo "-CANCELLED/!"
+    ;;                            ((org-agenda-overriding-header "Stuck Projects")
+    ;;                             (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+    ;;                             (org-agenda-sorting-strategy
+    ;;                              '(category-keep))))
+    ;;                 (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
+    ;;                            ((org-agenda-overriding-header (concat "Project Subtasks"
+    ;;                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
+    ;;                                                                       ""
+    ;;                                                                     " (including WAITING and SCHEDULED tasks)")))
+    ;;                             (org-agenda-skip-function 'bh/skip-non-project-tasks)
+    ;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+    ;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+    ;;                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+    ;;                             (org-agenda-sorting-strategy
+    ;;                              '(category-keep))))
+    ;;                 (tags-todo "-SOMEDAY/TODO"
+    ;;                            ((org-tags-match-list-sublevels nil)
+    ;;                             (org-agenda-overriding-header "Inbox Bucket")))
+    ;;                 (tags-todo "SOMEDAY/"
+    ;;                            ((org-agenda-overriding-header "Someday Tasks")
+    ;;                             (org-agenda-skip-function 'nm/skip-scheduled)
+    ;;                             (org-tags-match-list-sublevels nil)
+    ;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+    ;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
 
 
-<a id="org42c813b"></a>
+<a id="orgab27189"></a>
 
 ## Visual Fill Column
 
     (setq visual-fill-column 120)
 
 
-<a id="orga47675b"></a>
+<a id="orge50cb10"></a>
 
 # Custom Functions
 
     (load! "org-helpers.el")
 
 
-<a id="orgfbcdb84"></a>
+<a id="org8871a3b"></a>
 
 ## Archive keeping Structure
 
@@ -1270,7 +1387,7 @@ These are my default ROAM settings
                   (org-paste-subtree level tree-text))))))))
 
 
-<a id="org564bbb5"></a>
+<a id="org39497ea"></a>
 
 ## Custom Faces
 
@@ -1283,7 +1400,7 @@ These are my default ROAM settings
      '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
 
 
-<a id="orgc7a87e6"></a>
+<a id="org1e02e9d"></a>
 
 ## Clarify Tasks
 
@@ -1320,7 +1437,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
           :desc "Clarify properties" "c" #'nm/org-clarify-metadata)
 
 
-<a id="orgc4dd9f1"></a>
+<a id="org5ed1e2a"></a>
 
 ## Change Font
 
@@ -1338,7 +1455,7 @@ Clarify task will take a list of property fields and pass them to `nm/org-clarif
     (defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
 
 
-<a id="org26b7ad1"></a>
+<a id="org1aaeaf2"></a>
 
 # End of file loading
 
