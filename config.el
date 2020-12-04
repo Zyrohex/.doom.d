@@ -1,14 +1,11 @@
-(defun nm/only-show-next-and-skip-non-projects ()
-  "Skip trees that are not projects, and shows only tasks that are in next condition state."
-  (if (save-excursion (bh/skip-non-stuck-projects))
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((or (bh/is-project-p) (and (bh/is-task-p) (bh/is-project-subtree-p) (nm/has-next-condition))) nil)
-           ((and (and (bh/is-project-subtree-p) (nm/has-next-condition)) (and (not (bh/is-task-p)) (nm/has-next-condition))) nil)
+(defun nm/project-tasks-ready ()
+  "Skip trees that are not projects"
+      (let ((next-headline (save-excursion (outline-next-heading)))
+            (subtree-end (org-end-of-subtree t)))
+        (cond
+           ((and (bh/is-project-subtree-p) (nm/has-next-condition)) nil)
+           ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) subtree-end)
            (t subtree-end))))
-    (save-excursion (org-end-of-subtree t))))
 
 (defun nm/has-next-condition ()
   "Returns t if headline has next condition state"
@@ -18,7 +15,34 @@
      ((nm/exist-context-tag-p) t)
      ((nm/checkbox-active-exist-p) t))))
 
+(defun nm/standard-tasks-ready ()
+  "Show non-project tasks. Skip project and sub-project tasks, habits, and project related tasks."
+  (save-restriction
+    (widen)
+    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+       ((bh/is-project-p) subtree-end)
+       ((oh/is-scheduled-p) subtree-end)
+       ((org-is-habit-p) subtree-end)
+       ((bh/is-project-subtree-p) subtree-end)
+       ((and (bh/is-task-p) (not (nm/has-next-condition))) subtree-end)
+       (t nil)))))
 
+(defun nm/stuck-projects ()
+  "Returns t when a project has no defined next actions for any of its subtasks."
+  (let ((next-headline (save-excursion (outline-next-heading)))
+        (subtree-end (org-end-of-subtree t)))
+    (cond
+     ((nm/has-next-condition) subtree-end)
+     ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) nil)
+     ((and (and (bh/is-task-p) (oh/has-parent-project-p)) (not (nm/has-next-condition))) nil))))
+
+(defun nm/tasks-refile ()
+  "Returns t if the task is not part of a project and has no next state conditions."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (cond
+     ((and (not (or (oh/is-subtask-p) (oh/is-subproject-p))) (null (nm/has-next-condition))) nil)
+     (t subtree-end))))
 
 (require 'find-lisp)
 (defun nm/org-id-prompt-id ()
@@ -759,32 +783,34 @@
       org-agenda-tags-todo-honor-ignore-options t
       org-agenda-fontify-priorities t)
 
+(setq org-agenda-custom-commands nil)
 (push '("n" "Next Actions"
         ((agenda ""
                  ((org-agenda-span '1)
                   (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
-         (tags-todo "-@delegated/"
+         (tags-todo "-@delegated/-PROJ"
                     ((org-agenda-overriding-header "Project Tasks")
-                     (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
+                     (org-agenda-skip-function 'nm/project-tasks-ready)
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
+         (tags-todo "-SOMEDAY-@delegated/"
                     ((org-agenda-overriding-header (concat "Standalone Tasks"))
-                     (org-agenda-skip-function 'nm/skip-project-tasks)
+                     (org-agenda-skip-function 'nm/standard-tasks-ready)
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy '(category-up))))
          (tags-todo "-SOMEDAY/TODO"
                     ((org-tags-match-list-sublevels nil)
-                     (org-agenda-overriding-header "Inbox Bucket")))
-         (tags-todo "-@delegated/PROJ"
-                    ((org-agenda-overriding-header "Projects")
-                     (org-agenda-skip-function 'bh/skip-non-projects)
+                     (org-agenda-skip-function 'nm/tasks-refile)
+                     (org-agenda-overriding-header "Ready to Refile")))
+         (tags-todo "-SOMEDAY-@delegated/-PROJ"
+                    ((org-agenda-overriding-header "Stuck Projects")
+                     (org-agenda-skip-function 'nm/stuck-projects)
                      (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-keep)))))) org-agenda-custom-commands)
