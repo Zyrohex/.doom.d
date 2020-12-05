@@ -129,7 +129,7 @@
 
 (defun nm/capture-to-journal ()
   "When org-capture-template is initiated, it creates the respected headline structure."
-  (let ((file "~/orgmode/gtd/journal.org")
+  (let ((file "~/orgmode/journal.org")
         (parent nil)
         (child nil))
     (unless (file-exists-p file)
@@ -339,8 +339,6 @@
 (push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
 
 (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
-
-(push '("w" "Working on" entry (file+olp "~/orgmode/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 
 (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 

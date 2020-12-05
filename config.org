@@ -207,7 +207,7 @@ that are called when initiated.
 #+begin_src emacs-lisp
 (defun nm/capture-to-journal ()
   "When org-capture-template is initiated, it creates the respected headline structure."
-  (let ((file "~/orgmode/gtd/journal.org")
+  (let ((file "~/orgmode/journal.org")
         (parent nil)
         (child nil))
     (unless (file-exists-p file)
@@ -500,13 +500,6 @@ Occassionally I do like to take a note in my journal, to make a mental note of
 my day...
 #+begin_src emacs-lisp
 (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
-#+end_src
-
-Sometimes i'll just start working on things that I find interseting, and I need
-a method of take notes on what i'm doing so I can keep track of what I discover
-and document those things back into my master notes file.
-#+begin_src emacs-lisp
-(push '("w" "Working on" entry (file+olp "~/orgmode/gtd/journal.org" "Working on") "* %^{Working on what?}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :clock-in t :clock-resume t) org-capture-templates)
 #+end_src
 
 With my crazy busy scheduled, I can end up working on multiple things at any
