@@ -522,6 +522,9 @@
 
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
+(setq dimmer-percent 0.5
+      dimmer-fraction 0.4)
+
 (use-package elfeed-org
   :defer
   :config
@@ -705,37 +708,30 @@
 (use-package company-org-roam
   :ensure t
   ;; You may want to pin in case the version from stable.melpa.org is not working
-  ; :pin melpa
+                                        ; :pin melpa
   :config
   (push 'company-org-roam company-backends))
 
 (setq org-roam-dailies-capture-templates
-   '(("d" "daily" plain (function org-roam-capture--get-point) ""
-      :immediate-finish t
-      :file-name "journal/%<%Y-%m-%d-%a>"
-      :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+      '(("d" "daily" plain (function org-roam-capture--get-point) ""
+         :immediate-finish t
+         :file-name "journal/%<%Y-%m-%d-%a>"
+         :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
 
 (setq org-roam-capture-templates
-        '(("d" "digest" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "digest/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n"
-           :unnarrowed t)
-          ("n" "notes" plain (function org-roam-capture--get-point)
-           :file-name "${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-           :unnarrowed t
-           "%?")
-          ("p" "private" plain (function org-roam-capture--get-point)
-           :file-name "private/${slug}"
-           :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-           :unnarrowed t
-           "%?")
-          ("r" "reveal slide" plain (function org-roam-capture--get-point)
-           :file-name "slides/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+options: num:nil toc:nil\n#+REVEAL_THEME: %^{theme|black|white|league|beige|sky|night|serif|simple|solarized|blood|moon}\n#+REVEAL_PLUGINS: (highlight)\n#+REVEAL_OVERVIEW: t\n\n"
-           :unnarrow t
-           "%?")))
+      '(("l" "literature" plain (function org-roam-capture--get-point)
+         :file-name "literature/%<%Y%m%d%H%M>-${slug}"
+         :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n%?"
+         :unnarrowed t)
+        ("f" "fleeting" plain (function org-roam-capture--get-point)
+         :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
+         :head "#+title: ${title}\n\n%?"
+         :unnarrowed t)
+        ("p" "permanent" plain (function org-roam-capture--get-point)
+         :file-name "brain/%<%Y%m%d%H%M>-${slug}"
+         :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+         :unnarrowed t
+         "%?")))
 
 (defun my/org-roam--backlinks-list-with-content (file)
   (with-temp-buffer
@@ -804,11 +800,11 @@
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy '(category-up))))
-         (tags-todo "-SOMEDAY/TODO"
+         (tags-todo "-SOMEDAY/-PROJ"
                     ((org-tags-match-list-sublevels nil)
                      (org-agenda-skip-function 'nm/tasks-refile)
                      (org-agenda-overriding-header "Ready to Refile")))
-         (tags-todo "-SOMEDAY-@delegated/-PROJ"
+         (tags-todo "-SOMEDAY-@delegated/"
                     ((org-agenda-overriding-header "Stuck Projects")
                      (org-agenda-skip-function 'nm/stuck-projects)
                      (org-tags-match-list-sublevels 'indented)
