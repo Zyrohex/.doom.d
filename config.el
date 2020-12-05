@@ -262,7 +262,7 @@
 (setq org-directory "~/orgmode/")
 (setq projectile-project-search-path "~/projects/")
 
-(setq doom-theme 'doom-solarized-dark)
+(setq doom-theme 'doom-spacegrey)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
