@@ -24,6 +24,7 @@
 (package! company-anaconda)
 ;; Misc Packages
 (package! company-manually)
+(package! dimmer)
 (package! elfeed)
 (package! elfeed-org)
 (package! ob-mermaid)
