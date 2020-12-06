@@ -44,6 +44,49 @@
      ((and (not (or (oh/is-subtask-p) (oh/is-subproject-p))) (null (nm/has-next-condition))) nil)
      (t subtree-end))))
 
+(defun nm/capture-websources ()
+  "Capture web sources"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (let ((file "~/orgmode/gtd/websources.org")
+            (headline (read-string "Headline: "))
+            (has-url nil))
+        (find-file file)
+        (when (string-match-p (regexp-quote "http") (current-kill 0))
+          (goto-char 0)
+          (if (re-search-forward (format "* %s" headline) nil t)
+              (progn (newline) (insert "** READ ") (evil-insert 1) (org-end-of-line) (insert (get-page-title (current-kill 0))))
+            (progn (goto-char (point-max)) (insert (format "* %s" headline)) (newline) (insert "** READ ") (evil-insert 1) (org-end-of-line) (insert (get-page-title (current-kill 0))))))
+        (when (not (string-match-p (regexp-quote "http") (current-kill 0)))
+          (error "URL not in clipboard!"))))))
+
+(map! :after org
+      :leader
+      :prefix ("n" . "notes")
+      :desc "New Web Resource" "w" #'nm/capture-websources)
+
+;; This function was found on a stackoverflow post -> https://stackoverflow.com/questions/6681407/org-mode-capture-with-sexp
+ (defun get-page-title (url)
+  "Get title of web page, whose url can be found in the current line"
+  ;; Get title of web page, with the help of functions in url.el
+  (with-current-buffer (url-retrieve-synchronously url)
+    ;; find title by grep the html code
+    (goto-char 0)
+    (re-search-forward "<title>\\([^<]*\\)</title>" nil t 1)
+    (setq web_title_str (match-string 1))
+    ;; find charset by grep the html code
+    (goto-char 0)
+
+    ;; find the charset, assume utf-8 otherwise
+    (if (re-search-forward "charset=\\([-0-9a-zA-Z]*\\)" nil t 1)
+        (setq coding_charset (downcase (match-string 1)))
+      (setq coding_charset "utf-8")
+    ;; decode the string of title.
+    (setq web_title_str (decode-coding-string web_title_str (intern
+                                                             coding_charset))))
+  (concat "[[" url "][" web_title_str "]]")))
+
 (require 'find-lisp)
 (defun nm/org-id-prompt-id ()
   "Prompt for the id during completion of id: link."
@@ -342,6 +385,8 @@
 
 (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
+(push '("r" "research literature" entry (function nm/capture-websources)) org-capture-templates)
+
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
                   org-export-with-author t
@@ -406,9 +451,9 @@
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
-                    ("org files to MD"
-                     :base-directory "~/orgmode/"
-                     :publishing-directory "~/org-md/"
+                    ("ROAM"
+                     :base-directory "~/orgmode/roam/"
+                     :publishing-directory "~/roam/"
                      :base-extension "org"
                      :recursive t
                      :publishing-function org-md-publish-to-md)
@@ -433,7 +478,7 @@
                      :html-link-up "../../index.html"
                      :auto-preamble t
                      :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes" "org files to MD")))))
+                    ("myprojectweb" :components("attachments" "notes" "ROAM")))))
 
 (setq org-tags-column 0)
 
@@ -700,8 +745,8 @@
 (setq org-reveal-title-slide nil)
 
 (setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/orgmode/notes/roam.db")
-(setq org-roam-directory "~/orgmode/notes/")
+(setq org-roam-db-location "~/orgmode/roam/roam.db")
+(setq org-roam-directory "~/orgmode/roam/")
 
 (use-package company-org-roam
   :ensure t
@@ -731,33 +776,33 @@
          :unnarrowed t
          "%?")))
 
-(defun my/org-roam--backlinks-list-with-content (file)
-  (with-temp-buffer
-    (if-let* ((backlinks (org-roam--get-backlinks file))
-              (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-        (progn
-          (insert (format "\n\n* %d Backlinks\n"
-                          (length backlinks)))
-          (dolist (group grouped-backlinks)
-            (let ((file-from (car group))
-                  (bls (cdr group)))
-              (insert (format "** [[file:%s][%s]]\n"
-                              file-from
-                              (org-roam--get-title-or-slug file-from)))
-              (dolist (backlink bls)
-                (pcase-let ((`(,file-from _ ,props) backlink))
-                  (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-                  (insert "\n\n")))))))
-    (buffer-string)))
+;; (defun my/org-roam--backlinks-list-with-content (file)
+;;   (with-temp-buffer
+;;     (if-let* ((backlinks (org-roam--get-backlinks file))
+;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
+;;         (progn
+;;           (insert (format "\n\n* %d Backlinks\n"
+;;                           (length backlinks)))
+;;           (dolist (group grouped-backlinks)
+;;             (let ((file-from (car group))
+;;                   (bls (cdr group)))
+;;               (insert (format "** [[file:%s][%s]]\n"
+;;                               file-from
+;;                               (org-roam--get-title-or-slug file-from)))
+;;               (dolist (backlink bls)
+;;                 (pcase-let ((`(,file-from _ ,props) backlink))
+;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
+;;                   (insert "\n\n")))))))
+;;     (buffer-string)))
 
-(defun my/org-export-preprocessor (backend)
-  (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-    (unless (string= links "")
-      (save-excursion
-        (goto-char (point-max))
-        (insert (concat "\n* Backlinks\n") links)))))
+;; (defun my/org-export-preprocessor (backend)
+;;   (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
+;;     (unless (string= links "")
+;;       (save-excursion
+;;         (goto-char (point-max))
+;;         (insert (concat "\n* Backlinks\n") links)))))
 
-(add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
 (use-package org-roam-server
   :ensure t
