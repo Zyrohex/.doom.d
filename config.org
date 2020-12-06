@@ -308,27 +308,27 @@ that are called when initiated.
 (defun nm/get-headlines-org-files (arg)
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
-  (let ((org-agenda-files (find-lisp-find-files arg "\.org$"))
-        (org-refile-use-outline-path 'file)
-        (org-refile-history nil))
-    (let ((dest (org-refile-get-location))
-          (buffer nil)
-          (first (frame-first-window)))
-      (save-excursion
-        (if (eq first (next-window first))
-            (progn (evil-window-vsplit) (evil-window-right 1))
-          (other-window 1))
-        (find-file (cadr dest))
-        (goto-char (nth 3 dest))
-        (org-tree-to-indirect-buffer)))))
+  (let* ((org-agenda-files (find-lisp-find-files arg "\.org$"))
+         (org-refile-use-outline-path 'file)
+         (org-refile-history nil)
+         (dest (org-refile-get-location))
+         (buffer nil)
+         (first (frame-first-window)))
+    (save-excursion
+      (if (eq first (next-window first))
+          (progn (evil-window-vsplit) (evil-window-right 1))
+        (other-window 1))
+      (find-file (cadr dest))
+      (goto-char (nth 3 dest))
+      (org-tree-to-indirect-buffer))))
 
 (defun nm/search-headlines-org-directory ()
-  "Search the ORG-DIRECTORY."
+  "Search the ORG-DIRECTORY, prompting user for headline and returns its results to indirect buffer."
   (interactive)
   (nm/get-headlines-org-files "~/orgmode/"))
 
 (defun nm/search-headlines-org-tasks-directory ()
-  "Search the GTD folder."
+  "Search the GTD folder, prompting user for headline and returns its results to indirect buffer."
   (interactive)
   (nm/get-headlines-org-files "~/orgmode/gtd/"))
 
