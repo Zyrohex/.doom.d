@@ -207,7 +207,7 @@
 (defun nm/productive-window ()
   "Setup"
   (interactive)
-  (nm/setup-productive-windows "~/orgmode/gtd/personal.org" "~/orgmode/gtd/tasks.org"))
+  (nm/setup-productive-windows "~/orgmode/gtd/next.org" "~/orgmode/gtd/tasks.org"))
 
 (map! :after org
       :map org-mode-map
@@ -219,7 +219,7 @@
   "Searches org-directory for headline and returns results to indirect buffer."
   (interactive)
   (let ((org-agenda-files (find-lisp-find-files arg "\.org$"))
-        (org-refile-use-outline-path nil)
+        (org-refile-use-outline-path 'file)
         (org-refile-history nil))
     (let ((dest (org-refile-get-location))
           (buffer nil)
@@ -853,6 +853,11 @@
                      (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-keep)))))) org-agenda-custom-commands)
+
+(push '("r" "Research"
+        ((todo ""
+               ((org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/websources.org")))
+                (org-super-agenda-groups '((:auto-category t))))))) org-agenda-custom-commands)
 
 ;; (setq org-super-agenda-mode t
 ;;       org-agenda-todo-ignore-scheduled 'future
