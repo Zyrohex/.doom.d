@@ -95,6 +95,7 @@ For tasks that are ready to be refiled:
      ((nm/has-next-condition) next-heading)
      ((bh/is-project-p) subtree-end))))
 #+end_src
+
 ** Capturing Web Resources
 #+begin_src emacs-lisp
 (defun nm/capture-websources ()
@@ -155,6 +156,7 @@ The *NEXT* state will be set if any of the following 3 conditions exist:
 The PROJ state will become active upon the following conditions:
 1. Task has a child headline with a TODO-KEYWORD of any-type (TODO/NEXT/WAIT). \\
 [[file:attachments/projects.gif]]
+
 ** ID Completion
 I got tired of flipping back n forth between buffers, copying the ID of a
 headline, then jump back and paste that ID into my link. So now i'll have
@@ -825,6 +827,7 @@ Configuring DEFT default settings
 
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 #+END_SRC
+
 ** DIMMER
 #+begin_src emacs-lisp
 (dimmer-mode 1)
@@ -883,6 +886,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
                   org-journal-file-type 'monthly
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 #+END_SRC
+
 ** Org-Rifle
 #+BEGIN_SRC emacs-lisp
 (use-package helm-org-rifle
@@ -1016,6 +1020,7 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 
 (bind-key "<f9>" #'org-ql-view)
 #+END_SRC
+
 ** Pandoc
 #+BEGIN_SRC emacs-lisp
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
