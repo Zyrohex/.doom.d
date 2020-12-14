@@ -1,11 +1,30 @@
+(defun nm/skip-non-stuck-projects ()
+  "Skip trees that are not stuck projects."
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (outline-next-heading))))
+      (if (bh/is-project-p)
+          (let* ((subtree-end (org-end-of-subtree t))
+                 (has-next))
+            (save-excursion
+              (forward-line 1)
+              (while (and (not has-next) (< (point) subtree-end) (and (not (bh/is-project-p)) (nm/has-next-condition)))
+                (unless (member (or "WAITING" "SOMEDAY") (org-get-tags-at))
+                  (setq has-next t))))
+            (if has-next
+                next-headline
+              nil))
+        next-headline))))
+
 (defun nm/project-tasks-ready ()
   "Skip trees that are not projects"
       (let ((next-headline (save-excursion (outline-next-heading)))
             (subtree-end (org-end-of-subtree t)))
-        (cond
-           ((and (bh/is-project-subtree-p) (nm/has-next-condition)) nil)
-           ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) subtree-end)
-           (t subtree-end))))
+        (if (nm/skip-non-stuck-projects)
+            (cond
+             ((and (bh/is-project-subtree-p) (nm/has-next-condition)) nil)
+             (t subtree-end))
+          subtree-end)))
 
 (defun nm/has-next-condition ()
   "Returns t if headline has next condition state"
@@ -19,12 +38,11 @@
   "Show non-project tasks. Skip project and sub-project tasks, habits, and project related tasks."
   (save-restriction
     (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+           (next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (cond
-       ((bh/is-project-p) subtree-end)
-       ((oh/is-scheduled-p) subtree-end)
-       ((org-is-habit-p) subtree-end)
-       ((bh/is-project-subtree-p) subtree-end)
+       ((bh/is-project-p) next-headline)
+       ((bh/is-project-subtree-p) next-headline)
        ((and (bh/is-task-p) (not (nm/has-next-condition))) subtree-end)
        (t nil)))))
 
@@ -32,10 +50,10 @@
   "Returns t when a project has no defined next actions for any of its subtasks."
   (let ((next-headline (save-excursion (outline-next-heading)))
         (subtree-end (org-end-of-subtree t)))
-    (cond
-     ((nm/has-next-condition) subtree-end)
-     ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) nil)
-     ((and (and (bh/is-task-p) (oh/has-parent-project-p)) (not (nm/has-next-condition))) nil))))
+    (if (or (bh/is-project-p) (bh/is-project-subtree-p))
+        (cond
+         ((and (bh/is-project-subtree-p) (not (nm/has-next-condition))) nil))
+      subtree-end)))
 
 (defun nm/tasks-refile ()
   "Returns t if the task is not part of a project and has no next state conditions."
@@ -105,13 +123,14 @@
 
 (defun nm/org-capture-log ()
   "Initiate the capture system and find headline to capture under."
-  (let ((dest (org-refile-get-location)))
-    (let ((file (cadr dest))
-          (pos (nth 3 dest))
-          (title (nth 2 dest)))
-      (find-file file)
-      (goto-char pos)
-      (nm/org-end-of-headline))))
+  (let* ((org-agenda-files (find-lisp-find-files "~/orgmode/gtd/" "\.org$"))
+         (dest (org-refile-get-location))
+         (file (cadr dest))
+         (pos (nth 3 dest))
+         (title (nth 2 dest)))
+    (find-file file)
+    (goto-char pos)
+    (nm/org-end-of-headline)))
 
 (defun nm/org-end-of-headline()
   "Move to end of current headline"
@@ -172,7 +191,7 @@
 
 (defun nm/capture-to-journal ()
   "When org-capture-template is initiated, it creates the respected headline structure."
-  (let ((file "~/orgmode/journal.org")
+  (let ((file "~/orgmode/gtd/journal.org")
         (parent nil)
         (child nil))
     (unless (file-exists-p file)
@@ -215,8 +234,10 @@
       :prefix ("TAB" . "workspace")
       :desc "Load ORGMODE Setup" "," #'nm/productive-window)
 
-(defun nm/get-headlines-org-files (arg)
-  "Searches org-directory for headline and returns results to indirect buffer."
+(defun nm/get-headlines-org-files (arg &optional indirect)
+  "Searches org-directory for headline and returns results to indirect buffer
+   ARG being a directory to search and optional INDIRECT should return t if you
+   want results returned to an indirect buffer."
   (interactive)
   (let* ((org-agenda-files (find-lisp-find-files arg "\.org$"))
          (org-refile-use-outline-path 'file)
@@ -230,7 +251,9 @@
         (other-window 1))
       (find-file (cadr dest))
       (goto-char (nth 3 dest))
-      (org-tree-to-indirect-buffer))))
+      (if indirect
+          (org-tree-to-indirect-buffer)
+        nil))))
 
 (defun nm/search-headlines-org-directory ()
   "Search the ORG-DIRECTORY, prompting user for headline and returns its results to indirect buffer."
@@ -245,8 +268,9 @@
 (map! :after org
       :map org-mode-map
       :leader
-      :desc "Return indirect buffer org-directory" "@" #'nm/search-headlines-org-directory
-      :desc "Return indirect buffer TASK files" "!" #'nm/search-headlines-org-tasks-directory)
+      :prefix ("s" . "search")
+      :desc "Outline Org-Directory" "c" #'nm/search-headlines-org-directory
+      :desc "Outline GTD directory" "!" #'nm/search-headlines-org-tasks-directory)
 
 (setq user-full-name "Nick Martin"
       user-mail-address "nmartin84@gmail.com")
@@ -425,7 +449,6 @@
         '((sequence
            "TODO(t)"  ; A task that needs doing & is ready to do
            "PROJ(p)"  ; Project with multiple task items.
-           "NEXT(n)"  ; Task is next to be worked on.
            "WAIT(w)"  ; Something external is holding up this task
            "|"
            "DONE(d)"  ; Task successfully completed
@@ -433,8 +456,7 @@
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
           ("PROJ" . +org-todo-project)
-          ("TODO" . +org-todo-active)
-          ("NEXT" . +org-todo-next)))
+          ("TODO" . +org-todo-active)))
 
 (after! org (setq org-log-into-drawer t
                   org-log-done 'time
@@ -501,7 +523,7 @@
 (push '("remember") org-tag-alist)
 
 (after! org
-;  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
+  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
   (setq company-idle-delay 0.25))
 
 (setq deft-use-projectile-projects t)
@@ -565,6 +587,7 @@
 
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 
+(dimmer-mode 1)
 (setq dimmer-percent 0.5
       dimmer-fraction 0.4)
 
@@ -745,8 +768,8 @@
 (setq org-reveal-title-slide nil)
 
 (setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/orgmode/roam/roam.db")
-(setq org-roam-directory "~/orgmode/roam/")
+(setq org-roam-db-location "~/orgmode/roam.db")
+(setq org-roam-directory "~/orgmode/")
 
 (use-package company-org-roam
   :ensure t
@@ -775,6 +798,11 @@
          :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
          :unnarrowed t
          "%?")))
+
+(push '("x" "Projects" plain (function org-roam-capture--get-point)
+        :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
+        :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
+        :unnarrowed t) org-roam-capture-templates)
 
 ;; (defun my/org-roam--backlinks-list-with-content (file)
 ;;   (with-temp-buffer
@@ -823,7 +851,7 @@
       org-agenda-fontify-priorities t)
 
 (setq org-agenda-custom-commands nil)
-(push '("n" "Next Actions"
+(push '("n" "next actions"
         ((agenda ""
                  ((org-agenda-span '1)
                   (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
@@ -842,12 +870,15 @@
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy '(category-up))))
-         (tags-todo "-SOMEDAY/-PROJ"
+                     (org-agenda-sorting-strategy '(category-up)))))) org-agenda-custom-commands)
+
+(push '("i" "inbox"
+        ((tags-todo "-SOMEDAY/-PROJ"
                     ((org-tags-match-list-sublevels nil)
                      (org-agenda-skip-function 'nm/tasks-refile)
-                     (org-agenda-overriding-header "Ready to Refile")))
-         (tags-todo "-SOMEDAY-@delegated/"
+                     (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
+(push '("x" "stuck projects"
+        ((tags-todo "-SOMEDAY-@delegated/"
                     ((org-agenda-overriding-header "Stuck Projects")
                      (org-agenda-skip-function 'nm/stuck-projects)
                      (org-tags-match-list-sublevels 'indented)
