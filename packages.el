@@ -4,11 +4,11 @@
 (package! org-roam-server)
 
 ;; Alphapapa packages
-(package! helm-org-rifle)
-(package! org-super-agenda)
+;(package! helm-org-rifle)
+;(package! org-super-agenda)
 ;(package! visual-fill-column)
-(package! org-sidebar)
-(package! org-ql)
+;(package! org-sidebar)
+;(package! org-ql)
 (package! org-web-tools)
 
 ;; Themes
@@ -18,8 +18,6 @@
 ;(package! org-analyzer)
 (package! org-edna)
 ;(package! literate-calc-mode)
-;(package! ftable
-;  :recipe (:host github :repo "casouri/ftable"))
 
 ;; Python
 (package! ob-ipython)
@@ -36,7 +34,5 @@
 (package! ox-reveal)
 (package! ox-pandoc)
 (package! ox-twbs)
-(package! gnuplot)
-(package! gnuplot-mode)
 (package! deadgrep)
 (package! graphviz-dot-mode)
