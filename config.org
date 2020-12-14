@@ -445,7 +445,7 @@ Now I add my default folders and files that I want emacs/org-mode to use:
 
 Next we configure popup-rules and default fonts.
 #+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-spacegrey)
+(setq doom-theme 'doom-solarized-dark)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
