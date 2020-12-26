@@ -151,6 +151,7 @@
         +pandoc
         +present
         ;; +pretty         ; expensive!
+        ;; +crypt
         +roam)
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
@@ -170,7 +171,7 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
+       web                 ; the tubes
        ;;yaml              ; JSON, but readable
 
        :email

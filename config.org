@@ -220,11 +220,15 @@ Added +roam in ./init.el in the clause of org
 
 You can access all of the Roam commands with spc n r. It's nice to bind your own to skip that one character so lets add some custom key mappings.
 
-Add a org-roam-ref-capture-templates in your config.el heres mine:
+Add a org-roam-ref-capture-templates in your config.el here is mine:
 The ROAM_KEY is how org-roam knows what site links to what note.
 
+Note, for the problem of not showing backlink in Ubuntu/WSL1,
+the solution is that org-roam-directory should be set to the real directory, instead of the symbolic link,
+(file-truename "~/Dropbox/org/org-roam") to translate the symbolic link to the real path, also after changing the setting, must execute M-x org-roam-db-build-cache then the backlinks will show up.
+
+
 #+BEGIN_SRC emacs-lisp
-;(setq org-roam-directory "~/Dropbox/org/org-roam")
 (after! org-roam
         (setq org-roam-ref-capture-templates
             '(("r" "ref" plain (function org-roam-capture--get-point)
@@ -237,7 +241,7 @@ The ROAM_KEY is how org-roam knows what site links to what note.
             org-roam-db-location
             ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
             "~/.emacs.d/.cache/org-roam.db"
-            org-roam-directory "~/Dropbox/org/org-roam"
+            org-roam-directory (file-truename "~/Dropbox/org")
             )
         (map! :leader
             :prefix "n"
@@ -248,6 +252,10 @@ The ROAM_KEY is how org-roam knows what site links to what note.
             :desc "org-roam-show-graph" "g" #'org-roam-show-graph
             :desc "org-roam-capture" "c" #'org-roam-capture))
 #+END_SRC
+
+Mon Dec  7 19:19:30 2020, change org-roam-directory (file-truename "~/Dropbox/org/org-roam") to
+org-roam-directory (file-truename "~/Dropbox/org")
+in order to link with the other org files in ~/Dropbox/org
 
 For setting up org-roam-server for showing graph in browser
 
@@ -307,49 +315,96 @@ The following are kept for historical reason for now.
 
 #+RESULTS:
 
-
-* Review and confirmed
-The above are the configurations that have been tested.
-
-* Experiment
-** Start emacs's server
-
+* Start emacs's server
+Assume emacs server has already started in org-roam-server-open
 #+BEGIN_SRC emacs-lisp
 ;; (server-start)
 #+END_SRC
 
 #+RESULTS:
 
+
+* Review and confirmed
+The above are the configurations that have been tested.
+
+* Experiment
+
+** Setup for projectile
+
+I don't use projectile yet, Fri Oct  9 21:59:02 2020.
+Add the root directories that containt projects, instead of the home diretory, which is too broad.
+#+BEGIN_SRC emacs-lisp
+(setq
+ projectile-project-search-path '("~/projects" "~/programming"))
+#+END_SRC
+** Config to open url from emacs/WSL
+Based on https://adam.kruszewski.name/2017/09/emacs-in-wsl-and-opening-links/
+The following works, but it won't work for "&foo=1" etc because ampersants are reserved in CMD.
+(defun config-launching-browser-from-wsl/emacs ()
+  "Configue to be able to launch web browser from emacs with WSL."
+  (when (string-match "Linux.*Microsoft.*Linux"
+                      (shell-command-to-string "uname -a"))
+    (setq
+     browse-url-generic-program  "/mnt/c/Windows/System32/cmd.exe"
+     browse-url-generic-args     '("/c" "start" "")
+     browse-url-browser-function 'browse-url-generic)))
+(config-launching-browser-from-wsl/emacs)
+
+This one using powershell.exe instead may work better.
+
+#+begin_src emacs-lisp
+(defun wsl--browse-url (url &optional _new-window)
+;; new-window ignored
+"Opens link via powershell.exe"
+(interactive (browse-url-interactive-arg "URL: "))
+(let ((quotedUrl (format "start '%s'" url)))
+(apply 'call-process "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" nil
+0 nil
+(list "-Command" quotedUrl))))
+
+(when (string-match "Linux.*Microsoft.*Linux"
+                      (shell-command-to-string "uname -a"))
+    (setq-default browse-url-browser-function 'wsl--browse-url))
+#+end_src
+
 * Org Setup
 
 ** Directories
+Cleaned up on Fri Oct  9 22:01:50 2020.
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/Dropbox/org/"
       org-image-actual-width nil
-      +org-export-directory "~/.export/"
-      org-archive-location "~/Dropbox/org/archive.org::datetree/"
-      org-default-notes-file "~/Dropbox/org/inbox.org"
-      projectile-project-search-path '("~/")
+      ;; +org-export-directory "~/.export/" ;; no longer used
+      org-archive-location "~/Dropbox/org/archive.org::datetree/" ; still useful Fri Oct  9 21:51:13 2020
+      org-default-notes-file "~/Dropbox/org/inbox.org"            ; might not be useful anymore, as I use daily journal to capture notes, Fri Oct  9 21:53:25 2020
       )
 #+END_SRC
-** Agenda
+** Todo keywords setup
+
+Need to add PROJ as umbrella.
+The agenda setup accordingly need to have the corresponding display in the agenda commands.
+
+** TODO Faces
+
+Need to add condition to adjust faces based on theme select.
+
 #+BEGIN_SRC emacs-lisp
-(setq
-      org-agenda-diary-file "~/Dropbox/org/diary.org"
-      diary-file            "~/Dropbox/org/diary.org"
-      org-agenda-use-time-grid nil
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t
-      org-habit-show-habits t
-       my/inbox "~/Dropbox/org/inbox.org"
-       my/project "~/Dropbox/org/tasks.org"
-       my/someday "~/Dropbox/org/someday.org"
-       my/birthdays "~/Dropbox/org/birthdays.org"
-       ;org-agenda-files (list my/project my/inbox)
-      )
+(after! org (setq org-todo-keyword-faces
+      '(("TODO" :foreground "tomato" :weight bold)
+        ("WAITING" :foreground "light sea green" :weight bold)
+        ("STARTED" :foreground "DodgerBlue" :weight bold)
+        ("DELEGATED" :foreground "Gold" :weight bold)
+        ("NEXT" :foreground "violet red" :weight bold)
+        ("DONE" :foreground "slategrey" :weight bold))))
 #+END_SRC
+*** Keywords
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-todo-keywords
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(D!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
+#+END_SRC
+
 ** Captures
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-capture-templates
@@ -701,25 +756,6 @@ Convert org-files to HTML slides reveal.js based
 
 
 
-** TODO Faces
-
-Need to add condition to adjust faces based on theme select.
-
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-todo-keyword-faces
-      '(("TODO" :foreground "tomato" :weight bold)
-        ("WAITING" :foreground "light sea green" :weight bold)
-        ("STARTED" :foreground "DodgerBlue" :weight bold)
-        ("DELEGATED" :foreground "Gold" :weight bold)
-        ("NEXT" :foreground "violet red" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold))))
-#+END_SRC
-*** Keywords
-#+BEGIN_SRC emacs-lisp
-(after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(D!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
-#+END_SRC
-
 ** Minimum setup for plantuml
 I found out that the value of plantuml-default-exec-mode and plantuml-jar-path
 must be set as follows in order to export document with plantuml code Wed Feb  5 11:49:42 2020.
@@ -762,6 +798,22 @@ This is a great lesson that
       org-hide-emphasis-markers nil
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
+#+END_SRC
+** Agenda
+#+BEGIN_SRC emacs-lisp
+(setq
+      org-agenda-diary-file "~/Dropbox/org/diary.org"
+      diary-file            "~/Dropbox/org/diary.org"
+      org-agenda-use-time-grid nil
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-habit-show-habits t
+       my/inbox "~/Dropbox/org/inbox.org"
+       my/project "~/Dropbox/org/tasks.org"
+       my/someday "~/Dropbox/org/someday.org"
+       my/birthdays "~/Dropbox/org/birthdays.org"
+       ;org-agenda-files (list my/project my/inbox)
+      )
 #+END_SRC
 ** Super Agenda
 #+name:super-zen-mode

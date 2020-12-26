@@ -1,0 +1,103 @@
+# -*- mode: snippet -*-
+# name: Start Clojure Project
+# key: scp
+# condition: t
+# --
+Execute the following to start the project boilerplate code:
+#+BEGIN_SRC shell :results output verbatim
+cd ${1:project-parent-dir}
+clojure -X:new-app :name yubrshen/${2:project-name}
+#+END_SRC
+
+To start the main program:
+
+#+BEGIN_SRC shell :results output verbatim
+cd $1/$2
+clojure -M -m yubrshen.$2
+#+END_SRC
+
+#+RESULTS:
+: Hello, World!
+
+To start the continuous test
+(note, the following should be executed outisde of the literate notes, as it will not return):
+#+BEGIN_SRC shell :results output verbatim
+cd $1/$2
+clj -M:test --watch
+#+END_SRC
+
+Here is the deps.edn:
+(must be tangled first before starting the repl, and running the tests, as it differs from the default.)
+#+begin_src clojure :noweb tangle :tangle $1/$2/deps.edn
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.1"}}
+ :aliases
+ {:test {:extra-paths ["test"]
+         :extra-deps {lambdaisland/kaocha           {:mvn/version "0.0-529"}
+                     lambdaisland/kaocha-cloverage {:mvn/version "1.0.63"}}
+         :main-opts ["-m" "kaocha.runner"]}
+  ;; :runner
+  ;; {:extra-deps {com.cognitect/test-runner
+  ;;               {:git/url "https://github.com/cognitect-labs/test-runner"
+  ;;                :sha "b6b3193fcc42659d7e46ecd1884a228993441182"}}
+  ;;  :main-opts ["-m" "cognitect.test-runner"
+  ;;              "-d" "test"]}
+  ;; :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "1.1.128"}}
+  ;;           :main-opts ["-m" "hf.depstar.uberjar" "${2:$(replace-regexp-in-string "-" "_" yas-text)}.jar"
+  ;;                       "-C" "-m" "yubrshen.$2"]}
+  }}
+#+end_src
+Be careful, the content of deps.edn here, if tangled,
+will overide the content of the same named file!
+
+Start the repl:
+#+begin_src emacs-lisp
+(find-file-other-window "$1/$2/src/yubrshen/${2:$(replace-regexp-in-string "-" "_" yas-text)}.clj")
+(cider-jack-in nil)
+#+end_src
+
+* Program Construction
+
+Tangle the following code block when you have new code to add:
+#+begin_src clojure :noweb tangle :tangle $1/$2/src/yubrshen/${2:$(replace-regexp-in-string "-" "_" yas-text)}.clj
+(ns yubrshen.$2
+  (:gen-class))
+
+(defn -main
+  "I don't do a whole lot ... yet."
+  [& args]
+  (println "Hello, World!"))
+<<$2>>
+#+end_src
+
+** $2 construction
+:PROPERTIES:
+:header-args: :noweb-ref $2
+:END:
+
+#+begin_src clojure
+;; Start your journey here!
+$0
+#+end_src
+
+* Program Test Drivers
+
+#+begin_src clojure :noweb tangle :tangle $1/$2/test/yubrshen/${2:$(replace-regexp-in-string "-" "_" yas-text)}_test.clj
+(ns yubrshen.$2-test
+  (:require [clojure.test :refer :all]
+            [yubrshen.$2 :refer :all]))
+
+(deftest a-test
+  (testing "FIXME, I fail."
+    (is (= 1 1))))
+<<$2-tests>>
+#+end_src
+
+** $2 tests
+:PROPERTIES:
+:header-args: :noweb-ref $2-tests
+:END:
+
+#+begin_src clojure
+;; Start tests here!
+#+end_src

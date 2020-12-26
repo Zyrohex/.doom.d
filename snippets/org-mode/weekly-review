@@ -1,0 +1,36 @@
+# -*- mode: snippet -*-
+# name: weekly review
+# key: wkly
+# condition: t
+# --
+* Weekly Review: `(format-time-string "%Y-%m-%d-%U-%j")` [[file:../../../../../mnt/c/Users/yshen/Dropbox/org/20201220093030-weekly_review.org][weekly review-]]
+** What did I do this week?
+  - (Search, or compute of the done tasks, or make notes of the achievement)
+**** God: the reason of my being
+**** Health: survival means
+**** Work: sustain life and family
+- Review the external committement, how is the progress for the commitment? What need to improve?
+**** Family: sustaining my sole
+**** Life Goal: complete the time keep app
+***** The gap to the goal?
+- web front-end: figure out how to implement web UI with ClojureScript library
+- REST API: figure out the API definition and implementation
+- database: figure out the schema
+- back-end: figure the authentication, and supporting the use cases
+***** Achievement of reducing the gap
+*** Cleaning up the loose ends in the voice recordings
+
+*** Cleaning up the daily journals
+
+** Review Questions
+  - Did I reach my goal for # of hours spent on deep work this week?
+  - If yes, what worked well that I can implement more regularly?
+  - If no, what can I improve upon to maximize success?
+  - How many high-impact items on my to-do list was I able to complete?
+  - What do I want to accomplish in the week ahead?
+  - What adjustments do I need to make to ensure I reach my goals?
+** Post-Review Retrospective
+  - What went well?
+  - What could be adjusted?
+  - What should I stop doing?
+  - What should I start doing?

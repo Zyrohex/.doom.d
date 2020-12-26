@@ -108,7 +108,6 @@
 
 (setq display-line-numbers-type `relative)
 
-;(setq org-roam-directory "~/Dropbox/org/org-roam")
 (after! org-roam
         (setq org-roam-ref-capture-templates
             '(("r" "ref" plain (function org-roam-capture--get-point)
@@ -121,7 +120,7 @@
             org-roam-db-location
             ;; set location for org-roam.db away from org-roam to avoid conflct due to Dropbox file synch
             "~/.emacs.d/.cache/org-roam.db"
-            org-roam-directory "~/Dropbox/org/org-roam"
+            org-roam-directory (file-truename "~/Dropbox/org")
             )
         (map! :leader
             :prefix "n"
@@ -171,27 +170,39 @@
 
 ;; (server-start)
 
+(setq
+ projectile-project-search-path '("~/projects" "~/programming"))
+
+(defun wsl--browse-url (url &optional _new-window)
+;; new-window ignored
+"Opens link via powershell.exe"
+(interactive (browse-url-interactive-arg "URL: "))
+(let ((quotedUrl (format "start '%s'" url)))
+(apply 'call-process "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" nil
+0 nil
+(list "-Command" quotedUrl))))
+
+(when (string-match "Linux.*Microsoft.*Linux"
+                      (shell-command-to-string "uname -a"))
+    (setq-default browse-url-browser-function 'wsl--browse-url))
+
 (setq org-directory "~/Dropbox/org/"
       org-image-actual-width nil
-      +org-export-directory "~/.export/"
-      org-archive-location "~/Dropbox/org/archive.org::datetree/"
-      org-default-notes-file "~/Dropbox/org/inbox.org"
-      projectile-project-search-path '("~/")
+      ;; +org-export-directory "~/.export/" ;; no longer used
+      org-archive-location "~/Dropbox/org/archive.org::datetree/" ; still useful Fri Oct  9 21:51:13 2020
+      org-default-notes-file "~/Dropbox/org/inbox.org"            ; might not be useful anymore, as I use daily journal to capture notes, Fri Oct  9 21:53:25 2020
       )
 
-(setq
-      org-agenda-diary-file "~/Dropbox/org/diary.org"
-      diary-file            "~/Dropbox/org/diary.org"
-      org-agenda-use-time-grid nil
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t
-      org-habit-show-habits t
-       my/inbox "~/Dropbox/org/inbox.org"
-       my/project "~/Dropbox/org/tasks.org"
-       my/someday "~/Dropbox/org/someday.org"
-       my/birthdays "~/Dropbox/org/birthdays.org"
-       ;org-agenda-files (list my/project my/inbox)
-      )
+(after! org (setq org-todo-keyword-faces
+      '(("TODO" :foreground "tomato" :weight bold)
+        ("WAITING" :foreground "light sea green" :weight bold)
+        ("STARTED" :foreground "DodgerBlue" :weight bold)
+        ("DELEGATED" :foreground "Gold" :weight bold)
+        ("NEXT" :foreground "violet red" :weight bold)
+        ("DONE" :foreground "slategrey" :weight bold))))
+
+(after! org (setq org-todo-keywords
+      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(D!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
 
 (after! org (setq org-capture-templates
       '(("g" "Getting things done")
@@ -406,17 +417,6 @@
         )
   )
 
-(after! org (setq org-todo-keyword-faces
-      '(("TODO" :foreground "tomato" :weight bold)
-        ("WAITING" :foreground "light sea green" :weight bold)
-        ("STARTED" :foreground "DodgerBlue" :weight bold)
-        ("DELEGATED" :foreground "Gold" :weight bold)
-        ("NEXT" :foreground "violet red" :weight bold)
-        ("DONE" :foreground "slategrey" :weight bold))))
-
-(after! org (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w!)" "STARTED(s!)" "NEXT(n!)" "DELEGATED(D!)" "|" "INVALID(I!)" "DONE(d!)" "HOLD(h)" "PNEDING(p)" "CANCELED(c)"))))
-
 (after! plantuml-mode
   (setq plantuml-default-exec-mode 'jar
         plantuml-jar-path (expand-file-name "~/bin/plantuml.jar")))
@@ -438,6 +438,20 @@
       org-hide-emphasis-markers nil
       org-outline-path-complete-in-steps nil
       org-refile-allow-creating-parent-nodes 'confirm)
+
+(setq
+      org-agenda-diary-file "~/Dropbox/org/diary.org"
+      diary-file            "~/Dropbox/org/diary.org"
+      org-agenda-use-time-grid nil
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-habit-show-habits t
+       my/inbox "~/Dropbox/org/inbox.org"
+       my/project "~/Dropbox/org/tasks.org"
+       my/someday "~/Dropbox/org/someday.org"
+       my/birthdays "~/Dropbox/org/birthdays.org"
+       ;org-agenda-files (list my/project my/inbox)
+      )
 
 (setq spacemacs-theme-org-agenda-height nil
       org-agenda-time-grid '((daily today require-timed) "----------------------" nil)

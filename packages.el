@@ -48,7 +48,21 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
-;
+
+;;  testing for org-mode performance improvement, Mon Dec  7 08:13:51 2020:
+;;  https://www.reddit.com/r/orgmode/comments/k6f5fx/ann_experimental_orgmode_branch_improving/?%24deep_link=true&correlation_id=ccca9cde-01c3-449b-ad8b-9d9ee958a806&ref=email_digest&ref_campaign=email_digest&ref_source=email&%243p=e_as&%24original_url=https%3A%2F%2Fwww.reddit.com%2Fr%2Forgmode%2Fcomments%2Fk6f5fx%2Fann_experimental_orgmode_branch_improving%2F%3F%24deep_link%3Dtrue%26correlation_id%3Dccca9cde-01c3-449b-ad8b-9d9ee958a806%26ref%3Demail_digest%26ref_campaign%3Demail_digest%26ref_source%3Demail&_branch_match_id=712684382232251840
+;; (package! org-mode
+;;   :recipe (:host github
+;;            :repo "yantar92/org"
+;;            :branch "feature/org-fold"
+;;            :files ("*.el" "lisp/*.el" "contrib/lisp/*.el")
+;;            :build (with-temp-file (expand-file-name "org-version.el" (straight--repos-dir "org"))
+;;                     (insert "(fset 'org-release (lambda () \"9.5\"))\n"
+;;                             "(fset 'org-git-version #'ignore)\n"
+;;                             "(provide 'org-version)\n")))
+;;   :pin "308c4f57d26307c0f57ad387a4638b051f541a9c"
+;;   :shadow 'org)
+
 ;; (package! helm-org-rifle)
 ;; (package! org-super-agenda)
 ;; (package! org-ql)
