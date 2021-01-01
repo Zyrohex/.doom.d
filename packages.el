@@ -1,8 +1,3 @@
-;; Roam Packages
-(package! org-roam)
-(package! company-org-roam)
-(package! org-roam-server)
-
 ;; Alphapapa packages
 ;(package! helm-org-rifle)
 ;(package! org-super-agenda)
@@ -26,7 +21,6 @@
 
 ;; Misc Packages
 ;(package! company-manually)
-(package! dimmer)
 (package! elfeed)
 (package! elfeed-org)
 (package! ob-mermaid)

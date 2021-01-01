@@ -1,6 +1,8 @@
 .DS_Store
 .idea
 *.log
+*.html
+*/*.html
 tmp/
 templates/
 snippets/
