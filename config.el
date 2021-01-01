@@ -410,7 +410,7 @@
 
 (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
-(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* %(get-page-title (current-kill 0))") org-capture-templates)
+(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* TODO %(get-page-title (current-kill 0))") org-capture-templates)
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
   (if (string-match-p (regexp-quote "http") (current-kill 0))

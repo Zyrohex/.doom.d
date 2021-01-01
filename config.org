@@ -594,7 +594,7 @@ headline.
 
 And now for research papers, liteature, and other things that I capture and need to organize:
 #+begin_src emacs-lisp
-(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* %(get-page-title (current-kill 0))") org-capture-templates)
+(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* TODO %(get-page-title (current-kill 0))") org-capture-templates)
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
   (if (string-match-p (regexp-quote "http") (current-kill 0))
