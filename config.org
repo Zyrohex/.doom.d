@@ -597,9 +597,18 @@ And now for research papers, liteature, and other things that I capture and need
 (push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* TODO %(get-page-title (current-kill 0))") org-capture-templates)
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
-  (if (string-match-p (regexp-quote "http") (current-kill 0))
-      (read-string "Select headline: ")
-    (error "Aborting. Clipboard does not contain URL Link.")))
+  (let* ((file "~/orgmode/gtd/websources.org")
+         (headline (read-string "Headline? ")))
+    (progn
+      (nm/check-headline-exist file headline)
+      (quote headline))
+    (re-search-forward (format "* %s" headline))))
+
+(defun nm/check-headline-exist (file-arg headline-arg)
+  "This function will check if HEADLINE-ARG exists in FILE-ARG, and if not it creates the headline."
+  (save-excursion (find-file file-arg) (goto-char (point-min))
+                  (unless (re-search-forward (format "* %s" headline-arg) nil t)
+                    (goto-char (point-max)) (insert (format "* %s" headline-arg)))) t)
 #+end_src
 
 I like to keep track of a timeline for projects, when I have a call, some new
