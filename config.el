@@ -57,32 +57,32 @@
 
 (defun nm/tasks-refile ()
   "Returns t if the task is not part of a project and has no next state conditions."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+  (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+         (next-heading (save-excursion (outline-next-heading))))
     (cond
-     ((and (not (or (oh/is-subtask-p) (oh/is-subproject-p))) (null (nm/has-next-condition))) nil)
-     (t subtree-end))))
+     ((nm/has-next-condition) next-heading)
+     ((bh/is-project-p) subtree-end))))
 
-(defun nm/capture-websources ()
-  "Capture web sources"
+(defun nm/capture-project-timeframes ()
+  "Captures under the given projects timeframe headline."
+  (let ((p-name (ivy-completing-read "Select file: " (find-lisp-find-files "~/orgmode/gtd/" "\.org$")))
+        (h-name "* Timeframe")
+        (c-name (read-string "Entry name: ")))
+    (goto-char (point-min))
+    (find-file p-name)
+    (unless (re-search-forward h-name nil t)
+      (progn (goto-char (point-max)) (newline) (insert "* Timeframe")))
+    (org-end-of-subtree t)
+    (newline 2)
+    (insert (format "** %s %s" (format-time-string "[%Y-%m-%d %a %H:%M]") c-name))
+    (newline)))
+
+(defvar doom-fav-themes '("doom-one" "doom-solarized-dark" "doom-dracula" "doom-vibrant" "doom-city-lights" "doom-moonlight" "doom-horizon" "doom-old-hope" "doom-oceanic-next" "doom-monokai-pro" "doom-material" "doom-henna" "doom-gruvbox" "doom-one-light" "doom-gruvbox-light" "doom-solarized-light" "doom-flatwhite" "chocolate"))
+(defun nm/load-theme ()
   (interactive)
-  (save-excursion
-    (save-restriction
-      (let ((file "~/orgmode/gtd/websources.org")
-            (headline (read-string "Headline: "))
-            (has-url nil))
-        (find-file file)
-        (when (string-match-p (regexp-quote "http") (current-kill 0))
-          (goto-char 0)
-          (if (re-search-forward (format "* %s" headline) nil t)
-              (progn (newline) (insert "** READ ") (evil-insert 1) (org-end-of-line) (insert (get-page-title (current-kill 0))))
-            (progn (goto-char (point-max)) (insert (format "* %s" headline)) (newline) (insert "** READ ") (evil-insert 1) (org-end-of-line) (insert (get-page-title (current-kill 0))))))
-        (when (not (string-match-p (regexp-quote "http") (current-kill 0)))
-          (error "URL not in clipboard!"))))))
-
-(map! :after org
-      :leader
-      :prefix ("n" . "notes")
-      :desc "New Web Resource" "w" #'nm/capture-websources)
+  (ivy-read "Load custom theme: " doom-fav-themes
+            :action #'counsel-load-theme-action
+            :caller 'counsel-load-theme))
 
 ;; This function was found on a stackoverflow post -> https://stackoverflow.com/questions/6681407/org-mode-capture-with-sexp
  (defun get-page-title (url)
@@ -258,7 +258,7 @@
 (defun nm/search-headlines-org-directory ()
   "Search the ORG-DIRECTORY, prompting user for headline and returns its results to indirect buffer."
   (interactive)
-  (nm/get-headlines-org-files "~/orgmode/"))
+  (nm/get-headlines-org-files "~/orgmode/notes2/"))
 
 (defun nm/search-headlines-org-tasks-directory ()
   "Search the GTD folder, prompting user for headline and returns its results to indirect buffer."
@@ -329,7 +329,7 @@
 (setq org-directory "~/orgmode/")
 (setq projectile-project-search-path "~/projects/")
 
-(setq doom-theme 'doom-spacegrey)
+(setq doom-theme 'doom-solarized-dark)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
@@ -404,12 +404,22 @@
 ;; It's important that I capture what I have in my mind at this time I create this new entry...
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
 (push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+(push '("t" "Capture Task with Link" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
 
 (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 
 (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
-(push '("r" "research literature" entry (function nm/capture-websources)) org-capture-templates)
+(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* %(get-page-title (current-kill 0))") org-capture-templates)
+(defun nm/enter-headline-websources ()
+  "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
+  (if (string-match-p (regexp-quote "http") (current-kill 0))
+      (read-string "Select headline: ")
+    (error "Aborting. Clipboard does not contain URL Link.")))
+
+(push '("p" "projects") org-capture-templates)
+(push '("pt" "timeframe" entry (function nm/capture-project-timeframes)
+        "%?") org-capture-templates)
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -473,12 +483,12 @@
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
-                    ("ROAM"
-                     :base-directory "~/orgmode/roam/"
-                     :publishing-directory "~/roam/"
-                     :base-extension "org"
+                    ("Markdown-to-Orgmode"
+                     :base-directory "~/projects/notes/"
+                     :publishing-directory "~/projects/notes-md-to-org/"
+                     :base-extension "md"
                      :recursive t
-                     :publishing-function org-md-publish-to-md)
+                     :publishing-function org-md-publish-to-org)
                     ("notes"
                      :base-directory "~/orgmode/notes/"
                      :publishing-directory "~/nmartin84.github.io"
@@ -586,10 +596,6 @@
 (provide 'my-deft-title)
 
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
-
-(dimmer-mode 1)
-(setq dimmer-percent 0.5
-      dimmer-fraction 0.4)
 
 (use-package elfeed-org
   :defer
@@ -767,42 +773,42 @@
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 
-(setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/orgmode/roam.db")
-(setq org-roam-directory "~/orgmode/")
+;; (setq org-roam-tag-sources '(prop last-directory))
+;; (setq org-roam-db-location "~/orgmode/roam.db")
+;; (setq org-roam-directory "~/orgmode/")
 
-(use-package company-org-roam
-  :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working
-                                        ; :pin melpa
-  :config
-  (push 'company-org-roam company-backends))
+;; (use-package company-org-roam
+;;   :ensure t
+;;   ;; You may want to pin in case the version from stable.melpa.org is not working
+;;                                         ; :pin melpa
+;;   :config
+;;   (push 'company-org-roam company-backends))
 
-(setq org-roam-dailies-capture-templates
-      '(("d" "daily" plain (function org-roam-capture--get-point) ""
-         :immediate-finish t
-         :file-name "journal/%<%Y-%m-%d-%a>"
-         :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+;; (setq org-roam-dailies-capture-templates
+;;       '(("d" "daily" plain (function org-roam-capture--get-point) ""
+;;          :immediate-finish t
+;;          :file-name "journal/%<%Y-%m-%d-%a>"
+;;          :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
 
-(setq org-roam-capture-templates
-      '(("l" "literature" plain (function org-roam-capture--get-point)
-         :file-name "literature/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n%?"
-         :unnarrowed t)
-        ("f" "fleeting" plain (function org-roam-capture--get-point)
-         :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n\n%?"
-         :unnarrowed t)
-        ("p" "permanent" plain (function org-roam-capture--get-point)
-         :file-name "brain/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-         :unnarrowed t
-         "%?")))
+;; (setq org-roam-capture-templates
+;;       '(("l" "literature" plain (function org-roam-capture--get-point)
+;;          :file-name "literature/%<%Y%m%d%H%M>-${slug}"
+;;          :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n%?"
+;;          :unnarrowed t)
+;;         ("f" "fleeting" plain (function org-roam-capture--get-point)
+;;          :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
+;;          :head "#+title: ${title}\n\n%?"
+;;          :unnarrowed t)
+;;         ("p" "permanent" plain (function org-roam-capture--get-point)
+;;          :file-name "brain/%<%Y%m%d%H%M>-${slug}"
+;;          :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+;;          :unnarrowed t
+;;          "%?")))
 
-(push '("x" "Projects" plain (function org-roam-capture--get-point)
-        :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
-        :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
-        :unnarrowed t) org-roam-capture-templates)
+;; (push '("x" "Projects" plain (function org-roam-capture--get-point)
+;;         :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
+;;         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
+;;         :unnarrowed t) org-roam-capture-templates)
 
 ;; (defun my/org-roam--backlinks-list-with-content (file)
 ;;   (with-temp-buffer
@@ -832,18 +838,18 @@
 
 ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
-(use-package org-roam-server
-  :ensure t
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8070
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-poll nil
-        org-roam-server-network-arrows 'from
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
+;; (use-package org-roam-server
+;;   :ensure t
+;;   :config
+;;   (setq org-roam-server-host "127.0.0.1"
+;;         org-roam-server-port 8070
+;;         org-roam-server-export-inline-images t
+;;         org-roam-server-authenticate nil
+;;         org-roam-server-network-poll nil
+;;         org-roam-server-network-arrows 'from
+;;         org-roam-server-network-label-truncate t
+;;         org-roam-server-network-label-truncate-length 60
+;;         org-roam-server-network-label-wrap-length 20))
 
 (setq org-super-agenda-mode t
       org-agenda-todo-ignore-scheduled 'future
@@ -887,7 +893,7 @@
 
 (push '("r" "Research"
         ((todo ""
-               ((org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/websources.org")))
+               ((org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/literature.org")))
                 (org-super-agenda-groups '((:auto-category t))))))) org-agenda-custom-commands)
 
 ;; (setq org-super-agenda-mode t
@@ -960,6 +966,8 @@
 (setq visual-fill-column 120)
 
 (load! "org-helpers.el")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
+(require 'eaf)
 
 (defadvice org-archive-subtree (around fix-hierarchy activate)
   (let* ((fix-archive-p (and (not current-prefix-arg)
@@ -1053,7 +1061,7 @@
           doom-big-font (font-spec :family font :size (+ 2 (string-to-number size)) :weight (intern weight) :width (intern width))))
   (doom/reload-font))
 
-(defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
+(defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "VictorMono Nerd Font Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
 
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
 (when (file-exists-p secrets)

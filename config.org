@@ -96,30 +96,34 @@ For tasks that are ready to be refiled:
      ((bh/is-project-p) subtree-end))))
 #+end_src
 
+** Capturing to a Projects Timeframe
+#+begin_src emacs-lisp
+(defun nm/capture-project-timeframes ()
+  "Captures under the given projects timeframe headline."
+  (let ((p-name (ivy-completing-read "Select file: " (find-lisp-find-files "~/orgmode/gtd/" "\.org$")))
+        (h-name "* Timeframe")
+        (c-name (read-string "Entry name: ")))
+    (goto-char (point-min))
+    (find-file p-name)
+    (unless (re-search-forward h-name nil t)
+      (progn (goto-char (point-max)) (newline) (insert "* Timeframe")))
+    (org-end-of-subtree t)
+    (newline 2)
+    (insert (format "** %s %s" (format-time-string "[%Y-%m-%d %a %H:%M]") c-name))
+    (newline)))
+#+end_src
+** Easy theme switcher
+#+begin_src emacs-lisp
+(defvar doom-fav-themes '("doom-one" "doom-solarized-dark" "doom-dracula" "doom-vibrant" "doom-city-lights" "doom-moonlight" "doom-horizon" "doom-old-hope" "doom-oceanic-next" "doom-monokai-pro" "doom-material" "doom-henna" "doom-gruvbox" "doom-one-light" "doom-gruvbox-light" "doom-solarized-light" "doom-flatwhite" "chocolate"))
+(defun nm/load-theme ()
+  (interactive)
+  (ivy-read "Load custom theme: " doom-fav-themes
+            :action #'counsel-load-theme-action
+            :caller 'counsel-load-theme))
+#+end_src
+
 ** Capturing Web Resources
 #+begin_src emacs-lisp
-(defun nm/capture-websources ()
-  "Capture web sources"
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (let ((file "~/orgmode/gtd/websources.org")
-            (headline (read-string "Headline: "))
-            (has-url nil))
-        (find-file file)
-        (when (string-match-p (regexp-quote "http") (current-kill 0))
-          (goto-char 0)
-          (if (re-search-forward (format "* %s" headline) nil t)
-              (progn (newline) (insert "** READ ") (evil-insert 1) (org-end-of-line) (insert (get-page-title (current-kill 0))))
-            (progn (goto-char (point-max)) (insert (format "* %s" headline)) (newline) (insert "** READ ") (evil-insert 1) (org-end-of-line) (insert (get-page-title (current-kill 0))))))
-        (when (not (string-match-p (regexp-quote "http") (current-kill 0)))
-          (error "URL not in clipboard!"))))))
-
-(map! :after org
-      :leader
-      :prefix ("n" . "notes")
-      :desc "New Web Resource" "w" #'nm/capture-websources)
-
 ;; This function was found on a stackoverflow post -> https://stackoverflow.com/questions/6681407/org-mode-capture-with-sexp
  (defun get-page-title (url)
   "Get title of web page, whose url can be found in the current line"
@@ -141,7 +145,6 @@ For tasks that are ready to be refiled:
                                                              coding_charset))))
   (concat "[[" url "][" web_title_str "]]")))
 #+end_src
-
 ** Task Automation
 I got tired of manually setting task states to "NEXT" "PROJ" "TODO" so i've
 added a few functions to automate this for me.
@@ -351,7 +354,7 @@ that are called when initiated.
 (defun nm/search-headlines-org-directory ()
   "Search the ORG-DIRECTORY, prompting user for headline and returns its results to indirect buffer."
   (interactive)
-  (nm/get-headlines-org-files "~/orgmode/"))
+  (nm/get-headlines-org-files "~/orgmode/notes2/"))
 
 (defun nm/search-headlines-org-tasks-directory ()
   "Search the GTD folder, prompting user for headline and returns its results to indirect buffer."
@@ -570,6 +573,8 @@ kicks in and I log a new task to my INBOX.
 ;; It's important that I capture what I have in my mind at this time I create this new entry...
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
 (push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+(push '("t" "Capture Task with Link" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
+
 #+end_src
 
 Occassionally I do like to take a note in my journal, to make a mental note of
@@ -589,7 +594,21 @@ headline.
 
 And now for research papers, liteature, and other things that I capture and need to organize:
 #+begin_src emacs-lisp
-(push '("r" "research literature" entry (function nm/capture-websources)) org-capture-templates)
+(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* %(get-page-title (current-kill 0))") org-capture-templates)
+(defun nm/enter-headline-websources ()
+  "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
+  (if (string-match-p (regexp-quote "http") (current-kill 0))
+      (read-string "Select headline: ")
+    (error "Aborting. Clipboard does not contain URL Link.")))
+#+end_src
+
+I like to keep track of a timeline for projects, when I have a call, some new
+piece of data was introduced, or a change in requirements. Ultimately this helps
+me when I want to paint a bigger picture of the life for a project.
+#+begin_src emacs-lisp
+(push '("p" "projects") org-capture-templates)
+(push '("pt" "timeframe" entry (function nm/capture-project-timeframes)
+        "%?") org-capture-templates)
 #+end_src
 
 ** Export Settings
@@ -688,12 +707,12 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
                      :publishing-function org-publish-attachment)
-                    ("ROAM"
-                     :base-directory "~/orgmode/roam/"
-                     :publishing-directory "~/roam/"
-                     :base-extension "org"
+                    ("Markdown-to-Orgmode"
+                     :base-directory "~/projects/notes/"
+                     :publishing-directory "~/projects/notes-md-to-org/"
+                     :base-extension "md"
                      :recursive t
-                     :publishing-function org-md-publish-to-md)
+                     :publishing-function org-md-publish-to-org)
                     ("notes"
                      :base-directory "~/orgmode/notes/"
                      :publishing-directory "~/nmartin84.github.io"
@@ -827,13 +846,6 @@ Configuring DEFT default settings
 
 (advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
 #+END_SRC
-
-** DIMMER
-#+begin_src emacs-lisp
-(dimmer-mode 1)
-(setq dimmer-percent 0.5
-      dimmer-fraction 0.4)
-#+end_src
 
 ** Elfeed
 #+BEGIN_SRC emacs-lisp
@@ -1036,42 +1048,42 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 ** ROAM
 These are my default ROAM settings
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/orgmode/roam.db")
-(setq org-roam-directory "~/orgmode/")
+;; (setq org-roam-tag-sources '(prop last-directory))
+;; (setq org-roam-db-location "~/orgmode/roam.db")
+;; (setq org-roam-directory "~/orgmode/")
 
-(use-package company-org-roam
-  :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working
-                                        ; :pin melpa
-  :config
-  (push 'company-org-roam company-backends))
+;; (use-package company-org-roam
+;;   :ensure t
+;;   ;; You may want to pin in case the version from stable.melpa.org is not working
+;;                                         ; :pin melpa
+;;   :config
+;;   (push 'company-org-roam company-backends))
 
-(setq org-roam-dailies-capture-templates
-      '(("d" "daily" plain (function org-roam-capture--get-point) ""
-         :immediate-finish t
-         :file-name "journal/%<%Y-%m-%d-%a>"
-         :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+;; (setq org-roam-dailies-capture-templates
+;;       '(("d" "daily" plain (function org-roam-capture--get-point) ""
+;;          :immediate-finish t
+;;          :file-name "journal/%<%Y-%m-%d-%a>"
+;;          :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
 
-(setq org-roam-capture-templates
-      '(("l" "literature" plain (function org-roam-capture--get-point)
-         :file-name "literature/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n%?"
-         :unnarrowed t)
-        ("f" "fleeting" plain (function org-roam-capture--get-point)
-         :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n\n%?"
-         :unnarrowed t)
-        ("p" "permanent" plain (function org-roam-capture--get-point)
-         :file-name "brain/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-         :unnarrowed t
-         "%?")))
+;; (setq org-roam-capture-templates
+;;       '(("l" "literature" plain (function org-roam-capture--get-point)
+;;          :file-name "literature/%<%Y%m%d%H%M>-${slug}"
+;;          :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n%?"
+;;          :unnarrowed t)
+;;         ("f" "fleeting" plain (function org-roam-capture--get-point)
+;;          :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
+;;          :head "#+title: ${title}\n\n%?"
+;;          :unnarrowed t)
+;;         ("p" "permanent" plain (function org-roam-capture--get-point)
+;;          :file-name "brain/%<%Y%m%d%H%M>-${slug}"
+;;          :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
+;;          :unnarrowed t
+;;          "%?")))
 
-(push '("x" "Projects" plain (function org-roam-capture--get-point)
-        :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
-        :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
-        :unnarrowed t) org-roam-capture-templates)
+;; (push '("x" "Projects" plain (function org-roam-capture--get-point)
+;;         :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
+;;         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
+;;         :unnarrowed t) org-roam-capture-templates)
 #+END_SRC
 
 ** ROAM Export Backlinks + Content
@@ -1107,18 +1119,18 @@ These are my default ROAM settings
 
 ** ROAM Server
 #+BEGIN_SRC emacs-lisp
-(use-package org-roam-server
-  :ensure t
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8070
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-poll nil
-        org-roam-server-network-arrows 'from
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
+;; (use-package org-roam-server
+;;   :ensure t
+;;   :config
+;;   (setq org-roam-server-host "127.0.0.1"
+;;         org-roam-server-port 8070
+;;         org-roam-server-export-inline-images t
+;;         org-roam-server-authenticate nil
+;;         org-roam-server-network-poll nil
+;;         org-roam-server-network-arrows 'from
+;;         org-roam-server-network-label-truncate t
+;;         org-roam-server-network-label-truncate-length 60
+;;         org-roam-server-network-label-wrap-length 20))
 #+END_SRC
 
 ** Super Agenda Settings
@@ -1171,7 +1183,7 @@ This first stage is how I track what's on my list of things to complete.
 #+begin_src emacs-lisp
 (push '("r" "Research"
         ((todo ""
-               ((org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/websources.org")))
+               ((org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/literature.org")))
                 (org-super-agenda-groups '((:auto-category t))))))) org-agenda-custom-commands)
 #+end_src
 
@@ -1252,6 +1264,8 @@ This first stage is how I track what's on my list of things to complete.
 * Custom Functions
 #+BEGIN_SRC emacs-lisp
 (load! "org-helpers.el")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
+(require 'eaf)
 #+END_SRC
 
 ** Archive keeping Structure
@@ -1358,7 +1372,7 @@ Clarify task will take a list of property fields and pass them to ~nm/org-clarif
           doom-big-font (font-spec :family font :size (+ 2 (string-to-number size)) :weight (intern weight) :width (intern width))))
   (doom/reload-font))
 
-(defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
+(defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "VictorMono Nerd Font Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
 #+END_SRC
 
 * End of file loading
@@ -1368,5 +1382,3 @@ Load secrets from here...
 (when (file-exists-p secrets)
   (load secrets)))
 #+END_SRC
-*
-  [[file:~/.doom.d/config.org::*Capture Templates][Capture Templates]]
