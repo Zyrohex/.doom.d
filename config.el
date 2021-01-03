@@ -65,7 +65,7 @@
 
 (defun nm/capture-project-timeframes ()
   "Captures under the given projects timeframe headline."
-  (let ((p-name (ivy-completing-read "Select file: " (find-lisp-find-files "~/orgmode/gtd/" "\.org$")))
+  (let ((p-name (ivy-completing-read "Select file: " (find-lisp-find-files "~/projects/orgmode/gtd/" "\.org$")))
         (h-name "* Timeframe")
         (c-name (read-string "Entry name: ")))
     (goto-char (point-min))
@@ -123,7 +123,7 @@
 
 (defun nm/org-capture-log ()
   "Initiate the capture system and find headline to capture under."
-  (let* ((org-agenda-files (find-lisp-find-files "~/orgmode/gtd/" "\.org$"))
+  (let* ((org-agenda-files (find-lisp-find-files "~/projects/orgmode/gtd/" "\.org$"))
          (dest (org-refile-get-location))
          (file (cadr dest))
          (pos (nth 3 dest))
@@ -140,7 +140,7 @@
 
 (defun nm/org-capture-to-task-file ()
   "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
-  (let* ((file "~/orgmode/gtd/tasks.org")
+  (let* ((file "~/projects/orgmode/gtd/tasks.org")
          (parent-l nil)
          (child-l nil)
          (parent "Daily Tasks")
@@ -191,7 +191,7 @@
 
 (defun nm/capture-to-journal ()
   "When org-capture-template is initiated, it creates the respected headline structure."
-  (let ((file "~/orgmode/gtd/journal.org")
+  (let ((file "~/projects/orgmode/gtd/journal.org")
         (parent nil)
         (child nil))
     (unless (file-exists-p file)
@@ -226,7 +226,7 @@
 (defun nm/productive-window ()
   "Setup"
   (interactive)
-  (nm/setup-productive-windows "~/orgmode/gtd/next.org" "~/orgmode/gtd/tasks.org"))
+  (nm/setup-productive-windows "~/projects/orgmode/gtd/next.org" "~/projects/orgmode/gtd/tasks.org"))
 
 (map! :after org
       :map org-mode-map
@@ -258,12 +258,12 @@
 (defun nm/search-headlines-org-directory ()
   "Search the ORG-DIRECTORY, prompting user for headline and returns its results to indirect buffer."
   (interactive)
-  (nm/get-headlines-org-files "~/orgmode/notes2/"))
+  (nm/get-headlines-org-files "~/projects/orgmode/"))
 
 (defun nm/search-headlines-org-tasks-directory ()
   "Search the GTD folder, prompting user for headline and returns its results to indirect buffer."
   (interactive)
-  (nm/get-headlines-org-files "~/orgmode/gtd/"))
+  (nm/get-headlines-org-files "~/projects/orgmode/gtd/"))
 
 (map! :after org
       :map org-mode-map
@@ -285,7 +285,6 @@
       inhibit-compacting-font-caches t)
 (whitespace-mode -1)
 
-(setq display-line-numbers-type t)
 (setq-default
  delete-by-moving-to-trash t
  tab-width 4
@@ -325,8 +324,8 @@
    (setq doom-theme nil)
    (setq doom-font (font-spec :family "Roboto Mono" :size 20))))
 
-(setq diary-file "~/orgmode/diary.org")
-(setq org-directory "~/orgmode/")
+(setq diary-file "~/projects/orgmode/diary.org")
+(setq org-directory "~/projects/orgmode/")
 (setq projectile-project-search-path "~/projects/")
 
 (setq doom-theme 'doom-solarized-dark)
@@ -336,8 +335,8 @@
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-;  (set-popup-rule! "*Org Agenda*" :side 'right :size .40 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'top :size .30 :select t))
 
 (when (equal system-type 'gnu/linux)
   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
@@ -349,10 +348,10 @@
 (require 'org-habit)
 (require 'org-id)
 (require 'org-checklist)
-(after! org (setq org-archive-location "~/orgmode/gtd/archives.org::* %s"
+(after! org (setq org-archive-location "~/projects/orgmode/gtd/archives.org::* %s"
                   org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
-                  org-log-state-notes-insert-after-drawers nil
+                  org-log-state-notes-insert-after-drawers t
                   org-catch-invisible-edits 'error
                   org-refile-targets '((nil :maxlevel . 9)
                                        (org-agenda-files :maxlevel . 4))
@@ -360,12 +359,13 @@
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm
                   org-startup-indented 'indent
-                  org-insert-heading-respect-content nil
+                  org-insert-heading-respect-content t
                   org-startup-folded 'content
                   org-src-tab-acts-natively t
                   org-list-allow-alphabetical nil))
 
 (add-hook 'org-mode-hook 'turn-off-auto-fill)
+(add-hook 'org-mode-hook 'hl-todo-mode)
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 (after! org (setq org-hide-emphasis-markers t
@@ -379,7 +379,7 @@
 (when (require 'org-fancy-priorities nil 'noerror)
   (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 
-(after! org (setq org-agenda-diary-file "~/orgmode/diary.org"
+(after! org (setq org-agenda-diary-file "~/projects/orgmode/diary.org"
                   org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
                   org-agenda-use-time-grid nil
                   org-agenda-tags-column 0
@@ -393,27 +393,27 @@
                   org-enforce-todo-dependencies t
                   org-habit-show-habits t))
 
-(after! org (setq org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org") (file-expand-wildcards "~/orgmode/gtd/*/*.org"))))
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org") (file-expand-wildcards "~/projects/orgmode/gtd/*/*.org"))))
 
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
-(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/orgmode/gtd/tasks.org" "Tasks") "- [ ] %?")))
+(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Tasks") "- [ ] %?")))
 
 (push '("d" "Task by Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 
 ;; It's important that I capture what I have in my mind at this time I create this new entry...
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
-(push '("i" "Capture to inbox" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
-(push '("t" "Capture Task with Link" entry (file+olp "~/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
+(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
 
 (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 
 (push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
-(push '("r" "research literature" entry (file+function "~/orgmode/gtd/websources.org" nm/enter-headline-websources) "* TODO %(get-page-title (current-kill 0))") org-capture-templates)
+(push '("r" "research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
-  (let* ((file "~/orgmode/gtd/websources.org")
+  (let* ((file "~/projects/orgmode/gtd/websources.org")
          (headline (read-string "Headline? ")))
     (progn
       (nm/check-headline-exist file headline)
@@ -423,8 +423,8 @@
 (defun nm/check-headline-exist (file-arg headline-arg)
   "This function will check if HEADLINE-ARG exists in FILE-ARG, and if not it creates the headline."
   (save-excursion (find-file file-arg) (goto-char (point-min))
-                  (unless (re-search-forward (format "* %s" headline-arg) nil t)
-                    (goto-char (point-max)) (insert (format "* %s" headline-arg)))) t)
+                  (unless (re-search-forward (format "* %s" (upcase headline-arg)) nil t)
+                    (goto-char (point-max)) (insert (format "* %s" (upcase headline-arg))) (org-set-property "CATEGORY" (downcase headline-arg)))) t)
 
 (push '("p" "projects") org-capture-templates)
 (push '("pt" "timeframe" entry (function nm/capture-project-timeframes)
@@ -487,7 +487,7 @@
 
 (after! org (setq org-publish-project-alist
                   '(("attachments"
-                     :base-directory "~/orgmode/"
+                     :base-directory "~/projects/orgmode/"
                      :recursive t
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
                      :publishing-directory "~/publish_html"
@@ -499,7 +499,7 @@
                      :recursive t
                      :publishing-function org-md-publish-to-org)
                     ("notes"
-                     :base-directory "~/orgmode/notes/"
+                     :base-directory "~/projects/orgmode/notes/"
                      :publishing-directory "~/nmartin84.github.io"
                      :section-numbers nil
                      :base-extension "org"
@@ -542,7 +542,7 @@
 (push '("remember") org-tag-alist)
 
 (after! org
-  (set-company-backend! 'org-mode 'company-capf '(company-yasnippet company-elisp))
+  (set-company-backend! 'org-mode '(company-yasnippet company-elisp))
   (setq company-idle-delay 0.25))
 
 (setq deft-use-projectile-projects t)
@@ -559,7 +559,7 @@
   :bind (("<f8>" . deft))
   :commands (deft deft-open-file deft-new-file-named)
   :config
-  (setq deft-directory "~/orgmode/"
+  (setq deft-directory "~/projects/orgmode/"
         deft-auto-save-interval 0
         deft-recursive t
         deft-current-sort-method 'title
@@ -609,7 +609,7 @@
 (use-package elfeed-org
   :defer
   :config
-  (setq rmh-elfeed-org-files (list "~/orgmode/elfeed.org")))
+  (setq rmh-elfeed-org-files (list "~/projects/orgmode/elfeed.org")))
 (use-package elfeed
   :defer
   :config
@@ -643,7 +643,7 @@
   :config
   (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
-(after! org (setq org-journal-dir "~/orgmode/gtd/journal/"
+(after! org (setq org-journal-dir "~/projects/orgmode/gtd/journal/"
                   org-journal-enable-agenda-integration t
                   org-journal-file-type 'monthly
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
@@ -782,42 +782,43 @@
 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
 (setq org-reveal-title-slide nil)
 
-;; (setq org-roam-tag-sources '(prop last-directory))
-;; (setq org-roam-db-location "~/orgmode/roam.db")
-;; (setq org-roam-directory "~/orgmode/")
+(setq org-roam-tag-sources '(prop last-directory))
+(setq org-roam-db-location "~/projects/orgmode/roam.db")
+(setq org-roam-directory "~/projects/orgmode/")
+(setq org-roam-buffer-position 'bottom)
 
-;; (use-package company-org-roam
-;;   :ensure t
-;;   ;; You may want to pin in case the version from stable.melpa.org is not working
-;;                                         ; :pin melpa
-;;   :config
-;;   (push 'company-org-roam company-backends))
+(use-package company-org-roam
+  :ensure t
+  ;; You may want to pin in case the version from stable.melpa.org is not working
+                                        ; :pin melpa
+  :config
+  (push 'company-org-roam company-backends))
 
-;; (setq org-roam-dailies-capture-templates
-;;       '(("d" "daily" plain (function org-roam-capture--get-point) ""
-;;          :immediate-finish t
-;;          :file-name "journal/%<%Y-%m-%d-%a>"
-;;          :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+(setq org-roam-dailies-capture-templates
+      '(("d" "daily" plain (function org-roam-capture--get-point) ""
+         :immediate-finish t
+         :file-name "journal/%<%Y-%m-%d-%a>"
+         :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
 
-;; (setq org-roam-capture-templates
-;;       '(("l" "literature" plain (function org-roam-capture--get-point)
-;;          :file-name "literature/%<%Y%m%d%H%M>-${slug}"
-;;          :head "#+title: ${title}\n#+roam_tags: %^{roam_tags}\n\nsource :: [[%^{link}][%^{link_desc}]]\n\n%?"
-;;          :unnarrowed t)
-;;         ("f" "fleeting" plain (function org-roam-capture--get-point)
-;;          :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
-;;          :head "#+title: ${title}\n\n%?"
-;;          :unnarrowed t)
-;;         ("p" "permanent" plain (function org-roam-capture--get-point)
-;;          :file-name "brain/%<%Y%m%d%H%M>-${slug}"
-;;          :head "#+title: ${title}\n#+roam_tags: %(read-string \"tags: \")\n\n"
-;;          :unnarrowed t
-;;          "%?")))
+(setq org-roam-capture-templates
+      '(("l" "literature" plain (function org-roam-capture--get-point)
+         :file-name "literature/%<%Y%m%d%H%M>-${slug}"
+         :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %^{roam_tags}\n\nsource: \n\n%?"
+         :unnarrowed t)
+        ("f" "fleeting" plain (function org-roam-capture--get-point)
+         :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
+         :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
+         :unnarrowed t)
+        ("p" "permanent in nested folder" plain (function org-roam-capture--get-point)
+         :file-name "%(read-string \"string: \")/%<%Y%m%d%H%M>-${slug}"
+         :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %(read-string \"tags: \")\n\n"
+         :unnarrowed t
+         "%?")))
 
-;; (push '("x" "Projects" plain (function org-roam-capture--get-point)
-;;         :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
-;;         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
-;;         :unnarrowed t) org-roam-capture-templates)
+(push '("x" "Projects" plain (function org-roam-capture--get-point)
+        :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
+        :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
+        :unnarrowed t) org-roam-capture-templates)
 
 ;; (defun my/org-roam--backlinks-list-with-content (file)
 ;;   (with-temp-buffer
@@ -847,18 +848,18 @@
 
 ;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
 
-;; (use-package org-roam-server
-;;   :ensure t
-;;   :config
-;;   (setq org-roam-server-host "127.0.0.1"
-;;         org-roam-server-port 8070
-;;         org-roam-server-export-inline-images t
-;;         org-roam-server-authenticate nil
-;;         org-roam-server-network-poll nil
-;;         org-roam-server-network-arrows 'from
-;;         org-roam-server-network-label-truncate t
-;;         org-roam-server-network-label-truncate-length 60
-;;         org-roam-server-network-label-wrap-length 20))
+(use-package org-roam-server
+  :ensure t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8070
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-network-poll nil
+        org-roam-server-network-arrows 'from
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
 
 (setq org-super-agenda-mode t
       org-agenda-todo-ignore-scheduled 'future
@@ -869,7 +870,7 @@
 (push '("n" "next actions"
         ((agenda ""
                  ((org-agenda-span '1)
-                  (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
          (tags-todo "-@delegated/-PROJ"
                     ((org-agenda-overriding-header "Project Tasks")
@@ -902,7 +903,7 @@
 
 (push '("r" "Research"
         ((todo ""
-               ((org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/literature.org")))
+               ((org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/literature.org")))
                 (org-super-agenda-groups '((:auto-category t))))))) org-agenda-custom-commands)
 
 ;; (setq org-super-agenda-mode t
@@ -921,7 +922,7 @@
 ;;               ("n" "Next Actions"
 ;;                ((agenda ""
 ;;                         ((org-agenda-span '1)
-;;                          (org-agenda-files (append (file-expand-wildcards "~/orgmode/gtd/*.org")))
+;;                          (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
 ;;                          (org-agenda-start-day (org-today))))
 ;;                 (tags-todo "-@delegated/"
 ;;                            ((org-agenda-overriding-header "Project Tasks")
