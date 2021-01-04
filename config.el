@@ -417,8 +417,8 @@
          (headline (read-string "Headline? ")))
     (progn
       (nm/check-headline-exist file headline)
-      (quote headline))
-    (re-search-forward (format "* %s" headline))))
+      (goto-char (point-min))
+      (re-search-forward (format "^\*+\s%s" (upcase headline))))))
 
 (defun nm/check-headline-exist (file-arg headline-arg)
   "This function will check if HEADLINE-ARG exists in FILE-ARG, and if not it creates the headline."

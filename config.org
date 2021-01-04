@@ -612,8 +612,8 @@ And now for research papers, liteature, and other things that I capture and need
          (headline (read-string "Headline? ")))
     (progn
       (nm/check-headline-exist file headline)
-      (quote headline))
-    (re-search-forward (format "* %s" headline))))
+      (goto-char (point-min))
+      (re-search-forward (format "^\*+\s%s" (upcase headline))))))
 
 (defun nm/check-headline-exist (file-arg headline-arg)
   "This function will check if HEADLINE-ARG exists in FILE-ARG, and if not it creates the headline."
@@ -1106,7 +1106,6 @@ These are my default ROAM settings
         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
         :unnarrowed t) org-roam-capture-templates)
 #+END_SRC
-
 ** ROAM Export Backlinks + Content
 #+BEGIN_SRC emacs-lisp
 ;; (defun my/org-roam--backlinks-list-with-content (file)
