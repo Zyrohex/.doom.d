@@ -397,14 +397,14 @@
 
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
-(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Tasks") "- [ ] %?")))
+(setq org-capture-templates '(("!" "Quick Checkitem" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Quick Tasks") "- [ ] %?")))
 
-(push '("d" "Task by Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
+(push '("d" "Add Checkitem to Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 
 ;; It's important that I capture what I have in my mind at this time I create this new entry...
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
-(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
-(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
+(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
 
 (push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 
@@ -467,6 +467,7 @@
   (setq org-todo-keywords
         '((sequence
            "TODO(t)"  ; A task that needs doing & is ready to do
+           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed
            "PROJ(p)"  ; Project with multiple task items.
            "WAIT(w)"  ; Something external is holding up this task
            "|"
@@ -474,6 +475,7 @@
            "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
+          ("REFILE" . +org-todo-onhold)
           ("PROJ" . +org-todo-project)
           ("TODO" . +org-todo-active)))
 
@@ -785,7 +787,7 @@
 (setq org-roam-tag-sources '(prop last-directory))
 (setq org-roam-db-location "~/projects/orgmode/roam.db")
 (setq org-roam-directory "~/projects/orgmode/")
-(setq org-roam-buffer-position 'bottom)
+(setq org-roam-buffer-position 'right)
 
 (use-package company-org-roam
   :ensure t
@@ -820,34 +822,6 @@
         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
         :unnarrowed t) org-roam-capture-templates)
 
-;; (defun my/org-roam--backlinks-list-with-content (file)
-;;   (with-temp-buffer
-;;     (if-let* ((backlinks (org-roam--get-backlinks file))
-;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-;;         (progn
-;;           (insert (format "\n\n* %d Backlinks\n"
-;;                           (length backlinks)))
-;;           (dolist (group grouped-backlinks)
-;;             (let ((file-from (car group))
-;;                   (bls (cdr group)))
-;;               (insert (format "** [[file:%s][%s]]\n"
-;;                               file-from
-;;                               (org-roam--get-title-or-slug file-from)))
-;;               (dolist (backlink bls)
-;;                 (pcase-let ((`(,file-from _ ,props) backlink))
-;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-;;                   (insert "\n\n")))))))
-;;     (buffer-string)))
-
-;; (defun my/org-export-preprocessor (backend)
-;;   (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-;;     (unless (string= links "")
-;;       (save-excursion
-;;         (goto-char (point-max))
-;;         (insert (concat "\n* Backlinks\n") links)))))
-
-;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
-
 (use-package org-roam-server
   :ensure t
   :config
@@ -872,9 +846,15 @@
                  ((org-agenda-span '1)
                   (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
-         (tags-todo "-@delegated/-PROJ"
-                    ((org-agenda-overriding-header "Project Tasks")
-                     (org-agenda-skip-function 'nm/project-tasks-ready)
+         (tags-todo "-SOMEDAY-@delegated/+NEXT-REFILE"
+                    ((org-agenda-overriding-header "Next Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE"
+                    ((org-agenda-overriding-header "Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
@@ -889,10 +869,11 @@
                      (org-agenda-sorting-strategy '(category-up)))))) org-agenda-custom-commands)
 
 (push '("i" "inbox"
-        ((tags-todo "-SOMEDAY/-PROJ"
-                    ((org-tags-match-list-sublevels nil)
-                     (org-agenda-skip-function 'nm/tasks-refile)
-                     (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
+        ((todo "REFILE"
+               ((org-tags-match-list-sublevels nil)
+                                        ;(org-agenda-skip-function 'nm/tasks-refile)
+                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
+
 (push '("x" "stuck projects"
         ((tags-todo "-SOMEDAY-@delegated/"
                     ((org-agenda-overriding-header "Stuck Projects")
