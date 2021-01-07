@@ -1,4 +1,4 @@
-# Created 2021-01-03 Sun 12:26
+# Created 2021-01-06 Wed 22:05
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -465,12 +465,33 @@ Next we configure popup-rules and default fonts.
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
   (set-popup-rule! "*Org Agenda*" :side 'top :size .30 :select t))
 
-(when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'normal)))
-(when (equal system-type 'windows-nt)
-  (setq doom-font (font-spec :family "InputMono" :size 18)
-        doom-big-font (font-spec :family "InputMono" :size 22)))
+(setq doom-font (font-spec :family "Roboto Mono" :size 20)
+      doom-big-font (font-spec :family "Roboto Mono" :size 32)
+      doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 20)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+
+(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
+
+(custom-set-faces!
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+
+(after! org
+  (custom-set-faces!
+    '(org-document-title :height 1.2)))
+
+;; (when (equal system-type 'gnu/linux)
+;;   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
+;;         doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'normal)))
+;; (when (equal system-type 'windows-nt)
+;;   (setq doom-font (font-spec :family "InputMono" :size 18)
+;;         doom-big-font (font-spec :family "InputMono" :size 22)))
 #+end_src
 
 * Org-Mode
@@ -485,7 +506,7 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
 (require 'org-id)
 (require 'org-checklist)
 (after! org (setq org-archive-location "~/projects/orgmode/gtd/archives.org::* %s"
-                  org-image-actual-width (truncate (* (display-pixel-width) 0.15))
+                  ;org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
                   org-log-state-notes-insert-after-drawers t
                   org-catch-invisible-edits 'error
@@ -500,8 +521,8 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
                   org-src-tab-acts-natively t
                   org-list-allow-alphabetical nil))
 
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-(add-hook 'org-mode-hook 'hl-todo-mode)
+(add-hook 'org-mode-hook 'auto-fill-mode)
+;(add-hook 'org-mode-hook 'hl-todo-mode)
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 #+end_src
 
@@ -565,7 +586,7 @@ Task items are important, but some are not always important enough to be giving
 a due date, or to record any data from the task... I just simply need to mark it
 on my list to serve as a simple reminder.
 #+begin_src emacs-lisp
-(setq org-capture-templates '(("!" "Quick Task" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Tasks") "- [ ] %?")))
+(setq org-capture-templates '(("!" "Quick Checkitem" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Quick Tasks") "- [ ] %?")))
 #+end_src
 
 Other task items are more important though, and I need to specify a date they
@@ -573,7 +594,7 @@ need to be completed on, but again... there's no urgency of recording any data
 for these tasks so I simply log it as a checklist.
 
 #+begin_src emacs-lisp
-(push '("d" "Task by Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
+(push '("d" "Add Checkitem to Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 #+end_src
 
 Beyond regular checklist items, I sometimes need to capture something that
@@ -584,8 +605,8 @@ kicks in and I log a new task to my INBOX.
 #+begin_src emacs-lisp
 ;; It's important that I capture what I have in my mind at this time I create this new entry...
 ;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
-(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
-(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* TODO %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
+(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
+(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
 #+end_src
 
 Occassionally I do like to take a note in my journal, to make a mental note of
@@ -612,8 +633,8 @@ And now for research papers, liteature, and other things that I capture and need
          (headline (read-string "Headline? ")))
     (progn
       (nm/check-headline-exist file headline)
-      (quote headline))
-    (re-search-forward (format "* %s" headline))))
+      (goto-char (point-min))
+      (re-search-forward (format "^\*+\s%s" (upcase headline))))))
 
 (defun nm/check-headline-exist (file-arg headline-arg)
   "This function will check if HEADLINE-ARG exists in FILE-ARG, and if not it creates the headline."
@@ -678,7 +699,7 @@ word *:project:* so that all child task are treated as part of the project.
 | KILL    | Abandoned or terminated.                                     |
 
 #+begin_src emacs-lisp
-(custom-declare-face '+org-todo-active  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
+(custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
 (custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-keyword-face org-todo)))) "")
@@ -687,6 +708,7 @@ word *:project:* so that all child task are treated as part of the project.
   (setq org-todo-keywords
         '((sequence
            "TODO(t)"  ; A task that needs doing & is ready to do
+           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed
            "PROJ(p)"  ; Project with multiple task items.
            "WAIT(w)"  ; Something external is holding up this task
            "|"
@@ -694,6 +716,7 @@ word *:project:* so that all child task are treated as part of the project.
            "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
+          ("REFILE" . +org-todo-onhold)
           ("PROJ" . +org-todo-project)
           ("TODO" . +org-todo-active)))
 #+end_src
@@ -1071,7 +1094,7 @@ These are my default ROAM settings
 (setq org-roam-tag-sources '(prop last-directory))
 (setq org-roam-db-location "~/projects/orgmode/roam.db")
 (setq org-roam-directory "~/projects/orgmode/")
-(setq org-roam-buffer-position 'bottom)
+(setq org-roam-buffer-position 'right)
 
 (use-package company-org-roam
   :ensure t
@@ -1106,38 +1129,6 @@ These are my default ROAM settings
         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
         :unnarrowed t) org-roam-capture-templates)
 #+end_src
-
-** ROAM Export Backlinks + Content
-#+begin_src emacs-lisp
-;; (defun my/org-roam--backlinks-list-with-content (file)
-;;   (with-temp-buffer
-;;     (if-let* ((backlinks (org-roam--get-backlinks file))
-;;               (grouped-backlinks (--group-by (nth 0 it) backlinks)))
-;;         (progn
-;;           (insert (format "\n\n* %d Backlinks\n"
-;;                           (length backlinks)))
-;;           (dolist (group grouped-backlinks)
-;;             (let ((file-from (car group))
-;;                   (bls (cdr group)))
-;;               (insert (format "** [[file:%s][%s]]\n"
-;;                               file-from
-;;                               (org-roam--get-title-or-slug file-from)))
-;;               (dolist (backlink bls)
-;;                 (pcase-let ((`(,file-from _ ,props) backlink))
-;;                   (insert (s-trim (s-replace "\n" " " (plist-get props :content))))
-;;                   (insert "\n\n")))))))
-;;     (buffer-string)))
-
-;; (defun my/org-export-preprocessor (backend)
-;;   (let ((links (my/org-roam--backlinks-list-with-content (buffer-file-name))))
-;;     (unless (string= links "")
-;;       (save-excursion
-;;         (goto-char (point-max))
-;;         (insert (concat "\n* Backlinks\n") links)))))
-
-;; (add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
-#+end_src
-
 ** ROAM Server
 #+begin_src emacs-lisp
 (use-package org-roam-server
@@ -1171,9 +1162,15 @@ This first stage is how I track what's on my list of things to complete.
                  ((org-agenda-span '1)
                   (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
-         (tags-todo "-@delegated/-PROJ"
-                    ((org-agenda-overriding-header "Project Tasks")
-                     (org-agenda-skip-function 'nm/project-tasks-ready)
+         (tags-todo "-SOMEDAY-@delegated/+NEXT-REFILE"
+                    ((org-agenda-overriding-header "Next Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE"
+                    ((org-agenda-overriding-header "Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
@@ -1188,10 +1185,11 @@ This first stage is how I track what's on my list of things to complete.
                      (org-agenda-sorting-strategy '(category-up)))))) org-agenda-custom-commands)
 
 (push '("i" "inbox"
-        ((tags-todo "-SOMEDAY/-PROJ"
-                    ((org-tags-match-list-sublevels nil)
-                     (org-agenda-skip-function 'nm/tasks-refile)
-                     (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
+        ((todo "REFILE"
+               ((org-tags-match-list-sublevels nil)
+                                        ;(org-agenda-skip-function 'nm/tasks-refile)
+                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
+
 (push '("x" "stuck projects"
         ((tags-todo "-SOMEDAY-@delegated/"
                     ((org-agenda-overriding-header "Stuck Projects")
