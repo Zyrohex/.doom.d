@@ -338,18 +338,39 @@
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
   (set-popup-rule! "*Org Agenda*" :side 'top :size .30 :select t))
 
-(when (equal system-type 'gnu/linux)
-  (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
-        doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'normal)))
-(when (equal system-type 'windows-nt)
-  (setq doom-font (font-spec :family "InputMono" :size 18)
-        doom-big-font (font-spec :family "InputMono" :size 22)))
+(setq doom-font (font-spec :family "Roboto Mono" :size 20)
+      doom-big-font (font-spec :family "Roboto Mono" :size 32)
+      doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 20)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+
+(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
+
+(custom-set-faces!
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+
+(after! org
+  (custom-set-faces!
+    '(org-document-title :height 1.2)))
+
+;; (when (equal system-type 'gnu/linux)
+;;   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
+;;         doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'normal)))
+;; (when (equal system-type 'windows-nt)
+;;   (setq doom-font (font-spec :family "InputMono" :size 18)
+;;         doom-big-font (font-spec :family "InputMono" :size 22)))
 
 (require 'org-habit)
 (require 'org-id)
 (require 'org-checklist)
 (after! org (setq org-archive-location "~/projects/orgmode/gtd/archives.org::* %s"
-                  org-image-actual-width (truncate (* (display-pixel-width) 0.15))
+                  ;org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
                   org-log-state-notes-insert-after-drawers t
                   org-catch-invisible-edits 'error
@@ -364,8 +385,8 @@
                   org-src-tab-acts-natively t
                   org-list-allow-alphabetical nil))
 
-(add-hook 'org-mode-hook 'turn-off-auto-fill)
-(add-hook 'org-mode-hook 'hl-todo-mode)
+(add-hook 'org-mode-hook 'auto-fill-mode)
+;(add-hook 'org-mode-hook 'hl-todo-mode)
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 (after! org (setq org-hide-emphasis-markers t
@@ -458,7 +479,7 @@
               (buffer-string)))
             (file-name-nondirectory source))))
 
-(custom-declare-face '+org-todo-active  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
+(custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
 (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
 (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
 (custom-declare-face '+org-todo-next '((t (:inherit (bold font-lock-keyword-face org-todo)))) "")
