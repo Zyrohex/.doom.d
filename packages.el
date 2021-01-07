@@ -14,6 +14,7 @@
 ;; Orgmode Packages
 ;(package! org-analyzer)
 (package! org-edna)
+(package! mixed-pitch)
 ;(package! literate-calc-mode)
 
 ;; Python
