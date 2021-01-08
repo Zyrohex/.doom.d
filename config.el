@@ -1,3 +1,5 @@
+
+
 (defun nm/skip-non-stuck-projects ()
   "Skip trees that are not stuck projects."
   (save-restriction
@@ -140,26 +142,25 @@
 
 (defun nm/org-capture-to-task-file ()
   "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
-  (let* ((file "~/projects/orgmode/gtd/tasks.org")
-         (parent-l nil)
-         (child-l nil)
-         (parent "Daily Tasks")
+  (let* ((child-l nil)
+         (parent "Daily Checklists")
          (date (org-read-date))
-         (heading (format "Tasks for ")))
-    (find-file file)
-    (goto-char 0)
+         (heading (format "Items for")))
+    (goto-char (point-min))
     ;;; Locate or Create our parent headline
     (unless (search-forward (format "* %s" parent) nil t)
-      (progn (goto-char (point-max)) (newline) (insert (format "* %s" parent))))
+      (goto-char (point-max))
+      (newline)
+      (insert (format "* %s" parent))
+      (nm/org-end-of-headline))
+    (nm/org-end-of-headline)
     ;;; Capture outline level
     (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
     ;;; Next we locate or create our subheading using the date string passed by the user.
-    (let* ((end (save-excursion (org-end-of-subtree))))
-      (unless (search-forward (format "%s NEXT %s%s" child-l heading date) end t)
-        (nm/org-end-of-headline)
-        (newline)
-        (beginning-of-line)
-        (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
+    (let* ((end (save-excursion (org-end-of-subtree t nil))))
+      (unless (re-search-forward (format "%s %s %s" child-l heading date) end t)
+        (newline 2)
+        (insert (format "%s %s %s %s" child-l heading date "[/]"))))))
 
 (defun nm/add-newline-between-headlines ()
   ""
@@ -328,7 +329,7 @@
 (setq org-directory "~/projects/orgmode/")
 (setq projectile-project-search-path "~/projects/")
 
-(setq doom-theme 'doom-solarized-dark)
+(setq doom-theme 'doom-moonlight)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
@@ -336,7 +337,11 @@
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'top :size .30 :select t))
+  (set-popup-rule! "*Org Agenda*" :side 'right :size .30 :select t))
+
+(require 'all-the-icons)
+
+(setq inhibit-compacting-font-caches t)
 
 (setq doom-font (font-spec :family "Roboto Mono" :size 20)
       doom-big-font (font-spec :family "Roboto Mono" :size 32)
@@ -389,49 +394,26 @@
 ;(add-hook 'org-mode-hook 'hl-todo-mode)
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 
-(after! org (setq org-hide-emphasis-markers t
-                  org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+(setq org-capture-templates '(("c" " checklist")
+                              ("g" " gtd")
+                              ("b" " bullet journal")
+                              ("n" " notes")
+                              ("r" " resources")))
 
-(when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("#")
-        org-superstar-item-bullet-alist nil))
+(push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Daily Checklists") "- [ ] %?") org-capture-templates)
+(push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 
-(when (require 'org-fancy-priorities nil 'noerror)
-  (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
+(push '("gs" " simple task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("gk" " task [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
+(push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
 
-(after! org (setq org-agenda-diary-file "~/projects/orgmode/diary.org"
-                  org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
-                  org-agenda-use-time-grid nil
-                  org-agenda-tags-column 0
-;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
-                  org-agenda-compact-blocks nil
-                  org-agenda-block-separator 61
-                  org-agenda-skip-scheduled-if-done t
-                  org-agenda-skip-deadline-if-done t
-                  org-agenda-window-setup 'current-window
-                  org-enforce-todo-checkbox-dependencies nil ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
-                  org-enforce-todo-dependencies t
-                  org-habit-show-habits t))
+(push '("bt" " bullet task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n*Notes:* \n\n*Task Items:* \n") org-capture-templates)
 
-(after! org (setq org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org") (file-expand-wildcards "~/projects/orgmode/gtd/*/*.org"))))
+(push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
+(push '("na" " append" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
-(after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
+(push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 
-(setq org-capture-templates '(("!" "Quick Checkitem" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Quick Tasks") "- [ ] %?")))
-
-(push '("d" "Add Checkitem to Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
-
-;; It's important that I capture what I have in my mind at this time I create this new entry...
-;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
-(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
-(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
-
-(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
-
-(push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-
-(push '("r" "research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
   (let* ((file "~/projects/orgmode/gtd/websources.org")
@@ -447,9 +429,31 @@
                   (unless (re-search-forward (format "* %s" (upcase headline-arg)) nil t)
                     (goto-char (point-max)) (insert (format "* %s" (upcase headline-arg))) (org-set-property "CATEGORY" (downcase headline-arg)))) t)
 
-(push '("p" "projects") org-capture-templates)
-(push '("pt" "timeframe" entry (function nm/capture-project-timeframes)
+(push '("p" " projects") org-capture-templates)
+(push '("pt" " new timeframe" entry (function nm/capture-project-timeframes)
         "%?") org-capture-templates)
+
+(after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
+
+(setq org-tags-column 0)
+
+(setq org-tag-alist '(("@home")
+                      ("@computer")
+                      ("@email")
+                      ("@call")
+                      ("@brainstorm")
+                      ("@write")
+                      ("@read")
+                      ("@code")
+                      ("@research")
+                      ("@purchase")
+                      ("@payment")
+                      ("@place")))
+
+(push '("delegated") org-tag-alist)
+(push '("waiting") org-tag-alist)
+(push '("someday") org-tag-alist)
+(push '("remember") org-tag-alist)
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -500,11 +504,38 @@
           ("PROJ" . +org-todo-project)
           ("TODO" . +org-todo-active)))
 
+(after! org (setq org-agenda-diary-file "~/projects/orgmode/diary.org"
+                  org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
+                  org-agenda-use-time-grid nil
+                  org-agenda-tags-column 0
+;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
+                  org-agenda-compact-blocks nil
+                  org-agenda-block-separator 61
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-agenda-window-setup 'current-window
+                  org-enforce-todo-checkbox-dependencies nil ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
+                  org-enforce-todo-dependencies t
+                  org-habit-show-habits t))
+
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org") (file-expand-wildcards "~/projects/orgmode/gtd/*/*.org"))))
+
 (after! org (setq org-log-into-drawer t
                   org-log-done 'time
                   org-log-repeat 'time
                   org-log-redeadline 'note
                   org-log-reschedule 'note))
+
+(after! org (setq org-hide-emphasis-markers t
+                  org-hide-leading-stars t
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+
+(when (require 'org-superstar nil 'noerror)
+  (setq org-superstar-headline-bullets-list '("#")
+        org-superstar-item-bullet-alist nil))
+
+(when (require 'org-fancy-priorities nil 'noerror)
+  (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 
 (after! org (setq org-use-property-inheritance t))
 
@@ -543,26 +574,6 @@
                      :auto-preamble t
                      :with-toc t)
                     ("myprojectweb" :components("attachments" "notes" "ROAM")))))
-
-(setq org-tags-column 0)
-
-(setq org-tag-alist '(("@home")
-                      ("@computer")
-                      ("@email")
-                      ("@call")
-                      ("@brainstorm")
-                      ("@write")
-                      ("@read")
-                      ("@code")
-                      ("@research")
-                      ("@purchase")
-                      ("@payment")
-                      ("@place")))
-
-(push '("delegated") org-tag-alist)
-(push '("waiting") org-tag-alist)
-(push '("someday") org-tag-alist)
-(push '("remember") org-tag-alist)
 
 (after! org
   (set-company-backend! 'org-mode '(company-yasnippet company-elisp))
@@ -881,6 +892,13 @@
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
+         (tags-todo "Goal=\"prof-python\"/"
+                    ((org-agenda-overriding-header "Python Programmer")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
          (tags-todo "-SOMEDAY-@delegated/"
                     ((org-agenda-overriding-header (concat "Standalone Tasks"))
                      (org-agenda-skip-function 'nm/standard-tasks-ready)
@@ -888,6 +906,10 @@
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy '(category-up)))))) org-agenda-custom-commands)
+
+(push '("g" "goals"
+        ((tags-todo "Goal=\"prof-python\"/")
+         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
 
 (push '("i" "inbox"
         ((todo "REFILE"
