@@ -1,4 +1,4 @@
-# Created 2021-01-07 Thu 22:04
+# Created 2021-01-07 Thu 22:09
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -539,13 +539,14 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
 #+end_src
 
 ** Capture Templates
+[[file:attachments/capture-templates.png]] \\
+
 What templates do I need available for quick capture of information?
-1. Tasks
-2. Checklists
-3. Bullet Journal
-4. Journal
-5. Notes
-6. Web Resources
+1. Checklists
+2. Bullet Journal
+3. Journal
+4. Notes
+5. Web Resources
 
 Task items can be a few different things, and there's the whole GTD which i'm
 trying my bestest to follow. Sometimes I may have a task item that I simply need
