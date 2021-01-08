@@ -1,4 +1,4 @@
-# Created 2021-01-07 Thu 22:09
+# Created 2021-01-07 Thu 22:34
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -574,9 +574,17 @@ track data in.
 (push '("na" " append" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
+(push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
 #+end_src
 
 #+begin_src emacs-lisp
+(defun nm/return-headline-in-file ()
+  "Returns the headline position."
+  (let* ((org-agenda-files "~/projects/orgmode/elfeed.org")
+        (location (nth 3 (org-refile-get-location nil nil 'confirm))))
+    (goto-char location)
+    (org-end-of-line)))
+
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
   (let* ((file "~/projects/orgmode/gtd/websources.org")
@@ -935,140 +943,6 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 #+end_src
 
-** Org-Rifle
-#+begin_src emacs-lisp
-(use-package helm-org-rifle
-  :after (helm org)
-  :preface
-  (autoload 'helm-org-rifle-wiki "helm-org-rifle")
-  :config
-  (add-to-list 'helm-org-rifle-actions '("Insert link" . helm-org-rifle--insert-link) t)
-  (add-to-list 'helm-org-rifle-actions '("Store link" . helm-org-rifle--store-link) t)
-  (defun helm-org-rifle--store-link (candidate &optional use-custom-id)
-    "Store a link to CANDIDATE."
-    (-let (((buffer . pos) candidate))
-      (with-current-buffer buffer
-        (org-with-wide-buffer
-         (goto-char pos)
-         (when (and use-custom-id
-                    (not (org-entry-get nil "CUSTOM_ID")))
-           (org-set-property "CUSTOM_ID"
-                             (read-string (format "Set CUSTOM_ID for %s: "
-                                                  (substring-no-properties
-                                                   (org-format-outline-path
-                                                    (org-get-outline-path t nil))))
-                                          (helm-org-rifle--make-default-custom-id
-                                           (nth 4 (org-heading-components))))))
-         (call-interactively 'org-store-link)))))
-
-  ;; (defun helm-org-rifle--narrow (candidate)
-  ;;   "Go-to and then Narrow Selection"
-  ;;   (helm-org-rifle-show-entry candidate)
-  ;;   (org-narrow-to-subtree))
-
-  (defun helm-org-rifle--store-link-with-custom-id (candidate)
-    "Store a link to CANDIDATE with a custom ID.."
-    (helm-org-rifle--store-link candidate 'use-custom-id))
-
-  (defun helm-org-rifle--insert-link (candidate &optional use-custom-id)
-    "Insert a link to CANDIDATE."
-    (unless (derived-mode-p 'org-mode)
-      (user-error "Cannot insert a link into a non-org-mode"))
-    (let ((orig-marker (point-marker)))
-      (helm-org-rifle--store-link candidate use-custom-id)
-      (-let (((dest label) (pop org-stored-links)))
-        (org-goto-marker-or-bmk orig-marker)
-        (org-insert-link nil dest label)
-        (message "Inserted a link to %s" dest))))
-
-  (defun helm-org-rifle--make-default-custom-id (title)
-    (downcase (replace-regexp-in-string "[[:space:]]" "-" title)))
-
-  (defun helm-org-rifle--insert-link-with-custom-id (candidate)
-    "Insert a link to CANDIDATE with a custom ID."
-    (helm-org-rifle--insert-link candidate t))
-
-  (helm-org-rifle-define-command
-   "wiki" ()
-   "Search in \"~/lib/notes/writing\" and `plain-org-wiki-directory' or create a new wiki entry"
-   :sources `(,(helm-build-sync-source "Exact wiki entry"
-                 :candidates (plain-org-wiki-files)
-                 :action #'plain-org-wiki-find-file)
-              ,@(--map (helm-org-rifle-get-source-for-file it) files)
-              ,(helm-build-dummy-source "Wiki entry"
-                 :action #'plain-org-wiki-find-file))
-   :let ((files (let ((directories (list "~/lib/notes/writing"
-                                         plain-org-wiki-directory
-                                         "~/lib/notes")))
-                  (-flatten (--map (f-files it
-                                            (lambda (file)
-                                              (s-matches? helm-org-rifle-directories-filename-regexp
-                                                          (f-filename file))))
-                                   directories))))
-         (helm-candidate-separator " ")
-         (helm-cleanup-hook (lambda ()
-                              ;; Close new buffers if enabled
-                              (when helm-org-rifle-close-unopened-file-buffers
-                                (if (= 0 helm-exit-status)
-                                    ;; Candidate selected; close other new buffers
-                                    (let ((candidate-source (helm-attr 'name (helm-get-current-source))))
-                                      (dolist (source helm-sources)
-                                        (unless (or (equal (helm-attr 'name source)
-                                                           candidate-source)
-                                                    (not (helm-attr 'new-buffer source)))
-                                          (kill-buffer (helm-attr 'buffer source)))))
-                                  ;; No candidates; close all new buffers
-                                  (dolist (source helm-sources)
-                                    (when (helm-attr 'new-buffer source)
-                                      (kill-buffer (helm-attr 'buffer source))))))))))
-  :general
-  (:keymaps 'org-mode-map
-   "M-s r" #'helm-org-rifle-current-buffer)
-  :custom
-  (helm-org-rifle-directories-recursive t)
-  (helm-org-rifle-show-path t)
-  (helm-org-rifle-test-against-path t))
-
-(provide 'setup-helm-org-rifle)
-#+end_src
-
-** org-ql
-#+begin_src emacs-lisp
-(setq org-ql-views '(("Overview: Agenda-like" :buffers-files org-agenda-files :query
-                      (and (not (done))
-                           (or (habit) (deadline auto) (scheduled :to today) (scheduled :on today)))
-                      :sort
-                      (date priority todo)
-                      :super-groups org-super-agenda-groups :title "Agenda Like")
-                     ("Overview: Project Sub-tasks" :buffers-files org-agenda-files
-                      :query (and (todo "TODO" "NEXT" "WAIT") (ancestors (todo "PROJ")))
-                      :sort nil :narrow nil :super-groups ((:auto-parent t))
-                      :title "Overview: Project Sub-tasks")
-                     ("Overview: Sub-projects" :buffers-files org-agenda-files
-                      :query (and (todo "PROJ") (ancestors (todo "PROJ")))
-                      :sort nil :narrow nil
-                      :super-groups ((:auto-parent t))
-                      :title "Overview: Sub-projects")
-                     ("Inbox Bucket" :buffers-files org-agenda-files
-                      :query (and (todo "TODO") (not (tags "SOMEDAY")))
-                      :sort (date)
-                      :narrow nil :super-groups ((:auto-ts t))  :title "Inbox Bucket")
-                     ("Recent Items" :buffers-files org-agenda-files
-                      :query (and (ts :from -7 :to today) (not (or (todo) (todo "DONE"))))
-                      :sort (date)
-                      :narrow nil
-                      :super-groups ((:auto-ts t))
-                      :title "Recent Items")))
-
-(map! :after org
-      :map org-mode-map
-      :leader
-      :prefix ("o" . "open")
-      :desc "org-ql" "q" #'org-ql-view)
-
-(bind-key "<f9>" #'org-ql-view)
-#+end_src
-
 ** Pandoc
 #+begin_src emacs-lisp
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
@@ -1141,15 +1015,13 @@ These are my default ROAM settings
 ** Super Agenda Settings
 First we setup a few deafults for the org-agenda buffer:
 #+begin_src emacs-lisp
-(setq org-super-agenda-mode t
-      org-agenda-todo-ignore-scheduled 'future
+(setq org-agenda-todo-ignore-scheduled nil
       org-agenda-tags-todo-honor-ignore-options t
       org-agenda-fontify-priorities t)
 #+end_src
 
 This first stage is how I track what's on my list of things to complete.
 #+begin_src emacs-lisp
-(setq org-agenda-custom-commands nil)
 (push '("o" "overview"
         ((agenda ""
                  ((org-agenda-span '1)
@@ -1270,11 +1142,6 @@ This first stage is how I track what's on my list of things to complete.
 ;;                             (org-tags-match-list-sublevels nil)
 ;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
 ;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
-#+end_src
-
-** Visual Fill Column
-#+begin_src emacs-lisp
-(setq visual-fill-column 120)
 #+end_src
 
 * Custom Functions
