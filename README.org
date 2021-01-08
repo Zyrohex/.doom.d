@@ -1,12 +1,13 @@
-# Created 2021-01-07 Thu 21:59
+# Created 2021-01-07 Thu 22:04
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
 #+export_file_name: README
 
-Uses org-babel to tangle all of my source code blocks back to _config.el_, this
-makes it easy so that I can write my changes from config.org or config.el.
 [[file:attachments/workspace.png]]
+
+The goal of my config is to keep the configuration distraction free, and focus
+on functionality over looks.
 
 * New Changes
 
