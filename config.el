@@ -890,7 +890,12 @@
                      (org-agenda-sorting-strategy
                       '(category-up))))
          (tags-todo "-SOMEDAY/+READ"
-                    ((org-agenda-overriding-header "To Read")))
+                    ((org-agenda-overriding-header "To Read")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
          (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
                     ((org-agenda-overriding-header "Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)

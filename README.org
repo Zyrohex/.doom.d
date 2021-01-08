@@ -1,4 +1,4 @@
-# Created 2021-01-06 Wed 22:05
+# Created 2021-01-07 Thu 21:59
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -9,6 +9,11 @@ makes it easy so that I can write my changes from config.org or config.el.
 [[file:attachments/workspace.png]]
 
 * New Changes
+
+** Bullet Journal
+#+begin_src emacs-lisp
+
+#+end_src
 
 ** Org-Agenda Functions for Condition checks
 So another pain point has been maintaining my task items. So i'm always looking
@@ -98,7 +103,6 @@ For tasks that are ready to be refiled:
      ((nm/has-next-condition) next-heading)
      ((bh/is-project-p) subtree-end))))
 #+end_src
-
 ** Capturing to a Projects Timeframe
 #+begin_src emacs-lisp
 (defun nm/capture-project-timeframes ()
@@ -222,30 +226,33 @@ date on the headline.
 #+begin_src emacs-lisp
 (defun nm/org-capture-to-task-file ()
   "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
-  (let* ((file "~/projects/orgmode/gtd/tasks.org")
-         (parent-l nil)
-         (child-l nil)
-         (parent "Daily Tasks")
+  (let* ((child-l nil)
+         (parent "Checklists")
          (date (org-read-date))
-         (heading (format "Tasks for ")))
-    (find-file file)
-    (goto-char 0)
+         (heading (format "Items for")))
+    (goto-char (point-min))
     ;;; Locate or Create our parent headline
     (unless (search-forward (format "* %s" parent) nil t)
-      (progn (goto-char (point-max)) (newline) (insert (format "* %s" parent))))
+      (goto-char (point-max))
+      (newline)
+      (insert (format "* %s" parent))
+      (nm/org-end-of-headline))
+    (nm/org-end-of-headline)
     ;;; Capture outline level
     (setq child-l (format "%s" (make-string (+ 1 (org-outline-level)) ?*)))
     ;;; Next we locate or create our subheading using the date string passed by the user.
-    (let* ((end (save-excursion (org-end-of-subtree))))
-      (unless (search-forward (format "%s NEXT %s%s" child-l heading date) end t)
-        (nm/org-end-of-headline)
-        (newline)
-        (beginning-of-line)
-        (insert (format "%s NEXT %s%s\nSCHEDULED: <%s>" child-l heading date date))))))
+    (let* ((end (save-excursion (org-end-of-subtree t nil))))
+      (unless (re-search-forward (format "%s %s %s" child-l heading date) end t)
+        (newline 2)
+        (insert (format "%s %s %s %s" child-l heading date "[/]"))))))
 #+end_src
 
-** Add Blanklines between Headlines
-Adds a newline between headlines, and also add blank characters at the end of the subtree, if a src block is at the end of the subtree.
+** Orgmode Formating
+Eventually this will turn into a suite of functions that will clean-up the
+formatting of any org-mode document, and standardize to a common format that is
+believed to be standardized by the community. Reddit post will come eventually
+to discuss, and a link will be updated in this section when that comes.
+
 #+begin_src emacs-lisp
 (defun nm/add-newline-between-headlines ()
   ""
@@ -455,15 +462,19 @@ Now I add my default folders and files that I want emacs/org-mode to use:
 
 Next we configure popup-rules and default fonts.
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-solarized-dark)
+(setq doom-theme 'doom-moonlight)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'top :size .30 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .30 :select t))
+
+(require 'all-the-icons)
+
+(setq inhibit-compacting-font-caches t)
 
 (setq doom-font (font-spec :family "Roboto Mono" :size 20)
       doom-big-font (font-spec :family "Roboto Mono" :size 32)
@@ -526,55 +537,14 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 #+end_src
 
-** Looks and Feels
-Here we change some of the things how org-mode looks and feels, some options
-available are:
-- org-ellipsis ="▼, ↴, ⬎, ⤷,…, and ⋱."=
-- org-superstar-headline-bullets-list ="◉" "●" "○" "∴" "•"=
-#+begin_src emacs-lisp
-(after! org (setq org-hide-emphasis-markers t
-                  org-hide-leading-stars t
-                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
-
-(when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("#")
-        org-superstar-item-bullet-alist nil))
-
-(when (require 'org-fancy-priorities nil 'noerror)
-  (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
-#+end_src
-
-** Loading agenda settings
-#+begin_src emacs-lisp
-(after! org (setq org-agenda-diary-file "~/projects/orgmode/diary.org"
-                  org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
-                  org-agenda-use-time-grid nil
-                  org-agenda-tags-column 0
-;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
-                  org-agenda-compact-blocks nil
-                  org-agenda-block-separator 61
-                  org-agenda-skip-scheduled-if-done t
-                  org-agenda-skip-deadline-if-done t
-                  org-agenda-window-setup 'current-window
-                  org-enforce-todo-checkbox-dependencies nil ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
-                  org-enforce-todo-dependencies t
-                  org-habit-show-habits t))
-
-(after! org (setq org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org") (file-expand-wildcards "~/projects/orgmode/gtd/*/*.org"))))
-#+end_src
-
-** Clock Settings
-#+begin_src emacs-lisp
-(after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
-#+end_src
-
 ** Capture Templates
-What templates do I need available for quick capture of information? This seems
-it would fall under 2-3 categories:
-1. Task Items
-2. Notes
-3. Journal
-4. Resources
+What templates do I need available for quick capture of information?
+1. Tasks
+2. Checklists
+3. Bullet Journal
+4. Journal
+5. Notes
+6. Web Resources
 
 Task items can be a few different things, and there's the whole GTD which i'm
 trying my bestest to follow. Sometimes I may have a task item that I simply need
@@ -582,51 +552,29 @@ to remind myself to complete, and just need to check it off a list acknowledging
 i've completed it and other times I need an actual task item to capture and
 track data in.
 
-Task items are important, but some are not always important enough to be giving
-a due date, or to record any data from the task... I just simply need to mark it
-on my list to serve as a simple reminder.
 #+begin_src emacs-lisp
-(setq org-capture-templates '(("!" "Quick Checkitem" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Quick Tasks") "- [ ] %?")))
+(setq org-capture-templates '(("c" " checklist")
+                              ("g" " gtd")
+                              ("b" " bullet journal")
+                              ("n" " notes")
+                              ("r" " resources")))
+
+(push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
+(push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
+
+(push '("gs" " simple task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("gk" " task [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
+(push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+
+(push '("bt" " bullet task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n*Notes:* \n\n*Task Items:* \n") org-capture-templates)
+
+(push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
+(push '("na" " append" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+
+(push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 #+end_src
 
-Other task items are more important though, and I need to specify a date they
-need to be completed on, but again... there's no urgency of recording any data
-for these tasks so I simply log it as a checklist.
-
 #+begin_src emacs-lisp
-(push '("d" "Add Checkitem to Date" checkitem (function nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
-#+end_src
-
-Beyond regular checklist items, I sometimes need to capture something that
-requires more time to research, perform, investigate, or simply have a
-recollection of my thoughts on at a later date... This is when the GTD method
-kicks in and I log a new task to my INBOX.
-
-#+begin_src emacs-lisp
-;; It's important that I capture what I have in my mind at this time I create this new entry...
-;; Do not finish right away... Give myself a chance to add some extra notes before we file away...
-(push '("i" "Capture to inbox" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^{Why are we capturing?}") org-capture-templates)
-(push '("t" "Capture Task with Link" entry (file+olp "~/projects/orgmode/gtd/inbox.org" "Inbox") "* REFILE %^{task} %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%i") org-capture-templates)
-#+end_src
-
-Occassionally I do like to take a note in my journal, to make a mental note of
-my day...
-#+begin_src emacs-lisp
-(push '("j" "Journal Entry" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
-#+end_src
-
-With my crazy busy scheduled, I can end up working on multiple things at any
-given time... and I need a way to quickly log a note for another task item i'm
-working... So i've written up a small function that utilizes
-~org-refile-get-location~ to locate the headline and capture under the selected
-headline.
-#+begin_src emacs-lisp
-(push '("a" "Add note on Task" plain (function nm/org-capture-log) "#+caption: recap of \"%^{summary}\" on [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-#+end_src
-
-And now for research papers, liteature, and other things that I capture and need to organize:
-#+begin_src emacs-lisp
-(push '("r" "research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
   (let* ((file "~/projects/orgmode/gtd/websources.org")
@@ -643,13 +591,48 @@ And now for research papers, liteature, and other things that I capture and need
                     (goto-char (point-max)) (insert (format "* %s" (upcase headline-arg))) (org-set-property "CATEGORY" (downcase headline-arg)))) t)
 #+end_src
 
-I like to keep track of a timeline for projects, when I have a call, some new
-piece of data was introduced, or a change in requirements. Ultimately this helps
-me when I want to paint a bigger picture of the life for a project.
 #+begin_src emacs-lisp
-(push '("p" "projects") org-capture-templates)
-(push '("pt" "timeframe" entry (function nm/capture-project-timeframes)
+(push '("p" " projects") org-capture-templates)
+(push '("pt" " new timeframe" entry (function nm/capture-project-timeframes)
         "%?") org-capture-templates)
+#+end_src
+
+** Clock Settings
+#+begin_src emacs-lisp
+(after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
+#+end_src
+
+** Default Tags
+I don't like to shift my eyes back n forth when i'm scanning data, so I keep my
+columns one space after the headline.
+#+begin_src emacs-lisp
+(setq org-tags-column 0)
+#+end_src
+
+I like to keep a list of predefined context tags, this helps speed the
+assignment process up and also keep things consistent.
+#+begin_src emacs-lisp
+(setq org-tag-alist '(("@home")
+                      ("@computer")
+                      ("@email")
+                      ("@call")
+                      ("@brainstorm")
+                      ("@write")
+                      ("@read")
+                      ("@code")
+                      ("@research")
+                      ("@purchase")
+                      ("@payment")
+                      ("@place")))
+#+end_src
+
+I also like to use tags to specify when a task is one of the following:
+~delegated, waiting, someday, remember~.
+#+begin_src emacs-lisp
+(push '("delegated") org-tag-alist)
+(push '("waiting") org-tag-alist)
+(push '("someday") org-tag-alist)
+(push '("remember") org-tag-alist)
 #+end_src
 
 ** Export Settings
@@ -707,18 +690,41 @@ word *:project:* so that all child task are treated as part of the project.
 
   (setq org-todo-keywords
         '((sequence
-           "TODO(t)"  ; A task that needs doing & is ready to do
-           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed
+           "TODO(t)"  ; A task that needs doing & is ready to do.
+           "READ(R)" ; Task item that needs to be read.
+           "NEXT(n)" ; Task items that are ready to be worked.
+           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed.
            "PROJ(p)"  ; Project with multiple task items.
-           "WAIT(w)"  ; Something external is holding up this task
+           "WAIT(w)"  ; Something external is holding up this task.
            "|"
-           "DONE(d)"  ; Task successfully completed
-           "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable
+           "DONE(d)"  ; Task successfully completed.
+           "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable.
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
+          ("NEXT" . +org-todo-next)
+          ("READ" . +org-todo-active)
           ("REFILE" . +org-todo-onhold)
           ("PROJ" . +org-todo-project)
           ("TODO" . +org-todo-active)))
+#+end_src
+
+** Loading agenda settings
+#+begin_src emacs-lisp
+(after! org (setq org-agenda-diary-file "~/projects/orgmode/diary.org"
+                  org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
+                  org-agenda-use-time-grid nil
+                  org-agenda-tags-column 0
+;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
+                  org-agenda-compact-blocks nil
+                  org-agenda-block-separator " "
+                  org-agenda-skip-scheduled-if-done t
+                  org-agenda-skip-deadline-if-done t
+                  org-agenda-window-setup 'current-window
+                  org-enforce-todo-checkbox-dependencies nil ; This has funny behavior, when t and you try changing a value on the parent task, it can lead to Emacs freezing up. TODO See if we can fix the freezing behavior when making changes in org-agenda-mode.
+                  org-enforce-todo-dependencies t
+                  org-habit-show-habits t))
+
+(after! org (setq org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org") (file-expand-wildcards "~/projects/orgmode/gtd/*/*.org"))))
 #+end_src
 
 ** Logging and Drawers
@@ -732,6 +738,24 @@ you can also add the following in-buffer settings to override the
                   org-log-repeat 'time
                   org-log-redeadline 'note
                   org-log-reschedule 'note))
+#+end_src
+
+** Looks and Feels
+Here we change some of the things how org-mode looks and feels, some options
+available are:
+- org-ellipsis ="▼, ↴, ⬎, ⤷,…, and ⋱."=
+- org-superstar-headline-bullets-list ="◉" "●" "○" "∴" "•"=
+#+begin_src emacs-lisp
+(after! org (setq org-hide-emphasis-markers t
+                  org-hide-leading-stars t
+                  org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
+
+(when (require 'org-superstar nil 'noerror)
+  (setq org-superstar-headline-bullets-list '("#")
+        org-superstar-item-bullet-alist nil))
+
+(when (require 'org-fancy-priorities nil 'noerror)
+  (setq org-fancy-priorities-list '("⚑" "❗" "⬆")))
 #+end_src
 
 ** Properties
@@ -778,39 +802,6 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                      :auto-preamble t
                      :with-toc t)
                     ("myprojectweb" :components("attachments" "notes" "ROAM")))))
-#+end_src
-
-** Default Tags
-I don't like to shift my eyes back n forth when i'm scanning data, so I keep my
-columns one space after the headline.
-#+begin_src emacs-lisp
-(setq org-tags-column 0)
-#+end_src
-
-I like to keep a list of predefined context tags, this helps speed the
-assignment process up and also keep things consistent.
-#+begin_src emacs-lisp
-(setq org-tag-alist '(("@home")
-                      ("@computer")
-                      ("@email")
-                      ("@call")
-                      ("@brainstorm")
-                      ("@write")
-                      ("@read")
-                      ("@code")
-                      ("@research")
-                      ("@purchase")
-                      ("@payment")
-                      ("@place")))
-#+end_src
-
-I also like to use tags to specify when a task is one of the following:
-~delegated, waiting, someday, remember~.
-#+begin_src emacs-lisp
-(push '("delegated") org-tag-alist)
-(push '("waiting") org-tag-alist)
-(push '("someday") org-tag-alist)
-(push '("remember") org-tag-alist)
 #+end_src
 
 * Module Settings
@@ -1157,32 +1148,36 @@ First we setup a few deafults for the org-agenda buffer:
 This first stage is how I track what's on my list of things to complete.
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands nil)
-(push '("n" "next actions"
+(push '("o" "overview"
         ((agenda ""
                  ((org-agenda-span '1)
                   (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
-         (tags-todo "-SOMEDAY-@delegated/+NEXT-REFILE"
+         (tags-todo "-SOMEDAY-@delegated/+NEXT"
                     ((org-agenda-overriding-header "Next Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE"
-                    ((org-agenda-overriding-header "Other Tasks")
+         (tags-todo "-SOMEDAY/+READ"
+                    ((org-agenda-overriding-header "To Read")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-SOMEDAY-@delegated/"
-                    ((org-agenda-overriding-header (concat "Standalone Tasks"))
-                     (org-agenda-skip-function 'nm/standard-tasks-ready)
+         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
+                    ((org-agenda-overriding-header "Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy '(category-up)))))) org-agenda-custom-commands)
+                     (org-agenda-sorting-strategy
+                      '(category-up)))))) org-agenda-custom-commands)
+
+(push '("g" "goals"
+        ((tags-todo "Goal=\"prof-python\"/")
+         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
 
 (push '("i" "inbox"
         ((todo "REFILE"
