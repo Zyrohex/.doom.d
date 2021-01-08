@@ -227,7 +227,7 @@ date on the headline.
 (defun nm/org-capture-to-task-file ()
   "Capture file to your default tasks file, and prompts to select a date where to file the task file to."
   (let* ((child-l nil)
-         (parent "Daily Checklists")
+         (parent "Checklists")
          (date (org-read-date))
          (heading (format "Items for")))
     (goto-char (point-min))
@@ -470,8 +470,8 @@ Next we configure popup-rules and default fonts.
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'right :size .30 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .30 :select t))
 
 (require 'all-the-icons)
 
@@ -561,7 +561,7 @@ track data in.
                               ("n" " notes")
                               ("r" " resources")))
 
-(push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Daily Checklists") "- [ ] %?") org-capture-templates)
+(push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
 (push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 
 (push '("gs" " simple task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
@@ -693,15 +693,19 @@ word *:project:* so that all child task are treated as part of the project.
 
   (setq org-todo-keywords
         '((sequence
-           "TODO(t)"  ; A task that needs doing & is ready to do
-           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed
+           "TODO(t)"  ; A task that needs doing & is ready to do.
+           "READ(R)" ; Task item that needs to be read.
+           "NEXT(n)" ; Task items that are ready to be worked.
+           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed.
            "PROJ(p)"  ; Project with multiple task items.
-           "WAIT(w)"  ; Something external is holding up this task
+           "WAIT(w)"  ; Something external is holding up this task.
            "|"
-           "DONE(d)"  ; Task successfully completed
-           "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable
+           "DONE(d)"  ; Task successfully completed.
+           "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable.
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
+          ("NEXT" . +org-todo-next)
+          ("READ" . +org-todo-active)
           ("REFILE" . +org-todo-onhold)
           ("PROJ" . +org-todo-project)
           ("TODO" . +org-todo-active)))
@@ -715,7 +719,7 @@ word *:project:* so that all child task are treated as part of the project.
                   org-agenda-tags-column 0
 ;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
-                  org-agenda-block-separator 61
+                  org-agenda-block-separator " "
                   org-agenda-skip-scheduled-if-done t
                   org-agenda-skip-deadline-if-done t
                   org-agenda-window-setup 'current-window
@@ -1147,39 +1151,27 @@ First we setup a few deafults for the org-agenda buffer:
 This first stage is how I track what's on my list of things to complete.
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands nil)
-(push '("n" "next actions"
+(push '("o" "overview"
         ((agenda ""
                  ((org-agenda-span '1)
                   (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
-         (tags-todo "-SOMEDAY-@delegated/+NEXT-REFILE"
+         (tags-todo "-SOMEDAY-@delegated/+NEXT"
                     ((org-agenda-overriding-header "Next Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE"
+         (tags-todo "-SOMEDAY/+READ"
+                    ((org-agenda-overriding-header "To Read")))
+         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
                     ((org-agenda-overriding-header "Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "Goal=\"prof-python\"/"
-                    ((org-agenda-overriding-header "Python Programmer")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "-SOMEDAY-@delegated/"
-                    ((org-agenda-overriding-header (concat "Standalone Tasks"))
-                     (org-agenda-skip-function 'nm/standard-tasks-ready)
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy '(category-up)))))) org-agenda-custom-commands)
+                      '(category-up)))))) org-agenda-custom-commands)
 
 (push '("g" "goals"
         ((tags-todo "Goal=\"prof-python\"/")
