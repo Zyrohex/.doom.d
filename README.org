@@ -1,4 +1,4 @@
-# Created 2021-01-08 Fri 19:41
+# Created 2021-01-09 Sat 00:25
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -434,21 +434,18 @@ Additional key bindings
 #+begin_src emacs-lisp
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "<f12>" #'org-cycle-agenda-files)
+
 (map! :after org
       :map org-mode-map
       :leader
-      :desc "Move up window" "<up>" #'evil-window-up
-      :desc "Move down window" "<down>" #'evil-window-down
-      :desc "Move left window" "<left>" #'evil-window-left
-      :desc "Move right window" "<right>" #'evil-window-right
+      :prefix ("z" . "orgmode")
+      :desc "Outline" "o" #'counsel-outline
+      :desc "Find File" "f" #'nm/find-file-or-create
       :prefix ("s" . "+search")
+      :desc "Occur" "." #'occur
       :desc "Outline" "o" #'counsel-outline
       :desc "Counsel ripgrep" "d" #'counsel-rg
       :desc "Swiper All" "@" #'swiper-all
-      :desc "Rifle Buffer" "b" #'helm-org-rifle-current-buffer
-      :desc "Rifle Agenda Files" "a" #'helm-org-rifle-agenda-files
-      :desc "Rifle Project Files" "#" #'helm-org-rifle-project-files
-      :desc "Rifle Other Project(s)" "$" #'helm-org-rifle-other-files
       :prefix ("l" . "+links")
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file)
@@ -1084,14 +1081,31 @@ This first stage is how I track what's on my list of things to complete.
 #+begin_src emacs-lisp
 (load! "org-helpers.el")
 
-(defun nm/find-file-or-create (folder-path)
-  "Prompts user for filename, and if it does not exist it will create it."
+(defun nm/convert-filename-format (&optional time-p folder-path)
+  "Prompts user for filename and directory, and returns the value in a cleaned up format.
+   If TIME-P is t, then includes date+time stamp in filename, FOLDER-PATH is the folder
+   location to search for files."
+  (let* ((file (replace-in-string " " "-" (downcase (read-file-name "select file: " (if folder-path (concat folder-path) org-directory))))))
+    (if (s-ends-with? ".org" file)
+        (concat (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
+                                                               (concat (file-name-nondirectory (downcase file))))))
+      (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
+                                                                 (concat (file-name-nondirectory (downcase file)))))))))
+
+(defun nm/find-file-or-create (&optional time-p folder-path r-file)
+  "Prompts user for filename and creates file if it does not exist.
+   If TIME-P is t, then include todays timestamp in the filename,
+   R-FILE when return the filename when running this function and
+   FOLDER-PATH will be your default folder to look for files."
+  (interactive)
   (let* ((file (replace-in-string " " "-" (read-file-name "select file: " (if folder-path (concat folder-path) org-directory)))))
-    (if (file-exists-p file)
-        (find-file file)
+    (unless (file-exists-p file)
       (if (s-ends-with? ".org" file)
-          (find-file (format "%s%s-%s" (file-name-directory file) (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file))))
-        (find-file (format "%s%s-%s.org" (file-name-directory file) (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file))))))))
+          (find-file (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file)))
+                                                                 (concat (file-name-nondirectory (downcase file))))))
+        (find-file (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file)))
+                                                                   (concat (file-name-nondirectory (downcase file))))))))
+        (insert (format "%s\n%s\n%s\n\n* Notes\n\n* Tasks\n\n* Schedule\n" (downcase (replace-in-string "-" " " (file-name-nondirectory file))) (downcase (concat "#+author: " user-full-name)) (downcase (concat "#+email: " user-mail-address))))))
 #+end_src
 
 ** Archive keeping Structure
