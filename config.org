@@ -8,11 +8,21 @@ on functionality over looks.
 
 * New Changes
 
+** Goal Tracker
+Goal tracking has been added to the org-agenda commands. Still in works.
 ** Bullet Journal
+New capture template system that integrated the idea of a bullet journal for
+task and note taking.
+
 #+begin_src emacs-lisp
-
+(defun nm/capture-bullet-journal ()
+  "Finds bullet journal headline to nest capture headline under."
+  (let* ((date (format-time-string "%Y-%m-%d %a")))
+    (goto-char (point-min))
+    (unless (re-search-forward (format "^*+\s%s" date) nil t)
+      (goto-char (point-max))
+      (insert (format "* %s %s" date "[/]")))))
 #+end_src
-
 ** Org-Agenda Functions for Condition checks
 So another pain point has been maintaining my task items. So i'm always looking
 for ways to tweak or adjust how I can automate or simply task management, and my

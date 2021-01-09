@@ -1,4 +1,10 @@
-
+(defun nm/capture-bullet-journal ()
+  "Finds bullet journal headline to nest capture headline under."
+  (let* ((date (format-time-string "%Y-%m-%d %a")))
+    (goto-char (point-min))
+    (unless (re-search-forward (format "^*+\s%s" date) nil t)
+      (goto-char (point-max))
+      (insert (format "* %s %s" date "[/]")))))
 
 (defun nm/skip-non-stuck-projects ()
   "Skip trees that are not stuck projects."
@@ -351,18 +357,18 @@
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
 
 (custom-set-faces!
-  '(outline-1 :weight extra-bold :height 1.25)
-  '(outline-2 :weight bold :height 1.15)
-  '(outline-3 :weight bold :height 1.12)
+  '(outline-1 :weight extra-bold :height 1.15)
+  '(outline-2 :weight bold :height 1.13)
+  '(outline-3 :weight bold :height 1.11)
   '(outline-4 :weight semi-bold :height 1.09)
-  '(outline-5 :weight semi-bold :height 1.06)
-  '(outline-6 :weight semi-bold :height 1.03)
-  '(outline-8 :weight semi-bold)
-  '(outline-9 :weight semi-bold))
+  '(outline-5 :weight semi-bold :height 1.07)
+  '(outline-6 :weight semi-bold :height 1.05)
+  '(outline-8 :weight semi-bold :height 1.03)
+  '(outline-9 :weight semi-bold :height 1.01))
 
 (after! org
   (custom-set-faces!
-    '(org-document-title :height 1.2)))
+    '(org-document-title :height 1.15)))
 
 ;; (when (equal system-type 'gnu/linux)
 ;;   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
@@ -398,7 +404,11 @@
                               ("g" " gtd")
                               ("b" " bullet journal")
                               ("n" " notes")
-                              ("r" " resources")))
+                              ("r" " resources")
+                              ("p" " projects")))
+
+(push '("pt" " project task" entry (function nm/find-project-file) "* REFILE %^{task} %^g") org-capture-templates)
+(push '("pf" " new timeframe" entry (function nm/capture-project-timeframes) "%?") org-capture-templates)
 
 (push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
 (push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
@@ -407,13 +417,17 @@
 (push '("gk" " task [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
 (push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
 
-(push '("bt" " bullet task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n*Notes:* \n\n*Task Items:* \n") org-capture-templates)
+(push '("bt" " bullet task" entry (file+function "~/projects/orgmode/gtd/bullet.org" nm/capture-bullet-journal) "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 (push '("na" " append" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
+
+(defun nm/find-project-file ()
+  "Find and open project file."
+  (nm/find-file-or-create "~/projects/orgmode/gtd/projects/"))
 
 (defun nm/return-headline-in-file ()
   "Returns the headline position."
@@ -436,10 +450,6 @@
   (save-excursion (find-file file-arg) (goto-char (point-min))
                   (unless (re-search-forward (format "* %s" (upcase headline-arg)) nil t)
                     (goto-char (point-max)) (insert (format "* %s" (upcase headline-arg))) (org-set-property "CATEGORY" (downcase headline-arg)))) t)
-
-(push '("p" " projects") org-capture-templates)
-(push '("pt" " new timeframe" entry (function nm/capture-project-timeframes)
-        "%?") org-capture-templates)
 
 (after! org (setq org-clock-continuously t)) ; Will fill in gaps between the last and current clocked-in task.
 
@@ -755,6 +765,7 @@
       org-agenda-tags-todo-honor-ignore-options t
       org-agenda-fontify-priorities t)
 
+(setq org-agenda-custom-commands nil)
 (push '("o" "overview"
         ((agenda ""
                  ((org-agenda-span '1)
@@ -792,89 +803,16 @@
                                         ;(org-agenda-skip-function 'nm/tasks-refile)
                 (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
 
-(push '("x" "stuck projects"
-        ((tags-todo "-SOMEDAY-@delegated/"
-                    ((org-agenda-overriding-header "Stuck Projects")
-                     (org-agenda-skip-function 'nm/stuck-projects)
-                     (org-tags-match-list-sublevels 'indented)
-                     (org-agenda-sorting-strategy
-                      '(category-keep)))))) org-agenda-custom-commands)
-
-(push '("r" "Research"
-        ((todo ""
-               ((org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/literature.org")))
-                (org-super-agenda-groups '((:auto-category t))))))) org-agenda-custom-commands)
-
-;; (setq org-super-agenda-mode t
-;;       org-agenda-todo-ignore-scheduled 'future
-;;       org-agenda-tags-todo-honor-ignore-options t
-;;       org-agenda-fontify-priorities t)
-
-;; (setq org-agenda-custom-commands
-;;       (quote (("N" "Notes" tags "NOTE"
-;;                ((org-agenda-overriding-header "Notes")
-;;                 (org-tags-match-list-sublevels t)))
-;;               ("h" "Habits" tags-todo "STYLE=\"habit\""
-;;                ((org-agenda-overriding-header "Habits")
-;;                 (org-agenda-sorting-strategy
-;;                  '(todo-state-down effort-up category-keep))))
-;;               ("n" "Next Actions"
-;;                ((agenda ""
-;;                         ((org-agenda-span '1)
-;;                          (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
-;;                          (org-agenda-start-day (org-today))))
-;;                 (tags-todo "-@delegated/"
-;;                            ((org-agenda-overriding-header "Project Tasks")
-;;                             (org-agenda-skip-function 'nm/only-show-next-and-skip-non-projects)
-;;                             (org-tags-match-list-sublevels 'indented)
-;;                             (org-agenda-sorting-strategy
-;;                              '(category-up))))
-;;                 (tags-todo "-SOMEDAY-@delegated/-TODO-WAIT-PROJ-WATCH"
-;;                            ((org-agenda-overriding-header (concat "Standalone Tasks"))
-;;                             (org-agenda-skip-function 'nm/skip-project-tasks)
-;;                             (org-agenda-todo-ignore-scheduled t)
-;;                             (org-agenda-todo-ignore-deadlines t)
-;;                             (org-agenda-todo-ignore-with-date t)
-;;                             (org-agenda-sorting-strategy '(category-up))))
-;;                 (tags-todo "-SOMEDAY/TODO"
-;;                            ((org-tags-match-list-sublevels nil)
-;;                             (org-agenda-overriding-header "Inbox Bucket")))
-;;                 (tags-todo "-@delegated/PROJ"
-;;                            ((org-agenda-overriding-header "Projects")
-;;                             (org-agenda-skip-function 'bh/skip-non-projects)
-;;                             (org-tags-match-list-sublevels 'indented)
-;;                             (org-agenda-sorting-strategy
-;;                              '(category-keep))))))
-;;               ("r" "Review"
-;;                ((tags-todo "-CANCELLED/!"
-;;                            ((org-agenda-overriding-header "Stuck Projects")
-;;                             (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-;;                             (org-agenda-sorting-strategy
-;;                              '(category-keep))))
-;;                 (tags-todo "-SOMEDAY-REFILE-CANCELLED-WAITING-HOLD/!"
-;;                            ((org-agenda-overriding-header (concat "Project Subtasks"
-;;                                                                   (if bh/hide-scheduled-and-waiting-next-tasks
-;;                                                                       ""
-;;                                                                     " (including WAITING and SCHEDULED tasks)")))
-;;                             (org-agenda-skip-function 'bh/skip-non-project-tasks)
-;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-;;                             (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-;;                             (org-agenda-sorting-strategy
-;;                              '(category-keep))))
-;;                 (tags-todo "-SOMEDAY/TODO"
-;;                            ((org-tags-match-list-sublevels nil)
-;;                             (org-agenda-overriding-header "Inbox Bucket")))
-;;                 (tags-todo "SOMEDAY/"
-;;                            ((org-agenda-overriding-header "Someday Tasks")
-;;                             (org-agenda-skip-function 'nm/skip-scheduled)
-;;                             (org-tags-match-list-sublevels nil)
-;;                             (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-;;                             (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks))))))))
-
 (load! "org-helpers.el")
-(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
-(require 'eaf)
+
+(defun nm/find-file-or-create (folder-path)
+  "Prompts user for filename, and if it does not exist it will create it."
+  (let* ((file (replace-in-string " " "-" (read-file-name "select file: " (if folder-path (concat folder-path) org-directory)))))
+    (if (file-exists-p file)
+        (find-file file)
+      (if (s-ends-with? ".org" file)
+          (find-file (format "%s%s-%s" (file-name-directory file) (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file))))
+        (find-file (format "%s%s-%s.org" (file-name-directory file) (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file))))))))
 
 (defadvice org-archive-subtree (around fix-hierarchy activate)
   (let* ((fix-archive-p (and (not current-prefix-arg)
