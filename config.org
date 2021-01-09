@@ -593,6 +593,7 @@ track data in.
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 (push '("na" " append" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("nn" " new note" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
@@ -1091,26 +1092,30 @@ This first stage is how I track what's on my list of things to complete.
    If TIME-P is t, then includes date+time stamp in filename, FOLDER-PATH is the folder
    location to search for files."
   (let* ((file (replace-in-string " " "-" (downcase (read-file-name "select file: " (if folder-path (concat folder-path) org-directory))))))
-    (if (s-ends-with? ".org" file)
-        (concat (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
-                                                               (concat (file-name-nondirectory (downcase file))))))
-      (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
-                                                                 (concat (file-name-nondirectory (downcase file)))))))))
-
-(defun nm/find-file-or-create (&optional time-p folder-path r-file)
-  "Prompts user for filename and creates file if it does not exist.
-   If TIME-P is t, then include todays timestamp in the filename,
-   R-FILE when return the filename when running this function and
-   FOLDER-PATH will be your default folder to look for files."
-  (interactive)
-  (let* ((file (replace-in-string " " "-" (read-file-name "select file: " (if folder-path (concat folder-path) org-directory)))))
-    (unless (file-exists-p file)
+    (if (file-exists-p file)
+        (concat file)
       (if (s-ends-with? ".org" file)
-          (find-file (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file)))
-                                                                 (concat (file-name-nondirectory (downcase file))))))
-        (find-file (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file)))
-                                                                   (concat (file-name-nondirectory (downcase file))))))))
-        (insert (format "%s\n%s\n%s\n\n* Notes\n\n* Tasks\n\n* Schedule\n" (downcase (replace-in-string "-" " " (file-name-nondirectory file))) (downcase (concat "#+author: " user-full-name)) (downcase (concat "#+email: " user-mail-address))))))
+          (concat (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
+                                                              (concat (file-name-nondirectory (downcase file))))))
+        (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase
+                                                                                                                                               file)))
+                                                                (concat (file-name-nondirectory (downcase file))))))))))
+
+(defun nm/find-file-or-create (time-p &optional type)
+  "Creates a new file, if TYPE is set to NOTE then also insert file-template."
+  (interactive)
+  (let* ((file (nm/convert-filename-format time-p)))
+    (if (file-exists-p file)
+        (find-file file)
+      (when (equal "note" type) (save-excursion (find-file file)
+            (insert (format "%s\n%s\n%s\n\n"
+                            (downcase (format "#+title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
+                            (downcase (concat "#+author: " user-full-name))
+                            (downcase (concat "#+email: " user-mail-address)))))))))
+
+(defun nm/create-notes-file ()
+  "Function for creating a notes file under org-capture-templates."
+  (nm/find-file-or-create t "note"))
 #+END_SRC
 
 ** Archive keeping Structure
