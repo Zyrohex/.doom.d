@@ -338,6 +338,7 @@
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
   (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t))
@@ -461,8 +462,10 @@
                               ("r" " resources")
                               ("p" " projects")))
 
-(push '("pt" " project task" entry (function+olp nm/find-project-file) "* REFILE %^{task} %^g") org-capture-templates)
-(push '("pf" " new timeframe" entry (function nm/capture-project-timeframes) "%?") org-capture-templates)
+(push '("pt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("pr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("pn" " note" entry (function nm/find-project-note) "* " :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("pf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
 (push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
@@ -480,14 +483,31 @@
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
 
-(defun nm/find-project-file ()
+;; This function is used in conjuction with the capture template "new note" which will find or generate a note based off the folder and filename.
+(defun nm/create-notes-file ()
+  "Function for creating a notes file under org-capture-templates."
+  (nm/find-file-or-create t org-directory "note"))
+
+(defun nm/find-project-task ()
   "Function for creating a project file under org-capture-templates."
-  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project"))
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "Tasks"))
+
+(defun nm/find-project-timeframe ()
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "Timeframe"))
+
+(defun nm/find-project-requirement ()
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "Requirements"))
+
+(defun nm/find-project-note ()
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "Notes"))
 
 (defun nm/return-headline-in-file ()
   "Returns the headline position."
   (let* ((org-agenda-files "~/projects/orgmode/elfeed.org")
-        (location (nth 3 (org-refile-get-location nil nil 'confirm))))
+         (location (nth 3 (org-refile-get-location nil nil 'confirm))))
     (goto-char location)
     (org-end-of-line)))
 
@@ -815,21 +835,15 @@
 (defun nm/convert-filename-format (&optional time-p folder-path)
   "Prompts user for filename and directory, and returns the value in a cleaned up format.
    If TIME-P is t, then includes date+time stamp in filename, FOLDER-PATH is the folder
-   location to search for files.
-"
+   location to search for files."
   (let* ((file (replace-in-string " " "-" (downcase (read-file-name "select file: " (if folder-path (concat folder-path) org-directory))))))
     (if (file-exists-p file)
         (concat file)
       (if (s-ends-with? ".org" file)
           (concat (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
                                                               (concat (file-name-nondirectory (downcase file))))))
-        (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase
-                                                                                                                                               file)))
+        (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
                                                                 (concat (file-name-nondirectory (downcase file))))))))))
-
-(defun nm/find-project-file ()
-  "Function for creating a project file under org-capture-templates."
-  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "* Tasks"))
 
 (defun nm/find-file-or-create (time-p folder-path &optional type header)
   "Creates a new file, if TYPE is set to NOTE then also insert file-template."
@@ -844,19 +858,16 @@
                             (downcase (concat "#+email: " user-mail-address)))))
       (when (equal "project" type) (find-file file)
             (insert (format "%s\n%s\n%s\n\n* Requirements\n\n* Timeframe\n\n* Notes\n\n* Tasks\n"
-                            (downcase (format "#title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
+                            (downcase (format "#+title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
                             (downcase (concat "#+author: " user-full-name ))
                             (downcase (concat "#+email: " user-mail-address)))))
       (when (equal nil type) (find-file)))
     ;; If user passes in header argument, search for it and if the search fails to find the header, then create it.
-    (if header (unless (re-search-forward (format "^*+ %s" header))
+    (if header (unless (progn (goto-char (point-min)) (re-search-forward (format "^*+ %s" header)))
                  (goto-char (point-max))
-                 (newline 1)
-                 (insert (format "* %s" header))))))
-
-(defun nm/create-notes-file ()
-  "Function for creating a notes file under org-capture-templates."
-  (nm/find-file-or-create t org-directory "note"))
+                 (newline)
+                 (insert (format "* %s" header))
+                 (newline)))))
 
 (defadvice org-archive-subtree (around fix-hierarchy activate)
   (let* ((fix-archive-p (and (not current-prefix-arg)
