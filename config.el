@@ -339,8 +339,8 @@
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .30 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t))
 
 (require 'all-the-icons)
 
@@ -396,6 +396,63 @@
 (add-hook 'org-mode-hook 'auto-fill-mode)
 ;(add-hook 'org-mode-hook 'hl-todo-mode)
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
+
+(setq org-agenda-todo-ignore-scheduled nil
+      org-agenda-tags-todo-honor-ignore-options t
+      org-agenda-fontify-priorities t)
+
+(setq org-agenda-custom-commands nil)
+(push '("o" "overview"
+        ((agenda ""
+                 ((org-agenda-span '1)
+                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
+                  (org-agenda-start-day (org-today))))
+         (tags-todo "-SOMEDAY-@delegated/+NEXT"
+                    ((org-agenda-overriding-header "Next Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-SOMEDAY/+READ"
+                    ((org-agenda-overriding-header "To Read")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
+                    ((org-agenda-overriding-header "Other Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up)))))) org-agenda-custom-commands)
+
+(push '("b" "bullet"
+        ((agenda ""
+                 ((org-agenda-span '2)
+                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org")))
+                  (org-agenda-start-day (org-today))))
+         (tags-todo "-someday/"
+                    ((org-agenda-overriding-header "Task Items")
+                     (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org")))
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)))
+         (tags "note"
+               ((org-agenda-overriding-header "Notes")
+                (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org"))))))) org-agenda-custom-commands)
+
+(push '("g" "goals"
+        ((tags-todo "Goal=\"prof-python\"/")
+         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
+
+(push '("i" "inbox"
+        ((todo "REFILE"
+               ((org-tags-match-list-sublevels nil)
+                                        ;(org-agenda-skip-function 'nm/tasks-refile)
+                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
 
 (setq org-capture-templates '(("c" " checklist")
                               ("g" " gtd")
@@ -712,13 +769,7 @@
 (setq org-roam-db-location "~/projects/orgmode/roam.db")
 (setq org-roam-directory "~/projects/orgmode/")
 (setq org-roam-buffer-position 'right)
-
-(use-package company-org-roam
-  :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working
-                                        ; :pin melpa
-  :config
-  (push 'company-org-roam company-backends))
+(setq org-roam-completion-everywhere t)
 
 (setq org-roam-dailies-capture-templates
       '(("d" "daily" plain (function org-roam-capture--get-point) ""
@@ -759,54 +810,13 @@
         org-roam-server-network-label-truncate-length 60
         org-roam-server-network-label-wrap-length 20))
 
-(setq org-agenda-todo-ignore-scheduled nil
-      org-agenda-tags-todo-honor-ignore-options t
-      org-agenda-fontify-priorities t)
-
-(setq org-agenda-custom-commands nil)
-(push '("o" "overview"
-        ((agenda ""
-                 ((org-agenda-span '1)
-                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
-                  (org-agenda-start-day (org-today))))
-         (tags-todo "-SOMEDAY-@delegated/+NEXT"
-                    ((org-agenda-overriding-header "Next Tasks")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "-SOMEDAY/+READ"
-                    ((org-agenda-overriding-header "To Read")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
-                    ((org-agenda-overriding-header "Other Tasks")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up)))))) org-agenda-custom-commands)
-
-(push '("g" "goals"
-        ((tags-todo "Goal=\"prof-python\"/")
-         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
-
-(push '("i" "inbox"
-        ((todo "REFILE"
-               ((org-tags-match-list-sublevels nil)
-                                        ;(org-agenda-skip-function 'nm/tasks-refile)
-                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
-
 (load! "org-helpers.el")
 
 (defun nm/convert-filename-format (&optional time-p folder-path)
   "Prompts user for filename and directory, and returns the value in a cleaned up format.
    If TIME-P is t, then includes date+time stamp in filename, FOLDER-PATH is the folder
-   location to search for files."
+   location to search for files.
+"
   (let* ((file (replace-in-string " " "-" (downcase (read-file-name "select file: " (if folder-path (concat folder-path) org-directory))))))
     (if (file-exists-p file)
         (concat file)
@@ -823,11 +833,12 @@
   (let* ((file (nm/convert-filename-format time-p)))
     (if (file-exists-p file)
         (find-file file)
-      (when (equal "note" type) (save-excursion (find-file file)
+      (when (equal "note" type) (find-file file)
             (insert (format "%s\n%s\n%s\n\n"
                             (downcase (format "#+title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
                             (downcase (concat "#+author: " user-full-name))
-                            (downcase (concat "#+email: " user-mail-address)))))))))
+                            (downcase (concat "#+email: " user-mail-address)))))
+      (when (equal nil type) (find-file)))))
 
 (defun nm/create-notes-file ()
   "Function for creating a notes file under org-capture-templates."
@@ -928,5 +939,5 @@
 (defvar nm/font-family-list '("JetBrains Mono" "Roboto Mono" "VictorMono Nerd Font Mono" "Fira Code" "Hack" "Input Mono" "Anonymous Pro" "Cousine" "PT Mono" "DejaVu Sans Mono" "Victor Mono" "Liberation Mono"))
 
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
-(when (file-exists-p secrets)
-  (load secrets)))
+  (when (file-exists-p secrets)
+    (load secrets)))
