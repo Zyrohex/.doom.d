@@ -19,7 +19,6 @@
 ;(package! literate-calc-mode)
 
 ;; Python
-(package! ob-ipython)
 (package! anaconda-mode)
 (package! company-anaconda)
 
