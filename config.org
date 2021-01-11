@@ -642,7 +642,7 @@ track data in.
                               ("r" " resources")
                               ("p" " projects")))
 
-(push '("pt" " project task" entry (function nm/find-project-file) "* REFILE %^{task} %^g") org-capture-templates)
+(push '("pt" " project task" entry (function+olp nm/find-project-file) "* REFILE %^{task} %^g") org-capture-templates)
 (push '("pf" " new timeframe" entry (function nm/capture-project-timeframes) "%?") org-capture-templates)
 
 (push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
@@ -664,8 +664,8 @@ track data in.
 
 #+begin_src emacs-lisp
 (defun nm/find-project-file ()
-  "Find and open project file."
-  (nm/find-file-or-create "~/projects/orgmode/gtd/projects/"))
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project"))
 
 (defun nm/return-headline-in-file ()
   "Returns the headline position."
@@ -1111,10 +1111,14 @@ These are my default ROAM settings
                                                                                                                                                file)))
                                                                 (concat (file-name-nondirectory (downcase file))))))))))
 
-(defun nm/find-file-or-create (time-p &optional type)
+(defun nm/find-project-file ()
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "* Tasks"))
+
+(defun nm/find-file-or-create (time-p folder-path &optional type header)
   "Creates a new file, if TYPE is set to NOTE then also insert file-template."
   (interactive)
-  (let* ((file (nm/convert-filename-format time-p)))
+  (let* ((file (nm/convert-filename-format time-p folder-path)))
     (if (file-exists-p file)
         (find-file file)
       (when (equal "note" type) (find-file file)
@@ -1122,11 +1126,21 @@ These are my default ROAM settings
                             (downcase (format "#+title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
                             (downcase (concat "#+author: " user-full-name))
                             (downcase (concat "#+email: " user-mail-address)))))
-      (when (equal nil type) (find-file)))))
+      (when (equal "project" type) (find-file file)
+            (insert (format "%s\n%s\n%s\n\n* Requirements\n\n* Timeframe\n\n* Notes\n\n* Tasks\n"
+                            (downcase (format "#title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
+                            (downcase (concat "#+author: " user-full-name ))
+                            (downcase (concat "#+email: " user-mail-address)))))
+      (when (equal nil type) (find-file)))
+    ;; If user passes in header argument, search for it and if the search fails to find the header, then create it.
+    (if header (unless (re-search-forward (format "^*+ %s" header))
+                 (goto-char (point-max))
+                 (newline 1)
+                 (insert (format "* %s" header))))))
 
 (defun nm/create-notes-file ()
   "Function for creating a notes file under org-capture-templates."
-  (nm/find-file-or-create t "note"))
+  (nm/find-file-or-create t org-directory "note"))
 
 #+END_SRC
 
