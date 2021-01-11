@@ -1,4 +1,4 @@
-# Created 2021-01-09 Sat 00:25
+# Created 2021-01-10 Sun 19:25
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -482,8 +482,8 @@ Next we configure popup-rules and default fonts.
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .30 :select t))
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
+  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t))
 
 (require 'all-the-icons)
 
@@ -550,6 +550,70 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 #+end_src
 
+** Agenda
+First we setup a few deafults for the org-agenda buffer:
+#+begin_src emacs-lisp
+(setq org-agenda-todo-ignore-scheduled nil
+      org-agenda-tags-todo-honor-ignore-options t
+      org-agenda-fontify-priorities t)
+#+end_src
+
+This first stage is how I track what's on my list of things to complete.
+#+begin_src emacs-lisp
+(setq org-agenda-custom-commands nil)
+(push '("o" "overview"
+        ((agenda ""
+                 ((org-agenda-span '1)
+                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
+                  (org-agenda-start-day (org-today))))
+         (tags-todo "-SOMEDAY-@delegated/+NEXT"
+                    ((org-agenda-overriding-header "Next Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-SOMEDAY/+READ"
+                    ((org-agenda-overriding-header "To Read")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
+                    ((org-agenda-overriding-header "Other Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up)))))) org-agenda-custom-commands)
+
+(push '("b" "bullet"
+        ((agenda ""
+                 ((org-agenda-span '2)
+                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org")))
+                  (org-agenda-start-day (org-today))))
+         (tags-todo "-someday/"
+                    ((org-agenda-overriding-header "Task Items")
+                     (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org")))
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)))
+         (tags "note"
+               ((org-agenda-overriding-header "Notes")
+                (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org"))))))) org-agenda-custom-commands)
+
+(push '("g" "goals"
+        ((tags-todo "Goal=\"prof-python\"/")
+         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
+
+(push '("i" "inbox"
+        ((todo "REFILE"
+               ((org-tags-match-list-sublevels nil)
+                                        ;(org-agenda-skip-function 'nm/tasks-refile)
+                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
+#+end_src
+
 ** Capture Templates
 [[file:attachments/capture-templates.png]] \\
 
@@ -574,7 +638,7 @@ track data in.
                               ("r" " resources")
                               ("p" " projects")))
 
-(push '("pt" " project task" entry (function nm/find-project-file) "* REFILE %^{task} %^g") org-capture-templates)
+(push '("pt" " project task" entry (function+olp nm/find-project-file) "* REFILE %^{task} %^g") org-capture-templates)
 (push '("pf" " new timeframe" entry (function nm/capture-project-timeframes) "%?") org-capture-templates)
 
 (push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
@@ -588,6 +652,7 @@ track data in.
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 (push '("na" " append" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("nn" " new note" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
@@ -595,8 +660,8 @@ track data in.
 
 #+begin_src emacs-lisp
 (defun nm/find-project-file ()
-  "Find and open project file."
-  (nm/find-file-or-create "~/projects/orgmode/gtd/projects/"))
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project"))
 
 (defun nm/return-headline-in-file ()
   "Returns the headline position."
@@ -978,13 +1043,7 @@ These are my default ROAM settings
 (setq org-roam-db-location "~/projects/orgmode/roam.db")
 (setq org-roam-directory "~/projects/orgmode/")
 (setq org-roam-buffer-position 'right)
-
-(use-package company-org-roam
-  :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working
-                                        ; :pin melpa
-  :config
-  (push 'company-org-roam company-backends))
+(setq org-roam-completion-everywhere t)
 
 (setq org-roam-dailies-capture-templates
       '(("d" "daily" plain (function org-roam-capture--get-point) ""
@@ -1012,6 +1071,7 @@ These are my default ROAM settings
         :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
         :unnarrowed t) org-roam-capture-templates)
 #+end_src
+
 ** ROAM Server
 #+begin_src emacs-lisp
 (use-package org-roam-server
@@ -1028,55 +1088,6 @@ These are my default ROAM settings
         org-roam-server-network-label-wrap-length 20))
 #+end_src
 
-** Super Agenda Settings
-First we setup a few deafults for the org-agenda buffer:
-#+begin_src emacs-lisp
-(setq org-agenda-todo-ignore-scheduled nil
-      org-agenda-tags-todo-honor-ignore-options t
-      org-agenda-fontify-priorities t)
-#+end_src
-
-This first stage is how I track what's on my list of things to complete.
-#+begin_src emacs-lisp
-(setq org-agenda-custom-commands nil)
-(push '("o" "overview"
-        ((agenda ""
-                 ((org-agenda-span '1)
-                  (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
-                  (org-agenda-start-day (org-today))))
-         (tags-todo "-SOMEDAY-@delegated/+NEXT"
-                    ((org-agenda-overriding-header "Next Tasks")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "-SOMEDAY/+READ"
-                    ((org-agenda-overriding-header "To Read")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
-                    ((org-agenda-overriding-header "Other Tasks")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up)))))) org-agenda-custom-commands)
-
-(push '("g" "goals"
-        ((tags-todo "Goal=\"prof-python\"/")
-         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
-
-(push '("i" "inbox"
-        ((todo "REFILE"
-               ((org-tags-match-list-sublevels nil)
-                                        ;(org-agenda-skip-function 'nm/tasks-refile)
-                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
-#+end_src
-
 * Custom Functions
 #+begin_src emacs-lisp
 (load! "org-helpers.el")
@@ -1084,28 +1095,48 @@ This first stage is how I track what's on my list of things to complete.
 (defun nm/convert-filename-format (&optional time-p folder-path)
   "Prompts user for filename and directory, and returns the value in a cleaned up format.
    If TIME-P is t, then includes date+time stamp in filename, FOLDER-PATH is the folder
-   location to search for files."
+   location to search for files.
+"
   (let* ((file (replace-in-string " " "-" (downcase (read-file-name "select file: " (if folder-path (concat folder-path) org-directory))))))
-    (if (s-ends-with? ".org" file)
-        (concat (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
-                                                               (concat (file-name-nondirectory (downcase file))))))
-      (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
-                                                                 (concat (file-name-nondirectory (downcase file)))))))))
-
-(defun nm/find-file-or-create (&optional time-p folder-path r-file)
-  "Prompts user for filename and creates file if it does not exist.
-   If TIME-P is t, then include todays timestamp in the filename,
-   R-FILE when return the filename when running this function and
-   FOLDER-PATH will be your default folder to look for files."
-  (interactive)
-  (let* ((file (replace-in-string " " "-" (read-file-name "select file: " (if folder-path (concat folder-path) org-directory)))))
-    (unless (file-exists-p file)
+    (if (file-exists-p file)
+        (concat file)
       (if (s-ends-with? ".org" file)
-          (find-file (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file)))
-                                                                 (concat (file-name-nondirectory (downcase file))))))
-        (find-file (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S") (file-name-nondirectory (downcase file)))
-                                                                   (concat (file-name-nondirectory (downcase file))))))))
-        (insert (format "%s\n%s\n%s\n\n* Notes\n\n* Tasks\n\n* Schedule\n" (downcase (replace-in-string "-" " " (file-name-nondirectory file))) (downcase (concat "#+author: " user-full-name)) (downcase (concat "#+email: " user-mail-address))))))
+          (concat (format "%s%s" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase file)))
+                                                              (concat (file-name-nondirectory (downcase file))))))
+        (concat (format "%s%s.org" (file-name-directory file) (if time-p (concat (format-time-string "%Y%m%d%H%M%S-") (file-name-nondirectory (downcase
+                                                                                                                                               file)))
+                                                                (concat (file-name-nondirectory (downcase file))))))))))
+
+(defun nm/find-project-file ()
+  "Function for creating a project file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "* Tasks"))
+
+(defun nm/find-file-or-create (time-p folder-path &optional type header)
+  "Creates a new file, if TYPE is set to NOTE then also insert file-template."
+  (interactive)
+  (let* ((file (nm/convert-filename-format time-p folder-path)))
+    (if (file-exists-p file)
+        (find-file file)
+      (when (equal "note" type) (find-file file)
+            (insert (format "%s\n%s\n%s\n\n"
+                            (downcase (format "#+title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
+                            (downcase (concat "#+author: " user-full-name))
+                            (downcase (concat "#+email: " user-mail-address)))))
+      (when (equal "project" type) (find-file file)
+            (insert (format "%s\n%s\n%s\n\n* Requirements\n\n* Timeframe\n\n* Notes\n\n* Tasks\n"
+                            (downcase (format "#title: %s" (replace-in-string "-" " " (replace-regexp-in-string "[0-9]+-" "" (replace-in-string ".org" "" (file-name-nondirectory file))))))
+                            (downcase (concat "#+author: " user-full-name ))
+                            (downcase (concat "#+email: " user-mail-address)))))
+      (when (equal nil type) (find-file)))
+    ;; If user passes in header argument, search for it and if the search fails to find the header, then create it.
+    (if header (unless (re-search-forward (format "^*+ %s" header))
+                 (goto-char (point-max))
+                 (newline 1)
+                 (insert (format "* %s" header))))))
+
+(defun nm/create-notes-file ()
+  "Function for creating a notes file under org-capture-templates."
+  (nm/find-file-or-create t org-directory "note"))
 #+end_src
 
 ** Archive keeping Structure
@@ -1222,6 +1253,6 @@ property fields.
 Load secrets from here...
 #+begin_src emacs-lisp
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
-(when (file-exists-p secrets)
-  (load secrets)))
+  (when (file-exists-p secrets)
+    (load secrets)))
 #+end_src
