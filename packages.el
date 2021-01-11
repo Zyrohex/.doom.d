@@ -1,5 +1,6 @@
 ;; Roam Packages
-(package! company-org-roam)
+(package! org-roam-server)
+(package! org-roam)
 ;; Alphapapa packages
 ;(package! helm-org-rifle)
 ;(package! org-super-agenda)
