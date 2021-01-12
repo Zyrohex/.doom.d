@@ -113,6 +113,15 @@
                                                              coding_charset))))
   (concat "[[" url "][" web_title_str "]]")))
 
+(defun nm/org-files-prompt-completion ()
+  "Prompt user to complete file-selection when using the file: link type."
+  (interactive)
+  (let* ((file (save-excursion (read-file-name "file?" org-directory)))
+         (file-name (capitalize (replace-in-string "-" " " (replace-in-string ".org" "" (file-name-nondirectory file))))))
+    (org-insert-link nil file file-name)))
+
+(after! org (org-link-set-parameters "file" :complete #'nm/org-id-prompt-id))
+
 (require 'find-lisp)
 (defun nm/org-id-prompt-id ()
   "Prompt for the id during completion of id: link."
@@ -301,13 +310,13 @@
 
 (bind-key "<f6>" #'link-hint-copy-link)
 (bind-key "<f12>" #'org-cycle-agenda-files)
+(bind-key "M-." #'completion-at-point)
 
 (map! :after org
       :map org-mode-map
       :leader
       :prefix ("z" . "orgmode")
-      :desc "Outline" "o" #'counsel-outline
-      :desc "Find File" "f" #'nm/find-file-or-create
+      :desc "completion at point" "c" #'completion-at-point
       :prefix ("s" . "+search")
       :desc "Occur" "." #'occur
       :desc "Outline" "o" #'counsel-outline
@@ -341,7 +350,7 @@
   (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'bottom :size .30 :select t))
+  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (require 'all-the-icons)
 
@@ -673,7 +682,7 @@
                     ("myprojectweb" :components("attachments" "notes" "ROAM")))))
 
 (after! org
-  (set-company-backend! 'org-mode '(company-yasnippet company-elisp))
+  (set-company-backend! 'org-mode '(company-yasnippet company-files company-elisp))
   (setq company-idle-delay 0.25))
 
 (setq deft-use-projectile-projects t)
