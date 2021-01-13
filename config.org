@@ -175,21 +175,6 @@ The PROJ state will become active upon the following conditions:
 1. Task has a child headline with a TODO-KEYWORD of any-type (TODO/NEXT/WAIT). \\
 [[file:attachments/projects.gif]]
 
-** File link Completions
-Similar to ID Completion, I wanted a similar completion system for when
-selecting files but I want to use the projectile-find-file.
-
-#+begin_src emacs-lisp
-(defun nm/org-files-prompt-completion ()
-  "Prompt user to complete file-selection when using the file: link type."
-  (interactive)
-  (let* ((file (save-excursion (read-file-name "file?" org-directory)))
-         (file-name (capitalize (replace-in-string "-" " " (replace-in-string ".org" "" (file-name-nondirectory file))))))
-    (org-insert-link nil file file-name)))
-
-(after! org (org-link-set-parameters "file" :complete #'nm/org-id-prompt-id))
-#+end_src
-
 ** ID Completion
 I got tired of flipping back n forth between buffers, copying the ID of a
 headline, then jump back and paste that ID into my link. So now i'll have

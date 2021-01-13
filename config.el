@@ -113,15 +113,6 @@
                                                              coding_charset))))
   (concat "[[" url "][" web_title_str "]]")))
 
-(defun nm/org-files-prompt-completion ()
-  "Prompt user to complete file-selection when using the file: link type."
-  (interactive)
-  (let* ((file (save-excursion (read-file-name "file?" org-directory)))
-         (file-name (capitalize (replace-in-string "-" " " (replace-in-string ".org" "" (file-name-nondirectory file))))))
-    (org-insert-link nil file file-name)))
-
-(after! org (org-link-set-parameters "file" :complete #'nm/org-id-prompt-id))
-
 (require 'find-lisp)
 (defun nm/org-id-prompt-id ()
   "Prompt for the id during completion of id: link."
