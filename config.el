@@ -332,7 +332,7 @@
 (setq org-directory "~/projects/orgmode/")
 (setq projectile-project-search-path "~/projects/")
 
-(setq doom-theme 'doom-moonlight)
+(setq doom-theme 'doom-city-lights)
 
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
@@ -340,13 +340,10 @@
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
-  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t)
-  (set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
-
-(require 'all-the-icons)
+  (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
+  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (setq inhibit-compacting-font-caches t)
-
 (setq doom-font (font-spec :family "Roboto Mono" :size 20)
       doom-big-font (font-spec :family "Roboto Mono" :size 32)
       doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 20)
@@ -406,29 +403,88 @@
 (push '("o" "overview"
         ((agenda ""
                  ((org-agenda-span '1)
+                  (org-agenda-overriding-header " Agenda")
                   (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org")))
                   (org-agenda-start-day (org-today))))
-         (tags-todo "-SOMEDAY-@delegated/+NEXT"
-                    ((org-agenda-overriding-header "Next Tasks")
+         (tags-todo "-@delegated-someday/+NEXT"
+                    ((org-agenda-overriding-header " Next Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-SOMEDAY/+READ"
-                    ((org-agenda-overriding-header "To Read")
+         (tags-todo "@place-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Location Based")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-@delegated-SOMEDAY/-NEXT-REFILE-READ"
-                    ((org-agenda-overriding-header "Other Tasks")
+         (tags-todo "@home-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Home")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
-                      '(category-up)))))) org-agenda-custom-commands)
+                      '(category-up))))
+         (tags-todo "@fix-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Fix")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@brainstorm-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Brainstorm")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@call|@email-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Communication")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@computer-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Computer")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@errands-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Errands")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@read-someday/!-REFILE-NEXT"
+                    ((org-agenda-overriding-header " Read")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-{^@\\w+}-someday/-NEXT-REFILE-READ"
+                    ((org-agenda-overriding-header " Other Tasks")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "-someday/+REFILE"
+                    ((org-agenda-overriding-header " Inbox"))))) org-agenda-custom-commands)
+
+(push '("r" "review"
+        ((tags-todo "-{^@\\w+}/-REFILE")
+         (org-agenda-todo-ignore-scheduled t)
+         (org-agenda-todo-ignore-with-date t)
+         (org-agenda-todo-ignore-deadlines t)
+         (org-agenda-todo-ignore-with-date t))) org-agenda-custom-commands)
 
 (push '("b" "bullet"
         ((agenda ""
@@ -448,12 +504,6 @@
 (push '("g" "goals"
         ((tags-todo "Goal=\"prof-python\"/")
          (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
-
-(push '("i" "inbox"
-        ((todo "REFILE"
-               ((org-tags-match-list-sublevels nil)
-                                        ;(org-agenda-skip-function 'nm/tasks-refile)
-                (org-agenda-overriding-header "Ready to Refile"))))) org-agenda-custom-commands)
 
 (setq org-capture-templates '(("c" " checklist")
                               ("g" " gtd")
@@ -530,23 +580,17 @@
 
 (setq org-tags-column 0)
 
-(setq org-tag-alist '(("@home")
-                      ("@computer")
-                      ("@email")
+(setq org-tag-alist '(("@home" . ?h)
+                      ("@computer" . ?c)
+                      ("@email" . ?e)
+                      ("@fix" . ?f)
+                      ("@errands")
+                      ("@delegated")
                       ("@call")
                       ("@brainstorm")
-                      ("@write")
                       ("@read")
-                      ("@code")
-                      ("@research")
-                      ("@purchase")
-                      ("@payment")
-                      ("@place")))
-
-(push '("delegated") org-tag-alist)
-(push '("waiting") org-tag-alist)
-(push '("someday") org-tag-alist)
-(push '("remember") org-tag-alist)
+                      ("@place")
+                      ("someday")))
 
 (after! org (setq org-html-head-include-scripts t
                   org-export-with-toc t
@@ -602,10 +646,10 @@
           ("TODO" . +org-todo-active)))
 
 (after! org (setq org-agenda-diary-file "~/projects/orgmode/diary.org"
-                  org-agenda-dim-blocked-tasks t ; grays out task items that are blocked by another task (EG: Projects with subtasks)
+                  org-agenda-dim-blocked-tasks nil ; This has funny behavior, similar to checkbox dependencies.
                   org-agenda-use-time-grid nil
                   org-agenda-tags-column 0
-;                  org-agenda-hide-tags-regexp "\\w+" ; Hides tags in agenda-view
+                  org-agenda-hide-tags-regexp "^w+" ; Hides tags in agenda-view
                   org-agenda-compact-blocks nil
                   org-agenda-block-separator " "
                   org-agenda-skip-scheduled-if-done t
@@ -746,10 +790,10 @@
   :config
   (setq elfeed-db-directory "~/.elfeed/"))
 
-;; (require 'elfeed-org)
-;; (elfeed-org)
-;; (setq elfeed-db-directory "~/.elfeed/")
-;; (setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
+(require 'elfeed-org)
+(elfeed-org)
+(setq elfeed-db-directory "~/.elfeed/")
+(setq rmh-elfeed-org-files (list "~/.elfeed/elfeed.org"))
 
 (after! org (setq org-ditaa-jar-path "~/.emacs.d/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar"))
 
@@ -781,54 +825,55 @@
 
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
-(require 'ox-reveal)
-(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
-(setq org-reveal-title-slide nil)
+(when (require 'ox-reveal nil 'noerror)
+  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+  (setq org-reveal-title-slide nil))
 
-(setq org-roam-tag-sources '(prop last-directory))
-(setq org-roam-db-location "~/projects/orgmode/roam.db")
-(setq org-roam-directory "~/projects/orgmode/")
-(setq org-roam-buffer-position 'right)
-(setq org-roam-completion-everywhere t)
-
-(setq org-roam-dailies-capture-templates
+(when (require 'org-roam nil 'noerror)
+  (setq org-roam-tag-sources '(prop last-directory))
+  (setq org-roam-db-location "~/projects/orgmode/roam.db")
+  (setq org-roam-directory "~/projects/orgmode/")
+  (setq org-roam-buffer-position 'top)
+  (setq org-roam-completion-everywhere t)
+  ;; Configuration of daily templates
+  (setq org-roam-dailies-capture-templates
       '(("d" "daily" plain (function org-roam-capture--get-point) ""
          :immediate-finish t
          :file-name "journal/%<%Y-%m-%d-%a>"
          :head "#+TITLE: %<%Y-%m-%d %a>\n#+STARTUP: content\n\n")))
+  (setq org-roam-capture-templates
+        '(("l" "literature" plain (function org-roam-capture--get-point)
+           :file-name "literature/%<%Y%m%d%H%M>-${slug}"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %^{roam_tags}\n\nsource: \n\n%?"
+           :unnarrowed t)
+          ("f" "fleeting" plain (function org-roam-capture--get-point)
+           :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
+           :unnarrowed t)
+          ("p" "permanent in nested folder" plain (function org-roam-capture--get-point)
+           :file-name "%(read-string \"string: \")/%<%Y%m%d%H%M>-${slug}"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %(read-string \"tags: \")\n\n"
+           :unnarrowed t
+           "%?")))
 
-(setq org-roam-capture-templates
-      '(("l" "literature" plain (function org-roam-capture--get-point)
-         :file-name "literature/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %^{roam_tags}\n\nsource: \n\n%?"
-         :unnarrowed t)
-        ("f" "fleeting" plain (function org-roam-capture--get-point)
-         :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
-         :unnarrowed t)
-        ("p" "permanent in nested folder" plain (function org-roam-capture--get-point)
-         :file-name "%(read-string \"string: \")/%<%Y%m%d%H%M>-${slug}"
-         :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %(read-string \"tags: \")\n\n"
-         :unnarrowed t
-         "%?")))
+  (push '("x" "Projects" plain (function org-roam-capture--get-point)
+          :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
+          :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
+          :unnarrowed t) org-roam-capture-templates))
 
-(push '("x" "Projects" plain (function org-roam-capture--get-point)
-        :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
-        :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
-        :unnarrowed t) org-roam-capture-templates)
-
-(use-package org-roam-server
-  :ensure t
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8070
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-poll nil
-        org-roam-server-network-arrows 'from
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
+(when (require 'org-roam-server nil 'noerror)
+  (use-package org-roam-server
+    :ensure t
+    :config
+    (setq org-roam-server-host "127.0.0.1"
+          org-roam-server-port 8070
+          org-roam-server-export-inline-images t
+          org-roam-server-authenticate nil
+          org-roam-server-network-poll nil
+          org-roam-server-network-arrows 'from
+          org-roam-server-network-label-truncate t
+          org-roam-server-network-label-truncate-length 60
+          org-roam-server-network-label-wrap-length 20)))
 
 (load! "org-helpers.el")
 
