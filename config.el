@@ -849,7 +849,7 @@
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
-  (setq org-roam-file-exclude-regexp "/home/nick/projects/orgmode/references/*")
+  (setq org-roam-file-exclude-regexp "references/*\\|gtd/*")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
   (setq org-roam-dailies-capture-templates
@@ -887,6 +887,7 @@
           org-roam-server-network-vis-options "{ \"layout\": {\"randomSeed\": None}, \"improvedLayout\":\"True\", \"physics\": {\"barnesHut\": {\"avoidOverlap\": 1, \"centralGravity\": 0.3, \"springLength\": 95, \"springConstant\": 0.05, \"gravitationalConstant\": -2000}, \"timestep\": 0.3}}"
           ;org-roam-server-network-vis-options "\"const options\" = { \"edges\": { \"smooth\": { \"type\": \"curvedCW\", \"forceDirection\": \"none\" } }, \"physics\": { \"forceAtlas2Based\": { \"springLength\": 95, \"springConstant\": 0.04, \"avoidOverlap\": 1 }, \"minVelocity\": 0.75, \"solver\": \"forceAtlas2Based\" } }"
           org-roam-server-network-arrows nil
+          org-roam-server-serve-files t
           org-roam-server-extra-node-options (list (cons 'shape "dot") (cons 'opacity 1))
           org-roam-server-network-label-truncate t
           org-roam-server-network-label-truncate-length 60
