@@ -499,12 +499,12 @@
         ((tags-todo "Goal=\"prof-python\"/")
          (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
 
-(setq org-capture-templates '(("g" " gtd")
-                              ("b" " bullet journal")
-                              ("l" " local project")
-                              ("n" " notes")
-                              ("r" " resources")
-                              ("gp" " projects")))
+(setq org-capture-templates '(("g" " ./gtd")
+                              ("b" " ./bullet journal")
+                              ("l" " ./local project")
+                              ("n" " ./notes")
+                              ("r" " ./resources")
+                              ("gp" " ./projects")))
 
 (push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
@@ -525,7 +525,7 @@
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 (push '("nn" " new reference [excluded from org-roam]" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("nr" " roam article" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("nr" " roam article" plain (function nm/create-roam-file)"%?" :unnarrowed t) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
@@ -534,6 +534,10 @@
 (defun nm/create-notes-file ()
   "Function for creating a notes file under org-capture-templates."
   (nm/find-file-or-create t "~/projects/orgmode/references/" "note"))
+
+(defun nm/create-roam-file ()
+  "Function to create a new roam notes file, while prompting for folder location."
+  (nm/find-file-or-create t org-directory "note"))
 
 (defun nm/find-project-task ()
   "Function for creating a project file under org-capture-templates."
@@ -850,7 +854,7 @@
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
-  (setq org-roam-file-exclude-regexp "references/*\\|gtd/*")
+  (setq org-roam-file-exclude-regexp "references/*\\|gtd/*\\|elfeed.org\\|README.org")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
   (setq org-roam-dailies-capture-templates

@@ -4,7 +4,8 @@
 [[file:attachments/workspace.png]]
 
 The goal of my config is to keep the configuration distraction free, and focus
-on functionality over looks.
+on functionality over looks. If you are curious to see my notes and task repo,
+feel free to check out -> [[https://github.com/nmartin84/org-notes][nmartin84/org-notes]]
 
 * New Changes
 
@@ -679,12 +680,12 @@ i've completed it and other times I need an actual task item to capture and
 track data in.
 
 #+begin_src emacs-lisp
-(setq org-capture-templates '(("g" " gtd")
-                              ("b" " bullet journal")
-                              ("l" " local project")
-                              ("n" " notes")
-                              ("r" " resources")
-                              ("gp" " projects")))
+(setq org-capture-templates '(("g" " ./gtd")
+                              ("b" " ./bullet journal")
+                              ("l" " ./local project")
+                              ("n" " ./notes")
+                              ("r" " ./resources")
+                              ("gp" " ./projects")))
 
 (push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
@@ -705,7 +706,7 @@ track data in.
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 (push '("nn" " new reference [excluded from org-roam]" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("nr" " roam article" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("nr" " roam article" plain (function nm/create-roam-file)"%?" :unnarrowed t) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
@@ -716,6 +717,10 @@ track data in.
 (defun nm/create-notes-file ()
   "Function for creating a notes file under org-capture-templates."
   (nm/find-file-or-create t "~/projects/orgmode/references/" "note"))
+
+(defun nm/create-roam-file ()
+  "Function to create a new roam notes file, while prompting for folder location."
+  (nm/find-file-or-create t org-directory "note"))
 
 (defun nm/find-project-task ()
   "Function for creating a project file under org-capture-templates."
@@ -1123,7 +1128,7 @@ These are my default ROAM settings
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
-  (setq org-roam-file-exclude-regexp "references/*\\|gtd/*")
+  (setq org-roam-file-exclude-regexp "references/*\\|gtd/*\\|elfeed.org\\|README.org")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
   (setq org-roam-dailies-capture-templates
