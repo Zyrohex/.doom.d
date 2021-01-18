@@ -1,4 +1,4 @@
-# Created 2021-01-14 Thu 20:19
+# Created 2021-01-18 Mon 12:52
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -7,7 +7,8 @@
 [[file:attachments/workspace.png]]
 
 The goal of my config is to keep the configuration distraction free, and focus
-on functionality over looks.
+on functionality over looks. If you are curious to see my notes and task repo,
+feel free to check out -> [[https://github.com/nmartin84/org-notes][nmartin84/org-notes]]
 
 * New Changes
 
@@ -211,16 +212,7 @@ key, which will prompt for a headline from any of your task files that exist in
 "~~/projects/orgmode/gtd/~".
 
 #+begin_src emacs-lisp
-(defun nm/org-capture-log ()
-  "Initiate the capture system and find headline to capture under."
-  (let* ((org-agenda-files (find-lisp-find-files "~/projects/orgmode/gtd/" "\.org$"))
-         (dest (org-refile-get-location))
-         (file (cadr dest))
-         (pos (nth 3 dest))
-         (title (nth 2 dest)))
-    (find-file file)
-    (goto-char pos)
-    (nm/org-end-of-headline)))
+
 
 (defun nm/org-end-of-headline()
   "Move to end of current headline"
@@ -483,7 +475,7 @@ Next we configure popup-rules and default fonts.
   (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
+                                        ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (setq inhibit-compacting-font-caches t)
 (setq doom-font (font-spec :family "Roboto Mono" :size 20)
@@ -491,21 +483,26 @@ Next we configure popup-rules and default fonts.
       doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
-
-(custom-set-faces!
-  '(outline-1 :weight extra-bold :height 1.15)
-  '(outline-2 :weight bold :height 1.13)
-  '(outline-3 :weight bold :height 1.11)
-  '(outline-4 :weight semi-bold :height 1.09)
-  '(outline-5 :weight semi-bold :height 1.07)
-  '(outline-6 :weight semi-bold :height 1.05)
-  '(outline-8 :weight semi-bold :height 1.03)
-  '(outline-9 :weight semi-bold :height 1.01))
+(after! org
+  (custom-set-faces!
+    '(org-level-1 :height 1.15 :family "Victor Mono" :inherit outline-1)
+    '(org-level-2 :height 1.13 :family "Victor Mono" :inherit outline-2)
+    '(org-level-3 :height 1.11 :family "Victor Mono" :inherit outline-3)
+    '(org-level-4 :height 1.09 :family "Victor Mono" :inherit outline-4)
+    '(org-level-5 :height 1.07 :family "Victor Mono" :inherit outline-5)
+    '(org-level-6 :height 1.05 :family "Victor Mono" :inherit outline-6)
+    '(org-level-7 :height 1.03 :family "Victor Mono" :inherit outline-7)
+    '(org-level-8 :height 1.01 :family "Victor Mono" :inherit outline-8)))
 
 (after! org
   (custom-set-faces!
-    '(org-document-title :height 1.15)))
+    '(org-document-title :height 1.15 :family "Victor Mono")))
+
+(after! org
+  (custom-set-faces!
+    '(org-meta-line :family "Victor Mono")
+    '(org-document-info-keyword :family "Victor Mono")
+    '(org-document-info :family "Victor Mono")))
 
 ;; (when (equal system-type 'gnu/linux)
 ;;   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
@@ -544,7 +541,7 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
 
 (add-hook 'org-mode-hook 'auto-fill-mode)
 ;(add-hook 'org-mode-hook 'hl-todo-mode)
-(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
+;(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
 #+end_src
 
 ** Agenda
@@ -681,30 +678,33 @@ i've completed it and other times I need an actual task item to capture and
 track data in.
 
 #+begin_src emacs-lisp
-(setq org-capture-templates '(("c" " checklist")
-                              ("g" " gtd")
-                              ("b" " bullet journal")
-                              ("n" " notes")
-                              ("r" " resources")
-                              ("p" " projects")))
+(setq org-capture-templates '(("g" " ./gtd")
+                              ("b" " ./bullet journal")
+                              ("l" " ./local project")
+                              ("n" " ./notes")
+                              ("r" " ./resources")
+                              ("gp" " ./projects")))
 
-(push '("pt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("pr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("pn" " note" entry (function nm/find-project-note) "* " :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("pf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gpr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gpn" " note" entry (function nm/find-project-note) "* " :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gpf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
-(push '("cs" " simple checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
-(push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
+;(push '("cp" " local project [todo.org]" checkitem (function nm/find-project-todo) "- [ ] %?") org-capture-templates)
+;(push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
 
-(push '("gs" " simple task" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
-(push '("gk" " task [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
+(push '("ga" " append note to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gc" " checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
+(push '("gi" " capture to inbox" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("gk" " capture [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
+(push '("gx" " capture with link current pos" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
 (push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
 
 (push '("bt" " bullet task" entry (file+function "~/projects/orgmode/gtd/bullet.org" nm/capture-bullet-journal) "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
-(push '("na" " append" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("nn" " new note" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("nn" " new reference [excluded from org-roam]" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("nr" " roam article" plain (function nm/create-roam-file)"%?" :unnarrowed t) org-capture-templates)
 
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
@@ -714,6 +714,10 @@ track data in.
 ;; This function is used in conjuction with the capture template "new note" which will find or generate a note based off the folder and filename.
 (defun nm/create-notes-file ()
   "Function for creating a notes file under org-capture-templates."
+  (nm/find-file-or-create t "~/projects/orgmode/references/" "note"))
+
+(defun nm/create-roam-file ()
+  "Function to create a new roam notes file, while prompting for folder location."
   (nm/find-file-or-create t org-directory "note"))
 
 (defun nm/find-project-task ()
@@ -739,6 +743,12 @@ track data in.
     (goto-char location)
     (org-end-of-line)))
 
+(defun nm/find-project-todo ()
+  "When in projectile path, finds root todo.org file"
+  (let ((path (doom-project-root))
+        (file "todo.org"))
+    (find-file (format "%s%s" path file))))
+
 (defun nm/enter-headline-websources ()
   "This is a simple function for the purposes when using org-capture to add my entries to a custom Headline, and if URL is not in clipboard it'll return an error and cancel the capture process."
   (let* ((file "~/projects/orgmode/gtd/websources.org")
@@ -753,6 +763,17 @@ track data in.
   (save-excursion (find-file file-arg) (goto-char (point-min))
                   (unless (re-search-forward (format "* %s" (upcase headline-arg)) nil t)
                     (goto-char (point-max)) (insert (format "* %s" (upcase headline-arg))) (org-set-property "CATEGORY" (downcase headline-arg)))) t)
+
+(defun nm/org-capture-log ()
+  "Initiate the capture system and find headline to capture under."
+  (let* ((org-agenda-files (find-lisp-find-files "~/projects/orgmode/gtd/" "\.org$"))
+         (dest (org-refile-get-location))
+         (file (cadr dest))
+         (pos (nth 3 dest))
+         (title (nth 2 dest)))
+    (find-file file)
+    (goto-char pos)
+    (nm/org-end-of-headline)))
 #+end_src
 
 ** Clock Settings
@@ -956,9 +977,11 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
 
 ** company mode
 #+begin_src emacs-lisp
-(after! org
-  (set-company-backend! 'org-mode '(company-yasnippet company-files company-elisp))
-  (setq company-idle-delay 0.25))
+;(setq company-backends '(company-capf))
+(set-company-backend! 'org-mode '(company-yasnippet company-capf company-files company-elisp))
+(setq company-idle-delay 0.25
+      company-minimum-prefix-length 2)
+(add-to-list 'company-backends '(company-capf company-files company-yasnippet))
 #+end_src
 
 ** DEFT
@@ -1102,7 +1125,8 @@ These are my default ROAM settings
   (setq org-roam-tag-sources '(prop last-directory))
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
-  (setq org-roam-buffer-position 'top)
+  (setq org-roam-buffer-position 'right)
+  (setq org-roam-file-exclude-regexp "references/*\\|gtd/*\\|elfeed.org\\|README.org")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
   (setq org-roam-dailies-capture-templates
@@ -1119,12 +1143,10 @@ These are my default ROAM settings
            :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
            :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
            :unnarrowed t)
-          ("p" "permanent in nested folder" plain (function org-roam-capture--get-point)
-           :file-name "%(read-string \"string: \")/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %(read-string \"tags: \")\n\n"
-           :unnarrowed t
-           "%?")))
-
+          ("p" "Permanent (prompt folder)" plain (function org-roam-capture--get-point)
+           :file-name "%(read-directory-name \"directory: \" org-directory)/%<%Y%m%d%H%M>-${slug}"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
+           :unnarrowed t)))
   (push '("x" "Projects" plain (function org-roam-capture--get-point)
           :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
           :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
@@ -1137,12 +1159,16 @@ These are my default ROAM settings
   (use-package org-roam-server
     :ensure t
     :config
-    (setq org-roam-server-host "127.0.0.1"
+    (setq org-roam-server-host "192.168.1.249"
           org-roam-server-port 8070
           org-roam-server-export-inline-images t
           org-roam-server-authenticate nil
-          org-roam-server-network-poll nil
-          org-roam-server-network-arrows 'from
+          org-roam-server-network-poll t
+          org-roam-server-network-vis-options "{ \"layout\": {\"randomSeed\": None}, \"improvedLayout\":\"True\", \"physics\": {\"barnesHut\": {\"avoidOverlap\": 1, \"centralGravity\": 0.3, \"springLength\": 95, \"springConstant\": 0.05, \"gravitationalConstant\": -2000}, \"timestep\": 0.3}}"
+          ;org-roam-server-network-vis-options "\"const options\" = { \"edges\": { \"smooth\": { \"type\": \"curvedCW\", \"forceDirection\": \"none\" } }, \"physics\": { \"forceAtlas2Based\": { \"springLength\": 95, \"springConstant\": 0.04, \"avoidOverlap\": 1 }, \"minVelocity\": 0.75, \"solver\": \"forceAtlas2Based\" } }"
+          org-roam-server-network-arrows nil
+          org-roam-server-serve-files t
+          org-roam-server-extra-node-options (list (cons 'shape "dot") (cons 'opacity 1))
           org-roam-server-network-label-truncate t
           org-roam-server-network-label-truncate-length 60
           org-roam-server-network-label-wrap-length 20)))
@@ -1246,7 +1272,6 @@ These are my default ROAM settings
  'org-mode
  '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
 #+end_src
-
 ** Clarify Tasks
 
 Clarify task will take a list of property fields and pass them to
@@ -1275,8 +1300,6 @@ property fields.
   "Runs the clarify-task-metadata function with ARG being a list of property values." ; TODO work on this function and add some meaning to it.
   (interactive)
   (nm/org-clarify-task-properties org-tasks-properties-metadata))
-
-(load! "org-task-automation.el")
 
 (map! :after org
       :map org-mode-map
