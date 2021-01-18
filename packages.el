@@ -1,6 +1,7 @@
 ;; Roam Packages
 (package! org-roam-server)
 (package! org-roam)
+
 ;; Alphapapa packages
 ;(package! helm-org-rifle)
 ;(package! org-super-agenda)
@@ -11,6 +12,7 @@
 
 ;; Themes
 (package! chocolate-theme)
+(package! kaolin-themes)
 
 ;; Orgmode Packages
 ;(package! org-analyzer)
