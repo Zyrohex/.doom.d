@@ -456,8 +456,6 @@ Additional key bindings
       :desc "Filter" "f" #'org-agenda-filter)
 #+END_SRC
 
-#+RESULTS:
-
 If I ever use terminal mode, these are some settings i'll want to set to
 increase the quality of life when working from my terminal window.
 #+BEGIN_SRC emacs-lisp
@@ -486,7 +484,7 @@ Next we configure popup-rules and default fonts.
   (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
   (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
-  ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
+                                        ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (setq inhibit-compacting-font-caches t)
 (setq doom-font (font-spec :family "Roboto Mono" :size 20)
@@ -494,21 +492,26 @@ Next we configure popup-rules and default fonts.
       doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
-
-(custom-set-faces!
-  '(outline-1 :weight extra-bold :height 1.15)
-  '(outline-2 :weight bold :height 1.13)
-  '(outline-3 :weight bold :height 1.11)
-  '(outline-4 :weight semi-bold :height 1.09)
-  '(outline-5 :weight semi-bold :height 1.07)
-  '(outline-6 :weight semi-bold :height 1.05)
-  '(outline-8 :weight semi-bold :height 1.03)
-  '(outline-9 :weight semi-bold :height 1.01))
+(after! org
+  (custom-set-faces!
+    '(org-level-1 :height 1.15 :family "Victor Mono" :inherit outline-1)
+    '(org-level-2 :height 1.13 :family "Victor Mono" :inherit outline-2)
+    '(org-level-3 :height 1.11 :family "Victor Mono" :inherit outline-3)
+    '(org-level-4 :height 1.09 :family "Victor Mono" :inherit outline-4)
+    '(org-level-5 :height 1.07 :family "Victor Mono" :inherit outline-5)
+    '(org-level-6 :height 1.05 :family "Victor Mono" :inherit outline-6)
+    '(org-level-7 :height 1.03 :family "Victor Mono" :inherit outline-7)
+    '(org-level-8 :height 1.01 :family "Victor Mono" :inherit outline-8)))
 
 (after! org
   (custom-set-faces!
-    '(org-document-title :height 1.15)))
+    '(org-document-title :height 1.15 :family "Victor Mono")))
+
+(after! org
+  (custom-set-faces!
+    '(org-meta-line :family "Victor Mono")
+    '(org-document-info-keyword :family "Victor Mono")
+    '(org-document-info :family "Victor Mono")))
 
 ;; (when (equal system-type 'gnu/linux)
 ;;   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
@@ -1117,6 +1120,7 @@ These are my default ROAM settings
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
+  (setq org-roam-file-exclude-regexp "/home/nick/projects/orgmode/references/*")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
   (setq org-roam-dailies-capture-templates
@@ -1133,12 +1137,10 @@ These are my default ROAM settings
            :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
            :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
            :unnarrowed t)
-          ("p" "permanent in nested folder" plain (function org-roam-capture--get-point)
-           :file-name "%(read-string \"string: \")/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %(read-string \"tags: \")\n\n"
-           :unnarrowed t
-           "%?")))
-
+          ("p" "Permanent (prompt folder)" plain (function org-roam-capture--get-point)
+           :file-name "%(read-directory-name \"directory: \" org-directory)/%<%Y%m%d%H%M>-${slug}"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
+           :unnarrowed t)))
   (push '("x" "Projects" plain (function org-roam-capture--get-point)
           :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
           :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
@@ -1155,8 +1157,11 @@ These are my default ROAM settings
           org-roam-server-port 8070
           org-roam-server-export-inline-images t
           org-roam-server-authenticate nil
-          org-roam-server-network-poll nil
-          org-roam-server-network-arrows 'from
+          org-roam-server-network-poll t
+          org-roam-server-network-vis-options "{ \"layout\": {\"randomSeed\": None}, \"improvedLayout\":\"True\", \"physics\": {\"barnesHut\": {\"avoidOverlap\": 1, \"centralGravity\": 0.3, \"springLength\": 95, \"springConstant\": 0.05, \"gravitationalConstant\": -2000}, \"timestep\": 0.3}}"
+          ;org-roam-server-network-vis-options "\"const options\" = { \"edges\": { \"smooth\": { \"type\": \"curvedCW\", \"forceDirection\": \"none\" } }, \"physics\": { \"forceAtlas2Based\": { \"springLength\": 95, \"springConstant\": 0.04, \"avoidOverlap\": 1 }, \"minVelocity\": 0.75, \"solver\": \"forceAtlas2Based\" } }"
+          org-roam-server-network-arrows nil
+          org-roam-server-extra-node-options (list (cons 'shape "dot") (cons 'opacity 1))
           org-roam-server-network-label-truncate t
           org-roam-server-network-label-truncate-length 60
           org-roam-server-network-label-wrap-length 20)))
