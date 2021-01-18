@@ -333,9 +333,9 @@
                                         ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (setq inhibit-compacting-font-caches t)
-(setq doom-font (font-spec :family "Roboto Mono" :size 20)
-      doom-big-font (font-spec :family "Roboto Mono" :size 32)
-      doom-variable-pitch-font (font-spec :family "Roboto Mono" :size 20)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 20)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 32)
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
 (after! org
@@ -511,9 +511,7 @@
 (push '("gpn" " note" entry (function nm/find-project-note) "* " :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
-;(push '("cp" " local project [todo.org]" checkitem (function nm/find-project-todo) "- [ ] %?") org-capture-templates)
-;(push '("cd" " checklist [date]" checkitem (file+function "~/projects/orgmode/gtd/tasks.org" nm/org-capture-to-task-file) "- [ ] %?") org-capture-templates)
-
+TODO: Cleanup the template names to be more clear and easier to recognize.
 (push '("ga" " append note to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gc" " checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
 (push '("gi" " capture to inbox" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
@@ -521,12 +519,14 @@
 (push '("gx" " capture with link current pos" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
 (push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
 
+TODO: I need to finish implementing the bullet-journal.
 (push '("bt" " bullet task" entry (file+function "~/projects/orgmode/gtd/bullet.org" nm/capture-bullet-journal) "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 (push '("nj" " journal" entry (function nm/capture-to-journal) "* %^{entry}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?") org-capture-templates)
 (push '("nn" " new reference [excluded from org-roam]" plain (function nm/create-notes-file) "%?" :unnarrowed t :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("nr" " roam article" plain (function nm/create-roam-file)"%?" :unnarrowed t) org-capture-templates)
 
+TODO: Configure more resource capture templates.
 (push '("rr" " research literature" entry (file+function "~/projects/orgmode/gtd/websources.org" nm/enter-headline-websources) "* READ %(get-page-title (current-kill 0))") org-capture-templates)
 (push '("rf" " rss feed" entry (file+function "~/projects/orgmode/elfeed.org" nm/return-headline-in-file) "* %^{link}") org-capture-templates)
 
@@ -541,7 +541,8 @@
 
 (defun nm/find-project-task ()
   "Function for creating a project file under org-capture-templates."
-  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "Tasks"))
+  (nm/find-file-or-create t "~/projects/orgmode/gtd/projects" "project" "Tasks")
+  (setq org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/gtd/*.org") (file-expand-wildcards "~/projects/orgmode/gtd/*/*.org"))))
 
 (defun nm/find-project-timeframe ()
   "Function for creating a project file under org-capture-templates."
@@ -843,6 +844,8 @@
                   org-journal-file-type 'monthly
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
+(add-to-list 'magit-todos-keywords-list "NOTE")
+
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
 (when (require 'ox-reveal nil 'noerror)
@@ -916,7 +919,7 @@
 (defun nm/find-file-or-create (time-p folder-path &optional type header)
   "Creates a new file, if TYPE is set to NOTE then also insert file-template."
   (interactive)
-  (let* ((file (nm/convert-filename-format time-p folder-path)))
+  (let* ((file (nm/convert-filename-format time-p folder-path))) TODO: Add condition when filename is passed in as argument to skip this piece.
     (if (file-exists-p file)
         (find-file file)
       (when (equal "note" type) (find-file file)
