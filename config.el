@@ -892,13 +892,12 @@
           org-roam-server-export-inline-images t
           org-roam-server-authenticate nil
           org-roam-server-network-poll t
-          org-roam-server-network-vis-options "{ \"layout\": {\"randomSeed\": None}, \"improvedLayout\":\"True\", \"physics\": {\"barnesHut\": {\"avoidOverlap\": 1, \"centralGravity\": 0.3, \"springLength\": 95, \"springConstant\": 0.05, \"gravitationalConstant\": -2000}, \"timestep\": 0.3}}"
-          ;org-roam-server-network-vis-options "\"const options\" = { \"edges\": { \"smooth\": { \"type\": \"curvedCW\", \"forceDirection\": \"none\" } }, \"physics\": { \"forceAtlas2Based\": { \"springLength\": 95, \"springConstant\": 0.04, \"avoidOverlap\": 1 }, \"minVelocity\": 0.75, \"solver\": \"forceAtlas2Based\" } }"
+          org-roam-server-network-vis-options "{ \"layout\": { \"randomSeed\": false }, \"physics\": { \"stabilization\": { \"iterations\": 10000, \"fit\": false, \"updateInterval\": 10000 }, \"barnesHut\": { \"gravitationalConstant\": -4000, \"avoidOverlap\": 1, \"springConstant\": 0.02, \"springLength\": 95 } } }"
           org-roam-server-network-arrows nil
           org-roam-server-serve-files t
           org-roam-server-extra-node-options (list (cons 'shape "dot") (cons 'opacity 1))
           org-roam-server-network-label-truncate t
-          org-roam-server-network-label-truncate-length 60
+          org-roam-server-network-label-truncate-length 40
           org-roam-server-network-label-wrap-length 20)))
 
 (load! "org-helpers.el")
