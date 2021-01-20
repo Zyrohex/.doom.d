@@ -297,6 +297,7 @@
       :leader
       :prefix ("z" . "orgmode")
       :desc "completion at point" "c" #'completion-at-point
+      :desc "Review fleeting notes" "r" #'nm/review-fleeting-notes
       :prefix ("s" . "+search")
       :desc "Occur" "." #'occur
       :desc "Outline" "o" #'counsel-outline
@@ -857,6 +858,7 @@
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
+  (setq org-roam-link-file-path-type 'absolute)
   (setq org-roam-file-exclude-regexp "references/*\\|gtd/*\\|elfeed.org\\|README.org")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
@@ -901,6 +903,17 @@
           org-roam-server-network-label-wrap-length 20)))
 
 (load! "org-helpers.el")
+
+(defun nm/review-fleeting-notes ()
+  "Returns a list of fleeting notes in my roam directory, which I need to work on."
+  (interactive)
+  (let* ((files (find-lisp-find-files (concat org-roam-directory "fleeting/") ".org"))
+         (files-alist nil)
+         (file-names nil))
+    (dolist (i files) (push (cons i (capitalize (replace-regexp-in-string "[-_]" " " (replace-regexp-in-string "^[0-9]+-\\|.org$" "" (file-name-nondirectory i))))) files-alist))
+    (dolist (i files-alist) (push (cdr i) file-names))
+    (let* ((choice (ivy-completing-read "select: " file-names)))
+      (find-file (car (rassoc choice files-alist))))))
 
 (defun nm/convert-filename-format (&optional time-p folder-path)
   "Prompts user for filename and directory, and returns the value in a cleaned up format.
