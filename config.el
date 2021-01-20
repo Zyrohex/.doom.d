@@ -299,6 +299,7 @@
       :desc "completion at point" "c" #'completion-at-point
       :desc "Review Fleeting Notes" "r" #'nm/review-fleeting-notes
       :desc "Find File in ORGMODE" "f" #'nm/find-files-orgmode
+      :desc" File project" "p" #'nm/find-projects
       :prefix ("s" . "+search")
       :desc "Occur" "." #'occur
       :desc "Outline" "o" #'counsel-outline
@@ -320,6 +321,10 @@
 (defun nm/find-files-orgmode ()
   (interactive)
   (nm/find-file-cleaned-up org-directory))
+
+(defun nm/find-projects ()
+  (interactive)
+  (nm/find-file-cleaned-up "~/projects/orgmode/gtd/projects/"))
 
 (when (equal (window-system) nil)
   (and
@@ -481,7 +486,7 @@
                      (org-agenda-sorting-strategy
                       '(category-up))))
          (tags-todo "-someday/+REFILE"
-                    ((org-agenda-overriding-header " Inbox"))))) org-agenda-custom-commands)
+                    ((org-agenda-overriding-header " Inbox"))))) org-agenda-custom-commands)
 
 (push '("r" "review"
         ((tags-todo "-{^@\\w+}/-REFILE")
@@ -914,7 +919,8 @@
 (load! "org-helpers.el")
 
 (defun nm/find-file-cleaned-up (folder)
-  "Returns a list of filenames, in a cleaned up format and easy to read. FOLDER will be your folder path to search for."
+  "Returns a list of filenames, in a cleaned up format and easy to read. FOLDER will
+   be your folder path to search for."
   (interactive)
   (let* ((files (find-lisp-find-files folder ".org$"))
          (files-alist nil)
@@ -940,7 +946,7 @@
 (defun nm/find-file-or-create (time-p folder-path &optional type header)
   "Creates a new file, if TYPE is set to NOTE then also insert file-template."
   (interactive)
-  (let* ((file (nm/convert-filename-format time-p folder-path))) TODO: Add condition when filename is passed in as argument to skip this piece.
+  (let* ((file (nm/convert-filename-format time-p folder-path))) ;; TODO: Add condition when filename is passed in as argument to skip this piece.
     (if (file-exists-p file)
         (find-file file)
       (when (equal "note" type) (find-file file)
@@ -954,7 +960,7 @@
                             (downcase (concat "#+author: " user-full-name ))
                             (downcase (concat "#+email: " user-mail-address)))))
       (when (equal nil type) (find-file)))
-    ;; If user passes in header argument, search for it and if the search fails to find the header, then create it.
+    ;; If user passes in header argument, search for it and if the search fails to find the header, create it.
     (if header (unless (progn (goto-char (point-min)) (re-search-forward (format "^*+ %s" header)))
                  (goto-char (point-max))
                  (newline)
@@ -1007,10 +1013,10 @@
 (defface org-logbook-note
   '((t (:foreground "LightSkyBlue")))
   "Face for printr function")
+(custom-set-faces!
+  '(org-roam-block-link :weight "bold"))
 
-(font-lock-add-keywords
- 'org-mode
- '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
+(font-lock-add-keywords 'org-mode '(("\\[\\[\\[\\[.+\\]\\[.+\\]\\]\\]\\]" . 'org-roam-block-link)))
 
 (defun nm/org-get-headline-property (arg)
   "Extract property from headline and return results."
