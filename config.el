@@ -297,7 +297,8 @@
       :leader
       :prefix ("z" . "orgmode")
       :desc "completion at point" "c" #'completion-at-point
-      :desc "Review fleeting notes" "r" #'nm/review-fleeting-notes
+      :desc "Review Fleeting Notes" "r" #'nm/review-fleeting-notes
+      :desc "Find File in ORGMODE" "f" #'nm/find-files-orgmode
       :prefix ("s" . "+search")
       :desc "Occur" "." #'occur
       :desc "Outline" "o" #'counsel-outline
@@ -311,6 +312,14 @@
       :map org-agenda-mode-map
       :localleader
       :desc "Filter" "f" #'org-agenda-filter)
+
+(defun nm/review-fleeting-notes ()
+  (interactive)
+  (nm/find-file-cleaned-up "~/projects/orgmode/fleeting/"))
+
+(defun nm/find-files-orgmode ()
+  (interactive)
+  (nm/find-file-cleaned-up org-directory))
 
 (when (equal (window-system) nil)
   (and
@@ -904,10 +913,10 @@
 
 (load! "org-helpers.el")
 
-(defun nm/review-fleeting-notes ()
-  "Returns a list of fleeting notes in my roam directory, which I need to work on."
+(defun nm/find-file-cleaned-up (folder)
+  "Returns a list of filenames, in a cleaned up format and easy to read. FOLDER will be your folder path to search for."
   (interactive)
-  (let* ((files (find-lisp-find-files (concat org-roam-directory "fleeting/") ".org"))
+  (let* ((files (find-lisp-find-files folder ".org$"))
          (files-alist nil)
          (file-names nil))
     (dolist (i files) (push (cons i (capitalize (replace-regexp-in-string "[-_]" " " (replace-regexp-in-string "^[0-9]+-\\|.org$" "" (file-name-nondirectory i))))) files-alist))
