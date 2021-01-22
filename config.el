@@ -527,12 +527,10 @@
 (push '("gpf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 ;; TODO: Cleanup the template names to be more clear and easier to recognize.
-(push '("ga" " append note to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("gc" " checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
-(push '("gi" " capture to inbox" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
-(push '("gk" " capture [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
-(push '("gx" " capture with link current pos" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
-(push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("ga" " append to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gc" " capture" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("gk" " capture [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
+(push '("gx" " capture [current pos]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
 
 ;; TODO: I need to finish implementing the bullet-journal.
 (push '("bt" " bullet task" entry (file+function "~/projects/orgmode/gtd/bullet.org" nm/capture-bullet-journal) "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
