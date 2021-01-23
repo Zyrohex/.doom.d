@@ -717,7 +717,7 @@
                      :base-directory "~/projects/orgmode/"
                      :recursive t
                      :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html"
+                     :publishing-directory "~/notes/"
                      :publishing-function org-publish-attachment)
                     ("Markdown-to-Orgmode"
                      :base-directory "~/projects/notes/"
@@ -726,8 +726,8 @@
                      :recursive t
                      :publishing-function org-md-publish-to-org)
                     ("notes"
-                     :base-directory "~/projects/orgmode/notes/"
-                     :publishing-directory "~/nmartin84.github.io"
+                     :base-directory "~/projects/orgmode/"
+                     :publishing-directory "~/notes"
                      :section-numbers nil
                      :base-extension "org"
                      :with-properties nil
