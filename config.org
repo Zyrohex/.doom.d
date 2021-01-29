@@ -1021,17 +1021,6 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
 When this variable is set to ~t~ your deft directory will be updated to your
 projectile-project root's folder when switching projects, and the deft buffer's
 contents will be refreshed.
-#+BEGIN_SRC emacs-lisp
-(setq deft-use-projectile-projects t)
-(defun zyro/deft-update-directory ()
-  "Updates deft directory to current projectile's project root folder and updates the deft buffer."
-  (interactive)
-  (if (projectile-project-p)
-      (setq deft-directory (expand-file-name (doom-project-root)))))
-(when deft-use-projectile-projects
-  (add-hook 'projectile-after-switch-project-hook 'zyro/deft-update-directory)
-  (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
-#+END_SRC
 
 Configuring DEFT default settings
 #+BEGIN_SRC emacs-lisp
