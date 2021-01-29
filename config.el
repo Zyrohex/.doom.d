@@ -343,7 +343,7 @@
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
-  (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
+  (set-popup-rule! "*eww*" :side 'right :size .30 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
                                         ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
@@ -352,6 +352,8 @@
       doom-big-font (font-spec :family "JetBrains Mono" :size 32)
       doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+
+(when (equal window-system 'x) (toggle-frame-fullscreen))
 
 (after! org
   (custom-set-faces!
@@ -403,6 +405,8 @@
 (add-hook 'org-mode-hook 'auto-fill-mode)
 ;(add-hook 'org-mode-hook 'hl-todo-mode)
 ;(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
+
+(setq org-attach-directory (concat org-directory ".attach/"))
 
 (setq org-agenda-todo-ignore-scheduled nil
       org-agenda-tags-todo-honor-ignore-options t
@@ -716,43 +720,38 @@
                   '(("attachments"
                      :base-directory "~/projects/orgmode/"
                      :recursive t
-                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/notes/"
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css\\|svg"
+                     :publishing-directory "~/projects/nmartin84.github.io"
                      :publishing-function org-publish-attachment)
-                    ("Markdown-to-Orgmode"
-                     :base-directory "~/projects/notes/"
-                     :publishing-directory "~/projects/notes-md-to-org/"
-                     :base-extension "md"
-                     :recursive t
-                     :publishing-function org-md-publish-to-org)
                     ("notes"
                      :base-directory "~/projects/orgmode/"
-                     :publishing-directory "~/notes"
-                     :section-numbers nil
                      :base-extension "org"
+                     :publishing-directory "~/projects/nmartin84.github.io"
+                     :section-numbers nil
                      :with-properties nil
-                     :with-drawers (not "LOGBOOK")
+                     :with-drawers nil
                      :with-timestamps active
+                     :with-creator t
+                     :with-email t
+                     :with-toc t
                      :recursive t
-                     :exclude "journal/.*"
+                     :exclude "gtd/.*"
+                     :headline-levels 8
                      :auto-sitemap t
                      :sitemap-filename "index.html"
                      :publishing-function org-html-publish-to-html
-                     :html-head "<link rel=\"stylesheet\" href=\"https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css\" type=\"text/css\"/>"
-;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
-;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :html-head "<link rel=\"stylesheet\" href=\"https://raw.githack.com/nmartin84/html-style-sheets/master/notes.css\" type=\"text/css\"/>"
                      :html-link-up "../"
-                     :with-email t
                      :html-link-up "../../index.html"
-                     :auto-preamble t
-                     :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes" "ROAM")))))
+                     :auto-preamble t)
+                    ("myprojectweb" :components("attachments" "notes")))))
 
 ;(setq company-backends '(company-capf))
 (set-company-backend! 'org-mode '(company-yasnippet company-capf company-files company-elisp))
+(set-company-backend! 'emacs-lisp-mode '(company-yasnippet company-elisp))
 (setq company-idle-delay 0.25
       company-minimum-prefix-length 2)
-(add-to-list 'company-backends '(company-capf company-files company-yasnippet))
+(add-to-list 'company-backends '(company-capf company-files company-yasnippet company-semantic company-bbdb company-cmake company-keywords))
 
 (setq deft-use-projectile-projects t)
 (defun zyro/deft-update-directory ()
@@ -852,6 +851,8 @@
   :config
   (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
 
+(setq hugo_base_dir "~/projects/braindump/")
+
 (after! org (setq org-journal-dir "~/projects/orgmode/gtd/journal/"
                   org-journal-enable-agenda-integration t
                   org-journal-file-type 'monthly
@@ -870,7 +871,7 @@
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
-  (setq org-roam-link-file-path-type 'absolute)
+  (setq org-roam-link-file-path-type 'relative)
   (setq org-roam-file-exclude-regexp "references/*\\|gtd/*\\|elfeed.org\\|README.org")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
@@ -902,7 +903,7 @@
     :ensure t
     :config
     (setq org-roam-server-host "192.168.1.249"
-          org-roam-server-port 8070
+          org-roam-server-port 8060
           org-roam-server-export-inline-images t
           org-roam-server-authenticate nil
           org-roam-server-network-poll t
@@ -1008,13 +1009,13 @@
               (org-end-of-subtree t t)
               (org-paste-subtree level tree-text))))))))
 
-(defface org-logbook-note
-  '((t (:foreground "LightSkyBlue")))
-  "Face for printr function")
-(custom-set-faces!
-  '(org-roam-block-link :weight "bold"))
+;; (defface org-logbook-note
+;;   '((t (:foreground "LightSkyBlue")))
+;;   "Face for printr function")
+;; (custom-set-faces!
+;;   '(org-roam-block-link :weight "bold"))
 
-(font-lock-add-keywords 'org-mode '(("\\[\\[\\[\\[.+\\]\\[.+\\]\\]\\]\\]" . 'org-roam-block-link)))
+;; (font-lock-add-keywords 'org-mode '(("\\[\\[\\[\\[.+\\]\\[.+\\]\\]\\]\\]" . 'org-roam-block-link)))
 
 (defun nm/org-get-headline-property (arg)
   "Extract property from headline and return results."
@@ -1060,3 +1061,4 @@
 (let ((secrets (expand-file-name "secrets.el" doom-private-dir)))
   (when (file-exists-p secrets)
     (load secrets)))
+(after! org (find-file (concat org-directory "gtd/tasks.org")))
