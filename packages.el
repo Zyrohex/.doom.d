@@ -18,6 +18,7 @@
 ;(package! org-analyzer)
 (package! org-edna)
 (package! mixed-pitch)
+(package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 ;(package! literate-calc-mode)
 
 ;; Python
@@ -30,8 +31,6 @@
 (package! elfeed-org)
 (package! ob-mermaid)
 (package! mermaid-mode)
-(package! ox-reveal)
-(package! ox-pandoc)
 (package! ox-twbs)
 (package! deadgrep)
 (package! graphviz-dot-mode)
