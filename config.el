@@ -306,6 +306,8 @@
       :desc "Counsel ripgrep" "d" #'counsel-rg
       :desc "Swiper All" "@" #'swiper-all
       :prefix ("l" . "+links")
+      "." #'org-next-link
+      "," #'org-previous-link
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file)
 
@@ -348,27 +350,27 @@
                                         ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (setq inhibit-compacting-font-caches t)
-(setq doom-font (font-spec :family "JetBrains Mono" :size 20)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 32)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 20)
+(setq doom-font (font-spec :family "IBM Plex Mono" :size 20)
+      doom-big-font (font-spec :family "IBM Plex Mono" :size 26)
+      doom-variable-pitch-font (font-spec :family "IBM Plex Mono" :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
 (when (equal window-system 'x) (toggle-frame-fullscreen))
 
 (after! org
   (custom-set-faces!
-    '(org-level-1 :height 1.15 :family "Victor Mono" :inherit outline-1)
-    '(org-level-2 :height 1.13 :family "Victor Mono" :inherit outline-2)
-    '(org-level-3 :height 1.11 :family "Victor Mono" :inherit outline-3)
-    '(org-level-4 :height 1.09 :family "Victor Mono" :inherit outline-4)
-    '(org-level-5 :height 1.07 :family "Victor Mono" :inherit outline-5)
-    '(org-level-6 :height 1.05 :family "Victor Mono" :inherit outline-6)
-    '(org-level-7 :height 1.03 :family "Victor Mono" :inherit outline-7)
-    '(org-level-8 :height 1.01 :family "Victor Mono" :inherit outline-8)))
+    '(org-level-1 :height 1.15 :inherit outline-1)
+    '(org-level-2 :height 1.13 :inherit outline-2)
+    '(org-level-3 :height 1.11 :inherit outline-3)
+    '(org-level-4 :height 1.09 :inherit outline-4)
+    '(org-level-5 :height 1.07 :inherit outline-5)
+    '(org-level-6 :height 1.05 :inherit outline-6)
+    '(org-level-7 :height 1.03 :inherit outline-7)
+    '(org-level-8 :height 1.01 :inherit outline-8)))
 
 (after! org
   (custom-set-faces!
-    '(org-document-title :height 1.15 :family "Victor Mono")))
+    '(org-document-title :height 1.15)))
 
 (after! org
   (custom-set-faces!
@@ -386,6 +388,7 @@
 (require 'org-habit)
 (require 'org-id)
 (require 'org-checklist)
+(setq org-pretty-entities t)
 (after! org (setq org-archive-location "~/projects/orgmode/gtd/archives.org::* %s"
                   ;org-image-actual-width (truncate (* (display-pixel-width) 0.15))
                   org-link-file-path-type 'relative
@@ -426,63 +429,70 @@
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@place-someday/!-REFILE-NEXT"
+         (tags-todo "-@delegated-someday/+DOING"
+                    ((org-agenda-overriding-header " Doing")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@place-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Location Based")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@home-someday/!-REFILE-NEXT"
+         (tags-todo "@home-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Home")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@fix-someday/!-REFILE-NEXT"
+         (tags-todo "@fix-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Fix")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@brainstorm-someday/!-REFILE-NEXT"
+         (tags-todo "@brainstorm-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Brainstorm")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@call|@email-someday/!-REFILE-NEXT"
+         (tags-todo "@call|@email-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Communication")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@computer-someday/!-REFILE-NEXT"
+         (tags-todo "@computer-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Computer")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@errands-someday/!-REFILE-NEXT"
+         (tags-todo "@errands-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Errands")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@read-someday/!-REFILE-NEXT"
+         (tags-todo "@read-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Read")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "-{^@\\w+}-someday/-NEXT-REFILE-READ"
+         (tags-todo "-{^@\\w+}-someday/-NEXT-REFILE-READ-DOING"
                     ((org-agenda-overriding-header " Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
@@ -525,14 +535,14 @@
                               ("n" " notes")
                               ("r" " resources")))
 
-(push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task}\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpn" " note" entry (function nm/find-project-note) "* " :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 ;; TODO: Cleanup the template names to be more clear and easier to recognize.
 (push '("ga" " append to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("gc" " capture" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("gc" " capture" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n:METADATA:\n- SOURCE:\n- AUTHOR:\n:END:\n%?") org-capture-templates)
 (push '("gk" " capture [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
 (push '("gx" " capture [current pos]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
 
@@ -665,7 +675,7 @@
   (setq org-todo-keywords
         '((sequence
            "TODO(t)"  ; A task that needs doing & is ready to do.
-           "READ(R)" ; Task item that needs to be read.
+           "DOING(d)" ; Task is in progress and being worked.
            "NEXT(n)" ; Task items that are ready to be worked.
            "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed.
            "PROJ(p)"  ; Project with multiple task items.
@@ -675,6 +685,7 @@
            "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable.
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
+          ("DOING" . +org-todo-active)
           ("NEXT" . +org-todo-next)
           ("READ" . +org-todo-active)
           ("REFILE" . +org-todo-onhold)
@@ -735,7 +746,7 @@
                      :with-email t
                      :with-toc t
                      :recursive t
-                     :exclude "gtd/.*"
+                     :exclude "gtd/secrets.org|gtd/journal.org"
                      :headline-levels 8
                      :auto-sitemap t
                      :sitemap-filename "index.html"
@@ -745,6 +756,8 @@
                      :html-link-up "../../index.html"
                      :auto-preamble t)
                     ("myprojectweb" :components("attachments" "notes")))))
+
+(add-hook 'org-mode-hook 'org-appear-mode)
 
 ;(setq company-backends '(company-capf))
 (set-company-backend! 'org-mode '(company-yasnippet company-capf company-files company-elisp))
@@ -849,6 +862,8 @@
                   org-journal-carryover-items "TODO=\"TODO\"|TODO=\"NEXT\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\""))
 
 (add-to-list 'magit-todos-keywords-list "NOTE")
+
+(setq org-noter-notes-search-path (concat org-directory "literature/"))
 
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
 
