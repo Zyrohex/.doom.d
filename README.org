@@ -1,4 +1,4 @@
-# Created 2021-01-19 Tue 23:10
+# Created 2021-02-10 Wed 15:40
 #+TITLE: Org-Mode Literate Config
 #+AUTHOR: Nick Martin
 #+EMAIL: nmartin84@gmail.com
@@ -8,12 +8,65 @@
 
 The goal of my config is to keep the configuration distraction free, and focus
 on functionality over looks. If you are curious to see my notes and task repo,
-feel free to check out -> [[https://github.com/nmartin84/org-notes][nmartin84/org-notes]]
+feel free to check out -> [[https://github.com/nmartin84/org-notes][nmartin84/org-notes]]. Or you can checkout my published
+github pages -> [[https://nmartin84.github.io/][nmartin84.github.io]].
 
 * New Changes
 
-** Goal Tracker
-Goal tracking has been added to the org-agenda commands. Still in works.
+** Classification System
+For some time now, i've been wanting to build a classification system for task
+items, to help structure context of a headline with a template of property
+fields that one would associate with that classifier. For example with books,
+when you are defining your new book organization you typically associate a book
+header with the following properties: *Author*, *Subject*, *Year* and maybe a few
+other things.
+
+When you are building something like this out, it can become difficult or
+tideous to define those new items each time. So I have been giving some thought
+is a way to put a template around those items that remain original to org-mode
+and does not interfere.
+
+#+begin_src emacs-lisp
+(defun nm/org-clarify-properties (arg)
+  "Clarify properties for task."
+  (interactive)
+  (dolist (i (cdr (assoc arg nm/org-clarify-templates))) (org-entry-put nil i (read-string (format "%s: " i) (org-entry-get nil i)))))
+
+(defun nm/org-clarify-book ()
+  "Clarify book properties"
+  (interactive)
+  (nm/org-clarify-properties "book"))
+
+(defun nm/org-clarify-task ()
+  "Clarify book properties"
+  (interactive)
+  (nm/org-clarify-properties "task"))
+
+(defun nm/org-clarify-project ()
+  "Clarify book properties"
+  (interactive)
+  (nm/org-clarify-properties "project"))
+
+(defun nm/org-clarify-article ()
+  "Clarify book properties"
+  (interactive)
+  (nm/org-clarify-properties "article"))
+
+(setq nm/org-clarify-templates '(("book" "AUTHOR" "YEAR" "SOURCE")
+                                 ("task" "AREA")
+                                 ("project" "GOAL" "DUE")
+                                 ("article" "SOURCE" "SITE" "SUBJECT")))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("ze" . "clarify")
+      :desc "book" "b" #'nm/org-clarify-book
+      :desc "article" "a" #'nm/org-clarify-article
+      :desc "task" "t" #'nm/org-clarify-task
+      :desc "project" "p" #'nm/org-clarify-project)
+#+end_src
+
 ** Bullet Journal
 New capture template system that integrated the idea of a bullet journal for
 task and note taking.
@@ -133,12 +186,27 @@ For tasks that are ready to be refiled:
 #+end_src
 ** Easy theme switcher
 #+begin_src emacs-lisp
-(defvar doom-fav-themes '("doom-one" "doom-solarized-dark" "doom-dracula" "doom-vibrant" "doom-city-lights" "doom-moonlight" "doom-horizon" "doom-old-hope" "doom-oceanic-next" "doom-monokai-pro" "doom-material" "doom-henna" "doom-gruvbox" "doom-one-light" "doom-gruvbox-light" "doom-solarized-light" "doom-flatwhite" "chocolate"))
-(defun nm/load-theme ()
+(setq doom-dark-themes '("doom-one" "doom-solarized-dark" "doom-palenight" "doom-rouge" "doom-spacegrey" "doom-dracula" "doom-vibrant" "doom-city-lights" "doom-moonlight" "doom-horizon" "doom-old-hope" "doom-oceanic-next" "doom-monokai-pro" "doom-material" "doom-henna" "doom-gruvbox" "doom-ephemeral" "chocolate"))
+
+(setq doom-light-themes '("doom-one-light" "doom-gruvbox-light" "doom-solarized-light" "doom-flatwhite"))
+
+(defun nm/load-dark-theme ()
   (interactive)
-  (ivy-read "Load custom theme: " doom-fav-themes
-            :action #'counsel-load-theme-action
-            :caller 'counsel-load-theme))
+  (let* ((themes doom-dark-themes)
+         (first (car doom-dark-themes)))
+    (counsel-load-theme-action (car themes))
+    (setq doom-theme (car themes))
+    (pop doom-dark-themes)
+    (add-to-list 'doom-dark-themes first t)))
+
+(defun nm/load-light-theme ()
+  (interactive)
+  (let* ((themes doom-light-themes)
+         (first (car doom-light-themes)))
+    (counsel-load-theme-action (car themes))
+    (setq doom-theme (car themes))
+    (pop doom-light-themes)
+    (add-to-list 'doom-light-themes first t)))
 #+end_src
 
 ** Capturing Web Resources
@@ -192,10 +260,12 @@ NOTE: I need to see a better way of caching headlines to speed-up the process
 (require 'find-lisp)
 (defun nm/org-id-prompt-id ()
   "Prompt for the id during completion of id: link."
-  (let ((org-agenda-files (find-lisp-find-files org-directory "\.org$")))
-    (let ((dest (org-refile-get-location))
-          (name nil)
-          (id nil))
+  (let* ((org-agenda-files (find-lisp-find-files org-directory "\.org$"))
+         (dest (org-refile-get-location))
+         (name nil)
+         (id nil))
+    (if (equal (last dest) '(nil))
+        (error "File contains no headlines")
       (save-excursion
         (find-file (cadr dest))
         (goto-char (nth 3 dest))
@@ -441,16 +511,19 @@ Additional key bindings
 (map! :after org
       :map org-mode-map
       :leader
-      :prefix ("z" . "orgmode")
+      :prefix ("z" . "nicks functions")
       :desc "completion at point" "c" #'completion-at-point
       :desc "Review Fleeting Notes" "r" #'nm/review-fleeting-notes
       :desc "Find File in ORGMODE" "f" #'nm/find-files-orgmode
+      :desc" File project" "p" #'nm/find-projects
       :prefix ("s" . "+search")
       :desc "Occur" "." #'occur
       :desc "Outline" "o" #'counsel-outline
       :desc "Counsel ripgrep" "d" #'counsel-rg
       :desc "Swiper All" "@" #'swiper-all
       :prefix ("l" . "+links")
+      "." #'org-next-link
+      "," #'org-previous-link
       "o" #'org-open-at-point
       "g" #'eos/org-add-ids-to-headlines-in-file)
 
@@ -466,6 +539,10 @@ Additional key bindings
 (defun nm/find-files-orgmode ()
   (interactive)
   (nm/find-file-cleaned-up org-directory))
+
+(defun nm/find-projects ()
+  (interactive)
+  (nm/find-file-cleaned-up "~/projects/orgmode/gtd/projects/"))
 #+end_src
 
 If I ever use terminal mode, these are some settings i'll want to set to
@@ -474,7 +551,7 @@ increase the quality of life when working from my terminal window.
 (when (equal (window-system) nil)
   (and
    (bind-key "C-<down>" #'+org/insert-item-below)
-   (setq doom-theme nil)
+   ;(setq doom-theme nil)
    (setq doom-font (font-spec :family "Roboto Mono" :size 20))))
 #+end_src
 
@@ -487,43 +564,38 @@ Now I add my default folders and files that I want emacs/org-mode to use:
 
 Next we configure popup-rules and default fonts.
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-city-lights)
-
 (after! org (set-popup-rule! "^\\*lsp-help" :side 'bottom :size .30 :select t)
   (set-popup-rule! "*helm*" :side 'right :size .30 :select t)
   (set-popup-rule! "*Org QL View:*" :side 'right :size .25 :select t)
+  (set-popup-rule! "*Org Note*" :side 'bottom :size .35 :select t)
   (set-popup-rule! "*Capture*" :side 'left :size .30 :select t)
   (set-popup-rule! "*Python:ob-ipython-py*" :side 'right :size .25 :select t)
-  (set-popup-rule! "*eww*" :side 'right :size .50 :select t)
+  (set-popup-rule! "*eww*" :side 'right :size .30 :select t)
   (set-popup-rule! "*CAPTURE-*" :side 'left :size .30 :select t))
                                         ;(set-popup-rule! "*Org Agenda*" :side 'right :size .35 :select t))
 
 (setq inhibit-compacting-font-caches t)
-(setq doom-font (font-spec :family "JetBrains Mono" :size 20)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 32)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 20)
+(setq doom-font (font-spec :family "IBM Plex Mono" :size 24 :weight 'light)
+      doom-big-font (font-spec :family "IBM Plex Mono" :size 26 :weight 'light)
+      doom-variable-pitch-font (font-spec :family "IBM Plex Mono" :weight 'regular :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-(after! org
-  (custom-set-faces!
-    '(org-level-1 :height 1.15 :family "Victor Mono" :inherit outline-1)
-    '(org-level-2 :height 1.13 :family "Victor Mono" :inherit outline-2)
-    '(org-level-3 :height 1.11 :family "Victor Mono" :inherit outline-3)
-    '(org-level-4 :height 1.09 :family "Victor Mono" :inherit outline-4)
-    '(org-level-5 :height 1.07 :family "Victor Mono" :inherit outline-5)
-    '(org-level-6 :height 1.05 :family "Victor Mono" :inherit outline-6)
-    '(org-level-7 :height 1.03 :family "Victor Mono" :inherit outline-7)
-    '(org-level-8 :height 1.01 :family "Victor Mono" :inherit outline-8)))
+(when (equal window-system 'x) (toggle-frame-fullscreen))
 
 (after! org
   (custom-set-faces!
-    '(org-document-title :height 1.15 :family "Victor Mono")))
+    '(org-level-1 :height 1.15 :inherit outline-1)
+    '(org-level-2 :height 1.13 :inherit outline-2)
+    '(org-level-3 :height 1.11 :inherit outline-3)
+    '(org-level-4 :height 1.09 :inherit outline-4)
+    '(org-level-5 :height 1.07 :inherit outline-5)
+    '(org-level-6 :height 1.05 :inherit outline-6)
+    '(org-level-7 :height 1.03 :inherit outline-7)
+    '(org-level-8 :height 1.01 :inherit outline-8)))
 
 (after! org
   (custom-set-faces!
-    '(org-meta-line :family "Victor Mono")
-    '(org-document-info-keyword :family "Victor Mono")
-    '(org-document-info :family "Victor Mono")))
+    '(org-document-title :height 1.15)))
 
 ;; (when (equal system-type 'gnu/linux)
 ;;   (setq doom-font (font-spec :family "JetBrains Mono" :size 20 :weight 'normal)
@@ -559,6 +631,7 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
                   org-refile-targets '((nil :maxlevel . 9)
                                        (org-agenda-files :maxlevel . 4))
                   org-refile-use-outline-path 'buffer-name
+                  org-refile-use-cache nil
                   org-outline-path-complete-in-steps nil
                   org-refile-allow-creating-parent-nodes 'confirm
                   org-startup-indented 'indent
@@ -569,8 +642,12 @@ NOTE [2021-01-03 Sun]  - i'm going to try swapping log notes going after drawers
 
 (add-hook 'org-mode-hook 'auto-fill-mode)
 ;(add-hook 'org-mode-hook 'hl-todo-mode)
-;(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
+(add-hook 'org-mode-hook (lambda () (display-line-numbers-mode -1)))
+
+(setq org-attach-directory (concat org-directory ".attach/"))
 #+end_src
+
+** TODO Is there a way to prevent auto-fill from breaking links?
 
 ** Agenda
 First we setup a few deafults for the org-agenda buffer:
@@ -583,6 +660,7 @@ First we setup a few deafults for the org-agenda buffer:
 This first stage is how I track what's on my list of things to complete.
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands nil)
+
 (push '("o" "overview"
         ((agenda ""
                  ((org-agenda-span '1)
@@ -594,80 +672,77 @@ This first stage is how I track what's on my list of things to complete.
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
+                     (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@place-someday/!-REFILE-NEXT"
-                    ((org-agenda-overriding-header " Location Based")
+         (tags-todo "-@delegated-someday/+DOING"
+                    ((org-agenda-overriding-header " Doing")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
+                     (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@home-someday/!-REFILE-NEXT"
+         (tags-todo "@errands-someday/!-REFILE-NEXT-DOING"
+                    ((org-agenda-overriding-header " Errands")
+                     (org-agenda-todo-ignore-scheduled t)
+                     (org-agenda-todo-ignore-deadlines t)
+                     (org-agenda-todo-ignore-with-date t)
+                     (org-tags-match-list-sublevels 'indented)
+                     (org-agenda-sorting-strategy
+                      '(category-up))))
+         (tags-todo "@home-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Home")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
+                     (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@fix-someday/!-REFILE-NEXT"
-                    ((org-agenda-overriding-header " Fix")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "@brainstorm-someday/!-REFILE-NEXT"
-                    ((org-agenda-overriding-header " Brainstorm")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "@call|@email-someday/!-REFILE-NEXT"
-                    ((org-agenda-overriding-header " Communication")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "@computer-someday/!-REFILE-NEXT"
+         (tags-todo "@computer-someday/!-REFILE-NEXT-DOING"
                     ((org-agenda-overriding-header " Computer")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
+                     (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-up))))
-         (tags-todo "@errands-someday/!-REFILE-NEXT"
-                    ((org-agenda-overriding-header " Errands")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "@read-someday/!-REFILE-NEXT"
-                    ((org-agenda-overriding-header " Read")
-                     (org-agenda-todo-ignore-scheduled t)
-                     (org-agenda-todo-ignore-deadlines t)
-                     (org-agenda-todo-ignore-with-date t)
-                     (org-agenda-sorting-strategy
-                      '(category-up))))
-         (tags-todo "-{^@\\w+}-someday/-NEXT-REFILE-READ"
+         (tags-todo "-{^@\\w+}-someday/-NEXT-REFILE-READ-DOING"
                     ((org-agenda-overriding-header " Other Tasks")
                      (org-agenda-todo-ignore-scheduled t)
                      (org-agenda-todo-ignore-deadlines t)
                      (org-agenda-todo-ignore-with-date t)
+                     (org-tags-match-list-sublevels 'indented)
                      (org-agenda-sorting-strategy
                       '(category-up))))
          (tags-todo "-someday/+REFILE"
-                    ((org-agenda-overriding-header " Inbox"))))) org-agenda-custom-commands)
+                    ((org-agenda-overriding-header " Inbox"))))) org-agenda-custom-commands)
+
+(push '("gh" "@home" tags-todo "@home/-REFILE") org-agenda-custom-commands)
+(push '("ge" "@errands" tags-todo "@errands/-REFILE") org-agenda-custom-commands)
+(push '("gc" "@computer" tags-todo "@computer/-REFILE") org-agenda-custom-commands)
+(push '("gr" "@read" tags-todo "@read/-REFILE") org-agenda-custom-commands)
+(push '("gd" "doing" todo "+DOING") org-agenda-custom-commands)
+(push '("gn" "next" todo "+NEXT") org-agenda-custom-commands)
+(push '("go" "other tasks" tags-todo "-{^@\\w+}-goals/-NEXT-REFILE-DOING" ((org-agenda-todo-ignore-with-date t))) org-agenda-custom-commands)
+(push '("gg" "goals" tags-todo "goals/" ((org-agenda-todo-ignore-with-date t))) org-agenda-custom-commands)
+(push '("gi" " inbox" todo "REFILE") org-agenda-custom-commands)
+
+(push '("l" "literature"
+        ((tags-todo "/!"
+         ((org-agenda-todo-ignore-scheduled t)
+          (org-agenda-todo-ignore-with-date t)
+          (org-agenda-todo-ignore-deadlines t)
+          (org-agenda-todo-ignore-with-date t)
+          (org-agenda-files (append (find-lisp-find-files "~/projects/orgmode/literature/" "\.org$")))
+          (org-tags-match-list-sublevels 'indented))))) org-agenda-custom-commands)
 
 (push '("r" "review"
-        ((tags-todo "-{^@\\w+}/-REFILE")
-         (org-agenda-todo-ignore-scheduled t)
-         (org-agenda-todo-ignore-with-date t)
-         (org-agenda-todo-ignore-deadlines t)
-         (org-agenda-todo-ignore-with-date t))) org-agenda-custom-commands)
+        ((tags-todo "-{^@\\w+}/-REFILE"
+         ((org-agenda-todo-ignore-scheduled t)
+          (org-agenda-todo-ignore-with-date t)
+          (org-agenda-todo-ignore-deadlines t)
+          (org-agenda-todo-ignore-with-date t))))) org-agenda-custom-commands)
 
 (push '("b" "bullet"
         ((agenda ""
@@ -683,10 +758,6 @@ This first stage is how I track what's on my list of things to complete.
          (tags "note"
                ((org-agenda-overriding-header "Notes")
                 (org-agenda-files (append (file-expand-wildcards "~/projects/orgmode/bullet/*.org"))))))) org-agenda-custom-commands)
-
-(push '("g" "goals"
-        ((tags-todo "Goal=\"prof-python\"/")
-         (tags-todo "Goal=\"prof-datascience\"/"))) org-agenda-custom-commands)
 #+end_src
 
 ** Capture Templates
@@ -713,18 +784,22 @@ track data in.
                               ("n" " notes")
                               ("r" " resources")))
 
-(push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task} %^g" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gpt" " task" entry (function nm/find-project-task) "* REFILE %^{task}\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpr" " define requirements" item (function nm/find-project-requirement) "" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpn" " note" entry (function nm/find-project-note) "* " :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 (push '("gpf" " timeframe" entry (function nm/find-project-timeframe) "* %^{timeframe entry} [%<%Y-%m-%d %a %H:%M>]\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
 
 ;; TODO: Cleanup the template names to be more clear and easier to recognize.
-(push '("ga" " append note to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
-(push '("gc" " checklist" checkitem (file+olp "~/projects/orgmode/gtd/tasks.org" "Checklists") "- [ ] %?") org-capture-templates)
-(push '("gi" " capture to inbox" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
-(push '("gk" " capture [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
-(push '("gx" " capture with link current pos" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
-(push '("gg" " task with goal" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}%^{GOAL}p %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n") org-capture-templates)
+(push '("ga" " append to headline" plain (function nm/org-capture-log) " *Note added:* [%<%Y-%m-%d %a %H:%M>]\n%?" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
+(push '("gc" " capture" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n:METADATA:\n- SOURCE:\n- AUTHOR:\n:END:\n%?") org-capture-templates)
+(push '("gk" " capture [kill-ring]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%c") org-capture-templates)
+(push '("gx" " capture [current pos]" entry (file+olp "~/projects/orgmode/gtd/tasks.org" "Inbox") "* REFILE %^{task}\n:PROPERTIES:\n:CREATED: %U\n:END:\nLocation at time of capture: %a") org-capture-templates)
+
+(defun nm/prompt-during-capture ()
+  "Prompt and ask for metadata properties during capture."
+  (interactive)
+  (when (y-or-n-p "add schedule? ")
+    (insert (format "SCHEDULED: <%s>"(org-read-date)))))
 
 ;; TODO: I need to finish implementing the bullet-journal.
 (push '("bt" " bullet task" entry (file+function "~/projects/orgmode/gtd/bullet.org" nm/capture-bullet-journal) "* REFILE %^{task} %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n" :empty-lines-before 1 :empty-lines-after 1) org-capture-templates)
@@ -822,14 +897,9 @@ assignment process up and also keep things consistent.
 #+begin_src emacs-lisp
 (setq org-tag-alist '(("@home" . ?h)
                       ("@computer" . ?c)
-                      ("@email" . ?e)
-                      ("@fix" . ?f)
                       ("@errands")
-                      ("@delegated")
-                      ("@call")
-                      ("@brainstorm")
                       ("@read")
-                      ("@place")
+                      ("@delegated")
                       ("someday")))
 #+end_src
 
@@ -888,21 +958,15 @@ word *:project:* so that all child task are treated as part of the project.
 
   (setq org-todo-keywords
         '((sequence
-           "TODO(t)"  ; A task that needs doing & is ready to do.
-           "READ(R)" ; Task item that needs to be read.
-           "NEXT(n)" ; Task items that are ready to be worked.
-           "REFILE(r)" ; Signifies a new task that needs to be categorized and bucketed.
-           "PROJ(p)"  ; Project with multiple task items.
-           "WAIT(w)"  ; Something external is holding up this task.
-           "|"
-           "DONE(d)"  ; Task successfully completed.
-           "KILL(k)")) ; Task was cancelled, aborted or is no longer applicable.
+           "REFILE(r)" "TODO(t)" "NEXT(n)" "DOING(o)" "WAIT(w)" "|" "DONE(d)" "KILL(k)")
+          (sequence
+           "PROJ(p)" "|" "COMPLETE" "CANCELED"))
         org-todo-keyword-faces
         '(("WAIT" . +org-todo-onhold)
+          ("DOING" . +org-todo-active)
           ("NEXT" . +org-todo-next)
-          ("READ" . +org-todo-active)
           ("REFILE" . +org-todo-onhold)
-          ("PROJ" . +org-todo-project)
+          ("PROJ" . +org-todo-next)
           ("TODO" . +org-todo-active)))
 #+end_src
 
@@ -949,7 +1013,7 @@ available are:
                   org-list-demote-modify-bullet '(("+" . "-") ("1." . "a.") ("-" . "+"))))
 
 (when (require 'org-superstar nil 'noerror)
-  (setq org-superstar-headline-bullets-list '("#")
+  (setq org-superstar-headline-bullets-list '("◉")
         org-superstar-item-bullet-alist nil))
 
 (when (require 'org-fancy-priorities nil 'noerror)
@@ -969,65 +1033,61 @@ REVIEW do we need to re-define our publish settings for the ROAM directory?
                   '(("attachments"
                      :base-directory "~/projects/orgmode/"
                      :recursive t
-                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css"
-                     :publishing-directory "~/publish_html"
+                     :base-extension "jpg\\|jpeg\\|png\\|pdf\\|css\\|svg"
+                     :publishing-directory "~/projects/nmartin84.github.io"
                      :publishing-function org-publish-attachment)
-                    ("Markdown-to-Orgmode"
-                     :base-directory "~/projects/notes/"
-                     :publishing-directory "~/projects/notes-md-to-org/"
-                     :base-extension "md"
-                     :recursive t
-                     :publishing-function org-md-publish-to-org)
                     ("notes"
-                     :base-directory "~/projects/orgmode/notes/"
-                     :publishing-directory "~/nmartin84.github.io"
-                     :section-numbers nil
+                     :base-directory "~/projects/orgmode/"
                      :base-extension "org"
+                     :publishing-directory "~/projects/nmartin84.github.io"
+                     :section-numbers nil
                      :with-properties nil
-                     :with-drawers (not "LOGBOOK")
+                     :with-drawers nil
                      :with-timestamps active
+                     :with-creator t
+                     :with-email t
+                     :with-toc t
                      :recursive t
-                     :exclude "journal/.*"
+                     :exclude "gtd/secrets.org|gtd/journal.org"
+                     :headline-levels 8
                      :auto-sitemap t
                      :sitemap-filename "index.html"
                      :publishing-function org-html-publish-to-html
-                     :html-head "<link rel=\"stylesheet\" href=\"https://raw.githack.com/nmartin84/raw-files/master/htmlpro.css\" type=\"text/css\"/>"
-;                     :html-head "<link rel=\"stylesheet\" href=\"https://codepen.io/nmartin84/pen/RwPzMPe.css\" type=\"text/css\"/>"
-;                     :html-head-extra "<style type=text/css>body{ max-width:80%;  }</style>"
+                     :html-head "<link rel=\"stylesheet\" href=\"https://raw.githack.com/nmartin84/html-style-sheets/master/notes.css\" type=\"text/css\"/>"
                      :html-link-up "../"
-                     :with-email t
                      :html-link-up "../../index.html"
-                     :auto-preamble t
-                     :with-toc t)
-                    ("myprojectweb" :components("attachments" "notes" "ROAM")))))
+                     :auto-preamble t)
+                    ("myprojectweb" :components("attachments" "notes")))))
 #+end_src
 
-* Module Settings
+* Modules
+
+Org-Appear is a cool package that'll auto show emphasis markers when your cursor
+is on a element enclosed in emphasis.
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'org-appear-mode)
+(setq org-appear-autolinks nil)
+#+end_src
 
 ** company mode
 #+begin_src emacs-lisp
 ;(setq company-backends '(company-capf))
 (set-company-backend! 'org-mode '(company-yasnippet company-capf company-files company-elisp))
+(set-company-backend! 'emacs-lisp-mode '(company-yasnippet company-elisp))
 (setq company-idle-delay 0.25
       company-minimum-prefix-length 2)
-(add-to-list 'company-backends '(company-capf company-files company-yasnippet))
+(add-to-list 'company-backends '(company-capf company-files company-yasnippet company-semantic company-bbdb company-cmake company-keywords))
+#+end_src
+** Deadgrep
+#+begin_src emacs-lisp
+(map! :map deadgrep-mode-map
+      "o" #'deadgrep-visit-result-other-window)
 #+end_src
 
 ** DEFT
 When this variable is set to ~t~ your deft directory will be updated to your
 projectile-project root's folder when switching projects, and the deft buffer's
 contents will be refreshed.
-#+begin_src emacs-lisp
-(setq deft-use-projectile-projects t)
-(defun zyro/deft-update-directory ()
-  "Updates deft directory to current projectile's project root folder and updates the deft buffer."
-  (interactive)
-  (if (projectile-project-p)
-      (setq deft-directory (expand-file-name (doom-project-root)))))
-(when deft-use-projectile-projects
-  (add-hook 'projectile-after-switch-project-hook 'zyro/deft-update-directory)
-  (add-hook 'projectile-after-switch-project-hook 'deft-refresh))
-#+end_src
 
 Configuring DEFT default settings
 #+begin_src emacs-lisp
@@ -1114,8 +1174,8 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
 (use-package mermaid-mode
   :defer
   :config
-  (setq mermaid-mmdc-location "/node_modules/.bin/mmdc"
-        ob-mermaid-cli-path "/node-modules/.bin/mmdc"))
+  (setq mermaid-mmdc-location "~/node_modules/.bin/mmdc"
+        ob-mermaid-cli-path "~/node_modules/.bin/mmdc"))
 
 ; PLANTUML
 (use-package ob-plantuml
@@ -1125,6 +1185,10 @@ Eventually I would like to have org-mind-map generating charts like Sacha's [[ht
   :defer
   :config
   (setq plantuml-jar-path (expand-file-name "~/.doom.d/plantuml.jar")))
+#+end_src
+** Hugo
+#+begin_src emacs-lisp
+(setq hugo_base_dir "~/projects/braindump/")
 #+end_src
 
 ** Journal
@@ -1139,7 +1203,10 @@ A touch of magit to make it a little more special.
 #+begin_src emacs-lisp
 (add-to-list 'magit-todos-keywords-list "NOTE")
 #+end_src
-
+** Noter
+#+begin_src emacs-lisp
+(setq org-noter-notes-search-path (concat org-directory "literature/"))
+#+end_src
 ** Pandoc
 #+begin_src emacs-lisp
 (setq org-pandoc-options '((standalone . t) (self-contained . t)))
@@ -1156,11 +1223,11 @@ A touch of magit to make it a little more special.
 These are my default ROAM settings
 #+begin_src emacs-lisp
 (when (require 'org-roam nil 'noerror)
-  (setq org-roam-tag-sources '(prop last-directory))
+  (setq org-roam-tag-sources '(prop all-directories))
   (setq org-roam-db-location "~/projects/orgmode/roam.db")
   (setq org-roam-directory "~/projects/orgmode/")
   (setq org-roam-buffer-position 'right)
-  (setq org-roam-link-file-path-type 'absolute)
+  (setq org-roam-link-file-path-type 'relative)
   (setq org-roam-file-exclude-regexp "references/*\\|gtd/*\\|elfeed.org\\|README.org")
   (setq org-roam-completion-everywhere t)
   ;; Configuration of daily templates
@@ -1176,16 +1243,21 @@ These are my default ROAM settings
            :unnarrowed t)
           ("f" "fleeting" plain (function org-roam-capture--get-point)
            :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags:\n\n%?"
            :unnarrowed t)
           ("p" "Permanent (prompt folder)" plain (function org-roam-capture--get-point)
            :file-name "%(read-directory-name \"directory: \" org-directory)/%<%Y%m%d%H%M>-${slug}"
-           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n\n%?"
+           :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags:\n\n%?"
            :unnarrowed t)))
   (push '("x" "Projects" plain (function org-roam-capture--get-point)
           :file-name "gtd/projects/%<%Y%m%d%H%M>-${slug}"
           :head "#+title: ${title}\n#+roam_tags: %^{tags}\n\n%?"
           :unnarrowed t) org-roam-capture-templates))
+
+(defun nm/org-roam-prompt-tags ()
+  "Prompt user and ask if they want to input roam_tags during capture."
+  (when (y-or-n-p "Add tags? ")
+    (insert (format "%s" "\n#+roam_tags: "))))
 #+end_src
 
 ** ROAM Server
@@ -1195,7 +1267,7 @@ These are my default ROAM settings
     :ensure t
     :config
     (setq org-roam-server-host "192.168.1.249"
-          org-roam-server-port 8070
+          org-roam-server-port 8060
           org-roam-server-export-inline-images t
           org-roam-server-authenticate nil
           org-roam-server-network-poll t
@@ -1208,12 +1280,44 @@ These are my default ROAM settings
           org-roam-server-network-label-wrap-length 20)))
 #+end_src
 
+** TODO Look into abbrev-mode :@computer:someday:
+
 * Custom Functions
 #+begin_src emacs-lisp
 (load! "org-helpers.el")
 
+(defun nm/task-is-active-proj ()
+  "Checks if task is a Project with child subtask"
+  (and (bh/is-project-p)
+       (nm/has-subtask-active-p)))
+
+(defun nm/task-is-stuck-proj ()
+  "Checks if task is a Project with child subtask"
+  (and (bh/is-project-p)
+       (not (nm/has-subtask-active-p))))
+
+(defun nm/has-subtask-active-p ()
+  "Returns t for any heading that has subtasks."
+  (save-restriction
+    (widen)
+    (org-back-to-heading t)
+    (let ((end (save-excursion (org-end-of-subtree t))))
+      (outline-end-of-heading)
+      (save-excursion
+        (re-search-forward (concat "^\*+ " "\\(NEXT\\|DOING\\)") end t)))))
+
+(defun nm/update-task-conditions ()
+  "Update task states depending on their conditions."
+  (interactive)
+  (org-map-entries (lambda ()
+                     (when (nm/task-is-active-proj) (org-todo "ACTIVE"))
+                     (when (nm/task-is-stuck-proj) (org-todo "PENDING"))) t))
+
+(add-hook 'before-save-hook #'nm/update-task-conditions)
+
 (defun nm/find-file-cleaned-up (folder)
-  "Returns a list of filenames, in a cleaned up format and easy to read. FOLDER will be your folder path to search for."
+  "Returns a list of filenames, in a cleaned up format and easy to read. FOLDER will
+   be your folder path to search for."
   (interactive)
   (let* ((files (find-lisp-find-files folder ".org$"))
          (files-alist nil)
@@ -1221,7 +1325,9 @@ These are my default ROAM settings
     (dolist (i files) (push (cons i (capitalize (replace-regexp-in-string "[-_]" " " (replace-regexp-in-string "^[0-9]+-\\|.org$" "" (file-name-nondirectory i))))) files-alist))
     (dolist (i files-alist) (push (cdr i) file-names))
     (let* ((choice (ivy-completing-read "select: " file-names)))
-      (find-file (car (rassoc choice files-alist))))))
+      (if (equal choice "")
+          nil
+        (find-file (car (rassoc choice files-alist)))))))
 
 (defun nm/convert-filename-format (&optional time-p folder-path)
   "Prompts user for filename and directory, and returns the value in a cleaned up format.
@@ -1239,7 +1345,7 @@ These are my default ROAM settings
 (defun nm/find-file-or-create (time-p folder-path &optional type header)
   "Creates a new file, if TYPE is set to NOTE then also insert file-template."
   (interactive)
-  (let* ((file (nm/convert-filename-format time-p folder-path))) TODO: Add condition when filename is passed in as argument to skip this piece.
+  (let* ((file (nm/convert-filename-format time-p folder-path))) ;; TODO: Add condition when filename is passed in as argument to skip this piece.
     (if (file-exists-p file)
         (find-file file)
       (when (equal "note" type) (find-file file)
@@ -1253,7 +1359,7 @@ These are my default ROAM settings
                             (downcase (concat "#+author: " user-full-name ))
                             (downcase (concat "#+email: " user-mail-address)))))
       (when (equal nil type) (find-file)))
-    ;; If user passes in header argument, search for it and if the search fails to find the header, then create it.
+    ;; If user passes in header argument, search for it and if the search fails to find the header, create it.
     (if header (unless (progn (goto-char (point-min)) (re-search-forward (format "^*+ %s" header)))
                  (goto-char (point-max))
                  (newline)
@@ -1309,14 +1415,15 @@ These are my default ROAM settings
 ** Custom Faces
 TODO: Consider moving to extras.org if we are not using it.
 #+begin_src emacs-lisp
-(defface org-logbook-note
-  '((t (:foreground "LightSkyBlue")))
-  "Face for printr function")
+;; (defface org-logbook-note
+;;   '((t (:foreground "LightSkyBlue")))
+;;   "Face for printr function")
+;; (custom-set-faces!
+;;   '(org-roam-block-link :weight "bold"))
 
-(font-lock-add-keywords
- 'org-mode
- '(("\\w+\s\\w+\s\\w+\s\\[\\w+-\\w+-\\w+\s\\w+\s\\w+:\\w+\\] \\\\\\\\" . 'org-logbook-note )))
+;; (font-lock-add-keywords 'org-mode '(("\\[\\[\\[\\[.+\\]\\[.+\\]\\]\\]\\]" . 'org-roam-block-link)))
 #+end_src
+
 ** Clarify Tasks
 TODO: I need to either figure something out for this, or move it to extra.org
 
