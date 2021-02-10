@@ -11,14 +11,15 @@
 (package! org-web-tools)
 
 ;; Themes
-(package! chocolate-theme)
 (package! kaolin-themes)
+(package! chocolate-theme :recipe (:host github :repo "nmartin84/emacs-chocolate-theme"))
 
 ;; Orgmode Packages
 ;(package! org-analyzer)
 (package! org-edna)
 (package! mixed-pitch)
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
+(package! org-drill)
 ;(package! literate-calc-mode)
 
 ;; Python
