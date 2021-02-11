@@ -1,29 +1,54 @@
-(defun nm/org-clarify-properties (arg)
+(defun nm/return-entry-property-names ()
+  "Returns a list of property names excluding the DEFAULT org-mode property names."
+  (let ((my-list (org-entry-properties))
+        (temp-list nil)
+        (discard-list '("ITEM" "PRIORITY" "FILE" "BLOCKED")))
+    (dolist (i my-list) (push (car i) temp-list))
+    (dolist (i discard-list) (setq temp-list (remove i temp-list)))
+    temp-list))
+(nm/return-entry-property-names)
+
+(defun nm/return-entry-property-value-kill-ring ()
+  "Returns a list of properties for the current headline and inserts the contents to the kill ring."
+  (interactive)
+  (let* ((choice (ivy-completing-read "entry: " (nm/return-entry-property-names)))
+        (results (org-entry-get nil choice)))
+    (kill-new results)
+    (message (format "'%s' was copied to kill-ring" results))))
+
+(map! :after org
+      :map org-mode-map
+      :leader
+      :prefix ("z" . "nicks functions")
+      :desc "Copy property value to kill-ring" "x" #'nm/return-entry-property-value-kill-ring)
+
+(defun nm/return-entry-property-names ()
+  "Returns a list of property names excluding the DEFAULT org-mode property names."
+  (let ((my-list (org-entry-properties))
+        (temp-list nil)
+        (discard-list '("ITEM" "PRIORITY" "FILE" "BLOCKED")))
+    (dolist (i my-list) (push (car i) temp-list))
+    (dolist (i discard-list) (setq temp-list (remove i temp-list)))
+    temp-list))
+(nm/return-entry-property-names)
+
+(defun nm/return-entry-property-value-kill-ring ()
+  "Returns a list of properties for the current headline and inserts the contents to the kill ring."
+  (interactive)
+  (let ((choice (ivy-completing-read "entry: " (nm/return-entry-property-names))))
+    (kill-new (org-entry-get nil choice))))
+
+(defun nm/org-clarify-properties ()
   "Clarify properties for task."
   (interactive)
-  (dolist (i (cdr (assoc arg nm/org-clarify-templates))) (org-entry-put nil i (read-string (format "%s: " i) (org-entry-get nil i)))))
-
-(defun nm/org-clarify-book ()
-  "Clarify book properties"
-  (interactive)
-  (nm/org-clarify-properties "book"))
-
-(defun nm/org-clarify-task ()
-  "Clarify book properties"
-  (interactive)
-  (nm/org-clarify-properties "task"))
-
-(defun nm/org-clarify-project ()
-  "Clarify book properties"
-  (interactive)
-  (nm/org-clarify-properties "project"))
-
-(defun nm/org-clarify-article ()
-  "Clarify book properties"
-  (interactive)
-  (nm/org-clarify-properties "article"))
+  (let ((my-list nm/org-clarify-templates)
+        (my-temp nil))
+    (dolist (i my-list) (push (car i) my-temp))
+    (dolist (i (cdr (assoc (ivy-completing-read "template: " my-temp) nm/org-clarify-templates))) (org-entry-put nil i (ivy-completing-read (format "%s: " i) (delete-dups (org-map-entries (org-entry-get nil i nil) nil 'file)))))))
 
 (setq nm/org-clarify-templates '(("book" "AUTHOR" "YEAR" "SOURCE")
+                                 ("online" "SOURCE" "SITE" "AUTHOR")
+                                 ("purchase" "WHY" "FUNCTION")
                                  ("task" "AREA")
                                  ("project" "GOAL" "DUE")
                                  ("article" "SOURCE" "SITE" "SUBJECT")))
@@ -31,11 +56,11 @@
 (map! :after org
       :map org-mode-map
       :leader
-      :prefix ("ze" . "clarify")
-      :desc "book" "b" #'nm/org-clarify-book
-      :desc "article" "a" #'nm/org-clarify-article
-      :desc "task" "t" #'nm/org-clarify-task
-      :desc "project" "p" #'nm/org-clarify-project)
+      :prefix ("z" . "nicks functions")
+      :desc "Clarify Properties" "c" #'nm/org-clarify-properties)
+
+(unless (ivy-completing-read "select: " '("Something"))
+  (error "no output"))
 
 (defun nm/capture-bullet-journal ()
   "Finds bullet journal headline to nest capture headline under."
